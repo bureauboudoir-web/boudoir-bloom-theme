@@ -6,28 +6,23 @@ import RedLightGlow from "@/components/RedLightGlow";
 import HeroAnimation from "@/components/HeroAnimation";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Lightbulb, FileText, Camera, Megaphone, DollarSign, Crown, Heart, BookOpen, Users, ShieldCheck, Gem } from "lucide-react";
-
 const Home = () => {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
+  return <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
       {/* Hero Section */}
-      <section 
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${heroImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
         <HeroAnimation />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
-          <p className="font-serif text-2xl md:text-3xl text-rose-gold mb-6 animate-fade-in">
+          <p className="font-serif text-2xl text-rose-gold mb-6 animate-fade-in text-yellow-600 md:text-5xl">
             Bureau Boudoir
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl font-bold mb-8 text-glow-red leading-tight">
+          <h1 className="font-serif text-5xl font-bold mb-8 text-glow-red leading-tight md:text-6xl">
             The Art of Seduction
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
@@ -349,8 +344,6 @@ const Home = () => {
           <p className="text-xs text-muted-foreground mt-4">Amsterdam, Netherlands</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Home;
