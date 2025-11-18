@@ -58,6 +58,7 @@ export const AdminInvoices = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showPaymentReceivedDialog, setShowPaymentReceivedDialog] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -206,7 +207,6 @@ export const AdminInvoices = () => {
       const { error } = await supabase
         .from('invoices')
         .update({
-          status: 'payment_confirmed',
           admin_payment_confirmed_at: new Date().toISOString(),
         })
         .eq('id', selectedInvoice.id);
@@ -215,10 +215,10 @@ export const AdminInvoices = () => {
 
       toast({
         title: "Success",
-        description: "Payment confirmed successfully",
+        description: "Payment received and invoice marked as completed",
       });
 
-      setShowConfirmDialog(false);
+      setShowPaymentReceivedDialog(false);
       setSelectedInvoice(null);
       fetchInvoices();
     } catch (error) {
@@ -243,10 +243,11 @@ export const AdminInvoices = () => {
 
   const stats = {
     totalOutstanding: invoices
-      .filter(i => i.status === 'pending' || i.status === 'creator_paid' || i.status === 'overdue')
+      .filter(i => !i.admin_payment_confirmed_at)
       .reduce((sum, i) => sum + Number(i.amount), 0),
-    pendingCount: invoices.filter(i => i.status === 'pending' || i.status === 'overdue').length,
-    awaitingConfirmation: invoices.filter(i => i.status === 'creator_paid').length,
+    pendingCount: invoices.filter(i => !i.creator_payment_confirmed_at && !i.admin_payment_confirmed_at).length,
+    awaitingConfirmation: invoices.filter(i => i.creator_payment_confirmed_at && !i.admin_payment_confirmed_at).length,
+    completedCount: invoices.filter(i => i.admin_payment_confirmed_at).length,
   };
 
   return (
@@ -424,16 +425,16 @@ export const AdminInvoices = () => {
                     </TableCell>
                     <TableCell>{getStatusBadge(invoice.status)}</TableCell>
                     <TableCell>
-                      {invoice.status === 'creator_paid' && (
+                      {invoice.creator_payment_confirmed_at && !invoice.admin_payment_confirmed_at && (
                         <Button
                           size="sm"
                           onClick={() => {
                             setSelectedInvoice(invoice);
-                            setShowConfirmDialog(true);
+                            setShowPaymentReceivedDialog(true);
                           }}
                         >
                           <CheckCircle className="w-4 h-4 mr-1" />
-                          Confirm Payment
+                          Confirm Received
                         </Button>
                       )}
                     </TableCell>
@@ -445,19 +446,20 @@ export const AdminInvoices = () => {
         )}
       </Card>
 
-      {/* Confirm Payment Dialog */}
-      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+      {/* Confirm Payment Received Dialog */}
+      <AlertDialog open={showPaymentReceivedDialog} onOpenChange={setShowPaymentReceivedDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Payment Received</AlertDialogTitle>
             <AlertDialogDescription>
               Confirm you've received payment of ${selectedInvoice ? Number(selectedInvoice.amount).toFixed(2) : '0.00'} from{' '}
               {selectedInvoice?.profiles?.full_name || 'this creator'}?
+              This will mark the invoice as completed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmPayment}>Confirm Payment</AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmPayment}>Confirm Received</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
