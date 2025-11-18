@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,9 +9,11 @@ import { toast } from "sonner";
 interface OnboardingPersonaProps {
   onNext: () => void;
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingPersona = ({ onNext, onBack }: OnboardingPersonaProps) => {
+const OnboardingPersona = ({ onNext, onBack, onboardingData, onComplete }: OnboardingPersonaProps) => {
   const [formData, setFormData] = useState({
     stageName: "",
     persona: "",
@@ -21,10 +23,38 @@ const OnboardingPersona = ({ onNext, onBack }: OnboardingPersonaProps) => {
     fantasy: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        stageName: onboardingData.persona_stage_name || "",
+        persona: onboardingData.persona_description || "",
+        backstory: onboardingData.persona_backstory || "",
+        personality: onboardingData.persona_personality || "",
+        interests: onboardingData.persona_interests || "",
+        fantasy: onboardingData.persona_fantasy || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Persona information saved!");
-    onNext();
+    
+    const stepData = {
+      persona_stage_name: formData.stageName,
+      persona_description: formData.persona,
+      persona_backstory: formData.backstory,
+      persona_personality: formData.personality,
+      persona_interests: formData.interests,
+      persona_fantasy: formData.fantasy
+    };
+
+    const result = await onComplete(5, stepData);
+    if (!result.error) {
+      toast.success("Persona information saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -9,9 +9,11 @@ import { toast } from "sonner";
 interface OnboardingContentProps {
   onNext: () => void;
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingContent = ({ onNext, onBack }: OnboardingContentProps) => {
+const OnboardingContent = ({ onNext, onBack, onboardingData, onComplete }: OnboardingContentProps) => {
   const [formData, setFormData] = useState({
     photoCount: "",
     videoCount: "",
@@ -20,10 +22,36 @@ const OnboardingContent = ({ onNext, onBack }: OnboardingContentProps) => {
     equipmentNeeds: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        photoCount: onboardingData.content_photo_count?.toString() || "",
+        videoCount: onboardingData.content_video_count?.toString() || "",
+        contentThemes: onboardingData.content_themes || "",
+        shootingPreferences: onboardingData.content_shooting_preferences || "",
+        equipmentNeeds: onboardingData.content_equipment_needs || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Content requirements saved!");
-    onNext();
+    
+    const stepData = {
+      content_photo_count: formData.photoCount ? parseInt(formData.photoCount) : null,
+      content_video_count: formData.videoCount ? parseInt(formData.videoCount) : null,
+      content_themes: formData.contentThemes,
+      content_shooting_preferences: formData.shootingPreferences,
+      content_equipment_needs: formData.equipmentNeeds
+    };
+
+    const result = await onComplete(7, stepData);
+    if (!result.error) {
+      toast.success("Content requirements saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

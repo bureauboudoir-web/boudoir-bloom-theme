@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,15 +6,24 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn, user } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!credentials.email || !credentials.password) {
@@ -22,9 +31,26 @@ const Login = () => {
       return;
     }
 
-    // Simulate login
-    toast.success("Login successful!");
-    navigate("/dashboard");
+    setLoading(true);
+
+    try {
+      const { error } = await signIn(credentials.email, credentials.password);
+
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error("Invalid email or password");
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        toast.success("Login successful!");
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error("An error occurred during login");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,8 +89,8 @@ const Login = () => {
               />
             </div>
             
-            <Button type="submit" className="w-full glow-red">
-              Login
+            <Button type="submit" className="w-full glow-red" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Card>
