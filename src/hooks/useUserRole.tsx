@@ -18,6 +18,7 @@ export const useUserRole = () => {
 
     const fetchRoles = async () => {
       try {
+        setLoading(true);
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -25,7 +26,9 @@ export const useUserRole = () => {
 
         if (error) throw error;
         
-        setRoles(data?.map(r => r.role as AppRole) || []);
+        const fetchedRoles = data?.map(r => r.role as AppRole) || [];
+        setRoles(fetchedRoles);
+        console.log('User roles fetched:', fetchedRoles);
       } catch (error) {
         console.error('Error fetching user roles:', error);
         setRoles([]);
@@ -35,6 +38,28 @@ export const useUserRole = () => {
     };
 
     fetchRoles();
+
+    // Set up real-time subscription for role changes
+    const channel = supabase
+      .channel('user_roles_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_roles',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          console.log('Role change detected, refetching...');
+          fetchRoles();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const hasRole = (role: AppRole) => roles.includes(role);
