@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield } from "lucide-react";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
 import OnboardingBoundaries from "@/components/onboarding/OnboardingBoundaries";
@@ -14,6 +14,7 @@ import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
+import { CreatorInvoices } from "@/components/dashboard/CreatorInvoices";
 import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { useAuth } from "@/hooks/useAuth";
@@ -156,6 +157,14 @@ const Dashboard = () => {
                 >
                   <Calendar className="w-4 h-4 mr-2" />
                   Studio Shoots
+                </Button>
+                <Button
+                  variant={activeTab === "invoices" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("invoices")}
+                >
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Invoices
                 </Button>
               </div>
 

@@ -116,6 +116,63 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          admin_payment_confirmed_at: string | null
+          amount: number
+          created_at: string
+          created_by_user_id: string | null
+          creator_payment_confirmed_at: string | null
+          currency: string
+          description: string
+          due_date: string
+          id: string
+          invoice_date: string
+          invoice_number: string
+          notes: string | null
+          payment_method: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_payment_confirmed_at?: string | null
+          amount: number
+          created_at?: string
+          created_by_user_id?: string | null
+          creator_payment_confirmed_at?: string | null
+          currency?: string
+          description: string
+          due_date: string
+          id?: string
+          invoice_date: string
+          invoice_number: string
+          notes?: string | null
+          payment_method?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_payment_confirmed_at?: string | null
+          amount?: number
+          created_at?: string
+          created_by_user_id?: string | null
+          creator_payment_confirmed_at?: string | null
+          currency?: string
+          description?: string
+          due_date?: string
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          notes?: string | null
+          payment_method?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       onboarding_data: {
         Row: {
           body_distinctive_features: string | null
@@ -437,6 +494,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_invoice_number: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -444,6 +502,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_overdue_invoices: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "manager" | "creator"
