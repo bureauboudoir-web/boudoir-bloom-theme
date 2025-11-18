@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare } from "lucide-react";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
 import OnboardingBoundaries from "@/components/onboarding/OnboardingBoundaries";
@@ -16,11 +16,13 @@ import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
+  const { isAdminOrManager } = useUserRole();
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 8;
@@ -159,6 +161,16 @@ const Dashboard = () => {
 
               {/* Third Section */}
               <div className="space-y-2">
+                {isAdminOrManager && (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-primary/40 hover:bg-primary/10"
+                    onClick={() => navigate("/admin")}
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin Dashboard
+                  </Button>
+                )}
                 <Button
                   variant={activeTab === "support" ? "default" : "ghost"}
                   className="w-full justify-start"
