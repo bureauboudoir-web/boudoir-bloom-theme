@@ -15,6 +15,7 @@ import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
 import { CreatorInvoices } from "@/components/dashboard/CreatorInvoices";
+import { InvoiceStatus } from "@/components/dashboard/InvoiceStatus";
 import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { useAuth } from "@/hooks/useAuth";
@@ -262,6 +263,10 @@ const Dashboard = () => {
 
             {activeTab === "shoots" && user && (
               <StudioShoots userId={user.id} />
+            )}
+
+            {activeTab === "invoices" && user && (
+              <InvoiceStatus />
             )}
           </div>
         </div>
