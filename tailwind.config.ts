@@ -59,9 +59,6 @@ export default {
         },
         "rose-gold": "hsl(var(--rose-gold))",
         "glow-red": "hsl(var(--glow-red))",
-        "deep-red": "hsl(var(--deep-red))",
-        "gold": "hsl(var(--gold))",
-        "cream": "hsl(var(--cream))",
       },
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
