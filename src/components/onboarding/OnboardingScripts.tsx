@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,11 @@ import { toast } from "sonner";
 interface OnboardingScriptsProps {
   onNext: () => void;
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingScripts = ({ onNext, onBack }: OnboardingScriptsProps) => {
+const OnboardingScripts = ({ onNext, onBack, onboardingData, onComplete }: OnboardingScriptsProps) => {
   const [formData, setFormData] = useState({
     greeting: "",
     sexting: "",
@@ -18,10 +20,34 @@ const OnboardingScripts = ({ onNext, onBack }: OnboardingScriptsProps) => {
     renewal: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        greeting: onboardingData.scripts_greeting || "",
+        sexting: onboardingData.scripts_sexting || "",
+        ppv: onboardingData.scripts_ppv || "",
+        renewal: onboardingData.scripts_renewal || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Scripts saved!");
-    onNext();
+    
+    const stepData = {
+      scripts_greeting: formData.greeting,
+      scripts_sexting: formData.sexting,
+      scripts_ppv: formData.ppv,
+      scripts_renewal: formData.renewal
+    };
+
+    const result = await onComplete(6, stepData);
+    if (!result.error) {
+      toast.success("Scripts saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

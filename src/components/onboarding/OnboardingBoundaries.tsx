@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -9,9 +9,11 @@ import { toast } from "sonner";
 interface OnboardingBoundariesProps {
   onNext: () => void;
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingBoundaries = ({ onNext, onBack }: OnboardingBoundariesProps) => {
+const OnboardingBoundaries = ({ onNext, onBack, onboardingData, onComplete }: OnboardingBoundariesProps) => {
   const [formData, setFormData] = useState({
     comfortableWith: [] as string[],
     hardLimits: "",
@@ -30,10 +32,34 @@ const OnboardingBoundaries = ({ onNext, onBack }: OnboardingBoundariesProps) => 
     "Custom Requests"
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        comfortableWith: onboardingData.boundaries_comfortable_with || [],
+        hardLimits: onboardingData.boundaries_hard_limits || "",
+        softLimits: onboardingData.boundaries_soft_limits || "",
+        additionalNotes: onboardingData.boundaries_additional_notes || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Preferences saved!");
-    onNext();
+    
+    const stepData = {
+      boundaries_comfortable_with: formData.comfortableWith,
+      boundaries_hard_limits: formData.hardLimits,
+      boundaries_soft_limits: formData.softLimits,
+      boundaries_additional_notes: formData.additionalNotes
+    };
+
+    const result = await onComplete(3, stepData);
+    if (!result.error) {
+      toast.success("Preferences saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

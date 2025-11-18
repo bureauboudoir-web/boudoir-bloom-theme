@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -11,33 +12,74 @@ import OnboardingPersona from "@/components/onboarding/OnboardingPersona";
 import OnboardingScripts from "@/components/onboarding/OnboardingScripts";
 import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
+import { useAuth } from "@/hooks/useAuth";
+import { useOnboarding } from "@/hooks/useOnboarding";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const { user, signOut, loading: authLoading } = useAuth();
+  const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 8;
   const progress = (currentStep / totalSteps) * 100;
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/login");
+    }
+  }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    if (onboardingData) {
+      setCurrentStep(onboardingData.current_step || 1);
+    }
+  }, [onboardingData]);
+
+  if (authLoading || onboardingLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleStepComplete = async (step: number, stepData: Record<string, any>) => {
+    const result = await completeStep(step, stepData);
+    if (!result.error) {
+      setCurrentStep(step + 1);
+    }
+    return result;
+  };
+
   const renderOnboardingStep = () => {
+    const commonProps = {
+      onboardingData,
+      onComplete: handleStepComplete
+    };
+
     switch (currentStep) {
       case 1:
-        return <OnboardingPersonal onNext={() => setCurrentStep(2)} />;
+        return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
       case 2:
-        return <OnboardingBody onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
+        return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
       case 3:
-        return <OnboardingBoundaries onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
+        return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
       case 4:
-        return <OnboardingPricing onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
+        return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
       case 5:
-        return <OnboardingPersona onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
+        return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
       case 6:
-        return <OnboardingScripts onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
+        return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
       case 7:
-        return <OnboardingContent onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
+        return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
       case 8:
-        return <OnboardingCommitments onBack={() => setCurrentStep(7)} />;
+        return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(7)} />;
       default:
-        return <OnboardingPersonal onNext={() => setCurrentStep(2)} />;
+        return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
     }
   };
 
@@ -47,7 +89,7 @@ const Dashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <h1 className="font-serif text-2xl font-bold text-primary text-glow-red">Bureau Boudoir</h1>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={signOut}>
             <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>

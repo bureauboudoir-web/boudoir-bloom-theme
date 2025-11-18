@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,11 @@ import { toast } from "sonner";
 interface OnboardingPricingProps {
   onNext: () => void;
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingPricing = ({ onNext, onBack }: OnboardingPricingProps) => {
+const OnboardingPricing = ({ onNext, onBack, onboardingData, onComplete }: OnboardingPricingProps) => {
   const [formData, setFormData] = useState({
     subscriptionPrice: "",
     ppvPhotoPrice: "",
@@ -20,10 +22,38 @@ const OnboardingPricing = ({ onNext, onBack }: OnboardingPricingProps) => {
     sexting: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        subscriptionPrice: onboardingData.pricing_subscription?.toString() || "",
+        ppvPhotoPrice: onboardingData.pricing_ppv_photo?.toString() || "",
+        ppvVideoPrice: onboardingData.pricing_ppv_video?.toString() || "",
+        customContentPrice: onboardingData.pricing_custom_content?.toString() || "",
+        chatPrice: onboardingData.pricing_chat?.toString() || "",
+        sexting: onboardingData.pricing_sexting?.toString() || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Pricing information saved!");
-    onNext();
+    
+    const stepData = {
+      pricing_subscription: formData.subscriptionPrice ? parseFloat(formData.subscriptionPrice) : null,
+      pricing_ppv_photo: formData.ppvPhotoPrice ? parseFloat(formData.ppvPhotoPrice) : null,
+      pricing_ppv_video: formData.ppvVideoPrice ? parseFloat(formData.ppvVideoPrice) : null,
+      pricing_custom_content: formData.customContentPrice ? parseFloat(formData.customContentPrice) : null,
+      pricing_chat: formData.chatPrice ? parseFloat(formData.chatPrice) : null,
+      pricing_sexting: formData.sexting ? parseFloat(formData.sexting) : null
+    };
+
+    const result = await onComplete(4, stepData);
+    if (!result.error) {
+      toast.success("Pricing information saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

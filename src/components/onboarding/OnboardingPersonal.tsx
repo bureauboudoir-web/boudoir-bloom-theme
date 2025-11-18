@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,9 +7,11 @@ import { toast } from "sonner";
 
 interface OnboardingPersonalProps {
   onNext: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingPersonal = ({ onNext }: OnboardingPersonalProps) => {
+const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPersonalProps) => {
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -21,10 +23,42 @@ const OnboardingPersonal = ({ onNext }: OnboardingPersonalProps) => {
     emergencyPhone: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        fullName: onboardingData.personal_full_name || "",
+        dateOfBirth: onboardingData.personal_date_of_birth || "",
+        nationality: onboardingData.personal_nationality || "",
+        location: onboardingData.personal_location || "",
+        phoneNumber: onboardingData.personal_phone_number || "",
+        email: onboardingData.personal_email || "",
+        emergencyContact: onboardingData.personal_emergency_contact || "",
+        emergencyPhone: onboardingData.personal_emergency_phone || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Personal information saved!");
-    onNext();
+    
+    const stepData = {
+      personal_full_name: formData.fullName,
+      personal_date_of_birth: formData.dateOfBirth,
+      personal_nationality: formData.nationality,
+      personal_location: formData.location,
+      personal_phone_number: formData.phoneNumber,
+      personal_email: formData.email,
+      personal_emergency_contact: formData.emergencyContact,
+      personal_emergency_phone: formData.emergencyPhone
+    };
+
+    const result = await onComplete(1, stepData);
+    if (!result.error) {
+      toast.success("Personal information saved!");
+      onNext();
+    } else {
+      toast.error("Failed to save. Please try again.");
+    }
   };
 
   return (

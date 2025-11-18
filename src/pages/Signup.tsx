@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,7 +19,7 @@ const Signup = () => {
     experience: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -26,12 +28,29 @@ const Signup = () => {
       return;
     }
 
-    // Simulate form submission
-    console.log("Form submitted:", formData);
-    toast.success("Thank you! Your application has been received. A rep will contact you soon.");
-    
-    // Reset form
-    setFormData({ name: "", email: "", phone: "", experience: "" });
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('creator_applications')
+        .insert([{
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          experience_level: formData.experience,
+          status: 'pending'
+        }]);
+
+      if (error) throw error;
+
+      toast.success("Thank you! Your application has been received. A rep will contact you soon.");
+      setFormData({ name: "", email: "", phone: "", experience: "" });
+    } catch (error: any) {
+      console.error('Error submitting application:', error);
+      toast.error("Failed to submit application. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,8 +114,8 @@ const Signup = () => {
               </Select>
             </div>
             
-            <Button type="submit" className="w-full glow-red">
-              Submit Application
+            <Button type="submit" className="w-full glow-red" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Application"}
             </Button>
           </form>
         </Card>

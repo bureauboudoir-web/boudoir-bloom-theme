@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -8,9 +8,11 @@ import { toast } from "sonner";
 
 interface OnboardingCommitmentsProps {
   onBack: () => void;
+  onboardingData: any;
+  onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingCommitments = ({ onBack }: OnboardingCommitmentsProps) => {
+const OnboardingCommitments = ({ onBack, onboardingData, onComplete }: OnboardingCommitmentsProps) => {
   const [formData, setFormData] = useState({
     agreements: [] as string[],
     additionalQuestions: ""
@@ -27,15 +29,34 @@ const OnboardingCommitments = ({ onBack }: OnboardingCommitmentsProps) => {
     "I understand the expectations for PPV content"
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (onboardingData) {
+      setFormData({
+        agreements: onboardingData.commitments_agreements || [],
+        additionalQuestions: onboardingData.commitments_questions || ""
+      });
+    }
+  }, [onboardingData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.agreements.length < commitments.length) {
       toast.error("Please review and accept all commitments");
       return;
     }
-    
-    toast.success("Onboarding complete! Welcome to Bureau Boudoir! 🌹");
+
+    const stepData = {
+      commitments_agreements: formData.agreements,
+      commitments_questions: formData.additionalQuestions
+    };
+
+    const result = await onComplete(8, stepData);
+    if (!result.error) {
+      toast.success("Onboarding complete! Welcome to Bureau Boudoir! 🌹");
+    } else {
+      toast.error("Failed to complete onboarding. Please try again.");
+    }
   };
 
   return (
