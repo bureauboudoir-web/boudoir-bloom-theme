@@ -14,7 +14,225 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      creator_applications: {
+        Row: {
+          created_at: string | null
+          email: string
+          experience_level: string
+          id: string
+          name: string
+          phone: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          experience_level: string
+          id?: string
+          name: string
+          phone: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          experience_level?: string
+          id?: string
+          name?: string
+          phone?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      onboarding_data: {
+        Row: {
+          body_distinctive_features: string | null
+          body_eye_color: string | null
+          body_hair_color: string | null
+          body_height: number | null
+          body_piercings: string | null
+          body_tattoos: string | null
+          body_type: string | null
+          body_weight: number | null
+          boundaries_additional_notes: string | null
+          boundaries_comfortable_with: string[] | null
+          boundaries_hard_limits: string | null
+          boundaries_soft_limits: string | null
+          commitments_agreements: string[] | null
+          commitments_questions: string | null
+          completed_steps: number[] | null
+          content_equipment_needs: string | null
+          content_photo_count: number | null
+          content_shooting_preferences: string | null
+          content_themes: string | null
+          content_video_count: number | null
+          created_at: string | null
+          current_step: number | null
+          id: string
+          is_completed: boolean | null
+          persona_backstory: string | null
+          persona_description: string | null
+          persona_fantasy: string | null
+          persona_interests: string | null
+          persona_personality: string | null
+          persona_stage_name: string | null
+          personal_date_of_birth: string | null
+          personal_email: string | null
+          personal_emergency_contact: string | null
+          personal_emergency_phone: string | null
+          personal_full_name: string | null
+          personal_location: string | null
+          personal_nationality: string | null
+          personal_phone_number: string | null
+          pricing_chat: number | null
+          pricing_custom_content: number | null
+          pricing_ppv_photo: number | null
+          pricing_ppv_video: number | null
+          pricing_sexting: number | null
+          pricing_subscription: number | null
+          scripts_greeting: string | null
+          scripts_ppv: string | null
+          scripts_renewal: string | null
+          scripts_sexting: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          body_distinctive_features?: string | null
+          body_eye_color?: string | null
+          body_hair_color?: string | null
+          body_height?: number | null
+          body_piercings?: string | null
+          body_tattoos?: string | null
+          body_type?: string | null
+          body_weight?: number | null
+          boundaries_additional_notes?: string | null
+          boundaries_comfortable_with?: string[] | null
+          boundaries_hard_limits?: string | null
+          boundaries_soft_limits?: string | null
+          commitments_agreements?: string[] | null
+          commitments_questions?: string | null
+          completed_steps?: number[] | null
+          content_equipment_needs?: string | null
+          content_photo_count?: number | null
+          content_shooting_preferences?: string | null
+          content_themes?: string | null
+          content_video_count?: number | null
+          created_at?: string | null
+          current_step?: number | null
+          id?: string
+          is_completed?: boolean | null
+          persona_backstory?: string | null
+          persona_description?: string | null
+          persona_fantasy?: string | null
+          persona_interests?: string | null
+          persona_personality?: string | null
+          persona_stage_name?: string | null
+          personal_date_of_birth?: string | null
+          personal_email?: string | null
+          personal_emergency_contact?: string | null
+          personal_emergency_phone?: string | null
+          personal_full_name?: string | null
+          personal_location?: string | null
+          personal_nationality?: string | null
+          personal_phone_number?: string | null
+          pricing_chat?: number | null
+          pricing_custom_content?: number | null
+          pricing_ppv_photo?: number | null
+          pricing_ppv_video?: number | null
+          pricing_sexting?: number | null
+          pricing_subscription?: number | null
+          scripts_greeting?: string | null
+          scripts_ppv?: string | null
+          scripts_renewal?: string | null
+          scripts_sexting?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          body_distinctive_features?: string | null
+          body_eye_color?: string | null
+          body_hair_color?: string | null
+          body_height?: number | null
+          body_piercings?: string | null
+          body_tattoos?: string | null
+          body_type?: string | null
+          body_weight?: number | null
+          boundaries_additional_notes?: string | null
+          boundaries_comfortable_with?: string[] | null
+          boundaries_hard_limits?: string | null
+          boundaries_soft_limits?: string | null
+          commitments_agreements?: string[] | null
+          commitments_questions?: string | null
+          completed_steps?: number[] | null
+          content_equipment_needs?: string | null
+          content_photo_count?: number | null
+          content_shooting_preferences?: string | null
+          content_themes?: string | null
+          content_video_count?: number | null
+          created_at?: string | null
+          current_step?: number | null
+          id?: string
+          is_completed?: boolean | null
+          persona_backstory?: string | null
+          persona_description?: string | null
+          persona_fantasy?: string | null
+          persona_interests?: string | null
+          persona_personality?: string | null
+          persona_stage_name?: string | null
+          personal_date_of_birth?: string | null
+          personal_email?: string | null
+          personal_emergency_contact?: string | null
+          personal_emergency_phone?: string | null
+          personal_full_name?: string | null
+          personal_location?: string | null
+          personal_nationality?: string | null
+          personal_phone_number?: string | null
+          pricing_chat?: number | null
+          pricing_custom_content?: number | null
+          pricing_ppv_photo?: number | null
+          pricing_ppv_video?: number | null
+          pricing_sexting?: number | null
+          pricing_subscription?: number | null
+          scripts_greeting?: string | null
+          scripts_ppv?: string | null
+          scripts_renewal?: string | null
+          scripts_sexting?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
