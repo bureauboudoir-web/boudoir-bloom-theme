@@ -5,7 +5,7 @@ import Navigation from "@/components/Navigation";
 import RedLightGlow from "@/components/RedLightGlow";
 import HeroAnimation from "@/components/HeroAnimation";
 import heroImage from "@/assets/hero-bg.jpg";
-import { Lightbulb, FileText, Camera, Megaphone, DollarSign } from "lucide-react";
+import { Lightbulb, FileText, Camera, Megaphone, DollarSign, Crown, Heart, BookOpen, Users, ShieldCheck, Gem } from "lucide-react";
 
 const Home = () => {
   return (
@@ -206,37 +206,67 @@ const Home = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Crown className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 Bureau Boudoir gives creators a real brand to belong to
               </p>
             </Card>
             
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Heart className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 Crafting personas fans fall in love with
               </p>
             </Card>
             
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <BookOpen className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 A compelling creator storyline that makes them unforgettable
               </p>
             </Card>
             
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Users className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 Full dedicated team handling operations*
               </p>
             </Card>
             
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <ShieldCheck className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 We prioritise safety, autonomy, and respect
               </p>
             </Card>
             
-            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
+            <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all group">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Gem className="w-8 h-8 text-rose-gold" />
+                </div>
+              </div>
               <p className="text-lg text-foreground leading-relaxed">
                 We work with carefully selected, high-quality creators
               </p>
