@@ -11,6 +11,7 @@ import { CreatorOverview } from "@/components/admin/CreatorOverview";
 import { ContentReview } from "@/components/admin/ContentReview";
 import { RoleManagement } from "@/components/admin/RoleManagement";
 import { AdminInvoices } from "@/components/admin/AdminInvoices";
+import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { ArrowLeft, Shield } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -82,6 +83,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="shoots">Shoots</TabsTrigger>
               <TabsTrigger value="review">Review</TabsTrigger>
               <TabsTrigger value="invoices">Invoices</TabsTrigger>
+              <TabsTrigger value="support">Support</TabsTrigger>
               <TabsTrigger value="roles">Roles</TabsTrigger>
             </TabsList>
 
@@ -103,6 +105,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="invoices">
               <AdminInvoices />
+            </TabsContent>
+
+            <TabsContent value="support">
+              <AdminSupportTickets />
             </TabsContent>
 
             <TabsContent value="roles">

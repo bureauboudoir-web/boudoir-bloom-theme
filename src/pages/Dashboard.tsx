@@ -22,6 +22,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
+import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
@@ -250,11 +251,8 @@ const Dashboard = () => {
               </div>
             )}
             
-            {activeTab === "support" && (
-              <Card className="p-6 bg-card border-primary/20">
-                <h2 className="font-serif text-2xl font-bold mb-4">Contact Us</h2>
-                <p className="text-muted-foreground">Get in touch with your representative.</p>
-              </Card>
+            {activeTab === "support" && user && (
+              <ContactSupport userId={user.id} userName={user.email || ""} />
             )}
 
             {activeTab === "commitments" && user && (

@@ -412,6 +412,45 @@ export type Database = {
           },
         ]
       }
+      support_tickets: {
+        Row: {
+          admin_response: string | null
+          attachment_url: string | null
+          created_at: string
+          id: string
+          message: string
+          responded_at: string | null
+          status: Database["public"]["Enums"]["support_ticket_status"]
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          attachment_url?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["support_ticket_status"]
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          attachment_url?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["support_ticket_status"]
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -506,6 +545,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "manager" | "creator"
+      support_ticket_status: "open" | "in_progress" | "resolved"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -634,6 +674,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "manager", "creator"],
+      support_ticket_status: ["open", "in_progress", "resolved"],
     },
   },
 } as const
