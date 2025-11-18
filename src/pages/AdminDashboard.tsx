@@ -20,13 +20,17 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
+    console.log('AdminDashboard - Auth state:', { user: !!user, authLoading });
     if (!authLoading && !user) {
+      console.log('AdminDashboard - Redirecting to login (no user)');
       navigate("/login");
     }
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
+    console.log('AdminDashboard - Role state:', { isAdminOrManager, roleLoading });
     if (!roleLoading && !isAdminOrManager) {
+      console.log('AdminDashboard - Redirecting to dashboard (no admin role)');
       navigate("/dashboard");
     }
   }, [isAdminOrManager, roleLoading, navigate]);
