@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import RoseDivider from "@/components/RoseDivider";
+import RedLightGlow from "@/components/RedLightGlow";
 import heroImage from "@/assets/hero-bg.jpg";
 import roseJourney from "@/assets/rose-journey.png";
 import { Sparkles, Target, TrendingUp } from "lucide-react";
@@ -35,6 +37,8 @@ const Home = () => {
         </div>
       </section>
 
+      <RoseDivider />
+
       {/* Introduction */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-6 max-w-4xl text-center">
@@ -45,6 +49,8 @@ const Home = () => {
           </p>
         </div>
       </section>
+
+      <RedLightGlow />
 
       {/* What We Do */}
       <section className="py-24 bg-secondary">
@@ -63,6 +69,8 @@ const Home = () => {
         </div>
       </section>
 
+      <RoseDivider />
+
       {/* Our Philosophy */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -80,6 +88,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <RedLightGlow />
 
       {/* Our Promise */}
       <section className="py-24 bg-secondary">
@@ -100,6 +110,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <RoseDivider />
 
       {/* What Makes Us Different */}
       <section className="py-24 bg-secondary">
@@ -135,6 +147,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <RedLightGlow />
 
       {/* Rose Journey */}
       <section className="py-24">
