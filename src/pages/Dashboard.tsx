@@ -165,7 +165,7 @@ const Dashboard = () => {
                   onClick={() => setActiveTab("support")}
                 >
                   <Mail className="w-4 h-4 mr-2" />
-                  Contact Your Rep
+                  Contact Us
                 </Button>
               </div>
             </nav>
@@ -203,7 +203,7 @@ const Dashboard = () => {
             
             {activeTab === "support" && (
               <Card className="p-6 bg-card border-primary/20">
-                <h2 className="font-serif text-2xl font-bold mb-4">Contact Your Rep</h2>
+                <h2 className="font-serif text-2xl font-bold mb-4">Contact Us</h2>
                 <p className="text-muted-foreground">Get in touch with your representative.</p>
               </Card>
             )}
