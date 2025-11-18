@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import RedLightGlow from "@/components/RedLightGlow";
+import HeroAnimation from "@/components/HeroAnimation";
 import heroImage from "@/assets/hero-bg.jpg";
 import { Lightbulb, FileText, Camera, Megaphone, DollarSign } from "lucide-react";
 
@@ -20,6 +21,7 @@ const Home = () => {
           backgroundPosition: 'center',
         }}
       >
+        <HeroAnimation />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
           <p className="font-serif text-2xl md:text-3xl text-rose-gold mb-6 animate-fade-in">
