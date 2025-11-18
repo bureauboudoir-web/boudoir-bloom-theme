@@ -102,55 +102,72 @@ const Dashboard = () => {
         <div className="grid md:grid-cols-4 gap-6">
           {/* Sidebar */}
           <Card className="md:col-span-1 p-6 h-fit bg-card border-primary/20">
-            <nav className="space-y-2">
-              <Button
-                variant={activeTab === "onboarding" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("onboarding")}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Onboarding
-              </Button>
-              <Button
-                variant={activeTab === "account" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("account")}
-              >
-                <User className="w-4 h-4 mr-2" />
-                Account
-              </Button>
-              <Button
-                variant={activeTab === "upload" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("upload")}
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Uploads
-              </Button>
-              <Button
-                variant={activeTab === "support" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("support")}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                Support
-              </Button>
-              <Button
-                variant={activeTab === "commitments" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("commitments")}
-              >
-                <CheckSquare className="w-4 h-4 mr-2" />
-                Weekly Commitments
-              </Button>
-              <Button
-                variant={activeTab === "shoots" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveTab("shoots")}
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Studio Shoots
-              </Button>
+            <nav className="space-y-4">
+              {/* First Section */}
+              <div className="space-y-2">
+                <Button
+                  variant={activeTab === "onboarding" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("onboarding")}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Onboarding
+                </Button>
+                <Button
+                  variant={activeTab === "account" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("account")}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Account
+                </Button>
+                <Button
+                  variant={activeTab === "upload" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("upload")}
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Uploads
+                </Button>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-border/50"></div>
+
+              {/* Second Section */}
+              <div className="space-y-2">
+                <Button
+                  variant={activeTab === "commitments" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("commitments")}
+                >
+                  <CheckSquare className="w-4 h-4 mr-2" />
+                  Weekly Commitments
+                </Button>
+                <Button
+                  variant={activeTab === "shoots" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("shoots")}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Studio Shoots
+                </Button>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-border/50"></div>
+
+              {/* Third Section */}
+              <div className="space-y-2">
+                <Button
+                  variant={activeTab === "support" ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("support")}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Contact Your Rep
+                </Button>
+              </div>
             </nav>
           </Card>
 
@@ -186,7 +203,7 @@ const Dashboard = () => {
             
             {activeTab === "support" && (
               <Card className="p-6 bg-card border-primary/20">
-                <h2 className="font-serif text-2xl font-bold mb-4">Contact Support</h2>
+                <h2 className="font-serif text-2xl font-bold mb-4">Contact Your Rep</h2>
                 <p className="text-muted-foreground">Get in touch with your representative.</p>
               </Card>
             )}
