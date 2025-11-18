@@ -63,7 +63,7 @@ const Home = () => {
           
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="bg-card border border-primary/20 p-8 hover:border-rose-gold transition-all">
-              <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">Refine Your Presence</h3>
+              <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">Refine Your Story                                                                                                                        </h3>
               <p className="text-lg text-foreground leading-relaxed">
                 We help you refine your appearance and use your sensuality consciously on platforms 
                 such as Instagram and OnlyFans.
