@@ -25,15 +25,12 @@ const AdminDashboard = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Wait for roles to load before deciding to redirect
   useEffect(() => {
-    if (!roleLoading && !authLoading && user && !isAdminOrManager) {
-      console.log('AdminDashboard - Redirecting to dashboard (no admin role)');
+    if (!authLoading && !roleLoading && user && !isAdminOrManager) {
       navigate("/dashboard");
     }
   }, [isAdminOrManager, roleLoading, authLoading, user, navigate]);
 
-  // Show loading while checking auth and roles
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -45,15 +42,8 @@ const AdminDashboard = () => {
     );
   }
 
-  // If not admin after loading, don't show anything (redirect will happen)
   if (!isAdminOrManager) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <p className="text-muted-foreground">Verifying permissions...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
