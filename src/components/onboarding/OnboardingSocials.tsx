@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Instagram, Twitter, Video, Youtube, Link } from "lucide-react";
+import { Instagram, Twitter, Video, Youtube, Link, Send, Phone } from "lucide-react";
 
 interface OnboardingSocialsProps {
   onboardingData?: any;
@@ -21,6 +21,8 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
       social_twitter: formData.get("social_twitter") as string,
       social_tiktok: formData.get("social_tiktok") as string,
       social_youtube: formData.get("social_youtube") as string,
+      social_telegram: formData.get("social_telegram") as string,
+      business_phone: formData.get("business_phone") as string,
       fan_platform_onlyfans: formData.get("fan_platform_onlyfans") as string,
       fan_platform_fansly: formData.get("fan_platform_fansly") as string,
       fan_platform_other: formData.get("fan_platform_other") as string,
@@ -99,6 +101,43 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                 placeholder="https://youtube.com/@username"
                 defaultValue={onboardingData?.social_youtube || ""}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="social_telegram" className="flex items-center gap-2">
+                <Send className="h-4 w-4" />
+                Telegram
+              </Label>
+              <Input
+                id="social_telegram"
+                name="social_telegram"
+                type="url"
+                placeholder="https://t.me/username"
+                defaultValue={onboardingData?.social_telegram || ""}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Phone className="h-4 w-4" />
+              Business Contact
+            </h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="business_phone">
+                Business/Creator Phone
+              </Label>
+              <Input
+                id="business_phone"
+                name="business_phone"
+                type="tel"
+                placeholder="+1 (555) 000-0000"
+                defaultValue={onboardingData?.business_phone || ""}
+              />
+              <p className="text-sm text-muted-foreground">
+                Optional - Use if different from personal phone
+              </p>
             </div>
           </div>
 

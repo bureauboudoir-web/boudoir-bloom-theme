@@ -187,6 +187,7 @@ export type Database = {
           boundaries_comfortable_with: string[] | null
           boundaries_hard_limits: string | null
           boundaries_soft_limits: string | null
+          business_phone: string | null
           commitments_agreements: string[] | null
           commitments_questions: string | null
           completed_steps: number[] | null
@@ -227,6 +228,7 @@ export type Database = {
           scripts_renewal: string | null
           scripts_sexting: string | null
           social_instagram: string | null
+          social_telegram: string | null
           social_tiktok: string | null
           social_twitter: string | null
           social_youtube: string | null
@@ -246,6 +248,7 @@ export type Database = {
           boundaries_comfortable_with?: string[] | null
           boundaries_hard_limits?: string | null
           boundaries_soft_limits?: string | null
+          business_phone?: string | null
           commitments_agreements?: string[] | null
           commitments_questions?: string | null
           completed_steps?: number[] | null
@@ -286,6 +289,7 @@ export type Database = {
           scripts_renewal?: string | null
           scripts_sexting?: string | null
           social_instagram?: string | null
+          social_telegram?: string | null
           social_tiktok?: string | null
           social_twitter?: string | null
           social_youtube?: string | null
@@ -305,6 +309,7 @@ export type Database = {
           boundaries_comfortable_with?: string[] | null
           boundaries_hard_limits?: string | null
           boundaries_soft_limits?: string | null
+          business_phone?: string | null
           commitments_agreements?: string[] | null
           commitments_questions?: string | null
           completed_steps?: number[] | null
@@ -345,6 +350,7 @@ export type Database = {
           scripts_renewal?: string | null
           scripts_sexting?: string | null
           social_instagram?: string | null
+          social_telegram?: string | null
           social_tiktok?: string | null
           social_twitter?: string | null
           social_youtube?: string | null
