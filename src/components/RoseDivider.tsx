@@ -3,10 +3,7 @@ import roseDivider from "@/assets/rose-divider.png";
 const RoseDivider = () => {
   return (
     <div className="relative py-8 flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      </div>
-      <div className="relative z-10 px-8 bg-background">
+      <div className="px-8">
         <img 
           src={roseDivider} 
           alt="" 
