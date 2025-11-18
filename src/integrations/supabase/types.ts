@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      content_uploads: {
+        Row: {
+          commitment_id: string | null
+          content_type: string | null
+          created_at: string | null
+          description: string | null
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          length: string | null
+          marketing_notes: string | null
+          shoot_id: string | null
+          status: string | null
+          updated_at: string | null
+          uploaded_at: string | null
+          user_id: string
+        }
+        Insert: {
+          commitment_id?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          length?: string | null
+          marketing_notes?: string | null
+          shoot_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          uploaded_at?: string | null
+          user_id: string
+        }
+        Update: {
+          commitment_id?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          length?: string | null
+          marketing_notes?: string | null
+          shoot_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          uploaded_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_uploads_commitment_id_fkey"
+            columns: ["commitment_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_commitments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_uploads_shoot_id_fkey"
+            columns: ["shoot_id"]
+            isOneToOne: false
+            referencedRelation: "studio_shoots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_applications: {
         Row: {
           created_at: string | null
@@ -236,33 +305,42 @@ export type Database = {
       studio_shoots: {
         Row: {
           created_at: string
+          created_by_user_id: string | null
           description: string | null
           id: string
           location: string | null
+          marketing_notes: string | null
           notes: string | null
           shoot_date: string
+          status: string | null
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          created_by_user_id?: string | null
           description?: string | null
           id?: string
           location?: string | null
+          marketing_notes?: string | null
           notes?: string | null
           shoot_date: string
+          status?: string | null
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          created_by_user_id?: string | null
           description?: string | null
           id?: string
           location?: string | null
+          marketing_notes?: string | null
           notes?: string | null
           shoot_date?: string
+          status?: string | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -277,37 +355,70 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_commitments: {
         Row: {
           content_type: string
+          content_type_category: string | null
           created_at: string
+          created_by_user_id: string | null
           description: string
           id: string
           is_completed: boolean
           length: string | null
+          marketing_notes: string | null
           notes: string | null
+          status: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           content_type: string
+          content_type_category?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           description: string
           id?: string
           is_completed?: boolean
           length?: string | null
+          marketing_notes?: string | null
           notes?: string | null
+          status?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           content_type?: string
+          content_type_category?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           description?: string
           id?: string
           is_completed?: boolean
           length?: string | null
+          marketing_notes?: string | null
           notes?: string | null
+          status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -326,10 +437,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "manager" | "creator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -456,6 +573,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "manager", "creator"],
+    },
   },
 } as const
