@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Sparkles, Users, TrendingUp, Lightbulb, FileText, Camera, Megaphone, MessageCircle } from "lucide-react";
-import logo from "@/assets/logo.png";
-import RoseDivider from "@/components/RoseDivider";
+import amsterdamNight from "@/assets/amsterdam-night.jpg";
 
 const Home = () => {
   return (
@@ -10,8 +9,7 @@ const Home = () => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-deep-red/20">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <img src={logo} alt="Bureau Boudoir" className="h-12 w-auto" />
+          <div className="flex items-center justify-end">
             <div className="flex gap-6">
               <Link to="/login" className="text-cream hover:text-gold transition-colors">
                 Login
@@ -28,16 +26,20 @@ const Home = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 gradient-hero" />
+        {/* Amsterdam Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${amsterdamNight})`,
+            filter: 'brightness(0.4)'
+          }}
+        />
+        
+        {/* Red Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-deep-red/40 via-deep-red/20 to-black/90" />
         
         {/* Spotlight Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-deep-red/30 via-deep-red/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-        
-        {/* Rose Outline Glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-96 h-96 border-2 border-deep-red/20 rounded-full glow-red" />
-        </div>
 
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
@@ -80,8 +82,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <RoseDivider />
 
       {/* Why Work With Us */}
       <section className="py-24 px-6 relative">
@@ -135,8 +135,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <RoseDivider />
 
       {/* Creator Journey */}
       <section className="py-24 px-6 relative">
@@ -209,8 +207,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <RoseDivider />
 
       {/* Our Process - 5 Boxes */}
       <section className="py-24 px-6 relative">
@@ -286,8 +282,6 @@ const Home = () => {
         </div>
       </section>
 
-      <RoseDivider />
-
       {/* Final CTA */}
       <section className="py-32 px-6 relative">
         <div className="absolute inset-0 bg-gradient-radial from-deep-red/20 via-transparent to-transparent" />
@@ -313,7 +307,6 @@ const Home = () => {
       <footer className="border-t border-deep-red/20 py-12 px-6">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <img src={logo} alt="Bureau Boudoir" className="h-10 w-auto opacity-70" />
             <p className="text-cream/60 text-sm">
               © 2024 Bureau Boudoir. Amsterdam's luxury creative house.
             </p>
