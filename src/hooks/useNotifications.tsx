@@ -4,12 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 export const useNotifications = (userId: string | undefined) => {
   const [pendingCommitments, setPendingCommitments] = useState(0);
   const [newInvoices, setNewInvoices] = useState(0);
+  const [newSupportResponses, setNewSupportResponses] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) {
       setPendingCommitments(0);
       setNewInvoices(0);
+      setNewSupportResponses(0);
       setLoading(false);
       return;
     }
@@ -37,6 +39,16 @@ export const useNotifications = (userId: string | undefined) => {
           .is('creator_payment_confirmed_at', null);
 
         setNewInvoices(invoicesCount || 0);
+
+        // Count support tickets with unread admin responses
+        const { count: supportCount } = await supabase
+          .from('support_tickets')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .not('admin_response', 'is', null)
+          .or('creator_viewed_response_at.is.null,creator_viewed_response_at.lt.responded_at');
+
+        setNewSupportResponses(supportCount || 0);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       } finally {
@@ -80,16 +92,35 @@ export const useNotifications = (userId: string | undefined) => {
       )
       .subscribe();
 
+    // Real-time subscription for support tickets
+    const supportChannel = supabase
+      .channel('support_tickets_notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'support_tickets',
+          filter: `user_id=eq.${userId}`,
+        },
+        () => {
+          fetchNotifications();
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(commitmentsChannel);
       supabase.removeChannel(invoicesChannel);
+      supabase.removeChannel(supportChannel);
     };
   }, [userId]);
 
   return {
     pendingCommitments,
     newInvoices,
+    newSupportResponses,
     loading,
-    totalNotifications: pendingCommitments + newInvoices,
+    totalNotifications: pendingCommitments + newInvoices + newSupportResponses,
   };
 };

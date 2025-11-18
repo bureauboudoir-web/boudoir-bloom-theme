@@ -24,18 +24,69 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
+import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdminOrManager } = useUserRole();
-  const { pendingCommitments, newInvoices, totalNotifications } = useNotifications(user?.id);
+  const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const totalSteps = 8;
   const progress = (currentStep / totalSteps) * 100;
+
+  const handleMarkSupportAsViewed = async () => {
+    if (!user?.id) return;
+    
+    try {
+      await supabase
+        .from('support_tickets')
+        .update({ creator_viewed_response_at: new Date().toISOString() })
+        .eq('user_id', user.id)
+        .not('admin_response', 'is', null);
+    } catch (error) {
+      console.error('Error marking support as viewed:', error);
+    }
+  };
+
+  const handleSupportTabClick = () => {
+    setActiveTab('support');
+    handleMarkSupportAsViewed();
+  };
+
+  const notificationItems: NotificationItem[] = [
+    ...(pendingCommitments > 0 ? [{
+      id: 'commitments',
+      type: 'commitment' as const,
+      title: 'Pending Commitments',
+      description: `You have ${pendingCommitments} pending commitment${pendingCommitments === 1 ? '' : 's'}`,
+      count: pendingCommitments,
+      color: 'yellow' as const,
+      action: () => setActiveTab('commitments'),
+    }] : []),
+    ...(newInvoices > 0 ? [{
+      id: 'invoices',
+      type: 'invoice' as const,
+      title: 'New Invoices',
+      description: `You have ${newInvoices} invoice${newInvoices === 1 ? '' : 's'} awaiting confirmation`,
+      count: newInvoices,
+      color: 'blue' as const,
+      action: () => setActiveTab('invoices'),
+    }] : []),
+    ...(newSupportResponses > 0 ? [{
+      id: 'support',
+      type: 'support' as const,
+      title: 'Support Responses',
+      description: `You have ${newSupportResponses} new response${newSupportResponses === 1 ? '' : 's'} from admin`,
+      count: newSupportResponses,
+      color: 'green' as const,
+      action: handleSupportTabClick,
+    }] : []),
+  ];
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -101,18 +152,21 @@ const Dashboard = () => {
       {/* Dashboard Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="font-serif text-2xl font-bold text-primary text-glow-red">Bureau Boudoir</h1>
-            {totalNotifications > 0 && (
-              <Badge variant="destructive" className="animate-pulse">
-                {totalNotifications}
-              </Badge>
-            )}
+          <div className="flex items-center gap-2">
+            <h1 className="font-serif text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
           </div>
-          <Button variant="ghost" size="sm" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <NotificationBell
+              notifications={notificationItems}
+              totalCount={totalNotifications}
+              onMarkAllRead={handleMarkSupportAsViewed}
+              showMarkAllRead={newSupportResponses > 0}
+            />
+            <Button variant="ghost" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 

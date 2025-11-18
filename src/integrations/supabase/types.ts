@@ -417,6 +417,7 @@ export type Database = {
           admin_response: string | null
           attachment_url: string | null
           created_at: string
+          creator_viewed_response_at: string | null
           id: string
           message: string
           responded_at: string | null
@@ -429,6 +430,7 @@ export type Database = {
           admin_response?: string | null
           attachment_url?: string | null
           created_at?: string
+          creator_viewed_response_at?: string | null
           id?: string
           message: string
           responded_at?: string | null
@@ -441,6 +443,7 @@ export type Database = {
           admin_response?: string | null
           attachment_url?: string | null
           created_at?: string
+          creator_viewed_response_at?: string | null
           id?: string
           message?: string
           responded_at?: string | null
