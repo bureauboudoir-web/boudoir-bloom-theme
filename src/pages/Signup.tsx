@@ -8,46 +8,76 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    experience: ""
+    experience: "",
+    password: "",
+    confirmPassword: ""
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.experience) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.experience || !formData.password || !formData.confirmPassword) {
       toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
 
     try {
-      const { error } = await supabase
+      // First, save the application
+      const { error: appError } = await supabase
         .from('creator_applications')
         .insert([{
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           experience_level: formData.experience,
-          status: 'pending'
+          status: 'approved' // Auto-approve for immediate access
         }]);
 
-      if (error) throw error;
+      if (appError) throw appError;
 
-      toast.success("Thank you! Your application has been received. A rep will contact you soon.");
-      setFormData({ name: "", email: "", phone: "", experience: "" });
+      // Then create the user account
+      const { error: signUpError } = await signUp(formData.email, formData.password, formData.name);
+
+      if (signUpError) {
+        if (signUpError.message.includes('already registered')) {
+          toast.error("This email is already registered. Try logging in instead.");
+        } else {
+          throw signUpError;
+        }
+        return;
+      }
+
+      toast.success("Account created! Redirecting to your dashboard...");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+
     } catch (error: any) {
-      console.error('Error submitting application:', error);
-      toast.error("Failed to submit application. Please try again.");
+      console.error('Error during signup:', error);
+      toast.error("Failed to create account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -61,7 +91,7 @@ const Signup = () => {
         <Card className="w-full max-w-md p-8 bg-card border-primary/20">
           <div className="text-center mb-8">
             <h1 className="font-serif text-4xl font-bold mb-2 text-glow-red">Become a Creator</h1>
-            <p className="text-muted-foreground">Start your journey with Bureau Boudoir</p>
+            <p className="text-muted-foreground">Create your account and start your journey</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -114,9 +144,40 @@ const Signup = () => {
               </Select>
             </div>
             
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="••••••••"
+                className="mt-1"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                placeholder="••••••••"
+                className="mt-1"
+              />
+            </div>
+            
             <Button type="submit" className="w-full glow-red" disabled={loading}>
-              {loading ? "Submitting..." : "Submit Application"}
+              {loading ? "Creating Account..." : "Create Account & Start"}
             </Button>
+            
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Already have an account?{" "}
+              <a href="/login" className="text-primary hover:underline">
+                Login here
+              </a>
+            </p>
           </form>
         </Card>
       </div>
