@@ -35,6 +35,72 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Introduction */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6 max-w-4xl text-center">
+          <p className="font-serif text-2xl md:text-3xl text-primary mb-4">The Art of Seduction</p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Welcome to Bureau Boudoir — the high-end agency that guides women in the art of digital seduction.
+            Based in the heart of Amsterdam, we create an exclusive environment where sensuality, strategy, and self-expression merge into an irresistible online presence.
+          </p>
+        </div>
+      </section>
+
+      {/* What We Do */}
+      <section className="py-24 bg-secondary">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-center mb-12">
+            What We Do
+          </h2>
+          <div className="text-center space-y-6">
+            <p className="text-lg text-foreground leading-relaxed">
+              At Bureau Boudoir, we help women refine their appearance and use their sensuality consciously on platforms such as Instagram and OnlyFans.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              We offer guidance in content creation, personal branding, positioning, and storytelling — all tailored to your unique energy and identity.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Philosophy */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-center mb-12">
+            Our Philosophy
+          </h2>
+          <div className="text-center space-y-6">
+            <p className="text-xl text-primary font-serif italic">
+              Seduction is not a pose; it is an art form.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              A method of communication built on subtle gestures, atmosphere, and personality.
+              We help you master that art, deepen it, and apply it strategically.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Promise */}
+      <section className="py-24 bg-secondary">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-center mb-12">
+            Our Promise
+          </h2>
+          <div className="text-center space-y-6">
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Visibility alone is not enough.
+            </p>
+            <p className="text-xl text-foreground leading-relaxed">
+              At Bureau Boudoir, we teach you how to be <span className="text-primary font-semibold">present</span>.
+            </p>
+            <p className="text-lg text-primary font-serif italic">
+              Confident. Elegant. Unforgettable.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* What Makes Us Different */}
       <section className="py-24 bg-secondary">
         <div className="container mx-auto px-6">
