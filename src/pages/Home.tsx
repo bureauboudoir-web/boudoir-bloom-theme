@@ -77,13 +77,6 @@ const Home = () => {
             The Rose Journey
           </h2>
           
-          <div className="max-w-4xl mx-auto mb-12">
-            <img 
-              src={roseJourney} 
-              alt="Rose Journey" 
-              className="w-full h-auto opacity-80"
-            />
-          </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
