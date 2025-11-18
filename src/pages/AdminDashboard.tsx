@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAdminNotifications } from "@/hooks/useAdminNotifications";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +14,59 @@ import { RoleManagement } from "@/components/admin/RoleManagement";
 import { AdminInvoices } from "@/components/admin/AdminInvoices";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { ArrowLeft, Shield } from "lucide-react";
+import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdminOrManager, loading: roleLoading } = useUserRole();
+  const { 
+    newSupportTickets, 
+    pendingReviews, 
+    pendingInvoiceConfirmations, 
+    overdueCommitments,
+    totalNotifications 
+  } = useAdminNotifications();
   const [activeTab, setActiveTab] = useState("overview");
+
+  const adminNotificationItems: NotificationItem[] = [
+    ...(overdueCommitments > 0 ? [{
+      id: 'overdue-commitments',
+      type: 'overdue' as const,
+      title: 'Overdue Commitments',
+      description: `${overdueCommitments} commitment${overdueCommitments === 1 ? '' : 's'} overdue (7+ days)`,
+      count: overdueCommitments,
+      color: 'red' as const,
+      action: () => setActiveTab('commitments'),
+    }] : []),
+    ...(newSupportTickets > 0 ? [{
+      id: 'support-tickets',
+      type: 'support' as const,
+      title: 'New Support Tickets',
+      description: `${newSupportTickets} ticket${newSupportTickets === 1 ? '' : 's'} awaiting response`,
+      count: newSupportTickets,
+      color: 'yellow' as const,
+      action: () => setActiveTab('support'),
+    }] : []),
+    ...(pendingReviews > 0 ? [{
+      id: 'content-reviews',
+      type: 'review' as const,
+      title: 'Pending Content Reviews',
+      description: `${pendingReviews} upload${pendingReviews === 1 ? '' : 's'} awaiting approval`,
+      count: pendingReviews,
+      color: 'blue' as const,
+      action: () => setActiveTab('review'),
+    }] : []),
+    ...(pendingInvoiceConfirmations > 0 ? [{
+      id: 'invoice-confirmations',
+      type: 'invoice' as const,
+      title: 'Invoice Confirmations',
+      description: `${pendingInvoiceConfirmations} invoice${pendingInvoiceConfirmations === 1 ? '' : 's'} awaiting admin confirmation`,
+      count: pendingInvoiceConfirmations,
+      color: 'blue' as const,
+      action: () => setActiveTab('invoices'),
+    }] : []),
+  ];
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -66,9 +114,15 @@ const AdminDashboard = () => {
                 <h1 className="font-serif text-2xl font-bold">Admin Dashboard</h1>
               </div>
             </div>
-            <Button variant="outline" onClick={() => navigate("/dashboard")}>
-              Back to Dashboard
-            </Button>
+            <div className="flex items-center gap-2">
+              <NotificationBell
+                notifications={adminNotificationItems}
+                totalCount={totalNotifications}
+              />
+              <Button variant="outline" onClick={() => navigate("/dashboard")}>
+                Back to Dashboard
+              </Button>
+            </div>
           </div>
         </div>
       </header>
