@@ -20,34 +20,40 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    console.log('AdminDashboard - Auth state:', { user: !!user, authLoading });
     if (!authLoading && !user) {
-      console.log('AdminDashboard - Redirecting to login (no user)');
       navigate("/login");
     }
   }, [user, authLoading, navigate]);
 
+  // Wait for roles to load before deciding to redirect
   useEffect(() => {
-    console.log('AdminDashboard - Role state:', { isAdminOrManager, roleLoading });
-    if (!roleLoading && !isAdminOrManager) {
+    if (!roleLoading && !authLoading && user && !isAdminOrManager) {
       console.log('AdminDashboard - Redirecting to dashboard (no admin role)');
       navigate("/dashboard");
     }
-  }, [isAdminOrManager, roleLoading, navigate]);
+  }, [isAdminOrManager, roleLoading, authLoading, user, navigate]);
 
+  // Show loading while checking auth and roles
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-4">Loading...</p>
+          <p className="text-muted-foreground mt-4">Loading admin dashboard...</p>
         </div>
       </div>
     );
   }
 
+  // If not admin after loading, don't show anything (redirect will happen)
   if (!isAdminOrManager) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <p className="text-muted-foreground">Verifying permissions...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
