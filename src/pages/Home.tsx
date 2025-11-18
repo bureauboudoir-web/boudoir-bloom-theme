@@ -30,7 +30,7 @@ const Home = () => {
             merge into an irresistible online presence.
           </p>
           <Button asChild size="lg" className="text-lg px-10 py-7 bg-primary hover:bg-primary/90 glow-red">
-            <Link to="/signup">Begin Your Journey</Link>
+            <Link to="/signup" className="text-xl">A premium creative agency in Amsterdam where sensuality, strategy, and self-expression merge into an irresistible online presence.</Link>
           </Button>
         </div>
       </section>
