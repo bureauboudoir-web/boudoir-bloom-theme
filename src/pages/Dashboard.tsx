@@ -18,6 +18,7 @@ import { CreatorInvoices } from "@/components/dashboard/CreatorInvoices";
 import { InvoiceStatus } from "@/components/dashboard/InvoiceStatus";
 import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
+import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -36,6 +37,7 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const totalSteps = 8;
   const progress = (currentStep / totalSteps) * 100;
 
@@ -99,6 +101,24 @@ const Dashboard = () => {
       setCurrentStep(onboardingData.current_step || 1);
     }
   }, [onboardingData]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('profile_picture_url')
+        .eq('id', user.id)
+        .single();
+      
+      if (data && !error) {
+        setProfilePictureUrl(data.profile_picture_url);
+      }
+    };
+
+    fetchProfile();
+  }, [user?.id]);
 
   if (authLoading || onboardingLoading) {
     return (
@@ -191,7 +211,7 @@ const Dashboard = () => {
                   onClick={() => setActiveTab("account")}
                 >
                   <User className="w-4 h-4 mr-2" />
-                  Account
+                  Creator Profile
                 </Button>
                 <Button
                   variant={activeTab === "upload" ? "default" : "ghost"}
@@ -285,11 +305,13 @@ const Dashboard = () => {
               </div>
             )}
             
-            {activeTab === "account" && (
-              <Card className="p-6 bg-card border-primary/20">
-                <h2 className="font-serif text-2xl font-bold mb-4">Account Information</h2>
-                <p className="text-muted-foreground">Your account details and settings will appear here.</p>
-              </Card>
+            {activeTab === "account" && user && (
+              <CreatorProfile 
+                onboardingData={onboardingData}
+                userId={user.id}
+                userName={user.email || undefined}
+                profilePictureUrl={profilePictureUrl}
+              />
             )}
             
             {activeTab === "upload" && user && (
