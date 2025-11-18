@@ -193,19 +193,14 @@ const Dashboard = () => {
 
               {/* Third Section */}
               <div className="space-y-2">
-              {isAdminOrManager && (
                 <Button
                   variant="outline"
                   className="w-full justify-start border-primary/40 hover:bg-primary/10"
-                  onClick={() => {
-                    console.log('Admin Dashboard button clicked, isAdminOrManager:', isAdminOrManager);
-                    navigate("/admin");
-                  }}
+                  onClick={() => navigate("/admin")}
                 >
                   <Shield className="w-4 h-4 mr-2" />
                   Admin Dashboard
                 </Button>
-              )}
                 <Button
                   variant={activeTab === "support" ? "default" : "ghost"}
                   className="w-full justify-start"
