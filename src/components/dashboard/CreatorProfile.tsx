@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase } from "lucide-react";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -45,6 +45,20 @@ export const CreatorProfile = ({
     );
   };
 
+  const calculateAge = (dateOfBirth: string | null | undefined) => {
+    if (!dateOfBirth) return null;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = calculateAge(onboardingData?.personal_date_of_birth);
+
   if (!onboardingData) {
     return (
       <Card>
@@ -64,26 +78,95 @@ export const CreatorProfile = ({
   return (
     <div className="space-y-6">
       {/* Profile Header */}
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="overflow-hidden">
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background h-32"></div>
+        <CardContent className="pt-0 -mt-16">
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-            <ProfilePictureUpload
-              userId={userId}
-              currentPictureUrl={profilePictureUrl}
-              userName={userName || onboardingData.personal_full_name || "User"}
-            />
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-3xl font-bold">{formatValue(onboardingData.personal_full_name)}</h2>
-              {onboardingData.persona_stage_name && (
-                <p className="text-xl text-muted-foreground mt-1">
-                  Stage Name: {onboardingData.persona_stage_name}
-                </p>
+            {/* Profile Picture */}
+            <div className="relative">
+              <ProfilePictureUpload
+                userId={userId}
+                currentPictureUrl={profilePictureUrl}
+                userName={userName || onboardingData.personal_full_name || "User"}
+              />
+              {isCompleted && (
+                <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-green-500 text-white border-2 border-background">
+                  ✓ Verified
+                </Badge>
               )}
-              <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+            </div>
+
+            {/* Main Info */}
+            <div className="flex-1 text-center md:text-left space-y-4 mt-4">
+              <div>
+                <h1 className="text-3xl font-bold flex items-center gap-2 justify-center md:justify-start">
+                  {formatValue(onboardingData.personal_full_name)}
+                  {age && (
+                    <span className="text-xl text-muted-foreground font-normal">({age})</span>
+                  )}
+                </h1>
+                {onboardingData.persona_stage_name && (
+                  <p className="text-xl text-primary font-medium mt-1">
+                    "{onboardingData.persona_stage_name}"
+                  </p>
+                )}
+              </div>
+
+              {/* Quick Info Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+                {onboardingData.personal_location && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Location</p>
+                      <p className="text-sm font-medium truncate">{onboardingData.personal_location}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {onboardingData.personal_email && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Email</p>
+                      <p className="text-sm font-medium truncate">{onboardingData.personal_email}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {onboardingData.personal_phone_number && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Phone</p>
+                      <p className="text-sm font-medium truncate">{onboardingData.personal_phone_number}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {onboardingData.pricing_subscription && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                    <DollarSign className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Subscription</p>
+                      <p className="text-sm font-medium">${onboardingData.pricing_subscription}/mo</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Status Badges */}
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                 {isCompleted ? (
                   <Badge className="bg-green-500">✓ Onboarding Complete</Badge>
                 ) : (
                   <Badge variant="secondary">{completionPercentage}% Complete</Badge>
+                )}
+                {onboardingData.body_type && (
+                  <Badge variant="outline">{onboardingData.body_type}</Badge>
+                )}
+                {onboardingData.personal_nationality && (
+                  <Badge variant="outline">{onboardingData.personal_nationality}</Badge>
                 )}
               </div>
             </div>
