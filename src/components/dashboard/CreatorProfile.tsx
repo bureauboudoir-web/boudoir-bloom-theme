@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, ExternalLink } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, ExternalLink, Send } from "lucide-react";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -115,6 +115,7 @@ export const CreatorProfile = ({
               {/* Social Links & Fan Platforms */}
               {(onboardingData.social_instagram || onboardingData.social_twitter || 
                 onboardingData.social_tiktok || onboardingData.social_youtube ||
+                onboardingData.social_telegram ||
                 onboardingData.fan_platform_onlyfans || onboardingData.fan_platform_fansly ||
                 onboardingData.fan_platform_other) && (
                 <div className="space-y-2">
@@ -168,6 +169,18 @@ export const CreatorProfile = ({
                         <ExternalLink className="h-3 w-3" />
                       </a>
                     )}
+                    {onboardingData.social_telegram && (
+                      <a 
+                        href={onboardingData.social_telegram} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                      >
+                        <Send className="h-4 w-4" />
+                        <span className="text-sm font-medium">Telegram</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
                     {onboardingData.fan_platform_onlyfans && (
                       <a 
                         href={onboardingData.fan_platform_onlyfans} 
@@ -208,16 +221,27 @@ export const CreatorProfile = ({
                 </div>
               )}
 
-              {/* Location Badge */}
-              {onboardingData.personal_location && (
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg w-fit">
-                  <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground">Location</p>
-                    <p className="text-sm font-medium">{onboardingData.personal_location}</p>
+              {/* Location & Contact Info */}
+              <div className="flex flex-wrap gap-3">
+                {onboardingData.personal_location && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg w-fit">
+                    <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Location</p>
+                      <p className="text-sm font-medium">{onboardingData.personal_location}</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+                {onboardingData.business_phone && (
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg w-fit">
+                    <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">Business Phone</p>
+                      <p className="text-sm font-medium">{onboardingData.business_phone}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Status Badges */}
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
@@ -269,6 +293,10 @@ export const CreatorProfile = ({
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Phone Number</p>
                 <p>{formatValue(onboardingData.personal_phone_number)}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Business Phone</p>
+                <p>{formatValue(onboardingData.business_phone)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Email</p>
