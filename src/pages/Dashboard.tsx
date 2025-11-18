@@ -14,6 +14,8 @@ import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
+import { ContentUpload } from "@/components/uploads/ContentUpload";
+import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -25,6 +27,7 @@ const Dashboard = () => {
   const { isAdminOrManager } = useUserRole();
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
+  const [uploadRefresh, setUploadRefresh] = useState(0);
   const totalSteps = 8;
   const progress = (currentStep / totalSteps) * 100;
 
@@ -206,11 +209,17 @@ const Dashboard = () => {
               </Card>
             )}
             
-            {activeTab === "upload" && (
-              <Card className="p-6 bg-card border-primary/20">
-                <h2 className="font-serif text-2xl font-bold mb-4">Content Uploads</h2>
-                <p className="text-muted-foreground">Upload your pre-launch content here.</p>
-              </Card>
+            {activeTab === "upload" && user && (
+              <div className="space-y-6">
+                <ContentUpload 
+                  userId={user.id} 
+                  onUploadComplete={() => setUploadRefresh(prev => prev + 1)}
+                />
+                <ContentGallery 
+                  userId={user.id} 
+                  refreshTrigger={uploadRefresh}
+                />
+              </div>
             )}
             
             {activeTab === "support" && (
