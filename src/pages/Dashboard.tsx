@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { LogOut, User, FileText, Upload, Mail } from "lucide-react";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
 import OnboardingBoundaries from "@/components/onboarding/OnboardingBoundaries";
@@ -12,6 +12,8 @@ import OnboardingPersona from "@/components/onboarding/OnboardingPersona";
 import OnboardingScripts from "@/components/onboarding/OnboardingScripts";
 import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
+import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
+import StudioShoots from "@/components/dashboard/StudioShoots";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 
@@ -133,6 +135,22 @@ const Dashboard = () => {
                 <Mail className="w-4 h-4 mr-2" />
                 Support
               </Button>
+              <Button
+                variant={activeTab === "commitments" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => setActiveTab("commitments")}
+              >
+                <CheckSquare className="w-4 h-4 mr-2" />
+                Weekly Commitments
+              </Button>
+              <Button
+                variant={activeTab === "shoots" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => setActiveTab("shoots")}
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Studio Shoots
+              </Button>
             </nav>
           </Card>
 
@@ -171,6 +189,14 @@ const Dashboard = () => {
                 <h2 className="font-serif text-2xl font-bold mb-4">Contact Support</h2>
                 <p className="text-muted-foreground">Get in touch with your representative.</p>
               </Card>
+            )}
+
+            {activeTab === "commitments" && user && (
+              <WeeklyCommitments userId={user.id} />
+            )}
+
+            {activeTab === "shoots" && user && (
+              <StudioShoots userId={user.id} />
             )}
           </div>
         </div>
