@@ -12,6 +12,7 @@ import OnboardingPersona from "@/components/onboarding/OnboardingPersona";
 import OnboardingScripts from "@/components/onboarding/OnboardingScripts";
 import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
+import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
 import { CreatorInvoices } from "@/components/dashboard/CreatorInvoices";
@@ -38,7 +39,7 @@ const Dashboard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
-  const totalSteps = 8;
+  const totalSteps = 10;
   const progress = (currentStep / totalSteps) * 100;
 
   const handleMarkSupportAsViewed = async () => {
@@ -157,11 +158,15 @@ const Dashboard = () => {
       case 5:
         return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
       case 6:
-        return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
+        return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
       case 7:
-        return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
+        return <OnboardingSocials {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
       case 8:
-        return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(7)} />;
+        return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(9)} onBack={() => setCurrentStep(7)} />;
+      case 9:
+        return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(10)} onBack={() => setCurrentStep(8)} />;
+      case 10:
+        return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(9)} />;
       default:
         return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
     }
