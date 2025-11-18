@@ -197,6 +197,9 @@ export type Database = {
           content_video_count: number | null
           created_at: string | null
           current_step: number | null
+          fan_platform_fansly: string | null
+          fan_platform_onlyfans: string | null
+          fan_platform_other: string | null
           id: string
           is_completed: boolean | null
           persona_backstory: string | null
@@ -223,6 +226,10 @@ export type Database = {
           scripts_ppv: string | null
           scripts_renewal: string | null
           scripts_sexting: string | null
+          social_instagram: string | null
+          social_tiktok: string | null
+          social_twitter: string | null
+          social_youtube: string | null
           updated_at: string | null
           user_id: string
         }
@@ -249,6 +256,9 @@ export type Database = {
           content_video_count?: number | null
           created_at?: string | null
           current_step?: number | null
+          fan_platform_fansly?: string | null
+          fan_platform_onlyfans?: string | null
+          fan_platform_other?: string | null
           id?: string
           is_completed?: boolean | null
           persona_backstory?: string | null
@@ -275,6 +285,10 @@ export type Database = {
           scripts_ppv?: string | null
           scripts_renewal?: string | null
           scripts_sexting?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          social_twitter?: string | null
+          social_youtube?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -301,6 +315,9 @@ export type Database = {
           content_video_count?: number | null
           created_at?: string | null
           current_step?: number | null
+          fan_platform_fansly?: string | null
+          fan_platform_onlyfans?: string | null
+          fan_platform_other?: string | null
           id?: string
           is_completed?: boolean | null
           persona_backstory?: string | null
@@ -327,6 +344,10 @@ export type Database = {
           scripts_ppv?: string | null
           scripts_renewal?: string | null
           scripts_sexting?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          social_twitter?: string | null
+          social_youtube?: string | null
           updated_at?: string | null
           user_id?: string
         }

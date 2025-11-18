@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, ExternalLink } from "lucide-react";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -20,7 +20,7 @@ export const CreatorProfile = ({
 }: CreatorProfileProps) => {
   const isCompleted = onboardingData?.is_completed || false;
   const completedSteps = onboardingData?.completed_steps?.length || 0;
-  const totalSteps = 8;
+  const totalSteps = 9;
   const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
   const formatValue = (value: any) => {
@@ -112,48 +112,112 @@ export const CreatorProfile = ({
                 )}
               </div>
 
-              {/* Quick Info Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-                {onboardingData.personal_location && (
-                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                    <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">Location</p>
-                      <p className="text-sm font-medium truncate">{onboardingData.personal_location}</p>
-                    </div>
+              {/* Social Links & Fan Platforms */}
+              {(onboardingData.social_instagram || onboardingData.social_twitter || 
+                onboardingData.social_tiktok || onboardingData.social_youtube ||
+                onboardingData.fan_platform_onlyfans || onboardingData.fan_platform_fansly ||
+                onboardingData.fan_platform_other) && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-medium">Connect with me</p>
+                  <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                    {onboardingData.social_instagram && (
+                      <a 
+                        href={onboardingData.social_instagram} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity"
+                      >
+                        <Instagram className="h-4 w-4" />
+                        <span className="text-sm font-medium">Instagram</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.social_twitter && (
+                      <a 
+                        href={onboardingData.social_twitter} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        <Twitter className="h-4 w-4" />
+                        <span className="text-sm font-medium">Twitter</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.social_tiktok && (
+                      <a 
+                        href={onboardingData.social_tiktok} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        <Video className="h-4 w-4" />
+                        <span className="text-sm font-medium">TikTok</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.social_youtube && (
+                      <a 
+                        href={onboardingData.social_youtube} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        <Youtube className="h-4 w-4" />
+                        <span className="text-sm font-medium">YouTube</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.fan_platform_onlyfans && (
+                      <a 
+                        href={onboardingData.fan_platform_onlyfans} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                      >
+                        <LinkIcon className="h-4 w-4" />
+                        <span className="text-sm font-medium">OnlyFans</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.fan_platform_fansly && (
+                      <a 
+                        href={onboardingData.fan_platform_fansly} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      >
+                        <LinkIcon className="h-4 w-4" />
+                        <span className="text-sm font-medium">Fansly</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                    {onboardingData.fan_platform_other && (
+                      <a 
+                        href={onboardingData.fan_platform_other} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                      >
+                        <LinkIcon className="h-4 w-4" />
+                        <span className="text-sm font-medium">Other Platform</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
                   </div>
-                )}
-                
-                {onboardingData.personal_email && (
-                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                    <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">Email</p>
-                      <p className="text-sm font-medium truncate">{onboardingData.personal_email}</p>
-                    </div>
+                </div>
+              )}
+
+              {/* Location Badge */}
+              {onboardingData.personal_location && (
+                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg w-fit">
+                  <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">Location</p>
+                    <p className="text-sm font-medium">{onboardingData.personal_location}</p>
                   </div>
-                )}
-                
-                {onboardingData.personal_phone_number && (
-                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                    <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">Phone</p>
-                      <p className="text-sm font-medium truncate">{onboardingData.personal_phone_number}</p>
-                    </div>
-                  </div>
-                )}
-                
-                {onboardingData.pricing_subscription && (
-                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                    <DollarSign className="h-4 w-4 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">Subscription</p>
-                      <p className="text-sm font-medium">${onboardingData.pricing_subscription}/mo</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Status Badges */}
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
