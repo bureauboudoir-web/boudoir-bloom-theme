@@ -5,7 +5,8 @@ import Navigation from "@/components/Navigation";
 import RoseDivider from "@/components/RoseDivider";
 import RedLightGlow from "@/components/RedLightGlow";
 import heroImage from "@/assets/hero-bg.jpg";
-import { Sparkles, Target, TrendingUp } from "lucide-react";
+import { Sparkles, Target, TrendingUp, Lightbulb, FileText, Camera, Megaphone, MessageCircle } from "lucide-react";
+import roseJourney from "@/assets/rose-journey.png";
 
 const Home = () => {
   return (
@@ -178,17 +179,147 @@ const Home = () => {
 
       <RoseDivider />
 
-      {/* Chapter 5: The Rose Journey */}
-      <section className="py-32 bg-background">
-        <div className="container mx-auto px-6">
+      {/* Chapter 5: Our Process */}
+      <section className="py-32 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+        <div className="container mx-auto px-6 relative z-10">
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-center mb-6">
-            The Rose Journey
+            Our Process
           </h2>
           <p className="text-center text-muted-foreground text-lg mb-20 max-w-2xl mx-auto">
-            Your transformation from application to full bloom, guided every step of the way
+            From strategy to success — a proven path to digital excellence
           </p>
           
-          <div className="grid md:grid-cols-3 gap-16 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-5 gap-8 max-w-7xl mx-auto">
+            {/* Stage 1: Plan */}
+            <div className="relative">
+              <Card className="bg-card border-2 border-rose-gold/30 p-8 text-center hover:border-rose-gold transition-all group h-full">
+                <div className="mb-6">
+                  <div className="inline-block p-6 rounded-lg bg-rose-gold/10 group-hover:bg-rose-gold/20 transition-colors">
+                    <Lightbulb className="w-12 h-12 text-rose-gold" />
+                  </div>
+                </div>
+                <h3 className="font-serif text-2xl font-bold mb-2 text-rose-gold uppercase tracking-wide">Plan</h3>
+                <p className="text-sm font-semibold mb-4 text-foreground">Create Strategy</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Define your unique positioning and creative direction
+                </p>
+              </Card>
+              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-rose-gold text-2xl z-20">→</div>
+            </div>
+            
+            {/* Stage 2: Editorial */}
+            <div className="relative">
+              <Card className="bg-card border-2 border-rose-gold/30 p-8 text-center hover:border-rose-gold transition-all group h-full">
+                <div className="mb-6">
+                  <div className="inline-block p-6 rounded-lg bg-rose-gold/10 group-hover:bg-rose-gold/20 transition-colors">
+                    <FileText className="w-12 h-12 text-rose-gold" />
+                  </div>
+                </div>
+                <h3 className="font-serif text-2xl font-bold mb-2 text-rose-gold uppercase tracking-wide">Editorial</h3>
+                <p className="text-sm font-semibold mb-4 text-foreground">Create Scripts</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Craft compelling narratives and messaging frameworks
+                </p>
+              </Card>
+              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-rose-gold text-2xl z-20">→</div>
+            </div>
+            
+            {/* Stage 3: Studio */}
+            <div className="relative">
+              <Card className="bg-card border-2 border-rose-gold/30 p-8 text-center hover:border-rose-gold transition-all group h-full">
+                <div className="mb-6">
+                  <div className="inline-block p-6 rounded-lg bg-rose-gold/10 group-hover:bg-rose-gold/20 transition-colors">
+                    <Camera className="w-12 h-12 text-rose-gold" />
+                  </div>
+                </div>
+                <h3 className="font-serif text-2xl font-bold mb-2 text-rose-gold uppercase tracking-wide">Studio</h3>
+                <p className="text-sm font-semibold mb-4 text-foreground">Create Content</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Professional shoots capturing your authentic essence
+                </p>
+              </Card>
+              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-rose-gold text-2xl z-20">→</div>
+            </div>
+            
+            {/* Stage 4: Marketing */}
+            <div className="relative">
+              <Card className="bg-card border-2 border-rose-gold/30 p-8 text-center hover:border-rose-gold transition-all group h-full">
+                <div className="mb-6">
+                  <div className="inline-block p-6 rounded-lg bg-rose-gold/10 group-hover:bg-rose-gold/20 transition-colors">
+                    <Megaphone className="w-12 h-12 text-rose-gold" />
+                  </div>
+                </div>
+                <h3 className="font-serif text-2xl font-bold mb-2 text-rose-gold uppercase tracking-wide">Marketing</h3>
+                <p className="text-sm font-semibold mb-4 text-foreground">Create Hooks</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Strategic campaigns that capture attention and convert
+                </p>
+              </Card>
+              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-rose-gold text-2xl z-20">→</div>
+            </div>
+            
+            {/* Stage 5: Chat */}
+            <div className="relative">
+              <Card className="bg-card border-2 border-rose-gold/30 p-8 text-center hover:border-rose-gold transition-all group h-full">
+                <div className="mb-6">
+                  <div className="inline-block p-6 rounded-lg bg-rose-gold/10 group-hover:bg-rose-gold/20 transition-colors">
+                    <MessageCircle className="w-12 h-12 text-rose-gold" />
+                  </div>
+                </div>
+                <h3 className="font-serif text-2xl font-bold mb-2 text-rose-gold uppercase tracking-wide">Chat</h3>
+                <p className="text-sm font-semibold mb-4 text-foreground">High-Ticket Sales</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Build relationships through subs, PPV, and premium offerings
+                </p>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <RedLightGlow />
+      
+      {/* Chapter 6: The Rose Journey */}
+      <section className="py-32 bg-secondary relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-center mb-6">
+            Your Journey to Success
+          </h2>
+          <p className="text-center text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
+            Three stages of growth — from seed to full bloom
+          </p>
+          
+          {/* Timeline Visual */}
+          <div className="relative max-w-5xl mx-auto mb-20">
+            <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-primary/30 via-primary to-primary/30 transform -translate-y-1/2" />
+            <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
+              <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-primary border-b-8 border-b-transparent" />
+            </div>
+            
+            <div className="relative grid grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="inline-block w-16 h-16 rounded-full bg-primary border-4 border-background mb-4 relative z-10" />
+                <h3 className="font-serif text-2xl font-bold text-rose-gold mb-2">Starter Creators</h3>
+                <p className="text-sm text-muted-foreground">Building Your Foundation</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="inline-block w-16 h-16 rounded-full bg-primary border-4 border-background mb-4 relative z-10" />
+                <h3 className="font-serif text-2xl font-bold text-rose-gold mb-2">Growing Creators</h3>
+                <p className="text-sm text-muted-foreground">Scaling Your Presence</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="inline-block w-16 h-16 rounded-full bg-primary border-4 border-background mb-4 relative z-10" />
+                <h3 className="font-serif text-2xl font-bold text-rose-gold mb-2">Top Creators</h3>
+                <p className="text-sm text-muted-foreground">Reaching Full Bloom</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Detailed Stages */}
+          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
             {/* Stage 1: Seed */}
             <div className="text-center space-y-6">
               <div className="inline-block p-8 rounded-full bg-primary/10 mb-4 glow-red">
