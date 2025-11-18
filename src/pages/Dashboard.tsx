@@ -20,12 +20,15 @@ import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useNotifications } from "@/hooks/useNotifications";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdminOrManager } = useUserRole();
+  const { pendingCommitments, newInvoices, totalNotifications } = useNotifications(user?.id);
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
@@ -96,7 +99,14 @@ const Dashboard = () => {
       {/* Dashboard Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="font-serif text-2xl font-bold text-primary text-glow-red">Bureau Boudoir</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-serif text-2xl font-bold text-primary text-glow-red">Bureau Boudoir</h1>
+            {totalNotifications > 0 && (
+              <Badge variant="destructive" className="animate-pulse">
+                {totalNotifications}
+              </Badge>
+            )}
+          </div>
           <Button variant="ghost" size="sm" onClick={signOut}>
             <LogOut className="w-4 h-4 mr-2" />
             Logout
@@ -149,6 +159,11 @@ const Dashboard = () => {
                 >
                   <CheckSquare className="w-4 h-4 mr-2" />
                   Weekly Commitments
+                  {pendingCommitments > 0 && (
+                    <Badge variant="secondary" className="ml-auto">
+                      {pendingCommitments}
+                    </Badge>
+                  )}
                 </Button>
                 <Button
                   variant={activeTab === "shoots" ? "default" : "ghost"}
@@ -165,6 +180,11 @@ const Dashboard = () => {
                 >
                   <DollarSign className="w-4 h-4 mr-2" />
                   Invoices
+                  {newInvoices > 0 && (
+                    <Badge variant="destructive" className="ml-auto">
+                      {newInvoices}
+                    </Badge>
+                  )}
                 </Button>
               </div>
 
