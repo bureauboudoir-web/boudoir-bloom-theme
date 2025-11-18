@@ -41,12 +41,12 @@ const Home = () => {
       </section>
 
       {/* Introduction */}
-      <section className="py-24 bg-background">
+      <section className="py-32 bg-background">
         <div className="container mx-auto px-6 max-w-4xl text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-8 text-rose-gold">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-12 text-rose-gold">
             Welcome to Bureau Boudoir
           </h2>
-          <p className="text-xl text-foreground leading-relaxed mb-6">
+          <p className="text-xl text-foreground leading-relaxed mb-8">
             We guide women in the art of digital seduction. Based in Amsterdam's storied Red Light District, 
             we create an exclusive environment where creativity flourishes.
           </p>
