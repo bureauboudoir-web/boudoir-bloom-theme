@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { PageContainer } from "@/components/PageContainer";
 import { useAuth } from "@/hooks/useAuth";
+import { registerSchema } from "@/lib/validation";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,18 +23,12 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    // Validate input with Zod
+    const validation = registerSchema.safeParse(formData);
+    
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 

@@ -15,13 +15,48 @@ interface MeetingInvitationRequest {
   passwordResetUrl: string;
 }
 
+// Input validation helper
+const validateInput = (data: any): { valid: boolean; error?: string } => {
+  if (!data.name || typeof data.name !== 'string') {
+    return { valid: false, error: 'Name is required and must be a string' };
+  }
+  if (data.name.length > 100) {
+    return { valid: false, error: 'Name must be less than 100 characters' };
+  }
+  if (!data.email || typeof data.email !== 'string') {
+    return { valid: false, error: 'Email is required and must be a string' };
+  }
+  if (data.email.length > 255 || !data.email.includes('@')) {
+    return { valid: false, error: 'Invalid email format or email too long' };
+  }
+  if (!data.loginUrl || typeof data.loginUrl !== 'string' || data.loginUrl.length > 500) {
+    return { valid: false, error: 'Invalid loginUrl' };
+  }
+  if (!data.passwordResetUrl || typeof data.passwordResetUrl !== 'string' || data.passwordResetUrl.length > 500) {
+    return { valid: false, error: 'Invalid passwordResetUrl' };
+  }
+  return { valid: true };
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { name, email, loginUrl, passwordResetUrl }: MeetingInvitationRequest = await req.json();
+    const requestData = await req.json();
+    
+    // Validate input
+    const validation = validateInput(requestData);
+    if (!validation.valid) {
+      console.error('Validation error:', validation.error);
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const { name, email, loginUrl, passwordResetUrl }: MeetingInvitationRequest = requestData;
     console.log(`Sending meeting invitation to ${email}`);
 
     const emailResponse = await resend.emails.send({
