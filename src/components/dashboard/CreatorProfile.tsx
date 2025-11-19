@@ -26,9 +26,13 @@ export const CreatorProfile = ({
   const totalSteps = 9;
   const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
-  const formatValue = (value: any) => {
+  const formatValue = (value: any, minLength: number = 2) => {
     if (value === null || value === undefined || value === "") {
       return <span className="text-muted-foreground italic">Not provided</span>;
+    }
+    // Validate string length
+    if (typeof value === 'string' && value.trim().length < minLength) {
+      return <span className="text-muted-foreground italic">Please complete profile</span>;
     }
     return value;
   };
@@ -57,6 +61,8 @@ export const CreatorProfile = ({
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
+    // Validate age is reasonable
+    if (age < 18 || age > 100) return null;
     return age;
   };
 
@@ -129,7 +135,7 @@ export const CreatorProfile = ({
               </div>
 
               {/* Location */}
-              {onboardingData.personal_location && (
+              {onboardingData.personal_location && onboardingData.personal_location.length > 1 && (
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground justify-center md:justify-start">
                   <MapPin className="h-4 w-4" />
                   <span>{onboardingData.personal_location}</span>
