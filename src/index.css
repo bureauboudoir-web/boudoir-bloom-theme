@@ -90,6 +90,30 @@ All colors MUST be HSL.
   .text-glow-red {
     text-shadow: 0 0 20px hsl(var(--glow-red) / 0.5);
   }
+
+  .text-cream {
+    color: hsl(40, 30%, 85%);
+  }
+
+  .bg-luxury-black {
+    background: hsl(0, 0%, 3%);
+  }
+
+  .border-gold {
+    border-color: hsl(var(--rose-gold));
+  }
+
+  .text-gold {
+    color: hsl(var(--rose-gold));
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 15px hsl(var(--rose-gold) / 0.4);
+  }
+
+  .glow-gold-strong {
+    box-shadow: 0 0 30px hsl(var(--rose-gold) / 0.6);
+  }
 }
 
 @layer base {
