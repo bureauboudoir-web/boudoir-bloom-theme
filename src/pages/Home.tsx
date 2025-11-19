@@ -29,13 +29,13 @@ const Home = () => {
     }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
-          <h1 className="font-serif text-5xl font-bold mb-8 text-glow-red leading-tight text-[#d1ae94] md:text-5xl">
+          <h1 className="font-serif text-5xl font-bold mb-8 leading-tight text-[#d1ae94] md:text-5xl">
             Where Real Creators Become Iconic
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
             A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
           </p>
-          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 w-auto inline-flex">
+          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 w-auto inline-flex">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
@@ -151,8 +151,8 @@ const Home = () => {
             {/* Planning */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Lightbulb className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                  <Lightbulb className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-primary">Planning</h3>
@@ -164,8 +164,8 @@ const Home = () => {
             {/* Production */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Camera className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                  <Camera className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-primary">Production</h3>
@@ -177,8 +177,8 @@ const Home = () => {
             {/* Marketing */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Megaphone className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                  <Megaphone className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-primary">Marketing</h3>
@@ -190,8 +190,8 @@ const Home = () => {
             {/* Sales */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <DollarSign className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                  <DollarSign className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-primary">Sales</h3>
@@ -203,8 +203,8 @@ const Home = () => {
             {/* Support */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                  <HeadphonesIcon className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                  <HeadphonesIcon className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-primary">Support</h3>
@@ -404,7 +404,7 @@ const Home = () => {
             Join a community of creators who've chosen clarity, artistry, and long-term growth 
             over shortcuts and noise. Let's build something extraordinary together.
           </p>
-          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 w-auto inline-flex">
+          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 w-auto inline-flex">
             <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
