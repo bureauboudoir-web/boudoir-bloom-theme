@@ -78,7 +78,7 @@ export const useOnboarding = (userId: string | undefined) => {
       ...stepData,
       completed_steps: completedSteps,
       current_step: step + 1,
-      is_completed: step === 8
+      is_completed: step === 10
     };
 
     return await updateOnboarding(updates);
