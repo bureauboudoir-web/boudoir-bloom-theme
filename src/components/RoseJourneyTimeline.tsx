@@ -25,9 +25,9 @@ const stages = [
 
 const RoseJourneyTimeline = () => {
   return (
-    <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-background to-secondary/20">
+    <section className="py-8 sm:py-12 px-4 sm:px-6 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-8">
           <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 text-[#d1ae94]">
             Grow With Us
           </h2>
@@ -37,13 +37,13 @@ const RoseJourneyTimeline = () => {
         </div>
 
         {/* Desktop: Horizontal Layout */}
-        <div className="hidden md:grid md:grid-cols-3 gap-10 lg:gap-14">
+        <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
           {stages.map((stage, index) => (
             <div
               key={index}
               className="group flex flex-col items-center text-center transition-all duration-300 hover:scale-105"
             >
-              <div className="relative w-80 h-96 mb-1 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="relative w-full h-[500px] mb-1 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                 <img
                   src={stage.image}
                   alt={stage.title}
@@ -58,10 +58,10 @@ const RoseJourneyTimeline = () => {
         </div>
 
         {/* Mobile: Vertical Stack */}
-        <div className="md:hidden space-y-10">
+        <div className="md:hidden space-y-6">
           {stages.map((stage, index) => (
             <div key={index} className="flex flex-col items-center text-center">
-              <div className="relative w-56 h-72 mb-1 overflow-hidden rounded-lg shadow-lg">
+              <div className="relative w-80 h-96 mb-1 overflow-hidden rounded-lg shadow-lg">
                 <img
                   src={stage.image}
                   alt={stage.title}
