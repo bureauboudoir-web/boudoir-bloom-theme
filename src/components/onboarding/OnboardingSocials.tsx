@@ -3,6 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Instagram, Twitter, Video, Youtube, Link, Send, Phone } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 
 interface OnboardingSocialsProps {
   onboardingData?: any;
@@ -11,23 +15,45 @@ interface OnboardingSocialsProps {
   onBack?: () => void;
 }
 
+const urlValidation = z.string().optional().refine(
+  (val) => !val || val === "" || /^https?:\/\/.+/.test(val),
+  { message: "Must be a valid URL starting with http:// or https://" }
+);
+
+const phoneValidation = z.string().optional().refine(
+  (val) => !val || val === "" || /^[\d\s\-\+\(\)]+$/.test(val),
+  { message: "Must be a valid phone number" }
+);
+
+const formSchema = z.object({
+  social_instagram: urlValidation,
+  social_twitter: urlValidation,
+  social_tiktok: urlValidation,
+  social_youtube: urlValidation,
+  social_telegram: urlValidation,
+  business_phone: phoneValidation,
+  fan_platform_onlyfans: urlValidation,
+  fan_platform_fansly: urlValidation,
+  fan_platform_other: urlValidation,
+});
+
 export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }: OnboardingSocialsProps) => {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    const data = {
-      social_instagram: formData.get("social_instagram") as string,
-      social_twitter: formData.get("social_twitter") as string,
-      social_tiktok: formData.get("social_tiktok") as string,
-      social_youtube: formData.get("social_youtube") as string,
-      social_telegram: formData.get("social_telegram") as string,
-      business_phone: formData.get("business_phone") as string,
-      fan_platform_onlyfans: formData.get("fan_platform_onlyfans") as string,
-      fan_platform_fansly: formData.get("fan_platform_fansly") as string,
-      fan_platform_other: formData.get("fan_platform_other") as string,
-    };
-    
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      social_instagram: onboardingData?.social_instagram || "",
+      social_twitter: onboardingData?.social_twitter || "",
+      social_tiktok: onboardingData?.social_tiktok || "",
+      social_youtube: onboardingData?.social_youtube || "",
+      social_telegram: onboardingData?.social_telegram || "",
+      business_phone: onboardingData?.business_phone || "",
+      fan_platform_onlyfans: onboardingData?.fan_platform_onlyfans || "",
+      fan_platform_fansly: onboardingData?.fan_platform_fansly || "",
+      fan_platform_other: onboardingData?.fan_platform_other || "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await onComplete(7, data);
     if (onNext) onNext();
   };
@@ -41,163 +67,190 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              Social Media Profiles
-            </h3>
-            
-            <div className="space-y-2">
-              <Label htmlFor="social_instagram" className="flex items-center gap-2">
-                <Instagram className="h-4 w-4" />
-                Instagram
-              </Label>
-              <Input
-                id="social_instagram"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                Social Media Profiles
+              </h3>
+              
+              <FormField
+                control={form.control}
                 name="social_instagram"
-                type="url"
-                placeholder="https://instagram.com/username"
-                defaultValue={onboardingData?.social_instagram || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Instagram className="h-4 w-4" />
+                      Instagram
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://instagram.com/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="social_twitter" className="flex items-center gap-2">
-                <Twitter className="h-4 w-4" />
-                Twitter/X
-              </Label>
-              <Input
-                id="social_twitter"
+              <FormField
+                control={form.control}
                 name="social_twitter"
-                type="url"
-                placeholder="https://twitter.com/username"
-                defaultValue={onboardingData?.social_twitter || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Twitter className="h-4 w-4" />
+                      Twitter/X
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://twitter.com/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="social_tiktok" className="flex items-center gap-2">
-                <Video className="h-4 w-4" />
-                TikTok
-              </Label>
-              <Input
-                id="social_tiktok"
+              <FormField
+                control={form.control}
                 name="social_tiktok"
-                type="url"
-                placeholder="https://tiktok.com/@username"
-                defaultValue={onboardingData?.social_tiktok || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Video className="h-4 w-4" />
+                      TikTok
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://tiktok.com/@username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="social_youtube" className="flex items-center gap-2">
-                <Youtube className="h-4 w-4" />
-                YouTube
-              </Label>
-              <Input
-                id="social_youtube"
+              <FormField
+                control={form.control}
                 name="social_youtube"
-                type="url"
-                placeholder="https://youtube.com/@username"
-                defaultValue={onboardingData?.social_youtube || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Youtube className="h-4 w-4" />
+                      YouTube
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://youtube.com/@username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="social_telegram" className="flex items-center gap-2">
-                <Send className="h-4 w-4" />
-                Telegram
-              </Label>
-              <Input
-                id="social_telegram"
+              <FormField
+                control={form.control}
                 name="social_telegram"
-                type="url"
-                placeholder="https://t.me/username"
-                defaultValue={onboardingData?.social_telegram || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Telegram
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://t.me/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          <div className="space-y-4 pt-4 border-t">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              Business Contact
-            </h3>
-            
-            <div className="space-y-2">
-              <Label htmlFor="business_phone">
-                Business/Creator Phone
-              </Label>
-              <Input
-                id="business_phone"
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                Business Contact
+              </h3>
+              
+              <FormField
+                control={form.control}
                 name="business_phone"
-                type="tel"
-                placeholder="+1 (555) 000-0000"
-                defaultValue={onboardingData?.business_phone || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business/Creator Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="+1 (555) 000-0000" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Optional - Use if different from personal phone
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <p className="text-sm text-muted-foreground">
-                Optional - Use if different from personal phone
-              </p>
             </div>
-          </div>
 
-          <div className="space-y-4 pt-4 border-t">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              Fan Platforms
-            </h3>
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                Fan Platforms
+              </h3>
 
-            <div className="space-y-2">
-              <Label htmlFor="fan_platform_onlyfans" className="flex items-center gap-2">
-                <Link className="h-4 w-4" />
-                OnlyFans
-              </Label>
-              <Input
-                id="fan_platform_onlyfans"
+              <FormField
+                control={form.control}
                 name="fan_platform_onlyfans"
-                type="url"
-                placeholder="https://onlyfans.com/username"
-                defaultValue={onboardingData?.fan_platform_onlyfans || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Link className="h-4 w-4" />
+                      OnlyFans
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://onlyfans.com/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="fan_platform_fansly" className="flex items-center gap-2">
-                <Link className="h-4 w-4" />
-                Fansly
-              </Label>
-              <Input
-                id="fan_platform_fansly"
+              <FormField
+                control={form.control}
                 name="fan_platform_fansly"
-                type="url"
-                placeholder="https://fansly.com/username"
-                defaultValue={onboardingData?.fan_platform_fansly || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Link className="h-4 w-4" />
+                      Fansly
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://fansly.com/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="fan_platform_other" className="flex items-center gap-2">
-                <Link className="h-4 w-4" />
-                Other Platform
-              </Label>
-              <Input
-                id="fan_platform_other"
+              <FormField
+                control={form.control}
                 name="fan_platform_other"
-                type="url"
-                placeholder="https://other-platform.com/username"
-                defaultValue={onboardingData?.fan_platform_other || ""}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <Link className="h-4 w-4" />
+                      Other Platform
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://other-platform.com/username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          <div className="flex justify-between pt-4">
-            {onBack && (
-              <Button type="button" variant="outline" onClick={onBack}>
-                Back
-              </Button>
-            )}
-            <Button type="submit" className="ml-auto">Continue</Button>
-          </div>
-        </form>
+            <div className="flex justify-between pt-4">
+              {onBack && (
+                <Button type="button" variant="outline" onClick={onBack}>
+                  Back
+                </Button>
+              )}
+              <Button type="submit" className="ml-auto">Continue</Button>
+            </div>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
