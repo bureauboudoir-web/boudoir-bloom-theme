@@ -25,14 +25,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useAccessLevel } from "@/hooks/useAccessLevel";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
+import { NoAccessView } from "@/components/dashboard/NoAccessView";
+import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
+  const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdminOrManager } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
@@ -97,6 +101,24 @@ const Dashboard = () => {
       navigate("/login");
     }
   }, [user, authLoading, navigate]);
+
+  // Show loading while checking access
+  if (authLoading || accessLoading) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">
+      <p className="text-muted-foreground">Loading...</p>
+    </div>;
+  }
+
+  // Show appropriate view based on access level
+  if (accessLevel === 'no_access') {
+    return <NoAccessView />;
+  }
+
+  if (accessLevel === 'meeting_only') {
+    return <MeetingBookingView />;
+  }
+
+  // Full dashboard access (accessLevel === 'full_access')
 
   useEffect(() => {
     if (onboardingData) {
