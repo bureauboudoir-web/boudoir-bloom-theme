@@ -1,11 +1,8 @@
-import Navigation from "@/components/Navigation";
-import { Link } from "react-router-dom";
-import StreetLampIcon from "@/components/StreetLampIcon";
+import { PageContainer } from "@/components/PageContainer";
 
 const Terms = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <PageContainer>
       
       <section className="pt-32 pb-16 px-6">
         <div className="container mx-auto max-w-4xl">
@@ -74,44 +71,7 @@ const Terms = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border py-12 px-6 mt-20">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col items-center gap-8">
-            <div className="flex flex-col items-center gap-4">
-              <div className="relative">
-                <StreetLampIcon className="w-16 h-16 opacity-80" />
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-8 bg-primary/20 rounded-full blur-xl" />
-              </div>
-              <span className="font-serif text-2xl font-bold text-primary" style={{
-                textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5)'
-              }}>
-                Bureau Boudoir
-              </span>
-            </div>
-
-            <nav className="flex items-center gap-6 text-sm">
-              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
-                About
-              </Link>
-              <span className="text-muted-foreground">•</span>
-              <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
-                Contact
-              </Link>
-              <span className="text-muted-foreground">•</span>
-              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-                Terms & Conditions
-              </Link>
-            </nav>
-
-            <p className="text-sm text-muted-foreground text-center">
-              © 2024 Bureau Boudoir. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </PageContainer>
   );
 };
 
