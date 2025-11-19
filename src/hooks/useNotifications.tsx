@@ -41,14 +41,18 @@ export const useNotifications = (userId: string | undefined) => {
         setNewInvoices(invoicesCount || 0);
 
         // Count support tickets with unread admin responses
-        const { count: supportCount } = await supabase
+        const { data: supportTickets } = await supabase
           .from('support_tickets')
-          .select('*', { count: 'exact', head: true })
+          .select('creator_viewed_response_at, responded_at')
           .eq('user_id', userId)
-          .not('admin_response', 'is', null)
-          .or('creator_viewed_response_at.is.null,creator_viewed_response_at.lt.responded_at');
+          .not('admin_response', 'is', null);
 
-        setNewSupportResponses(supportCount || 0);
+        const unreadCount = supportTickets?.filter(ticket => 
+          !ticket.creator_viewed_response_at || 
+          (ticket.responded_at && new Date(ticket.creator_viewed_response_at) < new Date(ticket.responded_at))
+        ).length || 0;
+
+        setNewSupportResponses(unreadCount);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       } finally {
