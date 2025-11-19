@@ -671,22 +671,74 @@ export const CreatorProfile = ({
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
+            {/* Comfortable With */}
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-2">Comfortable With</p>
-              {formatArray(onboardingData.boundaries_comfortable_with)}
+              {onboardingData.boundaries_comfortable_with && onboardingData.boundaries_comfortable_with.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {onboardingData.boundaries_comfortable_with.map((item, index) => (
+                    <Badge key={index} variant="secondary">
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <div 
+                  onClick={() => onNavigateToOnboarding?.(4)}
+                  className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all text-center"
+                >
+                  <p className="text-sm italic text-muted-foreground/70">Add what you're comfortable with</p>
+                </div>
+              )}
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Hard Limits</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.boundaries_hard_limits)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Soft Limits</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.boundaries_soft_limits)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Additional Notes</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.boundaries_additional_notes)}</p>
-            </div>
+            
+            {/* Hard Limits */}
+            {onboardingData.boundaries_hard_limits ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Hard Limits</p>
+                <p className="whitespace-pre-wrap">{onboardingData.boundaries_hard_limits}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(4)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Hard Limits</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your hard limits</p>
+              </div>
+            )}
+            
+            {/* Soft Limits */}
+            {onboardingData.boundaries_soft_limits ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Soft Limits</p>
+                <p className="whitespace-pre-wrap">{onboardingData.boundaries_soft_limits}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(4)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Soft Limits</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your soft limits</p>
+              </div>
+            )}
+            
+            {/* Additional Notes */}
+            {onboardingData.boundaries_additional_notes ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Additional Notes</p>
+                <p className="whitespace-pre-wrap">{onboardingData.boundaries_additional_notes}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(4)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Additional Notes</p>
+                <p className="text-sm italic text-muted-foreground/70">Add additional notes about your boundaries</p>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -737,30 +789,101 @@ export const CreatorProfile = ({
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Stage Name</p>
-              <p>{formatValue(onboardingData.persona_stage_name)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Description</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.persona_description)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Backstory</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.persona_backstory)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Personality Traits</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.persona_personality)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Interests</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.persona_interests)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Fantasy/Niche</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.persona_fantasy)}</p>
-            </div>
+            {/* Stage Name */}
+            {onboardingData.persona_stage_name ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Stage Name</p>
+                <p className="text-lg font-semibold text-primary">{onboardingData.persona_stage_name}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Stage Name</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your stage name</p>
+              </div>
+            )}
+            
+            {/* Description */}
+            {onboardingData.persona_description ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Description</p>
+                <p className="whitespace-pre-wrap">{onboardingData.persona_description}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Description</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your persona description</p>
+              </div>
+            )}
+            
+            {/* Backstory */}
+            {onboardingData.persona_backstory ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Backstory</p>
+                <p className="whitespace-pre-wrap">{onboardingData.persona_backstory}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Backstory</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your backstory</p>
+              </div>
+            )}
+            
+            {/* Personality Traits */}
+            {onboardingData.persona_personality ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Personality Traits</p>
+                <p className="whitespace-pre-wrap">{onboardingData.persona_personality}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Personality Traits</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your personality traits</p>
+              </div>
+            )}
+            
+            {/* Interests */}
+            {onboardingData.persona_interests ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Interests</p>
+                <p className="whitespace-pre-wrap">{onboardingData.persona_interests}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Interests</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your interests</p>
+              </div>
+            )}
+            
+            {/* Fantasy/Niche */}
+            {onboardingData.persona_fantasy ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Fantasy/Niche</p>
+                <p className="whitespace-pre-wrap">{onboardingData.persona_fantasy}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(6)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Fantasy/Niche</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your fantasy/niche</p>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -802,27 +925,86 @@ export const CreatorProfile = ({
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Photo Count */}
+              {onboardingData.content_photo_count ? (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Initial Photos Needed</p>
+                  <p className="text-lg font-semibold">{onboardingData.content_photo_count}</p>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => onNavigateToOnboarding?.(8)}
+                  className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+                >
+                  <p className="text-sm font-medium text-muted-foreground">Initial Photos Needed</p>
+                  <p className="text-sm italic text-muted-foreground/70">Add photo count</p>
+                </div>
+              )}
+              
+              {/* Video Count */}
+              {onboardingData.content_video_count ? (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Initial Videos Needed</p>
+                  <p className="text-lg font-semibold">{onboardingData.content_video_count}</p>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => onNavigateToOnboarding?.(8)}
+                  className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+                >
+                  <p className="text-sm font-medium text-muted-foreground">Initial Videos Needed</p>
+                  <p className="text-sm italic text-muted-foreground/70">Add video count</p>
+                </div>
+              )}
+            </div>
+            
+            {/* Content Themes */}
+            {onboardingData.content_themes ? (
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Initial Photos Needed</p>
-                <p>{formatValue(onboardingData.content_photo_count)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Content Themes</p>
+                <p className="whitespace-pre-wrap">{onboardingData.content_themes}</p>
               </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(8)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Content Themes</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your content themes</p>
+              </div>
+            )}
+            
+            {/* Shooting Preferences */}
+            {onboardingData.content_shooting_preferences ? (
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Initial Videos Needed</p>
-                <p>{formatValue(onboardingData.content_video_count)}</p>
+                <p className="text-sm font-medium text-muted-foreground">Shooting Preferences</p>
+                <p className="whitespace-pre-wrap">{onboardingData.content_shooting_preferences}</p>
               </div>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Content Themes</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.content_themes)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Shooting Preferences</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.content_shooting_preferences)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Equipment Needs</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.content_equipment_needs)}</p>
-            </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(8)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Shooting Preferences</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your shooting preferences</p>
+              </div>
+            )}
+            
+            {/* Equipment Needs */}
+            {onboardingData.content_equipment_needs ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Equipment Needs</p>
+                <p className="whitespace-pre-wrap">{onboardingData.content_equipment_needs}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(8)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Equipment Needs</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your equipment needs</p>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
