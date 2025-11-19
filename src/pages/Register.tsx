@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
-import Navigation from "@/components/Navigation";
+import { PageContainer } from "@/components/PageContainer";
 import { useAuth } from "@/hooks/useAuth";
 
 const Register = () => {
@@ -63,15 +63,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <div className="container mx-auto px-6 py-24 flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md p-8 bg-card border-primary/20">
-          <div className="text-center mb-8">
-            <h1 className="font-serif text-4xl font-bold mb-2 text-glow-red">Create Account</h1>
-            <p className="text-muted-foreground">Set up your creator account</p>
-          </div>
+    <PageContainer>
+      <div className="container mx-auto px-6 py-24 max-w-md">
+        <Card className="border-border bg-secondary/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl text-[#d1ae94]">Create Account</CardTitle>
+            <CardDescription>Set up your creator account</CardDescription>
+          </CardHeader>
+          <CardContent>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -121,13 +120,14 @@ const Register = () => {
               />
             </div>
             
-            <Button type="submit" className="w-full glow-red" disabled={loading}>
+            <Button type="submit" className="w-full glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full" disabled={loading}>
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
+          </CardContent>
         </Card>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
