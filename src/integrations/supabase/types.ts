@@ -175,6 +175,29 @@ export type Database = {
       }
       onboarding_data: {
         Row: {
+          backstory_alter_ego: string | null
+          backstory_amsterdam_goals: string | null
+          backstory_becoming: string | null
+          backstory_career_story: string | null
+          backstory_character_secret: string | null
+          backstory_colors: string[] | null
+          backstory_confident_spot: string | null
+          backstory_content_expression: string | null
+          backstory_how_changed: string | null
+          backstory_lighting: string | null
+          backstory_moment_changed_you: string | null
+          backstory_neighborhood: string | null
+          backstory_past_shaped_you: string | null
+          backstory_persona_sentence: string | null
+          backstory_rld_atmosphere: string[] | null
+          backstory_rld_fascination: string | null
+          backstory_rld_feeling: string | null
+          backstory_time_of_night: string | null
+          backstory_vulnerable_spot: string | null
+          backstory_what_brought_you: string | null
+          backstory_what_you_love: string | null
+          backstory_years_in_amsterdam: string | null
+          backstory_years_working_centrum: string | null
           body_distinctive_features: string | null
           body_eye_color: string | null
           body_hair_color: string | null
@@ -236,6 +259,29 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          backstory_alter_ego?: string | null
+          backstory_amsterdam_goals?: string | null
+          backstory_becoming?: string | null
+          backstory_career_story?: string | null
+          backstory_character_secret?: string | null
+          backstory_colors?: string[] | null
+          backstory_confident_spot?: string | null
+          backstory_content_expression?: string | null
+          backstory_how_changed?: string | null
+          backstory_lighting?: string | null
+          backstory_moment_changed_you?: string | null
+          backstory_neighborhood?: string | null
+          backstory_past_shaped_you?: string | null
+          backstory_persona_sentence?: string | null
+          backstory_rld_atmosphere?: string[] | null
+          backstory_rld_fascination?: string | null
+          backstory_rld_feeling?: string | null
+          backstory_time_of_night?: string | null
+          backstory_vulnerable_spot?: string | null
+          backstory_what_brought_you?: string | null
+          backstory_what_you_love?: string | null
+          backstory_years_in_amsterdam?: string | null
+          backstory_years_working_centrum?: string | null
           body_distinctive_features?: string | null
           body_eye_color?: string | null
           body_hair_color?: string | null
@@ -297,6 +343,29 @@ export type Database = {
           user_id: string
         }
         Update: {
+          backstory_alter_ego?: string | null
+          backstory_amsterdam_goals?: string | null
+          backstory_becoming?: string | null
+          backstory_career_story?: string | null
+          backstory_character_secret?: string | null
+          backstory_colors?: string[] | null
+          backstory_confident_spot?: string | null
+          backstory_content_expression?: string | null
+          backstory_how_changed?: string | null
+          backstory_lighting?: string | null
+          backstory_moment_changed_you?: string | null
+          backstory_neighborhood?: string | null
+          backstory_past_shaped_you?: string | null
+          backstory_persona_sentence?: string | null
+          backstory_rld_atmosphere?: string[] | null
+          backstory_rld_fascination?: string | null
+          backstory_rld_feeling?: string | null
+          backstory_time_of_night?: string | null
+          backstory_vulnerable_spot?: string | null
+          backstory_what_brought_you?: string | null
+          backstory_what_you_love?: string | null
+          backstory_years_in_amsterdam?: string | null
+          backstory_years_working_centrum?: string | null
           body_distinctive_features?: string | null
           body_eye_color?: string | null
           body_hair_color?: string | null

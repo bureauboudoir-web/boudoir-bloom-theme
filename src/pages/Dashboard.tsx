@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
+import OnboardingBackstory from "@/components/onboarding/OnboardingBackstory";
 import OnboardingBoundaries from "@/components/onboarding/OnboardingBoundaries";
 import OnboardingPricing from "@/components/onboarding/OnboardingPricing";
 import OnboardingPersona from "@/components/onboarding/OnboardingPersona";
@@ -152,11 +153,11 @@ const Dashboard = () => {
       case 2:
         return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
       case 3:
-        return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
+        return <OnboardingBackstory {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
       case 4:
-        return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
+        return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
       case 5:
-        return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
+        return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
       case 6:
         return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
       case 7:

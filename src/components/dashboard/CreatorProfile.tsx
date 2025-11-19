@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2 } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 interface CreatorProfileProps {
@@ -479,6 +479,127 @@ export const CreatorProfile = ({
                 <p>{formatValue(onboardingData.body_distinctive_features)}</p>
               </div>
             </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Amsterdam Story */}
+        <AccordionItem value="backstory" className="border rounded-lg px-4">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="font-semibold">My Amsterdam Story</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-4">
+            {/* Check if any backstory data exists */}
+            {(!onboardingData.backstory_neighborhood && 
+              !onboardingData.backstory_what_you_love && 
+              !onboardingData.backstory_alter_ego &&
+              !onboardingData.backstory_rld_atmosphere?.length &&
+              !onboardingData.backstory_lighting &&
+              !onboardingData.backstory_time_of_night &&
+              !onboardingData.backstory_character_secret) ? (
+              <div className="text-center py-6">
+                <Button 
+                  onClick={() => onNavigateToOnboarding?.(3)}
+                  variant="outline" 
+                  className="gap-2 text-muted-foreground border-dashed hover:border-solid hover:text-foreground transition-all"
+                >
+                  <MapPin className="h-4 w-4" />
+                  Add Your Amsterdam Story
+                </Button>
+              </div>
+            ) : (
+              <>
+                {/* Connection to Amsterdam */}
+                {(onboardingData.backstory_neighborhood || onboardingData.backstory_what_you_love) && (
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-semibold text-primary">Connection to Amsterdam</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {onboardingData.backstory_years_in_amsterdam && (
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Years in Amsterdam</p>
+                          <p className="text-sm">{onboardingData.backstory_years_in_amsterdam}</p>
+                        </div>
+                      )}
+                      {onboardingData.backstory_neighborhood && (
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Neighborhood</p>
+                          <p className="text-sm">{onboardingData.backstory_neighborhood}</p>
+                        </div>
+                      )}
+                    </div>
+                    {onboardingData.backstory_what_you_love && (
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">What I Love About Amsterdam</p>
+                        <p className="text-sm whitespace-pre-wrap">{onboardingData.backstory_what_you_love}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Amsterdam Character */}
+                {onboardingData.backstory_alter_ego && (
+                  <div className="bg-primary/10 p-4 rounded-lg border border-primary/20 space-y-2">
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wide">Amsterdam Alter Ego</p>
+                    <p className="italic font-medium">{onboardingData.backstory_alter_ego}</p>
+                    {onboardingData.backstory_persona_sentence && (
+                      <p className="text-sm text-muted-foreground">{onboardingData.backstory_persona_sentence}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* RLD Atmosphere */}
+                {onboardingData.backstory_rld_atmosphere && onboardingData.backstory_rld_atmosphere.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground mb-2">RLD Atmosphere</p>
+                    <div className="flex flex-wrap gap-2">
+                      {onboardingData.backstory_rld_atmosphere.map((attr: string, idx: number) => (
+                        <Badge key={idx} variant="secondary">{attr}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Style & Aesthetic */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {onboardingData.backstory_colors && onboardingData.backstory_colors.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Colors</p>
+                      <div className="flex flex-wrap gap-2">
+                        {onboardingData.backstory_colors.map((color: string, idx: number) => (
+                          <Badge key={idx} variant="outline">{color}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(onboardingData.backstory_lighting || onboardingData.backstory_time_of_night) && (
+                    <div className="space-y-2">
+                      {onboardingData.backstory_lighting && (
+                        <div className="flex items-center gap-2">
+                          <Lightbulb className="h-4 w-4 text-primary" />
+                          <span className="text-sm">{onboardingData.backstory_lighting}</span>
+                        </div>
+                      )}
+                      {onboardingData.backstory_time_of_night && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span className="text-sm">{onboardingData.backstory_time_of_night}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Character Secret */}
+                {onboardingData.backstory_character_secret && (
+                  <div className="bg-amber-500/10 p-4 rounded-lg border border-amber-500/20 space-y-1">
+                    <p className="text-xs text-amber-400 uppercase tracking-wide font-semibold">My Secret</p>
+                    <p className="text-sm italic">{onboardingData.backstory_character_secret}</p>
+                  </div>
+                )}
+              </>
+            )}
           </AccordionContent>
         </AccordionItem>
 
