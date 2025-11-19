@@ -1,23 +1,25 @@
-import roseStagesImage from "@/assets/rose-stages.png";
+import roseSeedImage from "@/assets/rose-seed.png";
+import roseBudImage from "@/assets/rose-bud.png";
+import roseBloomImage from "@/assets/rose-bloom.png";
 
 const stages = [
   {
     title: "The Seed",
     subtitle: "Planting Your Foundation",
     description: "Every great creator starts with a vision. We nurture your unique story, helping you define your brand identity and establish your presence in the digital landscape.",
-    translateX: "0%",
+    image: roseSeedImage,
   },
   {
     title: "The Bud",
     subtitle: "Growing Your Presence",
     description: "As you develop, we provide the tools and guidance needed to flourish. Professional shoots, content strategy, and marketing support help you reach new audiences.",
-    translateX: "-33.33%",
+    image: roseBudImage,
   },
   {
     title: "In Full Bloom",
     subtitle: "Thriving Success",
     description: "Watch your creator business blossom into sustainable success. With consistent support and proven strategies, you'll build a loyal fanbase and steady income.",
-    translateX: "-66.66%",
+    image: roseBloomImage,
   },
 ];
 
@@ -43,12 +45,9 @@ const RoseJourneyTimeline = () => {
             >
               <div className="relative w-48 h-64 mb-6 overflow-hidden rounded-lg">
                 <img
-                  src={roseStagesImage}
+                  src={stage.image}
                   alt={stage.title}
-                  className="absolute inset-0 w-[300%] h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  style={{
-                    transform: `translateX(${stage.translateX})`,
-                  }}
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-2 text-[#d1ae94]">{stage.title}</h3>
@@ -64,12 +63,9 @@ const RoseJourneyTimeline = () => {
             <div key={index} className="flex flex-col items-center text-center">
               <div className="relative w-40 h-52 mb-4 overflow-hidden rounded-lg">
                 <img
-                  src={roseStagesImage}
+                  src={stage.image}
                   alt={stage.title}
-                  className="absolute inset-0 w-[300%] h-full object-cover"
-                  style={{
-                    transform: `translateX(${stage.translateX})`,
-                  }}
+                  className="w-full h-full object-contain"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-2 text-[#d1ae94]">{stage.title}</h3>
