@@ -1,169 +1,175 @@
-// Custom SVG Potted Rose Components
+// Custom SVG Potted Rose Components with Realistic Designs
 const SeedlingPot = () => <svg viewBox="0 0 200 280" className="w-full h-full" style={{
   maxWidth: '160px',
   maxHeight: '220px'
 }}>
     <defs>
-      <linearGradient id="potGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3a4a54" />
-        <stop offset="30%" stopColor="#4a5a64" />
-        <stop offset="70%" stopColor="#5a6a74" />
-        <stop offset="100%" stopColor="#2a3a44" />
+      {/* Terracotta pot gradients */}
+      <linearGradient id="terracottaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#c67c5c" />
+        <stop offset="30%" stopColor="#b86b4c" />
+        <stop offset="70%" stopColor="#a85a3c" />
+        <stop offset="100%" stopColor="#984a2c" />
       </linearGradient>
-      <linearGradient id="potRim" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#6a7a84" />
-        <stop offset="50%" stopColor="#4a5a64" />
-        <stop offset="100%" stopColor="#2a3a44" />
+      <linearGradient id="terracottaRim" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#d89c7c" />
+        <stop offset="50%" stopColor="#c67c5c" />
+        <stop offset="100%" stopColor="#a85a3c" />
       </linearGradient>
-      <linearGradient id="leafGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#8fce7a" />
-        <stop offset="50%" stopColor="#6aaf57" />
-        <stop offset="100%" stopColor="#4a8f37" />
+      <radialGradient id="terracottaHighlight" cx="40%" cy="30%">
+        <stop offset="0%" stopColor="#e8ac8c" opacity="0.6" />
+        <stop offset="100%" stopColor="#c67c5c" opacity="0" />
+      </radialGradient>
+      {/* Realistic leaf gradients */}
+      <linearGradient id="leafGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#a8d88f" />
+        <stop offset="40%" stopColor="#7fb85f" />
+        <stop offset="100%" stopColor="#5a9f37" />
+      </linearGradient>
+      <linearGradient id="leafGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#a8d88f" />
+        <stop offset="40%" stopColor="#7fb85f" />
+        <stop offset="100%" stopColor="#5a9f37" />
       </linearGradient>
       <linearGradient id="soilGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#7b5a47" />
-        <stop offset="100%" stopColor="#5a3a22" />
+        <stop offset="0%" stopColor="#8b6a4f" />
+        <stop offset="100%" stopColor="#6a4a2f" />
       </linearGradient>
-      <radialGradient id="potHighlight" cx="50%" cy="30%">
-        <stop offset="0%" stopColor="#8a9aa4" opacity="0.5" />
-        <stop offset="100%" stopColor="#4a5a64" opacity="0" />
-      </radialGradient>
     </defs>
     
-    {/* Shadow */}
-    <ellipse cx="100" cy="268" rx="58" ry="8" fill="#000" opacity="0.2" />
+    {/* Soft shadow */}
+    <ellipse cx="100" cy="268" rx="60" ry="9" fill="#000" opacity="0.15" />
     
-    {/* Pot body with 3D effect */}
-    <path d="M62,200 L138,200 L150,258 L50,258 Z" fill="url(#potGradient)" />
-    <path d="M62,200 L138,200 L150,258 L50,258 Z" fill="url(#potHighlight)" />
-    <path d="M62,200 L138,200 L150,258 L50,258 Z" stroke="#1a2a34" strokeWidth="1.5" fill="none" />
+    {/* Terracotta pot body */}
+    <path d="M60,198 L140,198 L152,258 L48,258 Z" fill="url(#terracottaGradient)" />
+    <path d="M60,198 L140,198 L152,258 L48,258 Z" fill="url(#terracottaHighlight)" />
     
-    {/* Pot rim - 3D layered */}
-    <ellipse cx="100" cy="258" rx="50" ry="10" fill="#1a2a34" />
-    <ellipse cx="100" cy="256" rx="50" ry="9" fill="url(#potRim)" />
+    {/* Clay texture bands */}
+    <line x1="58" y1="215" x2="142" y2="215" stroke="#984a2c" strokeWidth="0.5" opacity="0.3" />
+    <line x1="56" y1="235" x2="144" y2="235" stroke="#984a2c" strokeWidth="0.5" opacity="0.3" />
     
-    {/* Pot top rim */}
-    <ellipse cx="100" cy="200" rx="40" ry="9" fill="url(#potRim)" stroke="#1a2a34" strokeWidth="1.5" />
-    <ellipse cx="100" cy="199" rx="38" ry="7" fill="#7a8a94" opacity="0.4" />
+    {/* Pot rim - terracotta style */}
+    <ellipse cx="100" cy="258" rx="52" ry="11" fill="#984a2c" />
+    <ellipse cx="100" cy="256" rx="52" ry="10" fill="url(#terracottaRim)" />
     
-    {/* Soil with texture */}
-    <ellipse cx="100" cy="202" rx="36" ry="7" fill="url(#soilGradient)" />
-    <ellipse cx="100" cy="201" rx="34" ry="5" fill="#6b4a37" opacity="0.5" />
+    {/* Pot top rim with depth */}
+    <ellipse cx="100" cy="198" rx="42" ry="10" fill="url(#terracottaRim)" />
+    <ellipse cx="100" cy="197" rx="40" ry="8" fill="#d89c7c" opacity="0.5" />
     
-    {/* Stem with gradient */}
-    <line x1="100" y1="202" x2="100" y2="145" stroke="#5a9f47" strokeWidth="5" strokeLinecap="round" />
-    <line x1="100" y1="202" x2="100" y2="145" stroke="#7fbe6a" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+    {/* Drainage hole */}
+    <ellipse cx="100" cy="256" rx="3" ry="2" fill="#5a3a1c" />
     
-    {/* Young leaves with 3D effect */}
-    <ellipse cx="78" cy="165" rx="20" ry="30" fill="url(#leafGradient)" transform="rotate(-35 78 165)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="80" cy="163" rx="8" ry="15" fill="#9fde8a" opacity="0.6" transform="rotate(-35 80 163)" />
-    <line x1="78" y1="150" x2="78" y2="180" stroke="#3a7027" strokeWidth="1.5" opacity="0.5" transform="rotate(-35 78 165)" />
+    {/* Rich soil */}
+    <ellipse cx="100" cy="200" rx="38" ry="7" fill="url(#soilGradient)" />
+    <ellipse cx="100" cy="199" rx="36" ry="5" fill="#7b5a3f" opacity="0.6" />
+    {/* Small pebbles in soil */}
+    <circle cx="92" cy="200" r="1.5" fill="#9a7a5f" />
+    <circle cx="108" cy="201" r="1.2" fill="#8a6a4f" />
+    <circle cx="98" cy="202" r="1" fill="#aa8a6f" />
     
-    <ellipse cx="122" cy="170" rx="20" ry="30" fill="url(#leafGradient)" transform="rotate(35 122 170)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="120" cy="168" rx="8" ry="15" fill="#9fde8a" opacity="0.6" transform="rotate(35 120 168)" />
-    <line x1="122" y1="155" x2="122" y2="185" stroke="#3a7027" strokeWidth="1.5" opacity="0.5" transform="rotate(35 122 170)" />
+    {/* Natural stem with texture */}
+    <line x1="100" y1="200" x2="100" y2="140" stroke="#5a9f37" strokeWidth="5" strokeLinecap="round" />
+    <line x1="99" y1="200" x2="99" y2="140" stroke="#7fb85f" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+    <line x1="100" y1="200" x2="100" y2="140" stroke="#4a7f27" strokeWidth="1" strokeLinecap="round" opacity="0.3" />
+    
+    {/* Left leaf - realistic shape with curves */}
+    <path d="M100,165 Q70,155 65,165 Q60,175 70,185 Q80,195 100,185 Z" 
+          fill="url(#leafGradient1)" stroke="#4a7f27" strokeWidth="2" />
+    {/* Leaf veining */}
+    <path d="M100,165 Q85,170 70,185" stroke="#5a8f37" strokeWidth="1" opacity="0.4" fill="none" />
+    <path d="M90,168 Q82,173 75,180" stroke="#5a8f37" strokeWidth="0.5" opacity="0.3" fill="none" />
+    <path d="M92,175 Q85,178 78,183" stroke="#5a8f37" strokeWidth="0.5" opacity="0.3" fill="none" />
+    {/* Highlight on leaf */}
+    <ellipse cx="80" cy="172" rx="8" ry="6" fill="#c8f8af" opacity="0.4" transform="rotate(-25 80 172)" />
+    {/* Dewdrop */}
+    <circle cx="75" cy="178" r="2.5" fill="#e8f8ff" opacity="0.8" />
+    <circle cx="74.5" cy="177.5" r="1" fill="#fff" opacity="0.9" />
+    
+    {/* Right leaf - realistic shape with curves */}
+    <path d="M100,170 Q130,160 135,170 Q140,180 130,190 Q120,200 100,190 Z" 
+          fill="url(#leafGradient2)" stroke="#4a7f27" strokeWidth="2" />
+    {/* Leaf veining */}
+    <path d="M100,170 Q115,175 130,190" stroke="#5a8f37" strokeWidth="1" opacity="0.4" fill="none" />
+    <path d="M110,173 Q118,178 125,185" stroke="#5a8f37" strokeWidth="0.5" opacity="0.3" fill="none" />
+    <path d="M108,180 Q115,183 122,188" stroke="#5a8f37" strokeWidth="0.5" opacity="0.3" fill="none" />
+    {/* Highlight on leaf */}
+    <ellipse cx="120" cy="177" rx="8" ry="6" fill="#c8f8af" opacity="0.4" transform="rotate(25 120 177)" />
+    {/* Dewdrop */}
+    <circle cx="125" cy="183" r="2.5" fill="#e8f8ff" opacity="0.8" />
+    <circle cx="124.5" cy="182.5" r="1" fill="#fff" opacity="0.9" />
+    
+    {/* Small center leaf emerging */}
+    <path d="M100,145 Q95,135 100,125 Q105,135 100,145 Z" 
+          fill="url(#leafGradient1)" stroke="#4a7f27" strokeWidth="1.5" opacity="0.9" />
+    <path d="M100,125 L100,145" stroke="#6a9f47" strokeWidth="0.5" opacity="0.3" />
   </svg>;
 const BudPot = () => <svg viewBox="0 0 200 310" className="w-full h-full" style={{
   maxWidth: '160px',
   maxHeight: '250px'
 }}>
     <defs>
-      <linearGradient id="potGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3a4a54" />
-        <stop offset="30%" stopColor="#4a5a64" />
-        <stop offset="70%" stopColor="#5a6a74" />
-        <stop offset="100%" stopColor="#2a3a44" />
+      <linearGradient id="ceramicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#f5f0e8" />
+        <stop offset="30%" stopColor="#e8dcc8" />
+        <stop offset="70%" stopColor="#d8cbb8" />
+        <stop offset="100%" stopColor="#c8baa8" />
       </linearGradient>
-      <linearGradient id="potRim2" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#6a7a84" />
-        <stop offset="50%" stopColor="#4a5a64" />
-        <stop offset="100%" stopColor="#2a3a44" />
+      <linearGradient id="ceramicRim" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#ffffff" />
+        <stop offset="50%" stopColor="#f5f0e8" />
+        <stop offset="100%" stopColor="#d8cbb8" />
       </linearGradient>
-      <linearGradient id="leafGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#8fce7a" />
-        <stop offset="50%" stopColor="#6aaf57" />
-        <stop offset="100%" stopColor="#4a8f37" />
-      </linearGradient>
-      <linearGradient id="budGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#ff9a9a" />
-        <stop offset="30%" stopColor="#ff7a7a" />
-        <stop offset="70%" stopColor="#dc5c5c" />
-        <stop offset="100%" stopColor="#b73e3e" />
-      </linearGradient>
-      <linearGradient id="budPetalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#7fbe6a" />
-        <stop offset="100%" stopColor="#5a9f47" />
-      </linearGradient>
-      <linearGradient id="soilGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#7b5a47" />
-        <stop offset="100%" stopColor="#5a3a22" />
-      </linearGradient>
-      <radialGradient id="potHighlight2" cx="50%" cy="30%">
-        <stop offset="0%" stopColor="#8a9aa4" opacity="0.5" />
-        <stop offset="100%" stopColor="#4a5a64" opacity="0" />
+      <radialGradient id="ceramicHighlight" cx="35%" cy="25%">
+        <stop offset="0%" stopColor="#ffffff" opacity="0.8" />
+        <stop offset="100%" stopColor="#f5f0e8" opacity="0" />
       </radialGradient>
-      <radialGradient id="budGlow" cx="50%" cy="50%">
-        <stop offset="0%" stopColor="#ff7a7a" opacity="0.4" />
-        <stop offset="100%" stopColor="#dc5c5c" opacity="0" />
-      </radialGradient>
+      <linearGradient id="goldBand" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#b8934f" />
+        <stop offset="50%" stopColor="#d4af6f" />
+        <stop offset="100%" stopColor="#b8934f" />
+      </linearGradient>
+      <linearGradient id="budPetal1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#ffb3c1" />
+        <stop offset="50%" stopColor="#ff8fa3" />
+        <stop offset="100%" stopColor="#f76e89" />
+      </linearGradient>
+      <linearGradient id="budPetal2" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#ff9aab" />
+        <stop offset="50%" stopColor="#f76e89" />
+        <stop offset="100%" stopColor="#e84a5f" />
+      </linearGradient>
+      <linearGradient id="sepalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#7fb85f" />
+        <stop offset="50%" stopColor="#6a9f47" />
+        <stop offset="100%" stopColor="#5a8f37" />
+      </linearGradient>
+      <linearGradient id="leafGradientBud" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#a8d88f" />
+        <stop offset="50%" stopColor="#7fb85f" />
+        <stop offset="100%" stopColor="#5a9f37" />
+      </linearGradient>
     </defs>
     
-    {/* Shadow */}
-    <ellipse cx="100" cy="298" rx="58" ry="8" fill="#000" opacity="0.2" />
+    <ellipse cx="100" cy="298" rx="60" ry="9" fill="#000" opacity="0.15" />
+    <path d="M58,228 L142,228 L154,288 L46,288 Z" fill="url(#ceramicGradient)" />
+    <path d="M58,228 L142,228 L154,288 L46,288 Z" fill="url(#ceramicHighlight)" />
+    <rect x="44" y="243" width="112" height="6" fill="url(#goldBand)" />
+    <ellipse cx="100" cy="288" rx="54" ry="11" fill="#c8baa8" />
+    <ellipse cx="100" cy="286" rx="54" ry="10" fill="url(#ceramicRim)" />
+    <ellipse cx="100" cy="228" rx="44" ry="10" fill="url(#ceramicRim)" />
+    <ellipse cx="100" cy="230" rx="40" ry="7" fill="#8b6a4f" />
+    <line x1="100" y1="230" x2="100" y2="70" stroke="#5a9f37" strokeWidth="6" strokeLinecap="round" />
     
-    {/* Pot body with 3D effect */}
-    <path d="M62,230 L138,230 L150,288 L50,288 Z" fill="url(#potGradient2)" />
-    <path d="M62,230 L138,230 L150,288 L50,288 Z" fill="url(#potHighlight2)" />
-    <path d="M62,230 L138,230 L150,288 L50,288 Z" stroke="#1a2a34" strokeWidth="1.5" fill="none" />
+    <path d="M100,190 Q68,178 60,188 Q54,198 65,210 Q76,222 100,210 Z" fill="url(#leafGradientBud)" stroke="#4a7f27" strokeWidth="2" />
+    <path d="M100,195 Q132,183 140,193 Q146,203 135,215 Q124,227 100,215 Z" fill="url(#leafGradientBud)" stroke="#4a7f27" strokeWidth="2" />
     
-    {/* Pot rim - 3D layered */}
-    <ellipse cx="100" cy="288" rx="50" ry="10" fill="#1a2a34" />
-    <ellipse cx="100" cy="286" rx="50" ry="9" fill="url(#potRim2)" />
-    
-    {/* Pot top rim */}
-    <ellipse cx="100" cy="230" rx="40" ry="9" fill="url(#potRim2)" stroke="#1a2a34" strokeWidth="1.5" />
-    <ellipse cx="100" cy="229" rx="38" ry="7" fill="#7a8a94" opacity="0.4" />
-    
-    {/* Soil with texture */}
-    <ellipse cx="100" cy="232" rx="36" ry="7" fill="url(#soilGradient2)" />
-    <ellipse cx="100" cy="231" rx="34" ry="5" fill="#6b4a37" opacity="0.5" />
-    
-    {/* Main stem with gradient */}
-    <line x1="100" y1="232" x2="100" y2="80" stroke="#5a9f47" strokeWidth="6" strokeLinecap="round" />
-    <line x1="100" y1="232" x2="100" y2="80" stroke="#7fbe6a" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-    
-    {/* Multiple leaves along stem with 3D effect */}
-    <ellipse cx="73" cy="190" rx="18" ry="26" fill="url(#leafGradient2)" transform="rotate(-40 73 190)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="75" cy="188" rx="7" ry="13" fill="#9fde8a" opacity="0.6" transform="rotate(-40 75 188)" />
-    
-    <ellipse cx="127" cy="200" rx="18" ry="26" fill="url(#leafGradient2)" transform="rotate(40 127 200)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="125" cy="198" rx="7" ry="13" fill="#9fde8a" opacity="0.6" transform="rotate(40 125 198)" />
-    
-    <ellipse cx="75" cy="145" rx="17" ry="25" fill="url(#leafGradient2)" transform="rotate(-38 75 145)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="77" cy="143" rx="6" ry="12" fill="#9fde8a" opacity="0.6" transform="rotate(-38 77 143)" />
-    
-    <ellipse cx="125" cy="155" rx="17" ry="25" fill="url(#leafGradient2)" transform="rotate(38 125 155)" stroke="#3a7027" strokeWidth="2" />
-    <ellipse cx="123" cy="153" rx="6" ry="12" fill="#9fde8a" opacity="0.6" transform="rotate(38 123 153)" />
-    
-    {/* Bud glow effect */}
-    <circle cx="100" cy="65" r="35" fill="url(#budGlow)" />
-    
-    {/* Rose bud with green sepals */}
-    <ellipse cx="85" cy="75" rx="14" ry="20" fill="url(#budPetalGradient)" transform="rotate(-25 85 75)" stroke="#3a7027" strokeWidth="1.5" />
-    <ellipse cx="115" cy="75" rx="14" ry="20" fill="url(#budPetalGradient)" transform="rotate(25 115 75)" stroke="#3a7027" strokeWidth="1.5" />
-    <ellipse cx="100" cy="80" rx="15" ry="18" fill="url(#budPetalGradient)" stroke="#3a7027" strokeWidth="1.5" />
-    <ellipse cx="90" cy="70" rx="12" ry="16" fill="url(#budPetalGradient)" transform="rotate(-15 90 70)" stroke="#3a7027" strokeWidth="1.5" />
-    <ellipse cx="110" cy="70" rx="12" ry="16" fill="url(#budPetalGradient)" transform="rotate(15 110 70)" stroke="#3a7027" strokeWidth="1.5" />
-    
-    {/* Red bud emerging */}
-    <ellipse cx="100" cy="55" rx="18" ry="24" fill="url(#budGradient)" stroke="#a73e3e" strokeWidth="2" />
-    <ellipse cx="100" cy="53" rx="12" ry="16" fill="#ff8a8a" opacity="0.7" />
-    <ellipse cx="92" cy="58" rx="8" ry="12" fill="#dc5c5c" transform="rotate(-20 92 58)" />
-    <ellipse cx="108" cy="58" rx="8" ry="12" fill="#dc5c5c" transform="rotate(20 108 58)" />
-    
-    {/* Bud details */}
-    <ellipse cx="100" cy="52" rx="6" ry="8" fill="#a73e3e" />
-    <ellipse cx="100" cy="50" rx="3" ry="4" fill="#ff9a9a" opacity="0.6" />
+    <path d="M100,70 Q85,65 82,75 Q80,85 88,90 L100,95 Z" fill="url(#sepalGradient)" stroke="#4a7f27" strokeWidth="1.5" />
+    <path d="M100,70 Q115,65 118,75 Q120,85 112,90 L100,95 Z" fill="url(#sepalGradient)" stroke="#4a7f27" strokeWidth="1.5" />
+    <ellipse cx="100" cy="85" rx="16" ry="22" fill="url(#budPetal1)" />
+    <path d="M84,85 Q88,70 100,65 Q112,70 116,85 Q116,100 100,107 Q84,100 84,85 Z" fill="url(#budPetal2)" stroke="#e84a5f" strokeWidth="1" />
+    <path d="M95,68 Q97,60 100,58 Q103,60 105,68 Q105,75 100,78 Q95,75 95,68 Z" fill="#c92a3e" />
+    <ellipse cx="92" cy="75" rx="3" ry="8" fill="#ffcdd8" opacity="0.6" transform="rotate(-25 92 75)" />
+    <ellipse cx="108" cy="75" rx="3" ry="8" fill="#ffcdd8" opacity="0.6" transform="rotate(25 108 75)" />
   </svg>;
 const BloomPot = () => <svg viewBox="0 0 200 340" className="w-full h-full" style={{
   maxWidth: '160px',
