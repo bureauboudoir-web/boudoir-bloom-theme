@@ -1,6 +1,8 @@
 // Custom SVG Potted Rose Components
-const SeedlingPot = () => (
-  <svg viewBox="0 0 200 280" className="w-full h-full" style={{ maxWidth: '160px', maxHeight: '220px' }}>
+const SeedlingPot = () => <svg viewBox="0 0 200 280" className="w-full h-full" style={{
+  maxWidth: '160px',
+  maxHeight: '220px'
+}}>
     <defs>
       <linearGradient id="potGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#3a4a54" />
@@ -60,11 +62,11 @@ const SeedlingPot = () => (
     <ellipse cx="122" cy="170" rx="20" ry="30" fill="url(#leafGradient)" transform="rotate(35 122 170)" stroke="#3a7027" strokeWidth="2" />
     <ellipse cx="120" cy="168" rx="8" ry="15" fill="#9fde8a" opacity="0.6" transform="rotate(35 120 168)" />
     <line x1="122" y1="155" x2="122" y2="185" stroke="#3a7027" strokeWidth="1.5" opacity="0.5" transform="rotate(35 122 170)" />
-  </svg>
-);
-
-const BudPot = () => (
-  <svg viewBox="0 0 200 310" className="w-full h-full" style={{ maxWidth: '160px', maxHeight: '250px' }}>
+  </svg>;
+const BudPot = () => <svg viewBox="0 0 200 310" className="w-full h-full" style={{
+  maxWidth: '160px',
+  maxHeight: '250px'
+}}>
     <defs>
       <linearGradient id="potGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#3a4a54" />
@@ -162,11 +164,11 @@ const BudPot = () => (
     {/* Bud details */}
     <ellipse cx="100" cy="52" rx="6" ry="8" fill="#a73e3e" />
     <ellipse cx="100" cy="50" rx="3" ry="4" fill="#ff9a9a" opacity="0.6" />
-  </svg>
-);
-
-const BloomPot = () => (
-  <svg viewBox="0 0 200 340" className="w-full h-full" style={{ maxWidth: '160px', maxHeight: '280px' }}>
+  </svg>;
+const BloomPot = () => <svg viewBox="0 0 200 340" className="w-full h-full" style={{
+  maxWidth: '160px',
+  maxHeight: '280px'
+}}>
     <defs>
       <linearGradient id="potGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#3a4a54" />
@@ -294,9 +296,7 @@ const BloomPot = () => (
     <ellipse cx="100" cy="45" rx="3" ry="4" fill="#ffbac4" opacity="0.7" />
     <path d="M70,45 Q100,38 130,45" fill="none" stroke="#ffbac4" strokeWidth="1.5" opacity="0.4" />
     <path d="M75,70 Q100,65 125,70" fill="none" stroke="#a71d2a" strokeWidth="1" opacity="0.5" />
-  </svg>
-);
-
+  </svg>;
 const stages = [{
   component: SeedlingPot,
   title: "The Seed",
@@ -317,7 +317,7 @@ const RoseJourneyTimeline = () => {
   return <div className="w-full py-24 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-5xl mb-4 text-rose-gold text-[#d1ae94]">Grow With Us — The Rose Journey</h2>
+          <h2 className="font-serif text-5xl mb-4 text-rose-gold text-[#d1ae94]">Grow With Us    </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Every creator's journey is unique, but the path to growth follows a natural progression. 
             From first seed to full bloom, we guide you through each stage.
@@ -351,7 +351,9 @@ const RoseJourneyTimeline = () => {
           const RoseComponent = stage.component;
           return <div key={index} className="flex flex-col items-center text-center">
                 {/* Rose Illustration */}
-                <div className="mb-4 flex items-center justify-center" style={{ maxWidth: '140px' }}>
+                <div className="mb-4 flex items-center justify-center" style={{
+              maxWidth: '140px'
+            }}>
                   <RoseComponent />
                 </div>
                 
