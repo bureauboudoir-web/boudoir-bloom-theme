@@ -29,14 +29,14 @@ const Home = () => {
     }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
-          <h1 className="font-serif text-5xl md:text-7xl font-bold mb-8 text-glow-red leading-tight">
+          <h1 className="font-serif text-5xl font-bold mb-8 text-glow-red leading-tight md:text-7xl">
             Where Real Creators Become Iconic
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
             A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
           </p>
           <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
-            <Link to="/signup">Become a Creator</Link>
+            <Link to="/signup" className="mx-[240px]">Become a Creator</Link>
           </Button>
         </div>
       </section>
@@ -451,8 +451,8 @@ const Home = () => {
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-8 bg-primary/20 rounded-full blur-xl" />
               </div>
               <span className="font-serif text-2xl font-bold text-primary" style={{
-                textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5)'
-              }}>
+              textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5)'
+            }}>
                 Bureau Boudoir
               </span>
             </div>
