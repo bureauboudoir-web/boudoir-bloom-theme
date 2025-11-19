@@ -8,52 +8,35 @@ import QAAccordion from "@/components/QAAccordion";
 import StreetLampIcon from "@/components/StreetLampIcon";
 import heroBackground from "@/assets/hero-curtains-amsterdam.jpg";
 import locationMap from "@/assets/amsterdam-map-luxury.png";
-import { 
-  Lightbulb, 
-  Camera, 
-  Megaphone, 
-  DollarSign, 
-  Crown, 
-  Gem, 
-  CheckCircle,
-  Twitter,
-  Instagram
-} from "lucide-react";
-
+import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram } from "lucide-react";
 const Home = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     }
   };
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
+  return <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
       {/* Section 1: Hero Banner */}
-      <section 
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${heroBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${heroBackground})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
           <h1 className="font-serif text-5xl md:text-7xl font-bold mb-8 text-glow-red leading-tight">
             Where Real Creators Become Iconic
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
-            A luxury creative house in Amsterdam, guiding women in the art of presence, identity, and digital performance.
+            A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
           </p>
-          <Button 
-            asChild 
-            size="lg" 
-            className="text-lg px-10 py-7 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold text-rose-gold"
-          >
+          <Button asChild size="lg" className="text-lg px-10 py-7 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold text-rose-gold">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
@@ -118,11 +101,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <Button
-                onClick={() => scrollToSection('comparison')}
-                variant="outline"
-                className="mt-8 border-rose-gold text-rose-gold hover:bg-rose-gold/10"
-              >
+              <Button onClick={() => scrollToSection('comparison')} variant="outline" className="mt-8 border-rose-gold text-rose-gold hover:bg-rose-gold/10">
                 Compare More →
               </Button>
             </div>
@@ -393,11 +372,7 @@ const Home = () => {
       {/* Section 10: Work With Us (Section 2) */}
       <section className="py-32 bg-background">
         <div className="container mx-auto px-6 text-center">
-          <Button 
-            asChild 
-            size="lg" 
-            className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold"
-          >
+          <Button asChild size="lg" className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
@@ -408,11 +383,7 @@ const Home = () => {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <img 
-                src={locationMap} 
-                alt="Bureau Boudoir location in Amsterdam"
-                className="rounded-lg border-2 border-rose-gold/30 w-full"
-              />
+              <img src={locationMap} alt="Bureau Boudoir location in Amsterdam" className="rounded-lg border-2 border-rose-gold/30 w-full" />
             </div>
             <div>
               <h2 className="font-serif text-4xl md:text-5xl mb-6 text-gold">
@@ -442,11 +413,7 @@ const Home = () => {
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
             Join a community of creators who've chosen clarity, artistry, and long-term growth over shortcuts and noise.
           </p>
-          <Button 
-            asChild 
-            size="lg" 
-            className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold"
-          >
+          <Button asChild size="lg" className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold">
             <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
@@ -472,22 +439,13 @@ const Home = () => {
             <div className="text-center">
               <h4 className="font-serif text-xl text-rose-gold mb-6">Quick Links</h4>
               <div className="space-y-3">
-                <button 
-                  onClick={() => scrollToSection('about')}
-                  className="block w-full text-muted-foreground hover:text-rose-gold transition-colors"
-                >
+                <button onClick={() => scrollToSection('about')} className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
                   About
                 </button>
-                <Link 
-                  to="/signup"
-                  className="block w-full text-muted-foreground hover:text-rose-gold transition-colors"
-                >
+                <Link to="/signup" className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
                   Join
                 </Link>
-                <button 
-                  onClick={() => scrollToSection('contact')}
-                  className="block w-full text-muted-foreground hover:text-rose-gold transition-colors"
-                >
+                <button onClick={() => scrollToSection('contact')} className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
                   Contact
                 </button>
               </div>
@@ -497,20 +455,10 @@ const Home = () => {
             <div className="text-center md:text-right">
               <h4 className="font-serif text-xl text-rose-gold mb-6">Follow Us</h4>
               <div className="flex justify-center md:justify-end gap-6">
-                <a 
-                  href="https://twitter.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-rose-gold hover:text-rose-gold/70 transition-colors"
-                >
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-rose-gold hover:text-rose-gold/70 transition-colors">
                   <Twitter className="w-6 h-6" />
                 </a>
-                <a 
-                  href="https://instagram.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-rose-gold hover:text-rose-gold/70 transition-colors"
-                >
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-rose-gold hover:text-rose-gold/70 transition-colors">
                   <Instagram className="w-6 h-6" />
                 </a>
               </div>
@@ -522,8 +470,6 @@ const Home = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Home;
