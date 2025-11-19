@@ -3,37 +3,26 @@ import { Button } from "@/components/ui/button";
 import StreetLampIcon from "@/components/StreetLampIcon";
 
 const Navigation = () => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
-          <span className="font-serif text-2xl font-bold text-primary text-glow-red">Bureau Boudoir</span>
-          <StreetLampIcon className="w-6 h-6" />
+        <Link to="/" className="flex items-center gap-3 group">
+          <StreetLampIcon className="w-7 h-7 transition-transform group-hover:scale-110" />
+          <span className="font-serif text-2xl font-bold text-primary" style={{
+            textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5), 0 0 60px hsl(var(--glow-red) / 0.3)',
+            fontWeight: 700
+          }}>
+            Bureau Boudoir
+          </span>
         </Link>
         
-        <div className="flex items-center gap-6">
-          <button 
-            onClick={() => scrollToSection('about')}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            About
-          </button>
-          <Button asChild variant="default" size="sm" className="glow-red">
-            <Link to="/signup">Join</Link>
+        <div className="flex items-center gap-4">
+          <Button asChild size="sm" className="glow-red">
+            <Link to="/signup">Become a Creator</Link>
           </Button>
-          <button 
-            onClick={() => scrollToSection('contact')}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Contact
-          </button>
+          <Link to="/login" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            Login
+          </Link>
         </div>
       </div>
     </nav>

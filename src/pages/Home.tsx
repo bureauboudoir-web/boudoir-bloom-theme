@@ -6,9 +6,8 @@ import RoseJourneyTimeline from "@/components/RoseJourneyTimeline";
 import ComparisonTable from "@/components/ComparisonTable";
 import QAAccordion from "@/components/QAAccordion";
 import StreetLampIcon from "@/components/StreetLampIcon";
-import heroBackground from "@/assets/hero-curtains-amsterdam.jpg";
-import locationMap from "@/assets/amsterdam-map-luxury.png";
-import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram } from "lucide-react";
+import heroBg from "@/assets/hero-curtains-amsterdam.jpg";
+import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram, Shield, Target, TrendingUp, Users, MapPin, Sparkles, HeadphonesIcon } from "lucide-react";
 const Home = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -24,7 +23,7 @@ const Home = () => {
       
       {/* Section 1: Hero Banner */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${heroBackground})`,
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${heroBg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center'
     }}>
@@ -36,116 +35,128 @@ const Home = () => {
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
             A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
           </p>
-          <Button asChild size="lg" className="text-lg px-10 py-7 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold text-rose-gold">
+          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
       </section>
 
-      {/* Section 2: Who We Are + Compare Preview */}
-      <section id="about" className="py-32 bg-background">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Left: Who We Are */}
+      {/* Section 2: Who We Are & How We Compare */}
+      <section className="py-24 px-6 bg-secondary/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="font-serif text-4xl md:text-5xl mb-8 text-rose-gold">
-                Who We Are
-              </h2>
-              <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-                <p>
-                  Bureau Boudoir is a luxury creative house based in the heart of Amsterdam's historic centre. 
-                  We specialize in building creators into icons — not by following trends, but by crafting their identity 
-                  from the ground up.
-                </p>
-                <p>
-                  We don't just offer marketing tips or templates. We build your brand, persona, visual identity, 
-                  content strategy, storytelling, and marketing systems — all under one roof, all designed for you.
-                </p>
-                <p className="text-foreground font-medium">
-                  Not a modelling agency. Not a generic OF agency. A creative identity house where presence meets artistry.
-                </p>
+              <h2 className="font-serif text-5xl mb-6 text-primary">Who We Are</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Bureau Boudoir is an exclusive creator management agency based in Amsterdam's iconic Red Light District. 
+                We blend artistic vision with business intelligence to build sustainable creator careers.
+              </p>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                From professional photoshoots to AI-powered marketing, we handle everything so you can focus on being creative.
+              </p>
+              
+              <h3 className="font-serif text-2xl mb-4 text-primary">How We Compare</h3>
+              <div className="space-y-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-semibold text-foreground">Full-Service Management</p>
+                    <p className="text-sm text-muted-foreground">Unlike solo creators, you get a complete team: photographers, marketers, and account managers.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Crown className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-semibold text-foreground">Premium Positioning</p>
+                    <p className="text-sm text-muted-foreground">We don't compete on price—we compete on quality, exclusivity, and creator success.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Target className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="font-semibold text-foreground">Data-Driven Growth</p>
+                    <p className="text-sm text-muted-foreground">AI-powered analytics and proven marketing strategies maximize your revenue potential.</p>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Right: Compare Preview */}
-            <div>
-              <h3 className="font-serif text-3xl md:text-4xl mb-8 text-rose-gold">
-                How We Compare
-              </h3>
+            
+            <Card className="p-8 bg-card border-primary/20 shadow-xl">
+              <h3 className="font-serif text-3xl mb-6 text-center text-primary">Your Benefits</h3>
               <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Camera className="w-6 h-6 text-primary" />
+                  </div>
                   <div>
-                    <h4 className="text-xl font-semibold text-foreground mb-2">Identity over algorithms</h4>
-                    <p className="text-muted-foreground">
-                      We build your brand from the inside out — not based on what's trending today.
-                    </p>
+                    <p className="font-semibold text-foreground">Professional Production</p>
+                    <p className="text-sm text-muted-foreground">Studio shoots, editing, and content curation</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-6 h-6 text-primary" />
+                  </div>
                   <div>
-                    <h4 className="text-xl font-semibold text-foreground mb-2">Studio-level visuals</h4>
-                    <p className="text-muted-foreground">
-                      Professional lighting, styling, and creative direction in our Amsterdam studio.
-                    </p>
+                    <p className="font-semibold text-foreground">Revenue Optimization</p>
+                    <p className="text-sm text-muted-foreground">Pricing strategy and upselling automation</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
                   <div>
-                    <h4 className="text-xl font-semibold text-foreground mb-2">A real growth system</h4>
-                    <p className="text-muted-foreground">
-                      Scripts, funnels, retention strategies, and a dedicated team working behind the scenes.
-                    </p>
+                    <p className="font-semibold text-foreground">24/7 Support Team</p>
+                    <p className="text-sm text-muted-foreground">Dedicated account manager and creative director</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">Amsterdam Location</p>
+                    <p className="text-sm text-muted-foreground">Iconic backdrop for authentic content</p>
                   </div>
                 </div>
               </div>
-              <Button onClick={() => scrollToSection('comparison')} variant="outline" className="mt-8 border-rose-gold text-rose-gold hover:bg-rose-gold/10">
-                Compare More →
-              </Button>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* Section 3: What We Do */}
-      <section className="py-32 bg-secondary/20">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-xl md:text-2xl text-foreground leading-relaxed mb-6">
-              We help creators master <span className="text-rose-gold font-semibold">presence</span> — not by being louder, 
-              but by being clearer.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Your aesthetic, identity, and digital world are shaped with intention and artistry.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all glow-gold">
-              <CardContent className="p-8">
-                <h3 className="font-serif text-2xl md:text-3xl font-bold mb-4 text-rose-gold">
-                  Our Vision
-                </h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  To create a new standard of creator development — where identity, artistry, and business strategy 
-                  are woven together into something iconic. We believe the best creators aren't made by algorithms — 
-                  they're made by clarity, creativity, and commitment.
-                </p>
-              </CardContent>
+      <section className="py-32 px-6">
+        <div className="container mx-auto max-w-5xl text-center">
+          <p className="text-xl text-primary mb-4 font-medium">What We Do</p>
+          <h2 className="font-serif text-5xl mb-8 text-foreground leading-tight">
+            We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-12 mt-16 text-left">
+            <Card className="p-8 hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+                <Sparkles className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-serif text-2xl mb-4 text-center text-primary">Our Vision</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To be the premier creator agency in Europe, setting the standard for luxury adult content creation. 
+                We envision a world where creators are empowered with world-class tools, support, and opportunities 
+                to build sustainable, fulfilling careers on their own terms.
+              </p>
             </Card>
-
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all glow-gold">
-              <CardContent className="p-8">
-                <h3 className="font-serif text-2xl md:text-3xl font-bold mb-4 text-rose-gold">
-                  Our Mission
-                </h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  To guide women in mastering the art of digital presence — building brands, content systems, 
-                  and revenue engines that don't just perform, but endure. We create long-term growth, not temporary spikes.
-                </p>
-              </CardContent>
+            
+            <Card className="p-8 hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+                <Target className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-serif text-2xl mb-4 text-center text-primary">Our Mission</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To transform creators into successful entrepreneurs by providing end-to-end support: from professional 
+                content production in our Amsterdam studio to AI-driven marketing and personalized account management. 
+                We handle the business so you can focus on creativity.
+              </p>
             </Card>
           </div>
         </div>
@@ -158,56 +169,69 @@ const Home = () => {
             Our Creator Services
           </h2>
           
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-5 gap-6">
             {/* Planning */}
-            <Card className="bg-card border border-border hover:border-rose-gold transition-all text-center p-8">
-              <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center">
-                  <Lightbulb className="w-8 h-8 text-rose-gold" />
+            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Lightbulb className="w-7 h-7 text-primary" />
                 </div>
               </div>
-              <h3 className="font-serif text-xl font-bold mb-3 text-rose-gold">Planning</h3>
-              <p className="text-muted-foreground">
-                Persona development, boundaries, brand mapping, content strategy, and market positioning.
+              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Planning</h3>
+              <p className="text-sm text-muted-foreground">
+                Persona development, boundaries, brand strategy, and market positioning.
               </p>
             </Card>
 
             {/* Production */}
-            <Card className="bg-card border border-border hover:border-rose-gold transition-all text-center p-8">
-              <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center">
-                  <Camera className="w-8 h-8 text-rose-gold" />
+            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Camera className="w-7 h-7 text-primary" />
                 </div>
               </div>
-              <h3 className="font-serif text-xl font-bold mb-3 text-rose-gold">Production</h3>
-              <p className="text-muted-foreground">
-                Studio shoots, lighting, styling, posing guidance, and high-end moodboards for visual consistency.
+              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Production</h3>
+              <p className="text-sm text-muted-foreground">
+                Studio shoots, lighting, styling, posing, and high-end visual content.
               </p>
             </Card>
 
             {/* Marketing */}
-            <Card className="bg-card border border-border hover:border-rose-gold transition-all text-center p-8">
-              <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center">
-                  <Megaphone className="w-8 h-8 text-rose-gold" />
+            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Megaphone className="w-7 h-7 text-primary" />
                 </div>
               </div>
-              <h3 className="font-serif text-xl font-bold mb-3 text-rose-gold">Marketing</h3>
-              <p className="text-muted-foreground">
-                Social content hooks, captions, storytelling arcs, and audience-building strategies.
+              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Marketing</h3>
+              <p className="text-sm text-muted-foreground">
+                Content strategy, storytelling, social hooks, and audience building.
               </p>
             </Card>
 
             {/* Sales */}
-            <Card className="bg-card border border-border hover:border-rose-gold transition-all text-center p-8">
-              <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center">
-                  <DollarSign className="w-8 h-8 text-rose-gold" />
+            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                  <DollarSign className="w-7 h-7 text-primary" />
                 </div>
               </div>
-              <h3 className="font-serif text-xl font-bold mb-3 text-rose-gold">Sales</h3>
-              <p className="text-muted-foreground">
-                PPV funnels, retention systems, chatting scripts, and high-ticket strategy implementation.
+              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Sales</h3>
+              <p className="text-sm text-muted-foreground">
+                PPV funnels, retention systems, scripts, and revenue optimization.
+              </p>
+            </Card>
+
+            {/* Support */}
+            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                  <HeadphonesIcon className="w-7 h-7 text-primary" />
+                </div>
+              </div>
+              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Support</h3>
+              <p className="text-sm text-muted-foreground">
+                24/7 team access, analytics, guidance, and ongoing optimization.
               </p>
             </Card>
           </div>
@@ -279,14 +303,59 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left: Dashboard Mockup */}
             <div>
-              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-rose-gold/30 p-12">
-                <div className="text-center space-y-6">
-                  <div className="text-6xl">📊</div>
-                  <h3 className="font-serif text-2xl text-rose-gold">Your Creator Dashboard</h3>
-                  <p className="text-muted-foreground">
-                    Track commitments, upload content, view analytics, and communicate with your team — 
-                    all in one organized space.
+              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/30 p-8 space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="font-serif text-2xl text-primary mb-2">Your Creator Dashboard</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Everything organized in one professional platform
                   </p>
+                </div>
+                
+                {/* Mock Dashboard UI */}
+                <div className="space-y-4">
+                  {/* Mock Stats Cards */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
+                      <div className="text-2xl font-bold text-primary">12</div>
+                      <div className="text-xs text-muted-foreground">Active Shoots</div>
+                    </div>
+                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
+                      <div className="text-2xl font-bold text-primary">8</div>
+                      <div className="text-xs text-muted-foreground">Commitments</div>
+                    </div>
+                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
+                      <div className="text-2xl font-bold text-primary">45</div>
+                      <div className="text-xs text-muted-foreground">Content Pieces</div>
+                    </div>
+                  </div>
+                  
+                  {/* Mock Upload Area */}
+                  <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-primary/30">
+                    <div className="flex items-center gap-3">
+                      <Camera className="w-8 h-8 text-primary" />
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-foreground">Content Upload</div>
+                        <div className="text-xs text-muted-foreground">Drag & drop or click to upload</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Mock Commitment List */}
+                  <div className="bg-background/50 rounded-lg p-4 border border-primary/20 space-y-2">
+                    <div className="text-xs font-semibold text-foreground mb-2">This Week's Commitments</div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      <span className="text-muted-foreground">Solo photo set - Red Light theme</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-primary/50"></div>
+                      <span className="text-muted-foreground">Story content - Behind the scenes</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-primary/30"></div>
+                      <span className="text-muted-foreground">PPV video - Amsterdam canal shoot</span>
+                    </div>
+                  </div>
                 </div>
               </Card>
             </div>
@@ -352,121 +421,71 @@ const Home = () => {
       {/* Section 7: Rose Journey Timeline */}
       <RoseJourneyTimeline />
 
-      {/* Section 8: Work With Us (Section 1) */}
-      <section className="py-32 bg-background">
-        <div className="container mx-auto px-6 text-center max-w-4xl">
-          <h2 className="font-serif text-5xl md:text-6xl mb-6 text-rose-gold">
-            Work With Us
-          </h2>
-          <p className="text-2xl md:text-3xl text-muted-foreground font-light">
-            Your identity. Your story. Your growth.
-          </p>
-        </div>
-      </section>
-
-      {/* Section 9: Full Comparison Table */}
-      <div id="comparison">
-        <ComparisonTable />
-      </div>
-
-      {/* Section 10: Work With Us (Section 2) */}
-      <section className="py-32 bg-background">
-        <div className="container mx-auto px-6 text-center">
-          <Button asChild size="lg" className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold">
-            <Link to="/signup">Become a Creator</Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Section 11: Location Map */}
-      <section className="py-32 bg-secondary/20">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <img src={locationMap} alt="Bureau Boudoir location in Amsterdam" className="rounded-lg border-2 border-rose-gold/30 w-full" />
-            </div>
-            <div>
-              <h2 className="font-serif text-4xl md:text-5xl mb-6 text-gold">
-                Located in the Heart of Amsterdam's Historic Centre
-              </h2>
-              <p className="text-2xl text-muted-foreground mb-8">
-                Oudekerksplein 18h, Amsterdam
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Our studio sits in the cultural and creative heart of the city — where history, artistry, 
-                and modern storytelling converge. It's more than a location — it's part of the identity we build.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 12: Q&A */}
+      {/* Section 8: Q&A */}
       <QAAccordion />
 
-      {/* Section 13: Final CTA */}
+      {/* Section 9: Final CTA - Ready to Begin */}
       <section className="py-32 bg-background">
         <div className="container mx-auto px-6 text-center max-w-4xl">
-          <h2 className="font-serif text-4xl md:text-5xl mb-8 text-rose-gold">
-            Ready to Begin?
+          <h2 className="font-serif text-4xl md:text-5xl mb-6 text-primary text-glow-red">
+            Ready to Begin Your Journey?
           </h2>
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Join a community of creators who've chosen clarity, artistry, and long-term growth over shortcuts and noise.
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            Join a community of creators who've chosen clarity, artistry, and long-term growth 
+            over shortcuts and noise. Let's build something extraordinary together.
           </p>
-          <Button asChild size="lg" className="text-xl px-12 py-8 border-2 border-rose-gold bg-transparent hover:bg-rose-gold/10 glow-gold-strong text-rose-gold">
+          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
             <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
       </section>
 
-      {/* Section 14: Footer */}
-      <footer id="contact" className="bg-black border-t-2 border-rose-gold py-16">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
-            {/* Column 1: Brand */}
-            <div className="text-center md:text-left">
-              <h3 className="font-serif text-3xl text-rose-gold mb-4">Bureau Boudoir</h3>
-              <div className="flex justify-center md:justify-start">
-                <StreetLampIcon className="w-12 h-12" />
+      {/* Section 10: Footer */}
+      <footer className="border-t border-border py-12 px-6 bg-secondary/20">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col items-center gap-8">
+            {/* Logo in Lamp Light */}
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative">
+                <StreetLampIcon className="w-16 h-16 opacity-80" />
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-8 bg-primary/20 rounded-full blur-xl" />
               </div>
-              <p className="text-muted-foreground mt-4">
-                Oudekerksplein 18h<br />
-                Amsterdam, Netherlands
-              </p>
+              <span className="font-serif text-2xl font-bold text-primary" style={{
+                textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5)'
+              }}>
+                Bureau Boudoir
+              </span>
             </div>
 
-            {/* Column 2: Navigation */}
-            <div className="text-center">
-              <h4 className="font-serif text-xl text-rose-gold mb-6">Quick Links</h4>
-              <div className="space-y-3">
-                <button onClick={() => scrollToSection('about')} className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
-                  About
-                </button>
-                <Link to="/signup" className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
-                  Join
-                </Link>
-                <button onClick={() => scrollToSection('contact')} className="block w-full text-muted-foreground hover:text-rose-gold transition-colors">
-                  Contact
-                </button>
-              </div>
+            {/* Horizontal Navigation */}
+            <nav className="flex items-center gap-6 text-sm">
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
+                About
+              </Link>
+              <span className="text-muted-foreground">•</span>
+              <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                Contact
+              </Link>
+              <span className="text-muted-foreground">•</span>
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
+                Terms & Conditions
+              </Link>
+            </nav>
+
+            {/* Social Icons */}
+            <div className="flex gap-6">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
             </div>
 
-            {/* Column 3: Social */}
-            <div className="text-center md:text-right">
-              <h4 className="font-serif text-xl text-rose-gold mb-6">Follow Us</h4>
-              <div className="flex justify-center md:justify-end gap-6">
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-rose-gold hover:text-rose-gold/70 transition-colors">
-                  <Twitter className="w-6 h-6" />
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-rose-gold hover:text-rose-gold/70 transition-colors">
-                  <Instagram className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-border pt-8 text-center text-muted-foreground text-sm">
-            © 2025 Bureau Boudoir. All rights reserved.
+            {/* Copyright */}
+            <p className="text-sm text-muted-foreground text-center">
+              © 2024 Bureau Boudoir. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
