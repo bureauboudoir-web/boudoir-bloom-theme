@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -84,18 +85,30 @@ export const CreatorProfile = ({
         <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background h-32"></div>
         <CardContent className="pt-0 -mt-16">
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-            {/* Profile Picture */}
-            <div className="relative">
+            {/* Profile Picture & Progress */}
+            <div className="flex flex-col items-center gap-4 w-full md:w-auto">
               <ProfilePictureUpload
                 userId={userId}
                 currentPictureUrl={profilePictureUrl}
                 userName={userName || onboardingData.personal_full_name || "User"}
               />
-              {isCompleted && (
-                <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-green-500 text-white border-2 border-background">
-                  ✓ Verified
-                </Badge>
-              )}
+              
+              {/* Onboarding Progress */}
+              <div className="w-full max-w-[150px] flex flex-col items-center gap-2">
+                {completionPercentage === 100 ? (
+                  <Badge variant="default" className="bg-green-600 hover:bg-green-700 w-full justify-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Profile Complete
+                  </Badge>
+                ) : (
+                  <>
+                    <Progress value={completionPercentage} className="h-2" />
+                    <span className="text-xs text-muted-foreground">
+                      Profile {completionPercentage}% Complete
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Main Info */}
