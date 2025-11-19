@@ -54,6 +54,7 @@ export const ApplicationsManagement = () => {
 
   const handleApprove = async (application: Application) => {
     try {
+      console.log("Step 1: Creating auth user account...");
       // 1. Create auth user account
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: application.email,
@@ -61,32 +62,58 @@ export const ApplicationsManagement = () => {
         user_metadata: { full_name: application.name }
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error("Step 1 failed:", authError);
+        throw new Error(`Failed to create user account: ${authError.message}`);
+      }
 
       const userId = authData.user.id;
+      console.log("Step 1 complete: User created with ID:", userId);
 
+      console.log("Step 2: Assigning creator role...");
       // 2. Assign creator role
-      await supabase.from('user_roles').insert({
+      const { error: roleError } = await supabase.from('user_roles').insert({
         user_id: userId,
         role: 'creator'
       });
 
+      if (roleError) {
+        console.error("Step 2 failed:", roleError);
+        throw new Error(`Failed to assign creator role: ${roleError.message}`);
+      }
+      console.log("Step 2 complete: Creator role assigned");
+
+      console.log("Step 3: Creating access level record...");
       // 3. Create access level record
-      await supabase.from('creator_access_levels').insert({
+      const { error: accessError } = await supabase.from('creator_access_levels').insert({
         user_id: userId,
         access_level: 'meeting_only'
       });
 
+      if (accessError) {
+        console.error("Step 3 failed:", accessError);
+        throw new Error(`Failed to create access level: ${accessError.message}`);
+      }
+      console.log("Step 3 complete: Access level created");
+
+      console.log("Step 4: Creating meeting record...");
       // 4. Create meeting record
-      await supabase.from('creator_meetings').insert({
+      const { error: meetingError } = await supabase.from('creator_meetings').insert({
         application_id: application.id,
         user_id: userId,
         status: 'not_booked'
       });
 
+      if (meetingError) {
+        console.error("Step 4 failed:", meetingError);
+        throw new Error(`Failed to create meeting record: ${meetingError.message}`);
+      }
+      console.log("Step 4 complete: Meeting record created");
+
+      console.log("Step 5: Updating application status...");
       // 5. Update application status
       const { data: currentUser } = await supabase.auth.getUser();
-      await supabase.from('creator_applications')
+      const { error: updateError } = await supabase.from('creator_applications')
         .update({ 
           status: 'approved',
           application_status: 'approved',
@@ -96,15 +123,28 @@ export const ApplicationsManagement = () => {
         })
         .eq('id', application.id);
 
+      if (updateError) {
+        console.error("Step 5 failed:", updateError);
+        throw new Error(`Failed to update application status: ${updateError.message}`);
+      }
+      console.log("Step 5 complete: Application status updated");
+
+      console.log("Step 6: Sending password reset email...");
       // 6. Send password reset email
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(application.email, {
         redirectTo: `${window.location.origin}/reset-password`
       });
 
-      if (resetError) console.error("Error sending reset email:", resetError);
+      if (resetError) {
+        console.error("Step 6 warning:", resetError);
+        toast.warning("User created but password reset email failed. User may need manual password reset.");
+      } else {
+        console.log("Step 6 complete: Password reset email sent");
+      }
 
+      console.log("Step 7: Sending meeting invitation email...");
       // 7. Send meeting invitation email
-      await supabase.functions.invoke('send-meeting-invitation', {
+      const { error: inviteError } = await supabase.functions.invoke('send-meeting-invitation', {
         body: {
           name: application.name,
           email: application.email,
@@ -113,11 +153,18 @@ export const ApplicationsManagement = () => {
         }
       });
 
-      toast.success("Application approved! Invitation email sent.");
+      if (inviteError) {
+        console.error("Step 7 warning:", inviteError);
+        toast.warning("Application approved but invitation email failed to send.");
+      } else {
+        console.log("Step 7 complete: Meeting invitation email sent");
+      }
+
+      toast.success("Application approved successfully! User account created.");
       fetchApplications();
     } catch (error: any) {
       console.error("Error approving application:", error);
-      toast.error(error.message || "Failed to approve application");
+      toast.error(`Failed to approve application: ${error.message}`);
     }
   };
 
