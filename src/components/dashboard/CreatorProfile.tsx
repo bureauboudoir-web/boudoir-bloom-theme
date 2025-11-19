@@ -271,11 +271,6 @@ export const CreatorProfile = ({
 
               {/* Status Badges */}
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                {isCompleted ? (
-                  <Badge className="bg-green-500">✓ Onboarding Complete</Badge>
-                ) : (
-                  <Badge variant="secondary">{completionPercentage}% Complete</Badge>
-                )}
                 {onboardingData.body_type && (
                   <Badge variant="outline">{onboardingData.body_type}</Badge>
                 )}
