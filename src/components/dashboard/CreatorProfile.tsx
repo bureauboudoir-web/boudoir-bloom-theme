@@ -123,12 +123,22 @@ export const CreatorProfile = ({
             <div className="flex-1 text-center md:text-left space-y-3 mt-4">
               {/* Name and Age */}
               <div>
-                <h1 className="text-2xl font-bold flex items-center gap-2 justify-center md:justify-start">
-                  {formatValue(onboardingData.personal_full_name)}
-                  {age && (
-                    <span className="text-xl text-muted-foreground font-normal">({age})</span>
-                  )}
-                </h1>
+                {!onboardingData.personal_full_name || onboardingData.personal_full_name.trim().length < 2 ? (
+                  <div 
+                    onClick={() => onNavigateToOnboarding?.(1)}
+                    className="flex items-center gap-2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors justify-center md:justify-start"
+                  >
+                    <User className="h-5 w-5" />
+                    <span className="italic text-2xl">Add your name</span>
+                  </div>
+                ) : (
+                  <h1 className="text-2xl font-bold flex items-center gap-2 justify-center md:justify-start">
+                    {onboardingData.personal_full_name}
+                    {age && (
+                      <span className="text-xl text-muted-foreground font-normal">({age})</span>
+                    )}
+                  </h1>
+                )}
                 {onboardingData.persona_stage_name && (
                   <p className="text-sm text-muted-foreground mt-0.5">
                     "{onboardingData.persona_stage_name}"
@@ -137,16 +147,24 @@ export const CreatorProfile = ({
               </div>
 
               {/* Location */}
-              {onboardingData.personal_location && onboardingData.personal_location.length > 1 && (
+              {onboardingData.personal_location && onboardingData.personal_location.length > 1 ? (
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground justify-center md:justify-start">
                   <MapPin className="h-4 w-4" />
                   <span>{onboardingData.personal_location}</span>
                 </div>
+              ) : (
+                <div 
+                  onClick={() => onNavigateToOnboarding?.(1)}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground justify-center md:justify-start cursor-pointer hover:text-foreground transition-colors"
+                >
+                  <MapPin className="h-4 w-4 opacity-50" />
+                  <span className="italic">Add location</span>
+                </div>
               )}
 
               {/* OnlyFans Link - Prominent */}
-              {onboardingData.fan_platform_onlyfans && (
-                <div>
+              <div>
+                {onboardingData.fan_platform_onlyfans ? (
                   <a 
                     href={onboardingData.fan_platform_onlyfans} 
                     target="_blank" 
@@ -157,13 +175,22 @@ export const CreatorProfile = ({
                       OnlyFans Profile
                     </Button>
                   </a>
-                </div>
-              )}
+                ) : (
+                  <Button 
+                    onClick={() => onNavigateToOnboarding?.(7)}
+                    variant="outline" 
+                    className="gap-2 text-muted-foreground border-dashed hover:text-foreground hover:border-solid transition-all"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                    Add OnlyFans Link
+                  </Button>
+                )}
+              </div>
 
               {/* Social Links - Icon Only */}
               <TooltipProvider>
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  {onboardingData.social_instagram && (
+                  {onboardingData.social_instagram ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -177,8 +204,20 @@ export const CreatorProfile = ({
                       </TooltipTrigger>
                       <TooltipContent>Instagram</TooltipContent>
                     </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <Instagram className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add Instagram</TooltipContent>
+                    </Tooltip>
                   )}
-                  {onboardingData.social_twitter && (
+                  {onboardingData.social_twitter ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -192,8 +231,20 @@ export const CreatorProfile = ({
                       </TooltipTrigger>
                       <TooltipContent>Twitter</TooltipContent>
                     </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <Twitter className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add Twitter</TooltipContent>
+                    </Tooltip>
                   )}
-                  {onboardingData.social_tiktok && (
+                  {onboardingData.social_tiktok ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -207,8 +258,20 @@ export const CreatorProfile = ({
                       </TooltipTrigger>
                       <TooltipContent>TikTok</TooltipContent>
                     </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <Video className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add TikTok</TooltipContent>
+                    </Tooltip>
                   )}
-                  {onboardingData.social_youtube && (
+                  {onboardingData.social_youtube ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -222,8 +285,20 @@ export const CreatorProfile = ({
                       </TooltipTrigger>
                       <TooltipContent>YouTube</TooltipContent>
                     </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <Youtube className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add YouTube</TooltipContent>
+                    </Tooltip>
                   )}
-                  {onboardingData.social_telegram && (
+                  {onboardingData.social_telegram ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -237,8 +312,20 @@ export const CreatorProfile = ({
                       </TooltipTrigger>
                       <TooltipContent>Telegram</TooltipContent>
                     </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <Send className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add Telegram</TooltipContent>
+                    </Tooltip>
                   )}
-                  {onboardingData.fan_platform_fansly && (
+                  {onboardingData.fan_platform_fansly ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a 
@@ -251,6 +338,18 @@ export const CreatorProfile = ({
                         </a>
                       </TooltipTrigger>
                       <TooltipContent>Fansly</TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div 
+                          onClick={() => onNavigateToOnboarding?.(7)}
+                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
+                        >
+                          <LinkIcon className="h-4 w-4" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Add Fansly</TooltipContent>
                     </Tooltip>
                   )}
                   {onboardingData.fan_platform_other && (
