@@ -14,13 +14,45 @@ interface DeclinedApplicationRequest {
   reason?: string;
 }
 
+// Input validation helper
+const validateInput = (data: any): { valid: boolean; error?: string } => {
+  if (!data.name || typeof data.name !== 'string') {
+    return { valid: false, error: 'Name is required and must be a string' };
+  }
+  if (data.name.length > 100) {
+    return { valid: false, error: 'Name must be less than 100 characters' };
+  }
+  if (!data.email || typeof data.email !== 'string') {
+    return { valid: false, error: 'Email is required and must be a string' };
+  }
+  if (data.email.length > 255 || !data.email.includes('@')) {
+    return { valid: false, error: 'Invalid email format or email too long' };
+  }
+  if (data.reason && (typeof data.reason !== 'string' || data.reason.length > 1000)) {
+    return { valid: false, error: 'Reason must be a string less than 1000 characters' };
+  }
+  return { valid: true };
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { name, email, reason }: DeclinedApplicationRequest = await req.json();
+    const requestData = await req.json();
+    
+    // Validate input
+    const validation = validateInput(requestData);
+    if (!validation.valid) {
+      console.error('Validation error:', validation.error);
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const { name, email, reason }: DeclinedApplicationRequest = requestData;
     console.log(`Sending application declined email to ${email}`);
 
     const emailResponse = await resend.emails.send({

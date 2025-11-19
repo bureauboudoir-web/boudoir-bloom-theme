@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { PageContainer } from "@/components/PageContainer";
 import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/lib/validation";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,8 +27,12 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!credentials.email || !credentials.password) {
-      toast.error("Please fill in all fields");
+    // Validate input with Zod
+    const validation = loginSchema.safeParse(credentials);
+    
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
