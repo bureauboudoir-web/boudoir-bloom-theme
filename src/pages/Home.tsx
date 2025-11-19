@@ -8,6 +8,7 @@ import QAAccordion from "@/components/QAAccordion";
 import StreetLampIcon from "@/components/StreetLampIcon";
 import heroBg from "@/assets/hero-curtains-amsterdam.jpg";
 import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram, Shield, Target, TrendingUp, Users, MapPin, Sparkles, HeadphonesIcon, Eye, Upload } from "lucide-react";
+import { SharedFooter } from "@/components/SharedFooter";
 const Home = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);

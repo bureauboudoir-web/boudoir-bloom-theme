@@ -13,6 +13,7 @@ import { ContentReview } from "@/components/admin/ContentReview";
 import { RoleManagement } from "@/components/admin/RoleManagement";
 import { AdminInvoices } from "@/components/admin/AdminInvoices";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
+import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
 import { ArrowLeft, Shield } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
@@ -131,7 +132,8 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card border-primary/20">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-7 mb-6">
+            <TabsList className="grid w-full grid-cols-8 mb-6">
+              <TabsTrigger value="applications">Applications</TabsTrigger>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="commitments">Commitments</TabsTrigger>
               <TabsTrigger value="shoots">Shoots</TabsTrigger>
@@ -140,6 +142,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="support">Support</TabsTrigger>
               <TabsTrigger value="roles">Roles</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="applications">
+              <ApplicationsManagement />
+            </TabsContent>
 
             <TabsContent value="overview">
               <CreatorOverview />

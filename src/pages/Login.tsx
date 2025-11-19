@@ -77,8 +77,16 @@ const Login = () => {
               />
             </div>
             
-            <div>
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <a 
+                  href="/forgot-password" 
+                  className="text-sm text-[#d1ae94] hover:text-primary transition-colors"
+                >
+                  Forgot password?
+                </a>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -89,9 +97,16 @@ const Login = () => {
               />
             </div>
             
-            <Button type="submit" className="w-full glow-red" disabled={loading}>
+            <Button type="submit" className="w-full glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full" disabled={loading}>
               {loading ? "Logging in..." : "Login"}
             </Button>
+
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Don't have an account?{" "}
+              <a href="/signup" className="text-[#d1ae94] hover:text-primary transition-colors">
+                Apply here
+              </a>
+            </p>
           </form>
         </Card>
       </div>
