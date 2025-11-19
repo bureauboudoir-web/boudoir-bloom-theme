@@ -7,7 +7,7 @@ import ComparisonTable from "@/components/ComparisonTable";
 import QAAccordion from "@/components/QAAccordion";
 import StreetLampIcon from "@/components/StreetLampIcon";
 import heroBg from "@/assets/hero-curtains-amsterdam.jpg";
-import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram, Shield, Target, TrendingUp, Users, MapPin, Sparkles, HeadphonesIcon } from "lucide-react";
+import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram, Shield, Target, TrendingUp, Users, MapPin, Sparkles, HeadphonesIcon, Eye, Upload } from "lucide-react";
 const Home = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -64,7 +64,7 @@ const Home = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Camera className="w-6 h-6 text-primary" />
+                    <Camera className="w-6 h-6 text-[#d1ae94]" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Professional Production</p>
@@ -73,7 +73,7 @@ const Home = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-6 h-6 text-primary" />
+                    <TrendingUp className="w-6 h-6 text-[#d1ae94]" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Revenue Optimization</p>
@@ -82,7 +82,7 @@ const Home = () => {
                 </div>
                 <div className="flex items-center gap-4 text-3xl">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-primary" />
+                    <Users className="w-6 h-6 text-[#d1ae94]" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">24/7 Support Team</p>
@@ -91,7 +91,7 @@ const Home = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-primary" />
+                    <MapPin className="w-6 h-6 text-[#d1ae94]" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Amsterdam Location</p>
@@ -115,9 +115,9 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 mt-16 text-left">
             <Card className="p-8 hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <Sparkles className="w-8 h-8 text-primary" />
+                <Sparkles className="w-8 h-8 text-[#d1ae94]" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-primary">Our Vision</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-[#d1ae94]">Our Vision</h3>
               <p className="text-muted-foreground leading-relaxed">
                 To be the premier creator agency in Europe, setting the standard for luxury adult content creation. 
                 We envision a world where creators are empowered with world-class tools, support, and opportunities 
@@ -127,9 +127,9 @@ const Home = () => {
             
             <Card className="p-8 hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <Target className="w-8 h-8 text-primary" />
+                <Target className="w-8 h-8 text-[#d1ae94]" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-primary">Our Mission</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-[#d1ae94]">Our Mission</h3>
               <p className="text-muted-foreground leading-relaxed">
                 To transform creators into successful entrepreneurs by providing end-to-end support: from professional 
                 content production in our Amsterdam studio to AI-driven marketing and personalized account management. 
@@ -279,11 +279,23 @@ const Home = () => {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left: Dashboard Mockup */}
+            {/* Left: Dashboard Mockup with Browser Frame */}
             <div>
-              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/30 p-8 space-y-6">
+              {/* Browser Chrome - Mac Style */}
+              <div className="bg-gray-800 rounded-t-xl px-4 py-3 flex items-center gap-3 shadow-lg">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#28ca42]"></div>
+                </div>
+                <div className="flex-1 bg-gray-700 rounded px-4 py-1.5 text-xs text-gray-300 font-mono">
+                  dashboard.bureaububoir.com
+                </div>
+              </div>
+              
+              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/30 p-8 space-y-6 rounded-t-none border-t-0">
                 <div className="text-center mb-6">
-                  <h3 className="font-serif text-2xl text-primary mb-2">Your Creator Dashboard</h3>
+                  <h3 className="font-serif text-2xl text-[#d1ae94] mb-2">Your Creator Dashboard</h3>
                   <p className="text-sm text-muted-foreground">
                     Everything organized in one professional platform
                   </p>
@@ -294,15 +306,15 @@ const Home = () => {
                   {/* Mock Stats Cards */}
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-primary">12</div>
+                      <div className="text-2xl font-bold text-[#d1ae94]">12</div>
                       <div className="text-xs text-muted-foreground">Active Shoots</div>
                     </div>
                     <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-primary">8</div>
+                      <div className="text-2xl font-bold text-[#d1ae94]">8</div>
                       <div className="text-xs text-muted-foreground">Commitments</div>
                     </div>
                     <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-primary">45</div>
+                      <div className="text-2xl font-bold text-[#d1ae94]">45</div>
                       <div className="text-xs text-muted-foreground">Content Pieces</div>
                     </div>
                   </div>
@@ -310,9 +322,9 @@ const Home = () => {
                   {/* Mock Upload Area */}
                   <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-primary/30">
                     <div className="flex items-center gap-3">
-                      <Camera className="w-8 h-8 text-primary" />
+                      <Upload className="w-8 h-8 text-[#d1ae94]" />
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-foreground">Content Upload</div>
+                        <div className="text-sm font-semibold text-[#d1ae94]">Content Upload</div>
                         <div className="text-xs text-muted-foreground">Drag & drop or click to upload</div>
                       </div>
                     </div>
@@ -391,13 +403,43 @@ const Home = () => {
       {/* Section 7: Rose Journey Timeline */}
       <RoseJourneyTimeline />
 
-      {/* Section 8: Q&A */}
+      {/* Section 8: Newsletter */}
+      <section className="py-24 bg-secondary/30">
+        <div className="container mx-auto px-6 max-w-4xl text-center">
+          <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
+            Join Our Newsletter
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="flex-1 px-4 py-3 rounded-full bg-background border border-primary/30 focus:border-[#d1ae94] focus:outline-none focus:ring-2 focus:ring-[#d1ae94]/20 text-foreground"
+              required
+            />
+            <Button 
+              type="submit" 
+              size="sm" 
+              className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 w-auto"
+            >
+              Subscribe
+            </Button>
+          </form>
+          <p className="text-xs text-muted-foreground mt-4">
+            We respect your privacy. Unsubscribe at any time.
+          </p>
+        </div>
+      </section>
+
+      {/* Section 9: Q&A */}
       <QAAccordion />
 
-      {/* Section 9: Final CTA - Ready to Begin */}
+      {/* Section 10: Final CTA - Ready to Begin */}
       <section className="py-32 bg-background">
         <div className="container mx-auto px-6 text-center max-w-4xl">
-          <h2 className="font-serif text-4xl md:text-5xl mb-6 text-primary text-glow-red">
+          <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
             Ready to Begin Your Journey?
           </h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -410,7 +452,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Section 10: Footer */}
+      {/* Section 11: Footer */}
       <footer className="border-t border-border py-12 px-6 bg-secondary/20">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col items-center gap-8">
@@ -420,8 +462,8 @@ const Home = () => {
                 <StreetLampIcon className="w-16 h-16 opacity-80" />
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-8 bg-primary/20 rounded-full blur-xl" />
               </div>
-              <span className="font-serif text-2xl font-bold text-primary" style={{
-              textShadow: '0 0 20px hsl(var(--glow-red)), 0 0 40px hsl(var(--glow-red) / 0.5)'
+              <span className="font-serif text-3xl font-bold text-[#d1ae94]" style={{
+              textShadow: '0 0 30px rgba(209, 174, 148, 0.6), 0 0 60px rgba(209, 174, 148, 0.3)'
             }}>
                 Bureau Boudoir
               </span>
