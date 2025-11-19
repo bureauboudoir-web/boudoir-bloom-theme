@@ -316,6 +316,10 @@ const Dashboard = () => {
                 userId={user.id}
                 userName={user.email || undefined}
                 profilePictureUrl={profilePictureUrl}
+                onNavigateToOnboarding={(step) => {
+                  setCurrentStep(step);
+                  setActiveTab("onboarding");
+                }}
               />
             )}
             
