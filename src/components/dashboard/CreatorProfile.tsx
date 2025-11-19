@@ -13,6 +13,7 @@ interface CreatorProfileProps {
   userId: string;
   userName?: string;
   profilePictureUrl?: string | null;
+  onNavigateToOnboarding?: (step: number) => void;
 }
 
 export const CreatorProfile = ({
@@ -20,6 +21,7 @@ export const CreatorProfile = ({
   userId,
   userName,
   profilePictureUrl,
+  onNavigateToOnboarding,
 }: CreatorProfileProps) => {
   const isCompleted = onboardingData?.is_completed || false;
   const completedSteps = onboardingData?.completed_steps?.length || 0;
