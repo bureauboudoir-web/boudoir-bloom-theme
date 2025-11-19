@@ -1,53 +1,136 @@
 import { useState, useEffect } from "react";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar as CalendarIcon, Clock, Video, MapPin, User } from "lucide-react";
+import { format, addMinutes, parseISO, startOfDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+interface ManagerInfo {
+  full_name: string;
+  email: string;
+}
+
+interface TimeSlot {
+  time: string;
+  available: boolean;
+}
+
 export const MeetingBookingView = () => {
   const { user } = useAuth();
   const [date, setDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>();
+  const [meetingType, setMeetingType] = useState<'online' | 'in_person'>('online');
   const [loading, setLoading] = useState(false);
-  const [meetingId, setMeetingId] = useState<string | null>(null);
-  const [hasBookedMeeting, setHasBookedMeeting] = useState(false);
+  const [meetingData, setMeetingData] = useState<any>(null);
+  const [managerInfo, setManagerInfo] = useState<ManagerInfo | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
 
   useEffect(() => {
-    fetchMeeting();
+    if (user) {
+      fetchMeetingData();
+    }
   }, [user]);
 
-  const fetchMeeting = async () => {
+  useEffect(() => {
+    if (date && managerInfo) {
+      fetchAvailableSlots(date);
+    }
+  }, [date, managerInfo]);
+
+  const fetchMeetingData = async () => {
     if (!user) return;
 
     try {
       const { data, error } = await supabase
         .from('creator_meetings')
-        .select('*')
+        .select(`
+          *,
+          manager:profiles!assigned_manager_id (
+            full_name,
+            email
+          )
+        `)
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
 
       if (data) {
-        setMeetingId(data.id);
+        setMeetingData(data);
+        if (data.manager && !Array.isArray(data.manager)) {
+          setManagerInfo(data.manager as any);
+        }
         if (data.meeting_date) {
           setDate(new Date(data.meeting_date));
-          setHasBookedMeeting(true);
+        }
+        if (data.meeting_time) {
+          setSelectedTime(data.meeting_time);
+        }
+        if (data.meeting_type === 'online' || data.meeting_type === 'in_person') {
+          setMeetingType(data.meeting_type);
         }
       }
     } catch (error) {
       console.error("Error fetching meeting:", error);
+      toast.error("Failed to load meeting information");
+    }
+  };
+
+  const fetchAvailableSlots = async (selectedDate: Date) => {
+    if (!managerInfo || !meetingData?.assigned_manager_id) return;
+
+    try {
+      const dayOfWeek = selectedDate.getDay();
+      
+      const { data, error } = await supabase
+        .from('manager_availability')
+        .select('*')
+        .eq('manager_id', meetingData.assigned_manager_id)
+        .eq('day_of_week', dayOfWeek)
+        .eq('is_available', true);
+
+      if (error) throw error;
+
+      const slots: TimeSlot[] = [];
+      
+      data?.forEach(availability => {
+        const startTime = availability.start_time;
+        const endTime = availability.end_time;
+        const duration = availability.meeting_duration_minutes || 60;
+        
+        let currentTime = startTime;
+        while (currentTime < endTime) {
+          slots.push({
+            time: currentTime,
+            available: true,
+          });
+          
+          const [hours, minutes] = currentTime.split(':').map(Number);
+          const nextTime = addMinutes(new Date(2000, 0, 1, hours, minutes), duration);
+          currentTime = format(nextTime, 'HH:mm');
+          
+          if (currentTime >= endTime) break;
+        }
+      });
+
+      setAvailableSlots(slots);
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setAvailableSlots([]);
     }
   };
 
   const handleBookMeeting = async () => {
-    if (!date || !meetingId) {
-      toast.error("Please select a date");
+    if (!date || !selectedTime || !meetingData?.id) {
+      toast.error("Please select a date and time");
       return;
     }
 
@@ -56,15 +139,17 @@ export const MeetingBookingView = () => {
       const { error } = await supabase
         .from('creator_meetings')
         .update({ 
-          meeting_date: date.toISOString(),
-          status: 'booked'
+          meeting_date: startOfDay(date).toISOString(),
+          meeting_time: selectedTime,
+          meeting_type: meetingType,
+          status: 'pending'
         })
-        .eq('id', meetingId);
+        .eq('id', meetingData.id);
 
       if (error) throw error;
 
-      setHasBookedMeeting(true);
-      toast.success("Meeting booked successfully! We'll send you a confirmation shortly.");
+      toast.success("Meeting request sent! Your manager will confirm shortly.");
+      fetchMeetingData();
     } catch (error: any) {
       console.error("Error booking meeting:", error);
       toast.error("Failed to book meeting. Please try again.");
@@ -73,27 +158,81 @@ export const MeetingBookingView = () => {
     }
   };
 
+  const getStatusBadge = () => {
+    if (!meetingData?.status) return null;
+    
+    const statusConfig: Record<string, { label: string; className: string }> = {
+      not_booked: { label: 'Not Booked', className: 'bg-muted text-muted-foreground' },
+      pending: { label: 'Pending Confirmation', className: 'bg-yellow-500/20 text-yellow-700' },
+      confirmed: { label: 'Confirmed', className: 'bg-green-500/20 text-green-700' },
+      completed: { label: 'Completed', className: 'bg-blue-500/20 text-blue-700' },
+    };
+
+    const config = statusConfig[meetingData.status] || statusConfig.not_booked;
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
+
+  const isBookingDisabled = ['confirmed', 'completed'].includes(meetingData?.status);
+
   return (
     <div className="container mx-auto px-6 py-24">
-      <Card className="max-w-2xl mx-auto border-border bg-secondary/20">
+      <Card className="max-w-3xl mx-auto border-border bg-secondary/20">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl text-[#d1ae94]">Book Your Introduction Meeting</CardTitle>
+          <div className="flex items-center justify-between mb-2">
+            <CardTitle className="text-3xl text-primary">Book Your Introduction Meeting</CardTitle>
+            {getStatusBadge()}
+          </div>
           <CardDescription className="text-base mt-4">
-            {hasBookedMeeting 
-              ? "Your meeting has been scheduled. We'll be in touch soon!"
-              : "Select a date for your introductory meeting with your BB representative"}
+            {isBookingDisabled
+              ? "Your meeting has been scheduled. We'll see you soon!"
+              : "Select a date and time for your introductory meeting"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {!hasBookedMeeting ? (
+          {managerInfo && (
+            <Card className="border-border bg-background/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <User className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Your Representative</p>
+                    <p className="text-sm text-muted-foreground">{managerInfo.full_name}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {!isBookingDisabled && (
             <>
-              <div className="flex justify-center">
+              <div>
+                <Label className="text-base mb-3 block">Meeting Type</Label>
+                <RadioGroup value={meetingType} onValueChange={(value: any) => setMeetingType(value)}>
+                  <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
+                    <RadioGroupItem value="online" id="online" />
+                    <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer flex-1">
+                      <Video className="h-4 w-4 text-primary" />
+                      <span>Online Meeting</span>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
+                    <RadioGroupItem value="in_person" id="in_person" />
+                    <Label htmlFor="in_person" className="flex items-center gap-2 cursor-pointer flex-1">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      <span>In-Person Meeting</span>
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div>
+                <Label className="text-base mb-3 block">Select Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full max-w-sm justify-start text-left font-normal",
+                        "w-full justify-start text-left font-normal",
                         !date && "text-muted-foreground"
                       )}
                     >
@@ -108,30 +247,97 @@ export const MeetingBookingView = () => {
                       onSelect={setDate}
                       disabled={(date) => date < new Date()}
                       initialFocus
-                      className={cn("p-3 pointer-events-auto")}
                     />
                   </PopoverContent>
                 </Popover>
               </div>
 
-              <div className="flex justify-center">
-                <Button 
-                  onClick={handleBookMeeting}
-                  disabled={!date || loading}
-                  className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8"
-                >
-                  {loading ? "Booking..." : "Confirm Meeting"}
-                </Button>
-              </div>
+              {date && availableSlots.length > 0 && (
+                <div>
+                  <Label className="text-base mb-3 block">Select Time</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {availableSlots.map((slot) => (
+                      <Button
+                        key={slot.time}
+                        variant={selectedTime === slot.time ? "default" : "outline"}
+                        onClick={() => setSelectedTime(slot.time)}
+                        className={cn(
+                          "justify-center",
+                          selectedTime === slot.time && "bg-primary text-primary-foreground"
+                        )}
+                      >
+                        <Clock className="h-4 w-4 mr-1" />
+                        {slot.time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {date && availableSlots.length === 0 && (
+                <div className="text-center p-4 border border-border rounded-lg bg-background/50">
+                  <p className="text-sm text-muted-foreground">
+                    No available time slots for this date. Please select another date.
+                  </p>
+                </div>
+              )}
+
+              <Button 
+                onClick={handleBookMeeting}
+                disabled={!date || !selectedTime || loading}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {loading ? "Booking..." : "Request Meeting"}
+              </Button>
             </>
-          ) : (
-            <div className="text-center space-y-4">
-              <p className="text-lg text-muted-foreground">
-                Your meeting is scheduled for:
-              </p>
-              <p className="text-2xl text-[#d1ae94] font-bold">
-                {date && format(date, "PPPP")}
-              </p>
+          )}
+
+          {isBookingDisabled && meetingData && (
+            <div className="space-y-4">
+              <Card className="border-border bg-background/50">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <CalendarIcon className="h-5 w-5 text-primary" />
+                    <span className="font-semibold">
+                      {meetingData.meeting_date && format(new Date(meetingData.meeting_date), "PPPP")}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <span>{meetingData.meeting_time} ({meetingData.duration_minutes || 60} minutes)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground">
+                    {meetingData.meeting_type === 'online' ? (
+                      <>
+                        <Video className="h-5 w-5 text-primary" />
+                        <span>Online Meeting</span>
+                      </>
+                    ) : (
+                      <>
+                        <MapPin className="h-5 w-5 text-primary" />
+                        <span>In-Person Meeting</span>
+                      </>
+                    )}
+                  </div>
+                  {meetingData.meeting_link && (
+                    <div className="pt-2">
+                      <a 
+                        href={meetingData.meeting_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline text-sm"
+                      >
+                        Join Meeting →
+                      </a>
+                    </div>
+                  )}
+                  {meetingData.meeting_location && (
+                    <div className="pt-2 text-sm text-muted-foreground">
+                      Location: {meetingData.meeting_location}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           )}
 

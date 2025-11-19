@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ interface Application {
 }
 
 export const ApplicationsManagement = () => {
+  const { user } = useAuth();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'declined'>('pending');
@@ -53,9 +55,10 @@ export const ApplicationsManagement = () => {
   };
 
   const handleApprove = async (application: Application) => {
+    const managerId = user?.id; // Assign to current admin/manager
+    
     try {
       console.log("Step 1: Creating auth user account...");
-      // 1. Create auth user account
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: application.email,
         email_confirm: true,
@@ -71,7 +74,6 @@ export const ApplicationsManagement = () => {
       console.log("Step 1 complete: User created with ID:", userId);
 
       console.log("Step 2: Assigning creator role...");
-      // 2. Assign creator role
       const { error: roleError } = await supabase.from('user_roles').insert({
         user_id: userId,
         role: 'creator'
@@ -84,10 +86,10 @@ export const ApplicationsManagement = () => {
       console.log("Step 2 complete: Creator role assigned");
 
       console.log("Step 3: Creating access level record...");
-      // 3. Create access level record
       const { error: accessError } = await supabase.from('creator_access_levels').insert({
         user_id: userId,
-        access_level: 'meeting_only'
+        access_level: 'meeting_only',
+        granted_by: managerId
       });
 
       if (accessError) {
@@ -97,10 +99,10 @@ export const ApplicationsManagement = () => {
       console.log("Step 3 complete: Access level created");
 
       console.log("Step 4: Creating meeting record...");
-      // 4. Create meeting record
       const { error: meetingError } = await supabase.from('creator_meetings').insert({
         application_id: application.id,
         user_id: userId,
+        assigned_manager_id: managerId,
         status: 'not_booked'
       });
 

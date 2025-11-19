@@ -171,33 +171,51 @@ export type Database = {
       creator_meetings: {
         Row: {
           application_id: string | null
+          assigned_manager_id: string | null
           completed_at: string | null
           created_at: string | null
+          duration_minutes: number | null
           id: string
           meeting_date: string | null
+          meeting_link: string | null
+          meeting_location: string | null
           meeting_notes: string | null
+          meeting_time: string | null
+          meeting_type: string | null
           status: string | null
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
           application_id?: string | null
+          assigned_manager_id?: string | null
           completed_at?: string | null
           created_at?: string | null
+          duration_minutes?: number | null
           id?: string
           meeting_date?: string | null
+          meeting_link?: string | null
+          meeting_location?: string | null
           meeting_notes?: string | null
+          meeting_time?: string | null
+          meeting_type?: string | null
           status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           application_id?: string | null
+          assigned_manager_id?: string | null
           completed_at?: string | null
           created_at?: string | null
+          duration_minutes?: number | null
           id?: string
           meeting_date?: string | null
+          meeting_link?: string | null
+          meeting_location?: string | null
           meeting_notes?: string | null
+          meeting_time?: string | null
+          meeting_type?: string | null
           status?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -276,6 +294,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      manager_availability: {
+        Row: {
+          created_at: string | null
+          day_of_week: number | null
+          end_time: string
+          id: string
+          is_available: boolean | null
+          manager_id: string
+          meeting_duration_minutes: number | null
+          specific_date: string | null
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          day_of_week?: number | null
+          end_time: string
+          id?: string
+          is_available?: boolean | null
+          manager_id: string
+          meeting_duration_minutes?: number | null
+          specific_date?: string | null
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          day_of_week?: number | null
+          end_time?: string
+          id?: string
+          is_available?: boolean | null
+          manager_id?: string
+          meeting_duration_minutes?: number | null
+          specific_date?: string | null
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       onboarding_data: {
         Row: {
