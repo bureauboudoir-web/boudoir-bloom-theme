@@ -205,7 +205,7 @@ const Dashboard = () => {
               <div className="space-y-2">
                 <Button
                   variant={activeTab === "onboarding" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "onboarding" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("onboarding")}
                 >
                   <FileText className="w-4 h-4 mr-2" />
@@ -213,7 +213,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   variant={activeTab === "account" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "account" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("account")}
                 >
                   <User className="w-4 h-4 mr-2" />
@@ -221,7 +221,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   variant={activeTab === "upload" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "upload" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("upload")}
                 >
                   <Upload className="w-4 h-4 mr-2" />
@@ -236,7 +236,7 @@ const Dashboard = () => {
               <div className="space-y-2">
                 <Button
                   variant={activeTab === "commitments" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "commitments" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("commitments")}
                 >
                   <CheckSquare className="w-4 h-4 mr-2" />
@@ -249,7 +249,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   variant={activeTab === "shoots" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "shoots" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("shoots")}
                 >
                   <Calendar className="w-4 h-4 mr-2" />
@@ -257,7 +257,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   variant={activeTab === "invoices" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "invoices" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("invoices")}
                 >
                   <DollarSign className="w-4 h-4 mr-2" />
@@ -285,7 +285,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   variant={activeTab === "support" ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${activeTab === "support" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("support")}
                 >
                   <Mail className="w-4 h-4 mr-2" />
