@@ -240,6 +240,14 @@ const Dashboard = () => {
                   Creator Profile
                 </Button>
                 <Button
+                  variant={activeTab === "meetings" ? "default" : "ghost"}
+                  className={`w-full justify-start ${activeTab === "meetings" ? "border-l-4 border-primary" : ""}`}
+                  onClick={() => setActiveTab("meetings")}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  My Meetings
+                </Button>
+                <Button
                   variant={activeTab === "upload" ? "default" : "ghost"}
                   className={`w-full justify-start ${activeTab === "upload" ? "border-l-4 border-primary" : ""}`}
                   onClick={() => setActiveTab("upload")}
@@ -371,6 +379,10 @@ const Dashboard = () => {
 
             {activeTab === "invoices" && user && (
               <InvoiceStatus />
+            )}
+
+            {activeTab === "meetings" && user && (
+              <MeetingBookingView mode="management" />
             )}
           </div>
         </div>

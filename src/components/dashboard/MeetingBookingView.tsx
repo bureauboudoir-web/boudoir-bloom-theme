@@ -23,7 +23,11 @@ interface TimeSlot {
   available: boolean;
 }
 
-export const MeetingBookingView = () => {
+interface MeetingBookingViewProps {
+  mode?: 'booking' | 'management';
+}
+
+export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps) => {
   const { user } = useAuth();
   const [date, setDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
@@ -201,6 +205,97 @@ export const MeetingBookingView = () => {
 
   const isBookingDisabled = ['confirmed', 'completed'].includes(meetingData?.status);
 
+  // Management mode shows a different UI
+  if (mode === 'management') {
+    return (
+      <Card className="border-border bg-card">
+        <CardHeader>
+          <CardTitle className="text-2xl text-primary">My Meetings</CardTitle>
+          <CardDescription>View and manage your meeting schedule</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {meetingData ? (
+            <Card className="border-border bg-background/50">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">
+                    {meetingData.status === 'completed' ? 'Past Meeting' : 'Upcoming Meeting'}
+                  </CardTitle>
+                  {getStatusBadge()}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {managerInfo && (
+                  <div className="flex items-center gap-3 p-3 border border-border rounded-lg bg-background">
+                    <User className="h-5 w-5 text-primary" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Your Representative</p>
+                      <p className="text-sm text-muted-foreground">{managerInfo.full_name}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {meetingData.meeting_date && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <CalendarIcon className="h-5 w-5 text-primary" />
+                    <span>{format(new Date(meetingData.meeting_date), "PPPP")}</span>
+                  </div>
+                )}
+                
+                {meetingData.meeting_time && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <span>{meetingData.meeting_time}</span>
+                  </div>
+                )}
+                
+                {meetingData.meeting_type === 'online' && meetingData.meeting_link && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Video className="h-5 w-5 text-primary" />
+                    <a 
+                      href={meetingData.meeting_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Join Online Meeting
+                    </a>
+                  </div>
+                )}
+                
+                {meetingData.meeting_type === 'in_person' && meetingData.meeting_location && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    <span>{meetingData.meeting_location}</span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="text-center p-8 border border-border rounded-lg bg-background/50">
+              <CalendarIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">No meetings scheduled yet</p>
+              <p className="text-sm text-muted-foreground">
+                Your meetings will appear here once they are scheduled
+              </p>
+            </div>
+          )}
+          
+          {meetingData?.status === 'completed' && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">
+                  🎉 Your onboarding area has been unlocked! You can now complete your onboarding process.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Booking mode (original full-page UI)
   return (
     <div className="container mx-auto px-6 py-24">
       <Card className="max-w-3xl mx-auto border-border bg-secondary/20">
