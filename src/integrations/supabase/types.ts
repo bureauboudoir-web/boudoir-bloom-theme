@@ -90,38 +90,127 @@ export type Database = {
           },
         ]
       }
+      creator_access_levels: {
+        Row: {
+          access_level: string | null
+          created_at: string | null
+          granted_at: string | null
+          granted_by: string | null
+          id: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          created_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          created_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       creator_applications: {
         Row: {
+          admin_notes: string | null
+          application_status: string | null
+          approval_email_sent_at: string | null
           created_at: string | null
           email: string
           experience_level: string
           id: string
           name: string
           phone: string
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: string | null
           updated_at: string | null
         }
         Insert: {
+          admin_notes?: string | null
+          application_status?: string | null
+          approval_email_sent_at?: string | null
           created_at?: string | null
           email: string
           experience_level: string
           id?: string
           name: string
           phone: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string | null
           updated_at?: string | null
         }
         Update: {
+          admin_notes?: string | null
+          application_status?: string | null
+          approval_email_sent_at?: string | null
           created_at?: string | null
           email?: string
           experience_level?: string
           id?: string
           name?: string
           phone?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string | null
           updated_at?: string | null
         }
         Relationships: []
+      }
+      creator_meetings: {
+        Row: {
+          application_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          meeting_date: string | null
+          meeting_notes: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          meeting_date?: string | null
+          meeting_notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          meeting_date?: string | null
+          meeting_notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_meetings_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "creator_applications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoices: {
         Row: {
