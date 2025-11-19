@@ -14,7 +14,9 @@ import { RoleManagement } from "@/components/admin/RoleManagement";
 import { AdminInvoices } from "@/components/admin/AdminInvoices";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
-import { ArrowLeft, Shield } from "lucide-react";
+import { AdminMeetings } from "@/components/admin/AdminMeetings";
+import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
+import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
 const AdminDashboard = () => {
@@ -132,7 +134,7 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card border-primary/20">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8 mb-6">
+            <TabsList className="grid w-full grid-cols-10 mb-6">
               <TabsTrigger value="applications">Applications</TabsTrigger>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="commitments">Commitments</TabsTrigger>
@@ -141,6 +143,8 @@ const AdminDashboard = () => {
               <TabsTrigger value="invoices">Invoices</TabsTrigger>
               <TabsTrigger value="support">Support</TabsTrigger>
               <TabsTrigger value="roles">Roles</TabsTrigger>
+              <TabsTrigger value="meetings">Meetings</TabsTrigger>
+              <TabsTrigger value="availability">Availability</TabsTrigger>
             </TabsList>
 
             <TabsContent value="applications">
@@ -173,6 +177,14 @@ const AdminDashboard = () => {
 
             <TabsContent value="roles">
               <RoleManagement />
+            </TabsContent>
+
+            <TabsContent value="meetings">
+              <AdminMeetings />
+            </TabsContent>
+
+            <TabsContent value="availability">
+              <ManagerAvailabilitySettings />
             </TabsContent>
           </Tabs>
         </Card>
