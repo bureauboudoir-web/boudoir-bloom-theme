@@ -43,11 +43,11 @@ const RoseJourneyTimeline = () => {
               key={index}
               className="group flex flex-col items-center text-center transition-all duration-300 hover:scale-105"
             >
-              <div className="relative w-full h-[500px] mb-1 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="relative w-full aspect-[3/4] mb-1 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                 <img
                   src={stage.image}
                   alt={stage.title}
-                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover scale-125 transition-transform duration-500 group-hover:scale-[1.35]"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
@@ -61,11 +61,11 @@ const RoseJourneyTimeline = () => {
         <div className="md:hidden space-y-6">
           {stages.map((stage, index) => (
             <div key={index} className="flex flex-col items-center text-center">
-              <div className="relative w-80 h-96 mb-1 overflow-hidden rounded-lg shadow-lg">
+              <div className="relative w-full max-w-sm mx-auto aspect-square mb-1 overflow-hidden rounded-lg shadow-lg">
                 <img
                   src={stage.image}
                   alt={stage.title}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover scale-110"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
