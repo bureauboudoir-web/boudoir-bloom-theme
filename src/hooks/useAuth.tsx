@@ -53,6 +53,23 @@ export const useAuth = () => {
     });
     
     if (!error && data.session) {
+      // Verify user has proper roles before allowing access
+      const { data: userRoles, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id);
+
+      if (roleError) {
+        console.error("Error checking user roles:", roleError);
+      } else if (!userRoles || userRoles.length === 0) {
+        console.error("Login attempt with no assigned role:", data.user.email);
+        await supabase.auth.signOut();
+        return { 
+          data: null, 
+          error: { message: "Account not properly configured. Please contact support." } as any 
+        };
+      }
+      
       navigate("/dashboard");
     }
     

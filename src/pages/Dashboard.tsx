@@ -32,13 +32,14 @@ import { NotificationBell, NotificationItem } from "@/components/NotificationBel
 import { supabase } from "@/integrations/supabase/client";
 import { NoAccessView } from "@/components/dashboard/NoAccessView";
 import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
-  const { isAdminOrManager } = useUserRole();
+  const { isAdminOrManager, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
   const [activeTab, setActiveTab] = useState("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
@@ -46,6 +47,20 @@ const Dashboard = () => {
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const totalSteps = 10;
   const progress = (currentStep / totalSteps) * 100;
+
+  // Security check: Ensure user has proper role assigned
+  useEffect(() => {
+    const checkUserRole = async () => {
+      if (user && !rolesLoading) {
+        if (roles.length === 0) {
+          console.error("Unauthorized access attempt - no role assigned");
+          toast.error("Access denied. Please contact support.");
+          await signOut();
+        }
+      }
+    };
+    checkUserRole();
+  }, [user, roles, rolesLoading, signOut]);
 
   const handleMarkSupportAsViewed = async () => {
     if (!user?.id) return;
