@@ -109,7 +109,7 @@ const Home = () => {
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-5xl text-center">
           <p className="text-sm text-[#d1ae94] mb-4 font-medium">What We Do</p>
-          <h2 className="font-serif mb-8 text-[#d1ae94] leading-tight text-4xl md:text-5xl">
+          <h2 className="font-serif mb-8 text-[#d1ae94] leading-tight text-4xl md:text-3xl">
             We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
           </h2>
           
