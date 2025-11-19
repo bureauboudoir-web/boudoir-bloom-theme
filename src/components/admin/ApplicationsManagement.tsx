@@ -55,114 +55,32 @@ export const ApplicationsManagement = () => {
   };
 
   const handleApprove = async (application: Application) => {
-    const managerId = user?.id; // Assign to current admin/manager
-    
+    if (!user?.id) {
+      toast.error("You must be logged in to approve applications");
+      return;
+    }
+
     try {
-      console.log("Step 1: Creating auth user account...");
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: application.email,
-        email_confirm: true,
-        user_metadata: { full_name: application.name }
-      });
-
-      if (authError) {
-        console.error("Step 1 failed:", authError);
-        throw new Error(`Failed to create user account: ${authError.message}`);
-      }
-
-      const userId = authData.user.id;
-      console.log("Step 1 complete: User created with ID:", userId);
-
-      console.log("Step 2: Assigning creator role...");
-      const { error: roleError } = await supabase.from('user_roles').insert({
-        user_id: userId,
-        role: 'creator'
-      });
-
-      if (roleError) {
-        console.error("Step 2 failed:", roleError);
-        throw new Error(`Failed to assign creator role: ${roleError.message}`);
-      }
-      console.log("Step 2 complete: Creator role assigned");
-
-      console.log("Step 3: Creating access level record...");
-      const { error: accessError } = await supabase.from('creator_access_levels').insert({
-        user_id: userId,
-        access_level: 'meeting_only',
-        granted_by: managerId
-      });
-
-      if (accessError) {
-        console.error("Step 3 failed:", accessError);
-        throw new Error(`Failed to create access level: ${accessError.message}`);
-      }
-      console.log("Step 3 complete: Access level created");
-
-      console.log("Step 4: Creating meeting record...");
-      const { error: meetingError } = await supabase.from('creator_meetings').insert({
-        application_id: application.id,
-        user_id: userId,
-        assigned_manager_id: managerId,
-        status: 'not_booked'
-      });
-
-      if (meetingError) {
-        console.error("Step 4 failed:", meetingError);
-        throw new Error(`Failed to create meeting record: ${meetingError.message}`);
-      }
-      console.log("Step 4 complete: Meeting record created");
-
-      console.log("Step 5: Updating application status...");
-      // 5. Update application status
-      const { data: currentUser } = await supabase.auth.getUser();
-      const { error: updateError } = await supabase.from('creator_applications')
-        .update({ 
-          status: 'approved',
-          application_status: 'approved',
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: currentUser.user?.id,
-          approval_email_sent_at: new Date().toISOString()
-        })
-        .eq('id', application.id);
-
-      if (updateError) {
-        console.error("Step 5 failed:", updateError);
-        throw new Error(`Failed to update application status: ${updateError.message}`);
-      }
-      console.log("Step 5 complete: Application status updated");
-
-      console.log("Step 6: Sending password reset email...");
-      // 6. Send password reset email
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(application.email, {
-        redirectTo: `${window.location.origin}/reset-password`
-      });
-
-      if (resetError) {
-        console.error("Step 6 warning:", resetError);
-        toast.warning("User created but password reset email failed. User may need manual password reset.");
-      } else {
-        console.log("Step 6 complete: Password reset email sent");
-      }
-
-      console.log("Step 7: Sending meeting invitation email...");
-      // 7. Send meeting invitation email
-      const { error: inviteError } = await supabase.functions.invoke('send-meeting-invitation', {
+      console.log("Approving application via edge function...");
+      
+      const { data, error } = await supabase.functions.invoke('approve-creator-application', {
         body: {
-          name: application.name,
-          email: application.email,
-          loginUrl: `${window.location.origin}/login`,
-          passwordResetUrl: `${window.location.origin}/reset-password`
+          applicationId: application.id,
+          managerId: user.id
         }
       });
 
-      if (inviteError) {
-        console.error("Step 7 warning:", inviteError);
-        toast.warning("Application approved but invitation email failed to send.");
-      } else {
-        console.log("Step 7 complete: Meeting invitation email sent");
+      if (error) {
+        console.error("Error from edge function:", error);
+        throw new Error(error.message || "Failed to approve application");
       }
 
-      toast.success("Application approved successfully! User account created.");
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      console.log("Application approved successfully:", data);
+      toast.success("Application approved! User account created and emails sent.");
       fetchApplications();
     } catch (error: any) {
       console.error("Error approving application:", error);
