@@ -34,7 +34,7 @@ const Home = () => {
             Where Real Creators Become Iconic
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
-            A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
+            A luxury creative agency  in heart of Amsterdam iconic district, guiding creators in the art of presence, identity, and digital performance.
           </p>
           <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 w-auto inline-flex">
             <Link to="/signup">Become a Creator</Link>
