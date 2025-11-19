@@ -2,34 +2,22 @@ import { Flower2, Sprout, Leaf, Flower } from "lucide-react";
 
 const stages = [
   {
-    icon: Flower2,
-    title: "Onboard",
-    description: "Pot + Seed",
-    subtitle: "Your foundation begins"
-  },
-  {
     icon: Sprout,
-    title: "Seed",
-    description: "Sprout",
-    subtitle: "First growth emerges"
-  },
-  {
-    icon: Leaf,
-    title: "Plant",
-    description: "Leaves",
-    subtitle: "Building your presence"
+    title: "The Seed",
+    description: "Onboarding & Foundation",
+    subtitle: "Plant the seed of your creator journey. Complete your profile, set your vision, and prepare for growth."
   },
   {
     icon: Flower,
-    title: "Bloom",
-    description: "Full Rose",
-    subtitle: "Your brand flourishes"
+    title: "The Growth",
+    description: "Development & Creation",
+    subtitle: "Watch your brand blossom with professional shoots, curated content, and expert guidance."
   },
   {
     icon: Flower2,
-    title: "Bouquet",
-    description: "Evolution",
-    subtitle: "Long-term creator growth"
+    title: "In Full Bloom",
+    description: "Success & Thriving",
+    subtitle: "Your full potential realized. Thriving career, devoted audience, and sustainable income."
   }
 ];
 
@@ -53,7 +41,7 @@ const RoseJourneyTimeline = () => {
           {stages.map((stage, index) => {
             const Icon = stage.icon;
             return (
-              <div key={index} className="relative z-10 flex flex-col items-center w-1/5">
+              <div key={index} className="relative z-10 flex flex-col items-center w-1/3">
                 {/* Icon Circle */}
                 <div className="w-24 h-24 rounded-full bg-background border-2 border-rose-gold flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300 glow-gold">
                   <Icon className="w-12 h-12 text-rose-gold" />

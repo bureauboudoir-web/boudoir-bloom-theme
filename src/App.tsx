@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserRoleProvider } from "@/contexts/UserRoleContext";
 import Home from "./pages/Home";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -24,6 +26,8 @@ const App = () => (
         <UserRoleProvider>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
