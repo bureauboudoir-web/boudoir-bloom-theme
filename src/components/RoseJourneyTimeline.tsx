@@ -5,7 +5,7 @@ const stages = [
     title: "The Seed",
     subtitle: "Planting Your Foundation",
     description: "Every great creator starts with a vision. We nurture your unique story, helping you define your brand identity and establish your presence in the digital landscape.",
-    position: "0%",
+    position: "16.6%",
   },
   {
     title: "The Bud",
@@ -17,7 +17,7 @@ const stages = [
     title: "In Full Bloom",
     subtitle: "Thriving Success",
     description: "Watch your creator business blossom into sustainable success. With consistent support and proven strategies, you'll build a loyal fanbase and steady income.",
-    position: "100%",
+    position: "83.4%",
   },
 ];
 
