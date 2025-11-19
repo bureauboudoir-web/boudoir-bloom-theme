@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ListSkeleton } from "@/components/ui/loading-skeletons";
 
 interface ContactSupportProps {
   userId: string;
@@ -219,7 +220,9 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
       <Card className="p-6 bg-card border-primary/20">
         <h3 className="font-serif text-xl font-bold mb-4">Your Support Tickets</h3>
         {loadingTickets ? (
-          <p className="text-muted-foreground">Loading tickets...</p>
+          <div className="animate-in fade-in duration-300">
+            <ListSkeleton count={3} />
+          </div>
         ) : tickets.length === 0 ? (
           <p className="text-muted-foreground">No support tickets yet.</p>
         ) : (

@@ -8,6 +8,7 @@ import { Plus, Trash2, Calendar, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { StatusBadge, type Status } from "@/components/StatusBadge";
 import { format } from "date-fns";
+import { CardSkeleton } from "@/components/ui/loading-skeletons";
 
 interface StudioShoot {
   id: string;
@@ -185,12 +186,9 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
 
   if (loading) {
     return (
-      <Card className="p-6 bg-card border-primary/20">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-4">Loading...</p>
-        </div>
-      </Card>
+      <div className="animate-in fade-in duration-300">
+        <CardSkeleton count={2} />
+      </div>
     );
   }
 

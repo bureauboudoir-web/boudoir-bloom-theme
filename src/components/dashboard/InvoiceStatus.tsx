@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
+import { CardSkeleton } from "@/components/ui/loading-skeletons";
 
 interface Invoice {
   id: string;
@@ -142,7 +143,11 @@ export const InvoiceStatus = () => {
   );
 
   if (loading) {
-    return <div className="text-center py-8">Loading invoices...</div>;
+    return (
+      <div className="animate-in fade-in duration-300">
+        <CardSkeleton count={3} />
+      </div>
+    );
   }
 
   return (
