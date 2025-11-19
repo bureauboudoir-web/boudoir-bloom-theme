@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { useUrlPreview } from "@/hooks/useUrlPreview";
+import { UrlPreviewCard } from "./UrlPreviewCard";
 
 interface OnboardingSocialsProps {
   onboardingData?: any;
@@ -53,6 +55,26 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
     },
   });
 
+  // Watch form values for URL previews
+  const instagramUrl = form.watch("social_instagram");
+  const twitterUrl = form.watch("social_twitter");
+  const tiktokUrl = form.watch("social_tiktok");
+  const youtubeUrl = form.watch("social_youtube");
+  const telegramUrl = form.watch("social_telegram");
+  const onlyfansUrl = form.watch("fan_platform_onlyfans");
+  const fanslyUrl = form.watch("fan_platform_fansly");
+  const otherUrl = form.watch("fan_platform_other");
+
+  // URL preview hooks
+  const instagramPreview = useUrlPreview(instagramUrl);
+  const twitterPreview = useUrlPreview(twitterUrl);
+  const tiktokPreview = useUrlPreview(tiktokUrl);
+  const youtubePreview = useUrlPreview(youtubeUrl);
+  const telegramPreview = useUrlPreview(telegramUrl);
+  const onlyfansPreview = useUrlPreview(onlyfansUrl);
+  const fanslyPreview = useUrlPreview(fanslyUrl);
+  const otherPreview = useUrlPreview(otherUrl);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await onComplete(7, data);
     if (onNext) onNext();
@@ -86,6 +108,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://instagram.com/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...instagramPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -103,6 +126,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://twitter.com/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...twitterPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -120,6 +144,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://tiktok.com/@username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...tiktokPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -137,6 +162,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://youtube.com/@username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...youtubePreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -154,6 +180,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://t.me/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...telegramPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -201,6 +228,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://onlyfans.com/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...onlyfansPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -218,6 +246,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://fansly.com/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...fanslyPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -235,6 +264,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
                     <FormControl>
                       <Input placeholder="https://other-platform.com/username" {...field} />
                     </FormControl>
+                    <UrlPreviewCard {...otherPreview} />
                     <FormMessage />
                   </FormItem>
                 )}
