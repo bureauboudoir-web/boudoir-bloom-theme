@@ -29,7 +29,7 @@ const Home = () => {
     }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
-          <h1 className="font-serif text-5xl font-bold mb-8 text-glow-red leading-tight md:text-7xl">
+          <h1 className="font-serif text-5xl font-bold mb-8 text-glow-red leading-tight text-[#d1ae94] md:text-5xl">
             Where Real Creators Become Iconic
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
