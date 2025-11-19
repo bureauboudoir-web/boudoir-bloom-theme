@@ -134,18 +134,20 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card border-primary/20">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-10 mb-6">
-              <TabsTrigger value="applications">Applications</TabsTrigger>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="commitments">Commitments</TabsTrigger>
-              <TabsTrigger value="shoots">Shoots</TabsTrigger>
-              <TabsTrigger value="review">Review</TabsTrigger>
-              <TabsTrigger value="invoices">Invoices</TabsTrigger>
-              <TabsTrigger value="support">Support</TabsTrigger>
-              <TabsTrigger value="roles">Roles</TabsTrigger>
-              <TabsTrigger value="meetings">Meetings</TabsTrigger>
-              <TabsTrigger value="availability">Availability</TabsTrigger>
-            </TabsList>
+            <div className="mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+              <TabsList className="inline-flex w-auto min-w-full">
+                <TabsTrigger value="applications" className="flex-shrink-0 px-4">Applications</TabsTrigger>
+                <TabsTrigger value="overview" className="flex-shrink-0 px-4">Overview</TabsTrigger>
+                <TabsTrigger value="commitments" className="flex-shrink-0 px-4">Commitments</TabsTrigger>
+                <TabsTrigger value="shoots" className="flex-shrink-0 px-4">Shoots</TabsTrigger>
+                <TabsTrigger value="review" className="flex-shrink-0 px-4">Review</TabsTrigger>
+                <TabsTrigger value="invoices" className="flex-shrink-0 px-4">Invoices</TabsTrigger>
+                <TabsTrigger value="support" className="flex-shrink-0 px-4">Support</TabsTrigger>
+                <TabsTrigger value="roles" className="flex-shrink-0 px-4">Roles</TabsTrigger>
+                <TabsTrigger value="meetings" className="flex-shrink-0 px-4">Meetings</TabsTrigger>
+                <TabsTrigger value="availability" className="flex-shrink-0 px-4">Availability</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="applications">
               <ApplicationsManagement />
