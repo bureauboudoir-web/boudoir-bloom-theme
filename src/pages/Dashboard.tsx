@@ -102,24 +102,6 @@ const Dashboard = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Show loading while checking access
-  if (authLoading || accessLoading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">
-      <p className="text-muted-foreground">Loading...</p>
-    </div>;
-  }
-
-  // Show appropriate view based on access level
-  if (accessLevel === 'no_access') {
-    return <NoAccessView />;
-  }
-
-  if (accessLevel === 'meeting_only') {
-    return <MeetingBookingView />;
-  }
-
-  // Full dashboard access (accessLevel === 'full_access')
-
   useEffect(() => {
     if (onboardingData) {
       setCurrentStep(onboardingData.current_step || 1);
@@ -144,7 +126,23 @@ const Dashboard = () => {
     fetchProfile();
   }, [user?.id]);
 
-  if (authLoading || onboardingLoading) {
+  // Show loading while checking access
+  if (authLoading || accessLoading) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">
+      <p className="text-muted-foreground">Loading...</p>
+    </div>;
+  }
+
+  // Show appropriate view based on access level
+  if (accessLevel === 'no_access') {
+    return <NoAccessView />;
+  }
+
+  if (accessLevel === 'meeting_only') {
+    return <MeetingBookingView />;
+  }
+
+  if (onboardingLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
