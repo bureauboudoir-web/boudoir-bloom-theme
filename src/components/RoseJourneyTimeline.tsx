@@ -1,71 +1,75 @@
-// Custom SVG Potted Rose Components with Realistic Designs
-const SeedlingPot = () => <svg viewBox="0 0 200 280" className="w-full h-full" style={{
-  maxWidth: '160px',
-  maxHeight: '220px'
+// Realistic Potted Rose Components - Enhanced Design
+const SeedlingPot = () => <svg viewBox="0 0 200 280" className="w-full h-full drop-shadow-2xl" style={{
+  maxWidth: '180px',
+  maxHeight: '240px'
 }}>
     <defs>
       {/* Terracotta pot gradients */}
       <linearGradient id="terracottaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#c67c5c" />
-        <stop offset="30%" stopColor="#b86b4c" />
-        <stop offset="70%" stopColor="#a85a3c" />
-        <stop offset="100%" stopColor="#984a2c" />
-      </linearGradient>
-      <linearGradient id="terracottaRim" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#d89c7c" />
-        <stop offset="50%" stopColor="#c67c5c" />
-        <stop offset="100%" stopColor="#a85a3c" />
+        <stop offset="30%" stopColor="#c67c5c" />
+        <stop offset="70%" stopColor="#a85a3c" />
+        <stop offset="100%" stopColor="#8a4a2c" />
       </linearGradient>
-      <radialGradient id="terracottaHighlight" cx="40%" cy="30%">
-        <stop offset="0%" stopColor="#e8ac8c" opacity="0.6" />
+      <radialGradient id="terracottaLight" cx="30%" cy="30%">
+        <stop offset="0%" stopColor="#f8bcac" opacity="0.7" />
         <stop offset="100%" stopColor="#c67c5c" opacity="0" />
       </radialGradient>
-      {/* Realistic leaf gradients */}
-      <linearGradient id="leafGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#a8d88f" />
-        <stop offset="40%" stopColor="#7fb85f" />
+      {/* Realistic leaf gradients with depth */}
+      <linearGradient id="leafMain" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#c8e8af" />
+        <stop offset="30%" stopColor="#a8d88f" />
+        <stop offset="60%" stopColor="#7fb85f" />
         <stop offset="100%" stopColor="#5a9f37" />
       </linearGradient>
-      <linearGradient id="leafGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#a8d88f" />
-        <stop offset="40%" stopColor="#7fb85f" />
-        <stop offset="100%" stopColor="#5a9f37" />
-      </linearGradient>
-      <linearGradient id="soilGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#8b6a4f" />
+      <radialGradient id="leafHighlight" cx="35%" cy="35%">
+        <stop offset="0%" stopColor="#d8f8bf" opacity="0.8" />
+        <stop offset="100%" stopColor="#7fb85f" opacity="0" />
+      </radialGradient>
+      <linearGradient id="soilRich" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#9b7a5f" />
         <stop offset="100%" stopColor="#6a4a2f" />
       </linearGradient>
+      <filter id="softGlow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
     </defs>
     
-    {/* Soft shadow */}
-    <ellipse cx="100" cy="268" rx="60" ry="9" fill="#000" opacity="0.15" />
+    {/* Soft realistic shadow */}
+    <ellipse cx="100" cy="270" rx="65" ry="8" fill="#000" opacity="0.2" filter="url(#softGlow)" />
     
-    {/* Terracotta pot body */}
-    <path d="M60,198 L140,198 L152,258 L48,258 Z" fill="url(#terracottaGradient)" />
-    <path d="M60,198 L140,198 L152,258 L48,258 Z" fill="url(#terracottaHighlight)" />
+    {/* Terracotta pot with texture */}
+    <path d="M58,195 L142,195 L154,260 L46,260 Z" fill="url(#terracottaGradient)" stroke="#6a3a1c" strokeWidth="2" />
+    <path d="M58,195 L142,195 L154,260 L46,260 Z" fill="url(#terracottaLight)" />
     
-    {/* Clay texture bands */}
-    <line x1="58" y1="215" x2="142" y2="215" stroke="#984a2c" strokeWidth="0.5" opacity="0.3" />
-    <line x1="56" y1="235" x2="144" y2="235" stroke="#984a2c" strokeWidth="0.5" opacity="0.3" />
+    {/* Clay texture details */}
+    <line x1="56" y1="210" x2="144" y2="212" stroke="#984a2c" strokeWidth="0.8" opacity="0.25" />
+    <line x1="54" y1="230" x2="146" y2="232" stroke="#984a2c" strokeWidth="0.8" opacity="0.25" />
+    <line x1="52" y1="248" x2="148" y2="250" stroke="#984a2c" strokeWidth="0.8" opacity="0.25" />
     
-    {/* Pot rim - terracotta style */}
-    <ellipse cx="100" cy="258" rx="52" ry="11" fill="#984a2c" />
-    <ellipse cx="100" cy="256" rx="52" ry="10" fill="url(#terracottaRim)" />
+    {/* Pot rim with dimensional depth */}
+    <ellipse cx="100" cy="260" rx="54" ry="12" fill="#7a3a1c" />
+    <ellipse cx="100" cy="258" rx="54" ry="11" fill="#984a2c" />
+    <ellipse cx="100" cy="256" rx="52" ry="10" fill="url(#terracottaGradient)" />
     
-    {/* Pot top rim with depth */}
-    <ellipse cx="100" cy="198" rx="42" ry="10" fill="url(#terracottaRim)" />
-    <ellipse cx="100" cy="197" rx="40" ry="8" fill="#d89c7c" opacity="0.5" />
+    {/* Top rim */}
+    <ellipse cx="100" cy="195" rx="43" ry="11" fill="url(#terracottaGradient)" stroke="#6a3a1c" strokeWidth="2" />
+    <ellipse cx="100" cy="194" rx="41" ry="9" fill="#e8ac8c" opacity="0.6" />
     
-    {/* Drainage hole */}
-    <ellipse cx="100" cy="256" rx="3" ry="2" fill="#5a3a1c" />
+    {/* Drainage detail */}
+    <ellipse cx="100" cy="256" rx="4" ry="2.5" fill="#4a2a0c" />
     
-    {/* Rich soil */}
-    <ellipse cx="100" cy="200" rx="38" ry="7" fill="url(#soilGradient)" />
-    <ellipse cx="100" cy="199" rx="36" ry="5" fill="#7b5a3f" opacity="0.6" />
-    {/* Small pebbles in soil */}
-    <circle cx="92" cy="200" r="1.5" fill="#9a7a5f" />
-    <circle cx="108" cy="201" r="1.2" fill="#8a6a4f" />
-    <circle cx="98" cy="202" r="1" fill="#aa8a6f" />
+    {/* Rich soil with particles */}
+    <ellipse cx="100" cy="197" rx="40" ry="8" fill="url(#soilRich)" />
+    <ellipse cx="100" cy="196" rx="38" ry="6" fill="#8b6a4f" opacity="0.7" />
+    {/* Soil particles */}
+    <circle cx="88" cy="197" r="2" fill="#ab8a6f" opacity="0.6" />
+    <circle cx="110" cy="198" r="1.5" fill="#9a7a5f" opacity="0.6" />
+    <circle cx="96" cy="199" r="1.8" fill="#8a6a4f" opacity="0.6" />
     
     {/* Natural stem with texture */}
     <line x1="100" y1="200" x2="100" y2="140" stroke="#5a9f37" strokeWidth="5" strokeLinecap="round" />
