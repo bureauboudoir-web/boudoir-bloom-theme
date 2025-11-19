@@ -42,47 +42,53 @@ const Home = () => {
       </section>
 
       {/* Section 2: Who We Are & How We Compare */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-20 px-6 bg-secondary/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-start">
             <div>
-              <h2 className="font-serif text-5xl mb-6 text-primary">Who We Are</h2>
+              <h2 className="font-serif text-5xl mb-8 text-primary">Who We Are</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 Bureau Boudoir is an exclusive creator management agency based in Amsterdam's iconic Red Light District. 
                 We blend artistic vision with business intelligence to build sustainable creator careers.
               </p>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
                 From professional photoshoots to AI-powered marketing, we handle everything so you can focus on being creative.
               </p>
               
-              <h3 className="font-serif text-2xl mb-4 text-primary">How We Compare</h3>
-              <div className="space-y-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold text-foreground">Full-Service Management</p>
-                    <p className="text-sm text-muted-foreground">Unlike solo creators, you get a complete team: photographers, marketers, and account managers.</p>
+              <h3 className="font-serif text-2xl mb-6 text-primary">How We Compare</h3>
+              <div className="space-y-5 mb-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground mb-1">Full-Service Management</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">Unlike solo creators, you get a complete team: photographers, marketers, and account managers.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Crown className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold text-foreground">Premium Positioning</p>
-                    <p className="text-sm text-muted-foreground">We don't compete on price—we compete on quality, exclusivity, and creator success.</p>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Crown className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground mb-1">Premium Positioning</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">We don't compete on price—we compete on quality, exclusivity, and creator success.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Target className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="font-semibold text-foreground">Data-Driven Growth</p>
-                    <p className="text-sm text-muted-foreground">AI-powered analytics and proven marketing strategies maximize your revenue potential.</p>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground mb-1">Data-Driven Growth</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">AI-powered analytics and proven marketing strategies maximize your revenue potential.</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <Card className="p-8 bg-card border-primary/20 shadow-xl">
-              <h3 className="font-serif text-3xl mb-6 text-center text-primary">Your Benefits</h3>
+            <Card className="p-10 bg-card border-primary/20 shadow-xl">
+              <h3 className="font-serif text-3xl mb-8 text-center text-primary">Your Benefits</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">

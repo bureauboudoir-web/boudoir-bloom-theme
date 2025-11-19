@@ -5,141 +5,119 @@ interface StreetLampIconProps {
 const StreetLampIcon = ({ className = "" }: StreetLampIconProps) => {
   return (
     <svg 
-      viewBox="0 0 100 200" 
+      viewBox="0 0 100 120" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
       className={`inline-block ${className}`}
     >
-      {/* Main post - dark metal */}
+      {/* Main post - dark metal (shortened) */}
       <rect 
-        x="47" 
-        y="60" 
-        width="6" 
-        height="135" 
+        x="46" 
+        y="80" 
+        width="8" 
+        height="35" 
         fill="#2d2d2d"
         rx="1"
       />
       
-      {/* Decorative sphere on post */}
-      <circle 
-        cx="50" 
-        cy="75" 
-        r="5" 
-        fill="#3d3d3d"
-        stroke="#1d1d1d"
-        strokeWidth="0.5"
-      />
-      
-      {/* Conical top/roof */}
+      {/* Conical top/roof (larger) */}
       <path 
-        d="M50 8 L65 25 L35 25 Z" 
+        d="M50 5 L72 30 L28 30 Z" 
         fill="#2d2d2d"
         stroke="#1d1d1d"
-        strokeWidth="1"
+        strokeWidth="1.5"
       />
       
-      {/* Top ornament point */}
+      {/* Top ornament point (larger) */}
       <path 
-        d="M50 0 L54 8 L46 8 Z" 
+        d="M50 0 L55 10 L45 10 Z" 
         fill="#3d3d3d"
       />
       
-      {/* Hexagonal lantern housing - outer red glow (largest) */}
+      {/* Hexagonal lantern housing - outer red glow (largest, 40% bigger) */}
       <ellipse 
         cx="50" 
-        cy="40" 
-        rx="28" 
-        ry="18" 
+        cy="55" 
+        rx="40" 
+        ry="26" 
         fill="hsl(0 90% 50%)"
         opacity="0.15"
         filter="url(#outerGlow)"
       />
       
-      {/* Middle red glow layer */}
+      {/* Middle red glow layer (40% bigger) */}
       <ellipse 
         cx="50" 
-        cy="40" 
-        rx="20" 
-        ry="13" 
+        cy="55" 
+        rx="28" 
+        ry="18" 
         fill="hsl(0 95% 55%)"
         opacity="0.3"
         filter="url(#middleGlow)"
       />
       
-      {/* Inner red glow layer */}
+      {/* Inner red glow layer (40% bigger) */}
       <ellipse 
         cx="50" 
-        cy="40" 
-        rx="14" 
-        ry="9" 
+        cy="55" 
+        rx="20" 
+        ry="13" 
         fill="hsl(0 100% 60%)"
         opacity="0.5"
         filter="url(#innerGlow)"
       />
       
-      {/* Hexagonal red glass panels */}
+      {/* Hexagonal red glass panels (1.5x larger) */}
       <polygon 
-        points="50,28 62,33 62,47 50,52 38,47 38,33" 
+        points="50,35 68,42 68,68 50,75 32,68 32,42" 
         fill="hsl(0 85% 50%)"
         opacity="0.8"
       />
       
-      {/* Brighter center core */}
+      {/* Brighter center core (1.5x larger) */}
       <polygon 
-        points="50,32 58,36 58,44 50,48 42,44 42,36" 
+        points="50,40 63,46 63,64 50,70 37,64 37,46" 
         fill="hsl(0 100% 65%)"
         opacity="0.9"
       />
       
-      {/* Dark metal frame bars - vertical strips */}
-      <line x1="50" y1="25" x2="50" y2="55" stroke="#1d1d1d" strokeWidth="1.5" />
-      <line x1="62" y1="30" x2="62" y2="50" stroke="#1d1d1d" strokeWidth="1.5" />
-      <line x1="38" y1="30" x2="38" y2="50" stroke="#1d1d1d" strokeWidth="1.5" />
-      <line x1="56" y1="27" x2="56" y2="53" stroke="#1d1d1d" strokeWidth="1.2" />
-      <line x1="44" y1="27" x2="44" y2="53" stroke="#1d1d1d" strokeWidth="1.2" />
+      {/* Dark metal frame bars - vertical strips (1.5x scaled) */}
+      <line x1="50" y1="28" x2="50" y2="80" stroke="#1d1d1d" strokeWidth="2" />
+      <line x1="68" y1="38" x2="68" y2="72" stroke="#1d1d1d" strokeWidth="2" />
+      <line x1="32" y1="38" x2="32" y2="72" stroke="#1d1d1d" strokeWidth="2" />
+      <line x1="61" y1="32" x2="61" y2="77" stroke="#1d1d1d" strokeWidth="1.5" />
+      <line x1="39" y1="32" x2="39" y2="77" stroke="#1d1d1d" strokeWidth="1.5" />
       
-      {/* Top metal rim */}
+      {/* Top metal rim (1.5x scaled) */}
       <ellipse 
         cx="50" 
-        cy="25" 
-        rx="15" 
-        ry="3" 
+        cy="30" 
+        rx="22" 
+        ry="4" 
         fill="#2d2d2d"
         stroke="#1d1d1d"
-        strokeWidth="0.8"
+        strokeWidth="1"
       />
       
-      {/* Bottom metal rim */}
+      {/* Bottom metal rim (1.5x scaled) */}
       <ellipse 
         cx="50" 
-        cy="55" 
-        rx="15" 
-        ry="3" 
+        cy="80" 
+        rx="22" 
+        ry="4" 
         fill="#2d2d2d"
         stroke="#1d1d1d"
-        strokeWidth="0.8"
+        strokeWidth="1"
       />
       
       {/* Connection bracket to post */}
       <rect 
-        x="48" 
-        y="55" 
-        width="4" 
-        height="8" 
+        x="47" 
+        y="80" 
+        width="6" 
+        height="10" 
         fill="#2d2d2d"
         rx="0.5"
-      />
-      
-      {/* Post base mount */}
-      <rect 
-        x="44" 
-        y="190" 
-        width="12" 
-        height="8" 
-        fill="#2d2d2d"
-        stroke="#1d1d1d"
-        strokeWidth="1"
-        rx="1"
       />
       
       {/* Decorative rivets on frame */}
