@@ -896,22 +896,69 @@ export const CreatorProfile = ({
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Greeting Message</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.scripts_greeting)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Sexting Style</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.scripts_sexting)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">PPV Promotion</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.scripts_ppv)}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Renewal Message</p>
-              <p className="whitespace-pre-wrap">{formatValue(onboardingData.scripts_renewal)}</p>
-            </div>
+            {/* Greeting Message */}
+            {onboardingData.scripts_greeting ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Greeting Message</p>
+                <p className="whitespace-pre-wrap">{onboardingData.scripts_greeting}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(7)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Greeting Message</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your greeting message</p>
+              </div>
+            )}
+            
+            {/* Sexting Style */}
+            {onboardingData.scripts_sexting ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Sexting Style</p>
+                <p className="whitespace-pre-wrap">{onboardingData.scripts_sexting}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(7)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Sexting Style</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your sexting style</p>
+              </div>
+            )}
+            
+            {/* PPV Promotion */}
+            {onboardingData.scripts_ppv ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">PPV Promotion</p>
+                <p className="whitespace-pre-wrap">{onboardingData.scripts_ppv}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(7)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">PPV Promotion</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your PPV promotion script</p>
+              </div>
+            )}
+            
+            {/* Renewal Message */}
+            {onboardingData.scripts_renewal ? (
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Renewal Message</p>
+                <p className="whitespace-pre-wrap">{onboardingData.scripts_renewal}</p>
+              </div>
+            ) : (
+              <div 
+                onClick={() => onNavigateToOnboarding?.(7)}
+                className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all"
+              >
+                <p className="text-sm font-medium text-muted-foreground">Renewal Message</p>
+                <p className="text-sm italic text-muted-foreground/70">Add your renewal message</p>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
