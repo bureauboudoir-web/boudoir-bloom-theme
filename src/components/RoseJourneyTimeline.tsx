@@ -47,7 +47,7 @@ const RoseJourneyTimeline = () => {
                 <img
                   src={stage.image}
                   alt={stage.title}
-                  className="w-full h-full object-cover scale-125 transition-transform duration-500 group-hover:scale-[1.35]"
+                  className="w-full h-full object-cover scale-95 transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
@@ -65,7 +65,7 @@ const RoseJourneyTimeline = () => {
                 <img
                   src={stage.image}
                   alt={stage.title}
-                  className="w-full h-full object-cover scale-110"
+                  className="w-full h-full object-cover scale-[0.85]"
                 />
               </div>
               <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
