@@ -171,7 +171,7 @@ export const CreatorProfile = ({
                     className="gap-2 text-muted-foreground border-dashed hover:text-foreground hover:border-solid transition-all"
                   >
                     <LinkIcon className="h-4 w-4" />
-                    Add OnlyFans Link
+                    Add Fans Link
                   </Button>
                 )}
               </div>
