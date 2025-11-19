@@ -245,7 +245,7 @@ const Home = () => {
                   <Camera className="w-12 h-12 text-rose-gold" />
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
-                  Professional Creative Direction
+                  Professional Content  
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Studio lighting, posing, styling, and high-end content direction. Not phone selfies — real production quality.
@@ -259,7 +259,7 @@ const Home = () => {
                   <Gem className="w-12 h-12 text-rose-gold" />
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
-                  The Marketing & Sales Machine
+                  Marketing Machine
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Not random posting — real funnels, scripts, high-ticket strategy, and retention systems. 
