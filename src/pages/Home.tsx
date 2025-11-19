@@ -43,9 +43,9 @@ const Home = () => {
       </section>
 
       {/* Section 2: Who We Are & How We Compare */}
-      <section className="py-24 px-6 bg-secondary/30">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-secondary/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-start">
             <div>
               <h2 className="font-serif text-4xl md:text-5xl mb-8 text-[#d1ae94]">Who We Are</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
@@ -60,8 +60,8 @@ const Home = () => {
               
             </div>
             
-            <Card className="p-10 bg-card border-primary/20 shadow-xl">
-              <h3 className="font-serif text-3xl mb-8 text-center text-[#8a0000]">Your Benefits</h3>
+            <Card className="p-6 sm:p-8 md:p-10 bg-card border-primary/20 shadow-xl">
+              <h3 className="font-serif text-2xl sm:text-3xl mb-6 sm:mb-8 text-center text-[#8a0000]">Your Benefits</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -106,10 +106,10 @@ const Home = () => {
       </section>
 
       {/* Section 3: What We Do */}
-      <section className="py-24 px-6">
+      <section className="py-16 sm:py-24 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl text-center">
           <p className="text-sm text-[#d1ae94] mb-4 font-medium">What We Do</p>
-          <h2 className="font-serif mb-8 text-[#d1ae94] leading-tight text-4xl md:text-3xl">
+          <h2 className="font-serif mb-6 sm:mb-8 text-[#d1ae94] leading-tight text-2xl sm:text-3xl md:text-4xl">
             We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
           </h2>
           
@@ -142,13 +142,13 @@ const Home = () => {
       </section>
 
       {/* Section 4: Our Creator Services */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
+      <section className="py-16 sm:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-center mb-12 sm:mb-16 text-[#d1ae94]">
             Our Creator Services
           </h2>
           
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {/* Planning */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
