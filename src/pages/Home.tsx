@@ -35,8 +35,8 @@ const Home = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
             A luxury creative agency  in heart of Amsterdam iconic district, guiding women in the art of presence, identity, and digital performance.
           </p>
-          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
-            <Link to="/signup" className="mx-[240px]">Become a Creator</Link>
+          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90">
+            <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
       </section>
@@ -404,8 +404,8 @@ const Home = () => {
             Join a community of creators who've chosen clarity, artistry, and long-term growth 
             over shortcuts and noise. Let's build something extraordinary together.
           </p>
-          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
-            <Link to="/signup" className="mx-[239px]">Apply Now</Link>
+          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90">
+            <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
       </section>
