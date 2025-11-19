@@ -5,19 +5,19 @@ const stages = [
     title: "The Seed",
     subtitle: "Planting Your Foundation",
     description: "Every great creator starts with a vision. We nurture your unique story, helping you define your brand identity and establish your presence in the digital landscape.",
-    position: "16.6%",
+    translateX: "0%",
   },
   {
     title: "The Bud",
     subtitle: "Growing Your Presence",
     description: "As you develop, we provide the tools and guidance needed to flourish. Professional shoots, content strategy, and marketing support help you reach new audiences.",
-    position: "50%",
+    translateX: "-33.33%",
   },
   {
     title: "In Full Bloom",
     subtitle: "Thriving Success",
     description: "Watch your creator business blossom into sustainable success. With consistent support and proven strategies, you'll build a loyal fanbase and steady income.",
-    position: "83.4%",
+    translateX: "-66.66%",
   },
 ];
 
@@ -47,7 +47,7 @@ const RoseJourneyTimeline = () => {
                   alt={stage.title}
                   className="absolute inset-0 w-[300%] h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   style={{
-                    objectPosition: stage.position,
+                    transform: `translateX(${stage.translateX})`,
                   }}
                 />
               </div>
@@ -68,7 +68,7 @@ const RoseJourneyTimeline = () => {
                   alt={stage.title}
                   className="absolute inset-0 w-[300%] h-full object-cover"
                   style={{
-                    objectPosition: stage.position,
+                    transform: `translateX(${stage.translateX})`,
                   }}
                 />
               </div>
