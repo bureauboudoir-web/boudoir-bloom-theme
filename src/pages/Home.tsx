@@ -182,24 +182,14 @@ const Home = () => {
                   <Megaphone className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Marketing</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Marketing    </h3>
               <p className="text-sm text-muted-foreground">
                 Content strategy, storytelling, social hooks, and audience building.
               </p>
             </Card>
 
             {/* Sales */}
-            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
-              <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                  <DollarSign className="w-7 h-7 text-[#d1ae94]" />
-                </div>
-              </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Sales</h3>
-              <p className="text-sm text-muted-foreground">
-                PPV funnels, retention systems, scripts, and revenue optimization.
-              </p>
-            </Card>
+            
 
             {/* Support */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
