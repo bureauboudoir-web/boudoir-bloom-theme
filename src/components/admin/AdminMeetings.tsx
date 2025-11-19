@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus } from "lucide-react";
 import { format } from "date-fns";
+import { AssistedOnboarding } from "./AssistedOnboarding";
 
 interface Meeting {
   id: string;
@@ -37,7 +38,7 @@ export const AdminMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
-  const [actionDialog, setActionDialog] = useState<'confirm' | 'complete' | null>(null);
+  const [actionDialog, setActionDialog] = useState<'confirm' | 'complete' | 'assist' | null>(null);
   const [meetingLink, setMeetingLink] = useState("");
   const [meetingLocation, setMeetingLocation] = useState("");
   const [meetingNotes, setMeetingNotes] = useState("");
@@ -450,6 +451,23 @@ export const AdminMeetings = () => {
                 rows={4}
               />
             </div>
+            <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
+              <UserPlus className="h-5 w-5 text-primary" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">Need to help with onboarding?</p>
+                <p className="text-xs text-muted-foreground">Assist the creator with filling in their profile information</p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setActionDialog('assist');
+                }}
+              >
+                Help with Onboarding
+              </Button>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setActionDialog(null)}>
@@ -459,6 +477,22 @@ export const AdminMeetings = () => {
               Complete & Unlock Access
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={actionDialog === 'assist'} onOpenChange={() => setActionDialog(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {selectedMeeting?.profiles && (
+            <AssistedOnboarding
+              userId={selectedMeeting.user_id}
+              userName={selectedMeeting.profiles.full_name}
+              onComplete={() => {
+                setActionDialog('complete');
+                toast.success("Onboarding data saved!");
+              }}
+              onCancel={() => setActionDialog('complete')}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>
