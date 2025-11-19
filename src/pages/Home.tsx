@@ -405,7 +405,7 @@ const Home = () => {
             over shortcuts and noise. Let's build something extraordinary together.
           </p>
           <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg">
-            <Link to="/signup" className="mx-[240px]">Apply Now</Link>
+            <Link to="/signup" className="mx-[239px]">Apply Now</Link>
           </Button>
         </div>
       </section>
