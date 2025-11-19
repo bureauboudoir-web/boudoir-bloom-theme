@@ -23,7 +23,7 @@ const Home = () => {
       
       {/* Section 1: Hero Banner */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${heroBg})`,
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.50)), url(${heroBg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center'
     }}>
@@ -42,11 +42,11 @@ const Home = () => {
       </section>
 
       {/* Section 2: Who We Are & How We Compare */}
-      <section className="py-20 px-6 bg-secondary/30">
+      <section className="py-24 px-6 bg-secondary/30">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-start">
             <div>
-              <h2 className="font-serif text-5xl mb-8 text-[#d1ae94]">Who We Are</h2>
+              <h2 className="font-serif text-4xl md:text-5xl mb-8 text-[#d1ae94]">Who We Are</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 Bureau Boudoir is an exclusive creator management agency based in Amsterdam's iconic Red Light District. 
                 We blend artistic vision with business intelligence to build sustainable creator careers.
@@ -105,10 +105,10 @@ const Home = () => {
       </section>
 
       {/* Section 3: What We Do */}
-      <section className="py-32 px-6">
+      <section className="py-24 px-6">
         <div className="container mx-auto max-w-5xl text-center">
-          <p className="text-xl text-primary mb-4 font-medium">What We Do</p>
-          <h2 className="font-serif mb-8 text-foreground leading-tight text-4xl">
+          <p className="text-sm text-[#d1ae94] mb-4 font-medium">What We Do</p>
+          <h2 className="font-serif mb-8 text-[#d1ae94] leading-tight text-4xl md:text-5xl">
             We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
           </h2>
           
@@ -141,9 +141,9 @@ const Home = () => {
       </section>
 
       {/* Section 4: Our Creator Services */}
-      <section className="py-32 bg-background">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6 max-w-6xl">
-          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-rose-gold">
+          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
             Our Creator Services
           </h2>
           
@@ -209,7 +209,7 @@ const Home = () => {
               </div>
               <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Support</h3>
               <p className="text-sm text-muted-foreground">
-                24/7 team access, analytics, guidance, and ongoing optimization.
+                <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
               </p>
             </Card>
           </div>
@@ -217,9 +217,9 @@ const Home = () => {
       </section>
 
       {/* Section 5: What Makes Us Different */}
-      <section className="py-32 bg-secondary/20">
+      <section className="py-24 bg-secondary/20">
         <div className="container mx-auto px-6 max-w-6xl">
-          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-rose-gold">
+          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
             What Makes Us Different
           </h2>
 
@@ -272,9 +272,9 @@ const Home = () => {
       </section>
 
       {/* Section 6: Support & Management */}
-      <section className="py-32 bg-background">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6 max-w-6xl">
-          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-rose-gold">
+          <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
             Support & Management
           </h2>
 
@@ -428,7 +428,7 @@ const Home = () => {
       <QAAccordion />
 
       {/* Section 10: Final CTA - Ready to Begin */}
-      <section className="py-32 bg-background">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6 text-center max-w-4xl">
           <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
             Ready to Begin Your Journey?
@@ -453,10 +453,10 @@ const Home = () => {
                 <StreetLampIcon className="w-16 h-16 opacity-80" />
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-8 bg-primary/20 rounded-full blur-xl" />
               </div>
-              <span className="font-serif text-3xl font-bold text-[#d1ae94]" style={{
-              textShadow: '0 0 30px rgba(209, 174, 148, 0.6), 0 0 60px rgba(209, 174, 148, 0.3)'
-            }}>
-                Bureau Boudoir
+              <span className="font-serif text-3xl font-bold" style={{ fontWeight: 800, letterSpacing: '0.02em' }}>
+                <span style={{ color: 'hsl(0 100% 27%)', textShadow: '0 0 30px hsl(0 100% 27% / 0.4)' }}>Bureau</span>
+                {' '}
+                <span style={{ color: '#d1ae94', textShadow: '0 0 30px rgba(209, 174, 148, 0.6)' }}>Boudoir</span>
               </span>
             </div>
 

@@ -10,14 +10,11 @@ const Navigation = () => {
           <StreetLampIcon className="w-8 h-8 transition-transform group-hover:scale-110" />
           <span 
             className="font-serif text-2xl font-bold"
-            style={{
-              color: 'hsl(0 100% 27%)',
-              textShadow: '0 0 20px hsl(0 100% 27% / 0.4), 0 0 40px hsl(0 100% 27% / 0.2)',
-              fontWeight: 800,
-              letterSpacing: '0.02em'
-            }}
+            style={{ fontWeight: 800, letterSpacing: '0.02em' }}
           >
-            Bureau Boudoir
+            <span style={{ color: 'hsl(0 100% 27%)', textShadow: '0 0 20px hsl(0 100% 27% / 0.4)' }}>Bureau</span>
+            {' '}
+            <span style={{ color: '#d1ae94', textShadow: '0 0 20px rgba(209, 174, 148, 0.4)' }}>Boudoir</span>
           </span>
         </Link>
         
