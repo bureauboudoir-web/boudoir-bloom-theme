@@ -148,7 +148,7 @@ const Home = () => {
             Our Creator Services
           </h2>
           
-          <div className="grid md:grid-cols-5 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             {/* Planning */}
             <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
               <div className="flex justify-center mb-4">
