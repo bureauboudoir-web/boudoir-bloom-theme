@@ -43,7 +43,7 @@ const RoseJourneyTimeline = () => {
               key={index}
               className="group flex flex-col items-center text-center transition-all duration-300 hover:scale-105"
             >
-              <div className="relative w-48 h-64 mb-6 overflow-hidden rounded-lg">
+              <div className="relative w-64 h-80 mb-6 overflow-hidden rounded-lg">
                 <img
                   src={stage.image}
                   alt={stage.title}
@@ -61,7 +61,7 @@ const RoseJourneyTimeline = () => {
         <div className="md:hidden space-y-12">
           {stages.map((stage, index) => (
             <div key={index} className="flex flex-col items-center text-center">
-              <div className="relative w-40 h-52 mb-4 overflow-hidden rounded-lg">
+              <div className="relative w-48 h-64 mb-4 overflow-hidden rounded-lg">
                 <img
                   src={stage.image}
                   alt={stage.title}
