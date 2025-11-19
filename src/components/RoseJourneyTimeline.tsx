@@ -25,10 +25,10 @@ const stages = [
 
 const RoseJourneyTimeline = () => {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-background to-secondary/20">
-      <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6 text-[#d1ae94]">
+    <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-background to-secondary/20">
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 text-[#d1ae94]">
             Grow With Us
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -37,48 +37,44 @@ const RoseJourneyTimeline = () => {
         </div>
 
         {/* Desktop: Horizontal Layout */}
-        <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-12 mb-8">
+        <div className="hidden md:grid md:grid-cols-3 gap-10 lg:gap-14">
           {stages.map((stage, index) => (
             <div
               key={index}
               className="group flex flex-col items-center text-center transition-all duration-300 hover:scale-105"
             >
-              <div className="relative w-80 h-96 mb-8 overflow-hidden rounded-lg">
+              <div className="relative w-80 h-96 mb-4 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                 <img
                   src={stage.image}
                   alt={stage.title}
                   className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              <h3 className="font-serif text-2xl mb-2 text-[#d1ae94]">{stage.title}</h3>
-              <p className="text-sm font-medium text-primary mb-3">{stage.subtitle}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{stage.description}</p>
+              <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
+              <p className="text-sm font-medium text-primary mb-2.5">{stage.subtitle}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed px-2">{stage.description}</p>
             </div>
           ))}
         </div>
 
         {/* Mobile: Vertical Stack */}
-        <div className="md:hidden space-y-12">
+        <div className="md:hidden space-y-10">
           {stages.map((stage, index) => (
             <div key={index} className="flex flex-col items-center text-center">
-              <div className="relative w-56 h-72 mb-6 overflow-hidden rounded-lg">
+              <div className="relative w-56 h-72 mb-3 overflow-hidden rounded-lg shadow-lg">
                 <img
                   src={stage.image}
                   alt={stage.title}
                   className="w-full h-full object-contain"
                 />
               </div>
-              <h3 className="font-serif text-2xl mb-2 text-[#d1ae94]">{stage.title}</h3>
-              <p className="text-sm font-medium text-primary mb-3">{stage.subtitle}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed px-4">{stage.description}</p>
+              <h3 className="font-serif text-2xl mb-1.5 text-[#d1ae94]">{stage.title}</h3>
+              <p className="text-sm font-medium text-primary mb-2">{stage.subtitle}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed px-6">{stage.description}</p>
             </div>
           ))}
         </div>
 
-        {/* Connecting Line - Desktop Only */}
-        <div className="hidden md:block relative -mt-4 mb-8">
-          <div className="absolute left-[16.6%] right-[16.6%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20"></div>
-        </div>
       </div>
     </section>
   );
