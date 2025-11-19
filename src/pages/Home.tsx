@@ -60,7 +60,7 @@ const Home = () => {
             </div>
             
             <Card className="p-10 bg-card border-primary/20 shadow-xl">
-              <h3 className="font-serif text-3xl mb-8 text-center text-primary">Your Benefits</h3>
+              <h3 className="font-serif text-3xl mb-8 text-center text-[#8a0000]">Your Benefits</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -108,7 +108,7 @@ const Home = () => {
       <section className="py-32 px-6">
         <div className="container mx-auto max-w-5xl text-center">
           <p className="text-xl text-primary mb-4 font-medium">What We Do</p>
-          <h2 className="font-serif text-5xl mb-8 text-foreground leading-tight">
+          <h2 className="font-serif mb-8 text-foreground leading-tight text-4xl">
             We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
           </h2>
           
@@ -413,17 +413,8 @@ const Home = () => {
             Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="flex-1 px-4 py-3 rounded-full bg-background border border-primary/30 focus:border-[#d1ae94] focus:outline-none focus:ring-2 focus:ring-[#d1ae94]/20 text-foreground"
-              required
-            />
-            <Button 
-              type="submit" 
-              size="sm" 
-              className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 w-auto"
-            >
+            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border border-primary/30 focus:border-[#d1ae94] focus:outline-none focus:ring-2 focus:ring-[#d1ae94]/20 text-foreground" required />
+            <Button type="submit" size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 w-auto">
               Subscribe
             </Button>
           </form>
