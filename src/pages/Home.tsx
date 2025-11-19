@@ -155,7 +155,7 @@ const Home = () => {
                   <Lightbulb className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Planning</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Planning</h3>
               <p className="text-sm text-muted-foreground">
                 Persona development, boundaries, brand strategy, and market positioning.
               </p>
@@ -168,7 +168,7 @@ const Home = () => {
                   <Camera className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Production</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Production</h3>
               <p className="text-sm text-muted-foreground">
                 Studio shoots, lighting, styling, posing, and high-end visual content.
               </p>
@@ -181,7 +181,7 @@ const Home = () => {
                   <Megaphone className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Marketing</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Marketing</h3>
               <p className="text-sm text-muted-foreground">
                 Content strategy, storytelling, social hooks, and audience building.
               </p>
@@ -194,7 +194,7 @@ const Home = () => {
                   <DollarSign className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Sales</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Sales</h3>
               <p className="text-sm text-muted-foreground">
                 PPV funnels, retention systems, scripts, and revenue optimization.
               </p>
@@ -207,7 +207,7 @@ const Home = () => {
                   <HeadphonesIcon className="w-7 h-7 text-[#d1ae94]" />
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-primary">Support</h3>
+              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Support</h3>
               <p className="text-sm text-muted-foreground">
                 24/7 team access, analytics, guidance, and ongoing optimization.
               </p>
