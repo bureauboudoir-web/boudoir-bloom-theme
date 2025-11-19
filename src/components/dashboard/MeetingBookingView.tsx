@@ -148,6 +148,33 @@ export const MeetingBookingView = () => {
 
       if (error) throw error;
 
+      // Send notification to manager
+      if (managerInfo && user) {
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('id', user.id)
+            .single();
+
+          await supabase.functions.invoke('send-manager-meeting-request', {
+            body: {
+              managerEmail: managerInfo.email,
+              managerName: managerInfo.full_name,
+              creatorName: profileData?.full_name || 'New Creator',
+              creatorEmail: profileData?.email || user.email,
+              meetingDate: format(date, "PPP"),
+              meetingTime: selectedTime,
+              meetingType: meetingType,
+              dashboardUrl: `${window.location.origin}/admin`,
+            }
+          });
+        } catch (emailError) {
+          console.error("Error sending manager notification:", emailError);
+          // Don't fail the whole operation if email fails
+        }
+      }
+
       toast.success("Meeting request sent! Your manager will confirm shortly.");
       fetchMeetingData();
     } catch (error: any) {
