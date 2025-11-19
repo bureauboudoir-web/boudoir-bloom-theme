@@ -7,6 +7,7 @@ import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -71,19 +72,7 @@ export const CreatorProfile = ({
   const age = calculateAge(onboardingData?.personal_date_of_birth);
 
   if (!onboardingData) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Creator Profile</CardTitle>
-          <CardDescription>Complete your onboarding to view your profile</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            Please complete the onboarding process to create your creator profile.
-          </p>
-        </CardContent>
-      </Card>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (

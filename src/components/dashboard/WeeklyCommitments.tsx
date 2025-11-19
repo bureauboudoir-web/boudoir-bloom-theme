@@ -10,6 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, contentTypeColors, type ContentTypeCategory } from "@/components/ContentTypeIcon";
 import { StatusBadge, type Status } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CardSkeleton } from "@/components/ui/loading-skeletons";
 
 interface WeeklyCommitment {
   id: string;
@@ -203,12 +204,9 @@ const WeeklyCommitments = ({ userId }: WeeklyCommitmentsProps) => {
 
   if (loading) {
     return (
-      <Card className="p-6 bg-card border-primary/20">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-4">Loading...</p>
-        </div>
-      </Card>
+      <div className="animate-in fade-in duration-300">
+        <CardSkeleton count={4} />
+      </div>
     );
   }
 

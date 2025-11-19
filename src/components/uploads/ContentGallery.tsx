@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, ExternalLink, Video, Image as ImageIcon, FileIcon, CheckCircle, Clock, XCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { GallerySkeleton } from "@/components/ui/loading-skeletons";
 
 interface ContentUpload {
   id: string;
@@ -141,12 +142,9 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
 
   if (loading) {
     return (
-      <Card className="p-6 bg-card border-primary/20">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-4">Loading...</p>
-        </div>
-      </Card>
+      <div className="animate-in fade-in duration-300">
+        <GallerySkeleton count={6} />
+      </div>
     );
   }
 
