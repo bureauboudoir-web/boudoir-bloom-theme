@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProfilePictureUploadProps {
@@ -21,14 +21,6 @@ export const ProfilePictureUpload = ({
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentPictureUrl || null);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -93,8 +85,8 @@ export const ProfilePictureUpload = ({
       <div className="relative">
         <Avatar className="h-32 w-32 border-4 border-border">
           <AvatarImage src={previewUrl || undefined} alt={userName} />
-          <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
-            {getInitials(userName)}
+          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+            <UserRound className="h-16 w-16 text-primary" />
           </AvatarFallback>
         </Avatar>
         <label
