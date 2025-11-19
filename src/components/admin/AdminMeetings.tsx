@@ -98,6 +98,27 @@ export const AdminMeetings = () => {
 
       if (error) throw error;
 
+      // Send confirmation email
+      if (selectedMeeting.profiles) {
+        try {
+          await supabase.functions.invoke('send-meeting-confirmation', {
+            body: {
+              creatorEmail: selectedMeeting.profiles.email,
+              creatorName: selectedMeeting.profiles.full_name,
+              managerName: user?.email || 'Your Manager',
+              meetingDate: selectedMeeting.meeting_date ? format(new Date(selectedMeeting.meeting_date), "PPP") : '',
+              meetingTime: selectedMeeting.meeting_time,
+              meetingType: selectedMeeting.meeting_type,
+              meetingLink: meetingLink,
+              meetingLocation: meetingLocation,
+            }
+          });
+        } catch (emailError) {
+          console.error("Error sending confirmation email:", emailError);
+          // Don't fail the whole operation if email fails
+        }
+      }
+
       toast.success("Meeting confirmed!");
       setActionDialog(null);
       setSelectedMeeting(null);
@@ -133,6 +154,22 @@ export const AdminMeetings = () => {
         .eq('user_id', selectedMeeting.user_id);
 
       if (accessError) throw accessError;
+
+      // Send access granted email
+      if (selectedMeeting.profiles) {
+        try {
+          await supabase.functions.invoke('send-access-granted', {
+            body: {
+              creatorEmail: selectedMeeting.profiles.email,
+              creatorName: selectedMeeting.profiles.full_name,
+              dashboardUrl: `${window.location.origin}/dashboard`,
+            }
+          });
+        } catch (emailError) {
+          console.error("Error sending access granted email:", emailError);
+          // Don't fail the whole operation if email fails
+        }
+      }
 
       toast.success("Meeting completed! Creator access upgraded.");
       setActionDialog(null);
