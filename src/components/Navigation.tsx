@@ -22,7 +22,7 @@ const Navigation = () => {
         </Link>
         
         <div className="flex items-center gap-4">
-          <Button asChild size="sm" className="glow-red">
+          <Button asChild size="sm" className="glow-red rounded-full px-6 w-auto inline-flex">
             <Link to="/signup">Become a Creator</Link>
           </Button>
           <Link to="/login" className="text-sm text-muted-foreground hover:text-primary transition-colors">
