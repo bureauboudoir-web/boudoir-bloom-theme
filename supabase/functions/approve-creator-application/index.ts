@@ -248,44 +248,44 @@ const handler = async (req: Request): Promise<Response> => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    
-    const redirectUrl = `${appOrigin}/complete-setup`;
-    console.log(`Generating magic link with redirect to: ${redirectUrl}`);
 
-    // Generate magic link for passwordless login
-    const { data: magicLinkData, error: magicLinkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: "magiclink",
-      email: application.email,
-      options: {
-        redirectTo: redirectUrl
-      }
-    });
+    // Generate custom secure token
+    const invitationToken = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
+    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
 
-    if (magicLinkError) {
-      console.error("Error generating magic link:", magicLinkError);
+    // Store token in database
+    const { error: tokenError } = await supabaseAdmin
+      .from("invitation_tokens")
+      .insert({
+        user_id: userId,
+        application_id: applicationId,
+        token: invitationToken,
+        expires_at: expiresAt.toISOString(),
+      });
+
+    if (tokenError) {
+      console.error("Error storing invitation token:", tokenError);
       return new Response(
-        JSON.stringify({ error: `Failed to generate magic link: ${magicLinkError.message}` }),
+        JSON.stringify({ error: "Failed to create invitation token" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const magicLinkUrl = magicLinkData.properties?.action_link || "";
+    // Create direct link to our app
+    const invitationUrl = `${appOrigin}/complete-setup?token=${invitationToken}`;
     const loginUrl = `${appOrigin}/login`;
 
-    // Calculate expiration time
-    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000)).toISOString();
-
-    // Send meeting invitation email with magic link
+    // Send meeting invitation email with custom invitation link
     try {
       await supabaseAdmin.functions.invoke("send-meeting-invitation", {
         body: {
           email: application.email,
           name: application.name,
           loginUrl: loginUrl,
-          magicLinkUrl: magicLinkUrl,
+          magicLinkUrl: invitationUrl,
           applicationId: applicationId,
           userId: userId,
-          magicLinkExpiresAt: expiresAt,
+          magicLinkExpiresAt: expiresAt.toISOString(),
           expirationMinutes: Math.floor(expirationSeconds / 60),
         },
       });
@@ -301,7 +301,7 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         userId,
         message: "Application approved successfully",
-        expiresAt,
+        expiresAt: expiresAt.toISOString(),
       }),
       {
         status: 200,

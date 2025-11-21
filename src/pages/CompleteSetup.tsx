@@ -21,48 +21,47 @@ export default function CompleteSetup() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const verifySession = async () => {
+    const verifyToken = async () => {
+      const params = new URLSearchParams(location.search);
+      const token = params.get("token");
+
+      if (!token) {
+        setError("No invitation token provided. Please use the link from your email.");
+        setVerifying(false);
+        return;
+      }
+
       try {
-        // Get the current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          setError("Invalid or expired magic link. Please request a new invitation.");
+        // Verify the invitation token
+        const { data, error } = await supabase.functions.invoke("verify-invitation-token", {
+          body: { token },
+        });
+
+        if (error) throw error;
+
+        if (data.error) {
+          if (data.error === "expired") {
+            setError("Your invitation link has expired. Please request a new invitation from your manager.");
+          } else if (data.error === "used") {
+            setError("This invitation link has already been used. Please log in with your password.");
+          } else {
+            setError(data.message || "Invalid invitation link.");
+          }
           setVerifying(false);
           return;
         }
 
-        if (!session?.user) {
-          setError("No active session. Please use the magic link from your email.");
-          setVerifying(false);
-          return;
-        }
-
-        console.log("User authenticated via magic link:", session.user.email);
-        setUser(session.user);
-
-        // Track link click
-        try {
-          await supabase.functions.invoke("track-invitation-link", {
-            body: {
-              email: session.user.email,
-              action: "clicked",
-            },
-          });
-        } catch (trackError) {
-          console.error("Error tracking link click:", trackError);
-        }
-
+        console.log("Token verified successfully:", data.email);
+        setUser(data);
         setVerifying(false);
       } catch (error: any) {
         console.error("Verification error:", error);
-        setError("Failed to verify your session. Please try again.");
+        setError("Failed to verify your invitation. Please try again or contact support.");
         setVerifying(false);
       }
     };
 
-    verifySession();
+    verifyToken();
   }, [location]);
 
   const handleSetPassword = async (e: React.FormEvent) => {
@@ -78,34 +77,42 @@ export default function CompleteSetup() {
       return;
     }
 
+    if (!user?.tokenId) {
+      toast.error("Invalid session");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Update the user's password
-      const { error: updateError } = await supabase.auth.updateUser({
+      // Complete the setup by setting the password
+      const { data, error } = await supabase.functions.invoke("complete-invitation-setup", {
+        body: {
+          tokenId: user.tokenId,
+          password: password,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success("Password set successfully! Logging you in...");
+      
+      // Now sign in with the new password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
         password: password,
       });
 
-      if (updateError) throw updateError;
+      if (signInError) throw signInError;
 
-      // Track link used
-      try {
-        await supabase.functions.invoke("track-invitation-link", {
-          body: {
-            email: user.email,
-            action: "used",
-          },
-        });
-      } catch (trackError) {
-        console.error("Error tracking link use:", trackError);
-      }
-
-      toast.success("Password set successfully! Redirecting...");
-      
-      // Redirect to dashboard after a short delay
+      // Redirect to dashboard
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1500);
+      }, 1000);
       
     } catch (error: any) {
       console.error("Error setting password:", error);

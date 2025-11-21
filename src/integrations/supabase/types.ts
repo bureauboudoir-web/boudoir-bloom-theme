@@ -393,6 +393,44 @@ export type Database = {
           },
         ]
       }
+      invitation_tokens: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          token: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_tokens_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "creator_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           admin_payment_confirmed_at: string | null
