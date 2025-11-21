@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
@@ -37,6 +37,7 @@ export const ApplicationsManagement = () => {
   const { user } = useAuth();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'declined'>('pending');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
@@ -47,6 +48,9 @@ export const ApplicationsManagement = () => {
 
   const fetchApplications = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
       let query = supabase
         .from('creator_applications')
         .select(`
@@ -59,8 +63,12 @@ export const ApplicationsManagement = () => {
         query = query.eq('status', filter);
       }
 
-      const { data, error } = await query;
-      if (error) throw error;
+      const { data, error: fetchError } = await query;
+      if (fetchError) {
+        console.error("Error fetching applications:", fetchError);
+        setError(fetchError.message || "Failed to load applications");
+        return;
+      }
 
       // Transform data to flatten the reviewed_by_name
       const transformedData = data?.map((app: any) => ({
@@ -79,7 +87,7 @@ export const ApplicationsManagement = () => {
               .eq('email_type', 'meeting_invitation')
               .order('created_at', { ascending: false })
               .limit(1)
-              .single();
+              .maybeSingle();
             
             app.email_status = emailLog?.status || null;
             app.email_sent_at = emailLog?.sent_at || null;
@@ -88,9 +96,9 @@ export const ApplicationsManagement = () => {
       }
 
       setApplications(transformedData || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching applications:", error);
-      toast.error("Failed to load applications");
+      setError(error.message || "Failed to load applications");
     } finally {
       setLoading(false);
     }
@@ -293,7 +301,32 @@ export const ApplicationsManagement = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading applications...</div>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading applications...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Failed to Load Applications</h3>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={fetchApplications}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -343,7 +376,7 @@ export const ApplicationsManagement = () => {
                     <p className="text-sm text-muted-foreground">{app.phone}</p>
                     
                     {/* Email Status Indicator for Approved Applications */}
-                    {app.status === 'approved' && app.email_status && (
+                    {app.status === 'approved' && (
                       <div className="flex items-center gap-2 text-xs mt-2">
                         {app.email_status === 'sent' ? (
                           <>
@@ -355,10 +388,15 @@ export const ApplicationsManagement = () => {
                             <AlertCircle className="w-3 h-3 text-destructive" />
                             <span className="text-destructive">Email failed - use Resend Invitation</span>
                           </>
-                        ) : (
+                        ) : app.email_status ? (
                           <>
                             <Clock className="w-3 h-3 text-yellow-500" />
                             <span className="text-yellow-500">Email {app.email_status}</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-muted-foreground">Email status unavailable (legacy approval) - use Resend Invitation</span>
                           </>
                         )}
                       </div>
