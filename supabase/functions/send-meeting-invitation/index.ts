@@ -58,6 +58,14 @@ const handler = async (req: Request): Promise<Response> => {
     const { name, email, loginUrl, passwordResetUrl }: MeetingInvitationRequest = requestData;
     console.log(`Sending meeting invitation to ${email}`);
 
+    if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({ error: 'Email service is not configured. Please contact support.' }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -119,6 +127,32 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const emailData = await emailResponse.json();
+    
+    // Check for Resend API errors
+    if (!emailResponse.ok) {
+      console.error("Resend API error:", emailData);
+      
+      if (emailData.statusCode === 401 || emailData.name === 'validation_error') {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Email service authentication failed. Please check RESEND_API_KEY configuration.',
+            statusCode: 401,
+            name: emailData.name,
+            message: emailData.message
+          }),
+          { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          error: `Failed to send email: ${emailData.message || 'Unknown error'}`,
+          details: emailData
+        }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    
     console.log("Meeting invitation email sent successfully:", emailData);
 
     return new Response(JSON.stringify(emailData), {
@@ -128,7 +162,10 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error sending meeting invitation email:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message || 'Failed to send invitation email',
+        details: error.toString()
+      }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }

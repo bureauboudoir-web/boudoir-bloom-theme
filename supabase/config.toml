@@ -9,6 +9,9 @@ verify_jwt = true  # Requires admin/manager authentication
 [functions.send-meeting-invitation]
 verify_jwt = true  # Requires authentication
 
+[functions.resend-meeting-invitation]
+verify_jwt = true  # Requires admin/manager authentication
+
 [functions.send-access-granted]
 verify_jwt = true  # Requires authentication
 
