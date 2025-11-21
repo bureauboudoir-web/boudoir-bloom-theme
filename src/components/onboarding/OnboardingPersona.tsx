@@ -48,7 +48,7 @@ const OnboardingPersona = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       persona_fantasy: formData.fantasy
     };
 
-    const result = await onComplete(5, stepData);
+    const result = await onComplete(6, stepData);
     if (!result.error) {
       toast.success("Persona information saved!");
       onNext();

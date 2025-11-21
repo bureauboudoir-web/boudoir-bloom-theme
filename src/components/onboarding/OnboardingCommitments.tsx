@@ -51,7 +51,7 @@ const OnboardingCommitments = ({ onBack, onboardingData, onComplete }: Onboardin
       commitments_questions: formData.additionalQuestions
     };
 
-    const result = await onComplete(8, stepData);
+    const result = await onComplete(10, stepData);
     if (!result.error) {
       toast.success("Onboarding complete! Welcome to Bureau Boudoir! 🌹");
     } else {
