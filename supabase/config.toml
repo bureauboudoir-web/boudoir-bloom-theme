@@ -1,1 +1,25 @@
 project_id = "pohxtstwslymiqrxmlal"
+
+# Edge Function Security Configuration
+# Functions that require authentication to prevent unauthorized access
+
+[functions.approve-creator-application]
+verify_jwt = true  # Requires admin/manager authentication
+
+[functions.send-meeting-invitation]
+verify_jwt = true  # Requires authentication
+
+[functions.send-access-granted]
+verify_jwt = true  # Requires authentication
+
+[functions.send-application-declined]
+verify_jwt = true  # Requires authentication
+
+[functions.send-manager-meeting-request]
+verify_jwt = true  # Requires authentication
+
+[functions.send-meeting-confirmation]
+verify_jwt = true  # Requires authentication
+
+[functions.send-meeting-reminder]
+verify_jwt = true  # Requires authentication

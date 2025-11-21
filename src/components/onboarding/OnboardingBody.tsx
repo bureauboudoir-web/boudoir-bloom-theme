@@ -1,9 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { onboardingBodySchema } from "@/lib/validation";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
 
 interface OnboardingBodyProps {
   onNext: () => void;
@@ -12,21 +24,29 @@ interface OnboardingBodyProps {
   onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingBody = ({ onNext, onBack, onboardingData, onComplete }: OnboardingBodyProps) => {
-  const [formData, setFormData] = useState({
-    height: "",
-    weight: "",
-    bodyType: "",
-    hairColor: "",
-    eyeColor: "",
-    tattoos: "",
-    piercings: "",
-    distinctiveFeatures: ""
+const OnboardingBody = ({
+  onNext,
+  onBack,
+  onboardingData,
+  onComplete,
+}: OnboardingBodyProps) => {
+  const form = useForm<z.infer<typeof onboardingBodySchema>>({
+    resolver: zodResolver(onboardingBodySchema),
+    defaultValues: {
+      height: "",
+      weight: "",
+      bodyType: "",
+      hairColor: "",
+      eyeColor: "",
+      tattoos: "",
+      piercings: "",
+      distinctiveFeatures: "",
+    },
   });
 
   useEffect(() => {
     if (onboardingData) {
-      setFormData({
+      form.reset({
         height: onboardingData.body_height?.toString() || "",
         weight: onboardingData.body_weight?.toString() || "",
         bodyType: onboardingData.body_type || "",
@@ -34,28 +54,26 @@ const OnboardingBody = ({ onNext, onBack, onboardingData, onComplete }: Onboardi
         eyeColor: onboardingData.body_eye_color || "",
         tattoos: onboardingData.body_tattoos || "",
         piercings: onboardingData.body_piercings || "",
-        distinctiveFeatures: onboardingData.body_distinctive_features || ""
+        distinctiveFeatures: onboardingData.body_distinctive_features || "",
       });
     }
-  }, [onboardingData]);
+  }, [onboardingData, form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof onboardingBodySchema>) => {
     const stepData = {
-      body_height: formData.height ? parseFloat(formData.height) : null,
-      body_weight: formData.weight ? parseFloat(formData.weight) : null,
-      body_type: formData.bodyType,
-      body_hair_color: formData.hairColor,
-      body_eye_color: formData.eyeColor,
-      body_tattoos: formData.tattoos,
-      body_piercings: formData.piercings,
-      body_distinctive_features: formData.distinctiveFeatures
+      body_height: values.height ? parseFloat(values.height) : null,
+      body_weight: values.weight ? parseFloat(values.weight) : null,
+      body_type: values.bodyType,
+      body_hair_color: values.hairColor,
+      body_eye_color: values.eyeColor,
+      body_tattoos: values.tattoos,
+      body_piercings: values.piercings,
+      body_distinctive_features: values.distinctiveFeatures,
     };
 
     const result = await onComplete(2, stepData);
     if (!result.error) {
-      toast.success("Body information saved!");
+      toast.success("Physical attributes saved!");
       onNext();
     } else {
       toast.error("Failed to save. Please try again.");
@@ -64,102 +82,156 @@ const OnboardingBody = ({ onNext, onBack, onboardingData, onComplete }: Onboardi
 
   return (
     <Card className="p-6 bg-card border-primary/20">
-      <h3 className="font-serif text-xl font-bold mb-6">Body Information</h3>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="height">Height (cm)</Label>
-            <Input
-              id="height"
-              type="number"
-              value={formData.height}
-              onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-              placeholder="170"
+      <h3 className="font-serif text-xl font-bold mb-6">Physical Attributes</h3>
+      <p className="text-sm text-muted-foreground mb-6">
+        Help us understand your unique features for content planning.
+      </p>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="height"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Height (cm)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 170"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Between 100-250 cm</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="weight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Weight (kg)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 65"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Between 30-300 kg</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="bodyType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Body Type</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Athletic, Curvy" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="hairColor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hair Color</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Blonde, Brunette" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="eyeColor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Eye Color</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Blue, Brown" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tattoos"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tattoos</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Describe your tattoos (if any)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="piercings"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Piercings</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Describe your piercings (if any)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="distinctiveFeatures"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Distinctive Features</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Any unique features"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
-          
-          <div>
-            <Label htmlFor="weight">Weight (kg)</Label>
-            <Input
-              id="weight"
-              type="number"
-              value={formData.weight}
-              onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-              placeholder="65"
-            />
+
+          <div className="flex justify-between pt-4">
+            <Button type="button" variant="outline" onClick={onBack}>
+              Back
+            </Button>
+            <Button type="submit" className="glow-red">
+              Next Step
+            </Button>
           </div>
-          
-          <div>
-            <Label htmlFor="bodyType">Body Type</Label>
-            <Input
-              id="bodyType"
-              value={formData.bodyType}
-              onChange={(e) => setFormData({ ...formData, bodyType: e.target.value })}
-              placeholder="Slim, Athletic, Curvy, etc."
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="hairColor">Hair Color</Label>
-            <Input
-              id="hairColor"
-              value={formData.hairColor}
-              onChange={(e) => setFormData({ ...formData, hairColor: e.target.value })}
-              placeholder="Blonde, Brunette, etc."
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="eyeColor">Eye Color</Label>
-            <Input
-              id="eyeColor"
-              value={formData.eyeColor}
-              onChange={(e) => setFormData({ ...formData, eyeColor: e.target.value })}
-              placeholder="Blue, Brown, Green, etc."
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="tattoos">Tattoos</Label>
-            <Input
-              id="tattoos"
-              value={formData.tattoos}
-              onChange={(e) => setFormData({ ...formData, tattoos: e.target.value })}
-              placeholder="Description or 'None'"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="piercings">Piercings</Label>
-            <Input
-              id="piercings"
-              value={formData.piercings}
-              onChange={(e) => setFormData({ ...formData, piercings: e.target.value })}
-              placeholder="Description or 'None'"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="distinctiveFeatures">Distinctive Features</Label>
-            <Input
-              id="distinctiveFeatures"
-              value={formData.distinctiveFeatures}
-              onChange={(e) => setFormData({ ...formData, distinctiveFeatures: e.target.value })}
-              placeholder="Any notable features"
-            />
-          </div>
-        </div>
-        
-        <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" className="glow-red">
-            Next Step
-          </Button>
-        </div>
-      </form>
+        </form>
+      </Form>
     </Card>
   );
 };

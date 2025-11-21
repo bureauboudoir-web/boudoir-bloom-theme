@@ -1,9 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { onboardingPricingSchema } from "@/lib/validation";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
 
 interface OnboardingPricingProps {
   onNext: () => void;
@@ -12,39 +24,45 @@ interface OnboardingPricingProps {
   onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingPricing = ({ onNext, onBack, onboardingData, onComplete }: OnboardingPricingProps) => {
-  const [formData, setFormData] = useState({
-    subscriptionPrice: "",
-    ppvPhotoPrice: "",
-    ppvVideoPrice: "",
-    customContentPrice: "",
-    chatPrice: "",
-    sexting: ""
+const OnboardingPricing = ({
+  onNext,
+  onBack,
+  onboardingData,
+  onComplete,
+}: OnboardingPricingProps) => {
+  const form = useForm<z.infer<typeof onboardingPricingSchema>>({
+    resolver: zodResolver(onboardingPricingSchema),
+    defaultValues: {
+      subscription: "",
+      ppvPhoto: "",
+      ppvVideo: "",
+      customContent: "",
+      chat: "",
+      sexting: "",
+    },
   });
 
   useEffect(() => {
     if (onboardingData) {
-      setFormData({
-        subscriptionPrice: onboardingData.pricing_subscription?.toString() || "",
-        ppvPhotoPrice: onboardingData.pricing_ppv_photo?.toString() || "",
-        ppvVideoPrice: onboardingData.pricing_ppv_video?.toString() || "",
-        customContentPrice: onboardingData.pricing_custom_content?.toString() || "",
-        chatPrice: onboardingData.pricing_chat?.toString() || "",
-        sexting: onboardingData.pricing_sexting?.toString() || ""
+      form.reset({
+        subscription: onboardingData.pricing_subscription?.toString() || "",
+        ppvPhoto: onboardingData.pricing_ppv_photo?.toString() || "",
+        ppvVideo: onboardingData.pricing_ppv_video?.toString() || "",
+        customContent: onboardingData.pricing_custom_content?.toString() || "",
+        chat: onboardingData.pricing_chat?.toString() || "",
+        sexting: onboardingData.pricing_sexting?.toString() || "",
       });
     }
-  }, [onboardingData]);
+  }, [onboardingData, form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof onboardingPricingSchema>) => {
     const stepData = {
-      pricing_subscription: formData.subscriptionPrice ? parseFloat(formData.subscriptionPrice) : null,
-      pricing_ppv_photo: formData.ppvPhotoPrice ? parseFloat(formData.ppvPhotoPrice) : null,
-      pricing_ppv_video: formData.ppvVideoPrice ? parseFloat(formData.ppvVideoPrice) : null,
-      pricing_custom_content: formData.customContentPrice ? parseFloat(formData.customContentPrice) : null,
-      pricing_chat: formData.chatPrice ? parseFloat(formData.chatPrice) : null,
-      pricing_sexting: formData.sexting ? parseFloat(formData.sexting) : null
+      pricing_subscription: values.subscription ? parseFloat(values.subscription) : null,
+      pricing_ppv_photo: values.ppvPhoto ? parseFloat(values.ppvPhoto) : null,
+      pricing_ppv_video: values.ppvVideo ? parseFloat(values.ppvVideo) : null,
+      pricing_custom_content: values.customContent ? parseFloat(values.customContent) : null,
+      pricing_chat: values.chat ? parseFloat(values.chat) : null,
+      pricing_sexting: values.sexting ? parseFloat(values.sexting) : null,
     };
 
     const result = await onComplete(5, stepData);
@@ -62,85 +80,141 @@ const OnboardingPricing = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       <p className="text-sm text-muted-foreground mb-6">
         These are initial suggestions. We'll refine them together based on market positioning.
       </p>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="subscriptionPrice">Monthly Subscription ($)</Label>
-            <Input
-              id="subscriptionPrice"
-              type="number"
-              value={formData.subscriptionPrice}
-              onChange={(e) => setFormData({ ...formData, subscriptionPrice: e.target.value })}
-              placeholder="15"
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="subscription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Monthly Subscription ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="15"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="ppvPhoto"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>PPV Photo Set ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="10"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="ppvVideo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>PPV Video ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="20"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="customContent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Custom Content Base ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="50"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="chat"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Personal Chat ($/min)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="2"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="sexting"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sexting Session ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="30"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>Must be positive</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
-          
-          <div>
-            <Label htmlFor="ppvPhotoPrice">PPV Photo Set ($)</Label>
-            <Input
-              id="ppvPhotoPrice"
-              type="number"
-              value={formData.ppvPhotoPrice}
-              onChange={(e) => setFormData({ ...formData, ppvPhotoPrice: e.target.value })}
-              placeholder="10"
-            />
+
+          <div className="flex justify-between pt-4">
+            <Button type="button" variant="outline" onClick={onBack}>
+              Back
+            </Button>
+            <Button type="submit" className="glow-red">
+              Next Step
+            </Button>
           </div>
-          
-          <div>
-            <Label htmlFor="ppvVideoPrice">PPV Video ($)</Label>
-            <Input
-              id="ppvVideoPrice"
-              type="number"
-              value={formData.ppvVideoPrice}
-              onChange={(e) => setFormData({ ...formData, ppvVideoPrice: e.target.value })}
-              placeholder="20"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="customContentPrice">Custom Content Base ($)</Label>
-            <Input
-              id="customContentPrice"
-              type="number"
-              value={formData.customContentPrice}
-              onChange={(e) => setFormData({ ...formData, customContentPrice: e.target.value })}
-              placeholder="50"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="chatPrice">Personal Chat ($/min)</Label>
-            <Input
-              id="chatPrice"
-              type="number"
-              value={formData.chatPrice}
-              onChange={(e) => setFormData({ ...formData, chatPrice: e.target.value })}
-              placeholder="2"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="sexting">Sexting Session ($)</Label>
-            <Input
-              id="sexting"
-              type="number"
-              value={formData.sexting}
-              onChange={(e) => setFormData({ ...formData, sexting: e.target.value })}
-              placeholder="30"
-            />
-          </div>
-        </div>
-        
-        <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" className="glow-red">
-            Next Step
-          </Button>
-        </div>
-      </form>
+        </form>
+      </Form>
     </Card>
   );
 };
