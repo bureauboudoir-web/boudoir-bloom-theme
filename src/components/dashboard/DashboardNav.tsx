@@ -60,7 +60,7 @@ export const DashboardNav = ({
       items: [
         { 
           id: "commitments" as TabId, 
-          label: "Weekly Commitments", 
+          label: "Commitments", 
           icon: <CheckSquare className="w-4 h-4" />,
           badge: pendingCommitments,
           badgeVariant: "secondary" as const
