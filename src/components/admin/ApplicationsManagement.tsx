@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, MessageSquare } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Clock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
@@ -19,6 +19,9 @@ interface Application {
   status: string;
   created_at: string;
   admin_notes: string | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  reviewed_by_name: string | null;
 }
 
 export const ApplicationsManagement = () => {
@@ -35,7 +38,10 @@ export const ApplicationsManagement = () => {
     try {
       let query = supabase
         .from('creator_applications')
-        .select('*')
+        .select(`
+          *,
+          reviewed_by_profile:profiles!creator_applications_reviewed_by_fkey(full_name)
+        `)
         .order('created_at', { ascending: false });
 
       if (filter !== 'all') {
@@ -45,7 +51,13 @@ export const ApplicationsManagement = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      setApplications(data || []);
+      // Transform data to flatten the reviewed_by_name
+      const transformedData = data?.map((app: any) => ({
+        ...app,
+        reviewed_by_name: app.reviewed_by_profile?.full_name || null,
+      }));
+
+      setApplications(transformedData || []);
     } catch (error) {
       console.error("Error fetching applications:", error);
       toast.error("Failed to load applications");
@@ -114,6 +126,30 @@ export const ApplicationsManagement = () => {
     } catch (error: any) {
       console.error("Error declining application:", error);
       toast.error("Failed to decline application");
+    }
+  };
+
+  const handleResendInvitation = async (application: Application) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('resend-meeting-invitation', {
+        body: {
+          applicationId: application.id
+        }
+      });
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || "Failed to resend invitation");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success("Invitation email resent successfully!");
+    } catch (error: any) {
+      console.error("Error resending invitation:", error);
+      toast.error(`Failed to resend invitation: ${error.message}`);
     }
   };
 
@@ -250,19 +286,60 @@ export const ApplicationsManagement = () => {
                   </p>
                 </div>
 
-                {app.status === 'pending' && (
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleApprove(app)}
-                      className="bg-primary"
-                    >
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Approve
-                    </Button>
-                    <DeclineDialog application={app} />
+                {/* Application History */}
+                {(app.reviewed_at || app.reviewed_by_name || app.admin_notes) && (
+                  <div className="border-t border-border pt-4 mt-4 space-y-2">
+                    <p className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      Application History
+                    </p>
+                    {app.reviewed_at && (
+                      <p className="text-sm text-muted-foreground">
+                        Reviewed: {new Date(app.reviewed_at).toLocaleDateString()} at {new Date(app.reviewed_at).toLocaleTimeString()}
+                      </p>
+                    )}
+                    {app.reviewed_by_name && (
+                      <p className="text-sm text-muted-foreground">
+                        Reviewed by: {app.reviewed_by_name}
+                      </p>
+                    )}
+                    {app.admin_notes && (
+                      <div className="mt-2">
+                        <p className="text-sm font-medium">Admin Notes:</p>
+                        <p className="text-sm text-muted-foreground bg-muted/30 p-2 rounded mt-1">
+                          {app.admin_notes}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-2 flex-wrap">
+                  {app.status === 'pending' && (
+                    <>
+                      <Button
+                        size="sm"
+                        onClick={() => handleApprove(app)}
+                        className="bg-primary"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        Approve
+                      </Button>
+                      <DeclineDialog application={app} />
+                    </>
+                  )}
+                  {app.status === 'approved' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleResendInvitation(app)}
+                    >
+                      <Mail className="w-4 h-4 mr-1" />
+                      Resend Invitation
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))
