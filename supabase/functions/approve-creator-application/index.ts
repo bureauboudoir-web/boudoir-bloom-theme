@@ -146,33 +146,39 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Send password reset email
+    // Generate password reset link
+    let passwordResetUrl = "";
     try {
-      const { error: resetError } = await supabaseAdmin.auth.admin.generateLink({
+      const { data: resetData, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
         type: "recovery",
         email: application.email,
       });
 
       if (resetError) {
         console.error("Error generating password reset link:", resetError);
+      } else {
+        passwordResetUrl = resetData.properties?.action_link || "";
+        console.log("Password reset link generated successfully");
       }
     } catch (error) {
-      console.error("Error sending password reset:", error);
+      console.error("Error generating password reset:", error);
     }
 
-    // Trigger email notifications
-    try {
-      await supabaseAdmin.functions.invoke("send-access-granted", {
-        body: { email: application.email, name: application.name },
-      });
-    } catch (error) {
-      console.error("Error sending access granted email:", error);
-    }
+    // Get the current origin from the request
+    const origin = req.headers.get("origin") || "https://your-domain.com";
+    const loginUrl = `${origin}/login`;
 
+    // Send meeting invitation email with login details
     try {
       await supabaseAdmin.functions.invoke("send-meeting-invitation", {
-        body: { email: application.email, name: application.name },
+        body: {
+          email: application.email,
+          name: application.name,
+          loginUrl: loginUrl,
+          passwordResetUrl: passwordResetUrl || loginUrl,
+        },
       });
+      console.log("Meeting invitation email sent successfully");
     } catch (error) {
       console.error("Error sending meeting invitation email:", error);
     }
