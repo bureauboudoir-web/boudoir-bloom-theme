@@ -37,10 +37,10 @@ export const SharedFooter = () => {
 
           {/* Social Icons */}
           <div className="flex gap-6">
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://x.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <X className="w-5 h-5" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://www.instagram.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Instagram className="w-5 h-5" />
             </a>
             <a href="https://www.youtube.com/@BureauBoudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
