@@ -185,14 +185,23 @@ export const ApplicationsManagement = () => {
 
   const handleResendInvitation = async (application: Application) => {
     try {
-      // Check if user is authenticated
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Your session has expired. Please log in again.");
+      toast.loading("Resending invitation...", { id: "resend-invitation" });
+
+      // First, try to refresh the session to ensure we have a valid token
+      const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+      
+      if (refreshError) {
+        console.error("Session refresh failed:", refreshError);
+        toast.error("Your session has expired. Please log out and log in again.", { id: "resend-invitation" });
         return;
       }
 
-      toast.loading("Resending invitation...", { id: "resend-invitation" });
+      if (!refreshedSession) {
+        toast.error("No active session. Please log in again.", { id: "resend-invitation" });
+        return;
+      }
+
+      console.log("Session refreshed successfully, calling edge function");
       
       const { data, error } = await supabase.functions.invoke('resend-meeting-invitation', {
         body: {
@@ -216,7 +225,9 @@ export const ApplicationsManagement = () => {
       
       // Provide more specific error messages
       if (error.message?.includes("Unauthorized") || error.message?.includes("401")) {
-        toast.error("Authentication failed. Please refresh the page and log in again.", { id: "resend-invitation" });
+        toast.error("Authentication failed. Please log out and log in again.", { id: "resend-invitation" });
+      } else if (error.message?.includes("session") || error.message?.includes("expired")) {
+        toast.error("Session expired. Please log out and log in again.", { id: "resend-invitation" });
       } else {
         toast.error(`Failed to resend invitation: ${error.message}`, { id: "resend-invitation" });
       }

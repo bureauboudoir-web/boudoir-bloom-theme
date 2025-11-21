@@ -31,25 +31,35 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const token = authHeader.replace("Bearer ", "");
+    
+    console.log(`Attempting to verify token for authorization`);
+    
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
 
     if (authError) {
-      console.error("Auth error:", authError);
+      console.error("Auth error details:", {
+        message: authError.message,
+        status: authError.status,
+        name: authError.name
+      });
       return new Response(
-        JSON.stringify({ error: "Unauthorized - Invalid or expired session" }),
+        JSON.stringify({ 
+          error: "Unauthorized - Invalid or expired session",
+          details: authError.message 
+        }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
     if (!user) {
-      console.error("No user found");
+      console.error("No user found after token verification");
       return new Response(
         JSON.stringify({ error: "Unauthorized - User not found" }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    console.log(`User authenticated: ${user.id}`);
+    console.log(`User authenticated successfully: ${user.id}`);
 
     // Check if user has admin/manager role
     const { data: userRoles } = await supabaseClient
