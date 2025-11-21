@@ -171,6 +171,10 @@ const handler = async (req: Request): Promise<Response> => {
     const invitationUrl = `${appOrigin}/complete-setup?token=${invitationToken}`;
     const loginUrl = `${appOrigin}/login`;
 
+    console.log("Generated invitation URL:", invitationUrl);
+    console.log("App origin:", appOrigin);
+    console.log("Token:", invitationToken);
+
     // Send the meeting invitation email
     const { data: emailData, error: emailError } = await supabaseClient.functions.invoke(
       'send-meeting-invitation',
