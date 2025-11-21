@@ -145,27 +145,31 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const redirectUrl = `${appOrigin}/complete-setup`;
-    console.log(`Generating magic link with redirect to: ${redirectUrl}`);
+    // Generate custom secure token
+    const invitationToken = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
+    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
 
-    // Generate new magic link
-    const { data: magicLinkData, error: magicLinkError } = await supabaseClient.auth.admin.generateLink({
-      type: 'magiclink',
-      email: application.email,
-      options: {
-        redirectTo: redirectUrl
-      }
-    });
+    // Store token in database
+    const { error: tokenError } = await supabaseClient
+      .from("invitation_tokens")
+      .insert({
+        user_id: existingUser.id,
+        application_id: applicationId,
+        token: invitationToken,
+        expires_at: expiresAt.toISOString(),
+      });
 
-    if (magicLinkError) {
-      throw new Error(`Failed to generate magic link: ${magicLinkError.message}`);
+    if (tokenError) {
+      console.error("Error storing invitation token:", tokenError);
+      return new Response(
+        JSON.stringify({ error: "Failed to create invitation token" }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
-    const magicLinkUrl = magicLinkData.properties?.action_link || '';
+    // Create direct link to our app
+    const invitationUrl = `${appOrigin}/complete-setup?token=${invitationToken}`;
     const loginUrl = `${appOrigin}/login`;
-
-    // Calculate expiration time
-    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000)).toISOString();
 
     // Send the meeting invitation email
     const { data: emailData, error: emailError } = await supabaseClient.functions.invoke(
@@ -175,10 +179,10 @@ const handler = async (req: Request): Promise<Response> => {
           name: application.name,
           email: application.email,
           loginUrl,
-          magicLinkUrl,
+          magicLinkUrl: invitationUrl,
           applicationId: applicationId,
           userId: existingUser.id,
-          magicLinkExpiresAt: expiresAt,
+          magicLinkExpiresAt: expiresAt.toISOString(),
           expirationMinutes: Math.floor(expirationSeconds / 60),
         },
       }
@@ -205,7 +209,7 @@ const handler = async (req: Request): Promise<Response> => {
         success: true, 
         message: "Invitation email resent successfully",
         userId: existingUser.id,
-        expiresAt
+        expiresAt: expiresAt.toISOString(),
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
