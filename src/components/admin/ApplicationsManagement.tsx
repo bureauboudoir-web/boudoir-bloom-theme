@@ -51,12 +51,10 @@ export const ApplicationsManagement = () => {
       setLoading(true);
       setError(null);
       
+      // Fetch applications without foreign key hint to avoid schema cache issues
       let query = supabase
         .from('creator_applications')
-        .select(`
-          *,
-          reviewed_by_profile:profiles!creator_applications_reviewed_by_fkey(full_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (filter !== 'all') {
@@ -70,10 +68,28 @@ export const ApplicationsManagement = () => {
         return;
       }
 
-      // Transform data to flatten the reviewed_by_name
+      // Get unique reviewer IDs
+      const reviewerIds = [...new Set(data?.map(app => app.reviewed_by).filter(Boolean))];
+      
+      // Fetch reviewer profiles separately
+      let reviewerProfiles: Record<string, string> = {};
+      if (reviewerIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', reviewerIds);
+        
+        if (profiles) {
+          reviewerProfiles = Object.fromEntries(
+            profiles.map(p => [p.id, p.full_name || 'Unknown'])
+          );
+        }
+      }
+
+      // Transform data and add reviewer names
       const transformedData = data?.map((app: any) => ({
         ...app,
-        reviewed_by_name: app.reviewed_by_profile?.full_name || null,
+        reviewed_by_name: app.reviewed_by ? reviewerProfiles[app.reviewed_by] : null,
       }));
 
       // For approved applications, check if emails were sent successfully
