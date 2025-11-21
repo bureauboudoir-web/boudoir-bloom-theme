@@ -1,10 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { onboardingPersonaSchema } from "@/lib/validation";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface OnboardingPersonaProps {
   onNext: () => void;
@@ -13,39 +24,45 @@ interface OnboardingPersonaProps {
   onComplete: (step: number, data: Record<string, any>) => Promise<any>;
 }
 
-const OnboardingPersona = ({ onNext, onBack, onboardingData, onComplete }: OnboardingPersonaProps) => {
-  const [formData, setFormData] = useState({
-    stageName: "",
-    persona: "",
-    backstory: "",
-    personality: "",
-    interests: "",
-    fantasy: ""
+const OnboardingPersona = ({
+  onNext,
+  onBack,
+  onboardingData,
+  onComplete,
+}: OnboardingPersonaProps) => {
+  const form = useForm<z.infer<typeof onboardingPersonaSchema>>({
+    resolver: zodResolver(onboardingPersonaSchema),
+    defaultValues: {
+      stageName: "",
+      description: "",
+      backstory: "",
+      personality: "",
+      interests: "",
+      fantasy: "",
+    },
   });
 
   useEffect(() => {
     if (onboardingData) {
-      setFormData({
+      form.reset({
         stageName: onboardingData.persona_stage_name || "",
-        persona: onboardingData.persona_description || "",
+        description: onboardingData.persona_description || "",
         backstory: onboardingData.persona_backstory || "",
         personality: onboardingData.persona_personality || "",
         interests: onboardingData.persona_interests || "",
-        fantasy: onboardingData.persona_fantasy || ""
+        fantasy: onboardingData.persona_fantasy || "",
       });
     }
-  }, [onboardingData]);
+  }, [onboardingData, form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof onboardingPersonaSchema>) => {
     const stepData = {
-      persona_stage_name: formData.stageName,
-      persona_description: formData.persona,
-      persona_backstory: formData.backstory,
-      persona_personality: formData.personality,
-      persona_interests: formData.interests,
-      persona_fantasy: formData.fantasy
+      persona_stage_name: values.stageName,
+      persona_description: values.description,
+      persona_backstory: values.backstory,
+      persona_personality: values.personality,
+      persona_interests: values.interests,
+      persona_fantasy: values.fantasy,
     };
 
     const result = await onComplete(6, stepData);
@@ -63,86 +80,121 @@ const OnboardingPersona = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       <p className="text-sm text-muted-foreground mb-6">
         Let's craft your unique identity that will captivate your audience.
       </p>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="stageName">Stage Name / Persona Name</Label>
-          <Input
-            id="stageName"
-            value={formData.stageName}
-            onChange={(e) => setFormData({ ...formData, stageName: e.target.value })}
-            placeholder="Your creator name"
-            className="mt-1"
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="stageName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stage Name / Persona Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Your creator name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div>
-          <Label htmlFor="persona">Persona Description</Label>
-          <Textarea
-            id="persona"
-            value={formData.persona}
-            onChange={(e) => setFormData({ ...formData, persona: e.target.value })}
-            placeholder="Describe the character you want to portray (e.g., girl next door, mysterious seductress, confident professional...)"
-            rows={3}
-            className="mt-1"
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Persona Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe the character you want to portray (e.g., girl next door, mysterious seductress, confident professional...)"
+                    rows={3}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div>
-          <Label htmlFor="backstory">Backstory</Label>
-          <Textarea
-            id="backstory"
-            value={formData.backstory}
-            onChange={(e) => setFormData({ ...formData, backstory: e.target.value })}
-            placeholder="Your character's story and background..."
-            rows={4}
-            className="mt-1"
+
+          <FormField
+            control={form.control}
+            name="backstory"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Backstory</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Your character's story and background..."
+                    rows={4}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div>
-          <Label htmlFor="personality">Personality Traits</Label>
-          <Input
-            id="personality"
-            value={formData.personality}
-            onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
-            placeholder="Playful, Mysterious, Intellectual, etc."
-            className="mt-1"
+
+          <FormField
+            control={form.control}
+            name="personality"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Personality Traits</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Playful, Mysterious, Intellectual, etc."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div>
-          <Label htmlFor="interests">Interests & Hobbies</Label>
-          <Input
-            id="interests"
-            value={formData.interests}
-            onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
-            placeholder="Yoga, Travel, Fashion, Gaming, etc."
-            className="mt-1"
+
+          <FormField
+            control={form.control}
+            name="interests"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Interests & Hobbies</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Yoga, Travel, Fashion, Gaming, etc."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div>
-          <Label htmlFor="fantasy">Fantasy Niche</Label>
-          <Textarea
-            id="fantasy"
-            value={formData.fantasy}
-            onChange={(e) => setFormData({ ...formData, fantasy: e.target.value })}
-            placeholder="What specific fantasy or appeal will your persona embody?"
-            rows={3}
-            className="mt-1"
+
+          <FormField
+            control={form.control}
+            name="fantasy"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fantasy Niche</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="What specific fantasy or appeal will your persona embody?"
+                    rows={3}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        
-        <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" className="glow-red">
-            Next Step
-          </Button>
-        </div>
-      </form>
+
+          <div className="flex justify-between pt-4">
+            <Button type="button" variant="outline" onClick={onBack}>
+              Back
+            </Button>
+            <Button type="submit" className="glow-red">
+              Next Step
+            </Button>
+          </div>
+        </form>
+      </Form>
     </Card>
   );
 };

@@ -17,6 +17,49 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify JWT and get user from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: No authorization header' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create authenticated client to verify user
+    const supabaseAuth = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    // Get authenticated user
+    const { data: { user }, error: userError } = await supabaseAuth.auth.getUser();
+    if (userError || !user) {
+      console.log("Authentication failed");
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Check if user has admin or manager role
+    const { data: roles, error: roleError } = await supabaseAuth
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .in('role', ['admin', 'manager', 'super_admin']);
+
+    if (roleError || !roles || roles.length === 0) {
+      console.log("Insufficient permissions for user");
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: Insufficient permissions' }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Authenticated admin/manager processing application");
+
     const { applicationId, managerId }: ApproveApplicationRequest = await req.json();
 
     if (!applicationId || !managerId) {
@@ -26,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Create admin client with service role key
+    // Create admin client with service role key for privileged operations
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -53,7 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Processing application approval for:", application.email);
+    console.log("Processing application approval for ID:", applicationId);
 
     // Create the user account
     const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -73,15 +116,15 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const userId = authUser.user.id;
-    console.log("Created user with ID:", userId);
+    console.log("Created user successfully");
 
     // Insert creator role
-    const { error: roleError } = await supabaseAdmin
+    const { error: roleError2 } = await supabaseAdmin
       .from("user_roles")
       .insert({ user_id: userId, role: "creator" });
 
-    if (roleError) {
-      console.error("Error creating role:", roleError);
+    if (roleError2) {
+      console.error("Error creating role:", roleError2);
       // Clean up: delete the auth user if role creation fails
       await supabaseAdmin.auth.admin.deleteUser(userId);
       return new Response(
@@ -183,7 +226,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error sending meeting invitation email:", error);
     }
 
-    console.log("Application approved successfully for user:", userId);
+    console.log("Application approved successfully");
 
     return new Response(
       JSON.stringify({

@@ -98,7 +98,7 @@ export type Database = {
           granted_by: string | null
           id: string
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           access_level?: string | null
@@ -107,7 +107,7 @@ export type Database = {
           granted_by?: string | null
           id?: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           access_level?: string | null
@@ -116,7 +116,7 @@ export type Database = {
           granted_by?: string | null
           id?: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -238,7 +238,7 @@ export type Database = {
           meeting_type: string | null
           status: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           application_id?: string | null
@@ -255,7 +255,7 @@ export type Database = {
           meeting_type?: string | null
           status?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           application_id?: string | null
@@ -272,7 +272,7 @@ export type Database = {
           meeting_type?: string | null
           status?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
