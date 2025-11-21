@@ -21,6 +21,7 @@ import { InvoiceStatus } from "@/components/dashboard/InvoiceStatus";
 import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
+import { CreatorContract } from "@/components/dashboard/CreatorContract";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -41,7 +42,7 @@ const Dashboard = () => {
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdminOrManager, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
-  const [activeTab, setActiveTab] = useState("onboarding");
+  const [activeTab, setActiveTab] = useState<"onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support">("onboarding");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -311,6 +312,14 @@ const Dashboard = () => {
                     </Badge>
                   )}
                 </Button>
+                <Button
+                  variant={activeTab === "contract" ? "default" : "ghost"}
+                  className={`w-full justify-start ${activeTab === "contract" ? "border-l-4 border-primary" : ""}`}
+                  onClick={() => setActiveTab("contract")}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Contract
+                </Button>
               </div>
 
               {/* Divider */}
@@ -397,6 +406,10 @@ const Dashboard = () => {
 
             {activeTab === "invoices" && user && (
               <InvoiceStatus />
+            )}
+
+            {activeTab === "contract" && user && (
+              <CreatorContract />
             )}
 
             {activeTab === "meetings" && user && (
