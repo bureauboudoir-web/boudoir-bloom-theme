@@ -258,6 +258,8 @@ const handler = async (req: Request): Promise<Response> => {
           name: application.name,
           loginUrl: loginUrl,
           passwordResetUrl: passwordResetUrl || loginUrl,
+          applicationId: applicationId,
+          userId: userId,
         },
       });
       console.log("Meeting invitation email sent successfully");

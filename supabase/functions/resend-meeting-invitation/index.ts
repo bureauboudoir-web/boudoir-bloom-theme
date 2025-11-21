@@ -124,6 +124,8 @@ const handler = async (req: Request): Promise<Response> => {
           email: application.email,
           loginUrl,
           passwordResetUrl,
+          applicationId: applicationId,
+          userId: existingUser.id,
         },
       }
     );

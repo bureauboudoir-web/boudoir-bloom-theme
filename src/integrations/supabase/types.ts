@@ -123,6 +123,7 @@ export type Database = {
       creator_applications: {
         Row: {
           admin_notes: string | null
+          admin_notes_history: Json | null
           application_status: string | null
           approval_email_sent_at: string | null
           created_at: string | null
@@ -138,6 +139,7 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string | null
+          admin_notes_history?: Json | null
           application_status?: string | null
           approval_email_sent_at?: string | null
           created_at?: string | null
@@ -153,6 +155,7 @@ export type Database = {
         }
         Update: {
           admin_notes?: string | null
+          admin_notes_history?: Json | null
           application_status?: string | null
           approval_email_sent_at?: string | null
           created_at?: string | null
@@ -277,6 +280,71 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "creator_meetings_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "creator_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_logs: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          email_data: Json | null
+          email_type: string
+          error_message: string | null
+          failed_at: string | null
+          id: string
+          last_retry_at: string | null
+          max_retries: number
+          recipient_email: string
+          recipient_name: string | null
+          retry_count: number
+          sent_at: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          email_data?: Json | null
+          email_type: string
+          error_message?: string | null
+          failed_at?: string | null
+          id?: string
+          last_retry_at?: string | null
+          max_retries?: number
+          recipient_email: string
+          recipient_name?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          email_data?: Json | null
+          email_type?: string
+          error_message?: string | null
+          failed_at?: string | null
+          id?: string
+          last_retry_at?: string | null
+          max_retries?: number
+          recipient_email?: string
+          recipient_name?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_application_id_fkey"
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "creator_applications"

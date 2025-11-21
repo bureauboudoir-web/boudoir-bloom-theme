@@ -19,6 +19,7 @@ import { ApplicationsManagement } from "@/components/admin/ApplicationsManagemen
 import { AdminMeetings } from "@/components/admin/AdminMeetings";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
 import { AdminContracts } from "@/components/admin/AdminContracts";
+import { EmailLogsView } from "@/components/admin/EmailLogsView";
 import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
@@ -33,7 +34,7 @@ const AdminDashboard = () => {
     overdueCommitments,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
     ...(overdueCommitments > 0 ? [{
@@ -184,6 +185,9 @@ const AdminDashboard = () => {
                   <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Support
                   </TabsTrigger>
+                  <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Email Logs
+                  </TabsTrigger>
                   
                   {/* Visual separator */}
                   <div className="w-px h-8 bg-border self-center mx-1" />
@@ -241,6 +245,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="support" className="mt-0">
               <AdminSupportTickets />
+            </TabsContent>
+
+            <TabsContent value="emails" className="mt-0">
+              <EmailLogsView />
             </TabsContent>
 
             <TabsContent value="roles" className="mt-0">
