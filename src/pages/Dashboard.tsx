@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
 import OnboardingBackstory from "@/components/onboarding/OnboardingBackstory";
@@ -22,6 +23,7 @@ import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { CreatorContract } from "@/components/dashboard/CreatorContract";
+import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -46,6 +48,7 @@ const Dashboard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const totalSteps = 10;
   const progress = (currentStep / totalSteps) * 100;
 
@@ -212,151 +215,78 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Dashboard Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h1 className="font-serif text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell
-              notifications={notificationItems}
-              totalCount={totalNotifications}
-              onMarkAllRead={handleMarkSupportAsViewed}
-              showMarkAllRead={newSupportResponses > 0}
-            />
-            <Button variant="ghost" onClick={signOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Mobile Menu Button */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0">
+                  <div className="p-6 border-b border-border">
+                    <h2 className="font-serif text-xl font-bold">Navigation</h2>
+                  </div>
+                  <div className="p-4 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <DashboardNav
+                      activeTab={activeTab}
+                      onTabChange={setActiveTab}
+                      pendingCommitments={pendingCommitments}
+                      newInvoices={newInvoices}
+                      isAdminOrManager={isAdminOrManager}
+                      onAdminClick={() => navigate("/admin")}
+                      onMobileMenuClose={() => setMobileMenuOpen(false)}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <NotificationBell
+                notifications={notificationItems}
+                totalCount={totalNotifications}
+                onMarkAllRead={handleMarkSupportAsViewed}
+                showMarkAllRead={newSupportResponses > 0}
+              />
+              <Button variant="ghost" size="sm" onClick={signOut} className="hidden sm:flex">
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+              <Button variant="ghost" size="icon" onClick={signOut} className="sm:hidden">
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid md:grid-cols-4 gap-6">
-          {/* Sidebar */}
-          <Card className="md:col-span-1 p-6 h-fit bg-card border-primary/20">
-            <nav className="space-y-4">
-              {/* First Section */}
-              <div className="space-y-2">
-                <Button
-                  variant={activeTab === "onboarding" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "onboarding" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("onboarding")}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Onboarding
-                </Button>
-                <Button
-                  variant={activeTab === "account" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "account" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("account")}
-                >
-                  <User className="w-4 h-4 mr-2" />
-                  Creator Profile
-                </Button>
-                <Button
-                  variant={activeTab === "meetings" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "meetings" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("meetings")}
-                >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  My Meetings
-                </Button>
-                <Button
-                  variant={activeTab === "upload" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "upload" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("upload")}
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  Uploads
-                </Button>
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-border/50"></div>
-
-              {/* Second Section */}
-              <div className="space-y-2">
-                <Button
-                  variant={activeTab === "commitments" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "commitments" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("commitments")}
-                >
-                  <CheckSquare className="w-4 h-4 mr-2" />
-                  Weekly Commitments
-                  {pendingCommitments > 0 && (
-                    <Badge variant="secondary" className="ml-auto">
-                      {pendingCommitments}
-                    </Badge>
-                  )}
-                </Button>
-                <Button
-                  variant={activeTab === "shoots" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "shoots" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("shoots")}
-                >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Studio Shoots
-                </Button>
-                <Button
-                  variant={activeTab === "invoices" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "invoices" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("invoices")}
-                >
-                  <DollarSign className="w-4 h-4 mr-2" />
-                  Invoices
-                  {newInvoices > 0 && (
-                    <Badge variant="destructive" className="ml-auto">
-                      {newInvoices}
-                    </Badge>
-                  )}
-                </Button>
-                <Button
-                  variant={activeTab === "contract" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "contract" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("contract")}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Contract
-                </Button>
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-border/50"></div>
-
-              {/* Third Section */}
-              <div className="space-y-2">
-                {/* Only show Admin Dashboard link to admin/manager users */}
-                {isAdminOrManager && (
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-primary/40 hover:bg-primary/10"
-                    onClick={() => navigate("/admin")}
-                  >
-                    <Shield className="w-4 h-4 mr-2" />
-                    Admin Dashboard
-                  </Button>
-                )}
-                <Button
-                  variant={activeTab === "support" ? "default" : "ghost"}
-                  className={`w-full justify-start ${activeTab === "support" ? "border-l-4 border-primary" : ""}`}
-                  onClick={() => setActiveTab("support")}
-                >
-                  <Mail className="w-4 h-4 mr-2" />
-                  Contact Us
-                </Button>
-              </div>
-            </nav>
+      <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div className="grid md:grid-cols-4 gap-4 sm:gap-6">
+          {/* Desktop Sidebar */}
+          <Card className="hidden md:block md:col-span-1 p-6 h-fit bg-card border-primary/20 sticky top-20">
+            <DashboardNav
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              pendingCommitments={pendingCommitments}
+              newInvoices={newInvoices}
+              isAdminOrManager={isAdminOrManager}
+              onAdminClick={() => navigate("/admin")}
+            />
           </Card>
 
           {/* Main Content */}
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 w-full">
             {activeTab === "onboarding" && (
               <div>
-                <Card className="p-6 mb-6 bg-card border-primary/20">
-                  <h2 className="font-serif text-2xl font-bold mb-4">Complete Your Onboarding</h2>
-                  <p className="text-muted-foreground mb-4">
+                <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Complete Your Onboarding</h2>
+                  <p className="text-sm text-muted-foreground mb-3 sm:mb-4">
                     Step {currentStep} of {totalSteps}
                   </p>
                   <Progress value={progress} className="mb-2" />
@@ -380,7 +310,7 @@ const Dashboard = () => {
             )}
             
             {activeTab === "upload" && user && (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <ContentUpload 
                   userId={user.id} 
                   onUploadComplete={() => setUploadRefresh(prev => prev + 1)}
