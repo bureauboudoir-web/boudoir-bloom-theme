@@ -229,9 +229,16 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Generate password reset link with proper redirect
+    // Get app origin from request headers (referer or origin)
+    const referer = req.headers.get('referer') || req.headers.get('origin') || '';
+    const appOrigin = referer ? new URL(referer).origin : '';
+    
+    if (!appOrigin) {
+      console.error("Could not determine app origin, using fallback");
+    }
+    
     let passwordResetUrl = "";
-    const origin = new URL(req.url).origin;
-    const redirectUrl = `${origin}/reset-password`;
+    const redirectUrl = appOrigin ? `${appOrigin}/reset-password` : '/reset-password';
     
     try {
       console.log(`Generating password reset link with redirect to: ${redirectUrl}`);
@@ -254,7 +261,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error generating password reset:", error);
     }
 
-    const loginUrl = `${origin}/login`;
+    const loginUrl = appOrigin ? `${appOrigin}/login` : '/login';
 
     // Send meeting invitation email with login details
     try {

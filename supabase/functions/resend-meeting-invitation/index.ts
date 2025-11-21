@@ -124,10 +124,28 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Get app origin from request headers
+    const referer = req.headers.get('referer') || req.headers.get('origin') || '';
+    const appOrigin = referer ? new URL(referer).origin : '';
+    
+    if (!appOrigin) {
+      console.error("Could not determine app origin from request headers");
+      return new Response(
+        JSON.stringify({ error: "Unable to determine app origin" }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const redirectUrl = `${appOrigin}/reset-password`;
+    console.log(`Generating password reset link with redirect to: ${redirectUrl}`);
+
     // Generate new password reset link
     const { data: resetData, error: resetError } = await supabaseClient.auth.admin.generateLink({
       type: 'recovery',
       email: application.email,
+      options: {
+        redirectTo: redirectUrl
+      }
     });
 
     if (resetError) {
@@ -135,7 +153,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const passwordResetUrl = resetData.properties?.action_link || '';
-    const loginUrl = `${SUPABASE_URL.replace('.supabase.co', '')}/login`;
+    const loginUrl = `${appOrigin}/login`;
 
     // Send the meeting invitation email
     const { data: emailData, error: emailError } = await supabaseClient.functions.invoke(
