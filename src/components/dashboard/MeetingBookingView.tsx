@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar as CalendarIcon, Clock, Video, MapPin, User } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Video, MapPin, User, LogOut } from "lucide-react";
 import { format, addMinutes, parseISO, startOfDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ interface MeetingBookingViewProps {
 }
 
 export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps) => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [date, setDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
   const [meetingType, setMeetingType] = useState<'online' | 'in_person'>('online');
@@ -297,8 +297,19 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
   // Booking mode (original full-page UI)
   return (
-    <div className="container mx-auto px-6 py-24">
-      <Card className="max-w-3xl mx-auto border-border bg-secondary/20">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border bg-card">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold">Bureau Boudoir</h1>
+          <Button variant="ghost" onClick={signOut}>
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-6 py-24">
+        <Card className="max-w-3xl mx-auto border-border bg-secondary/20">
         <CardHeader className="text-center">
           <div className="flex items-center justify-between mb-2">
             <CardTitle className="text-3xl text-primary">Book Your Introduction Meeting</CardTitle>
@@ -470,6 +481,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
           </div>
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 };
