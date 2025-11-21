@@ -393,7 +393,7 @@ const Dashboard = () => {
             )}
             
             {activeTab === "support" && user && (
-              <ContactSupport userId={user.id} userName={user.email || ""} />
+              <ContactSupport userId={user.id} userName={user.email || "User"} />
             )}
 
             {activeTab === "commitments" && user && (

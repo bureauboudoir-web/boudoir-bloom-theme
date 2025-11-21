@@ -45,13 +45,22 @@ const SUBJECT_OPTIONS = [
   "Other",
 ];
 
-// TODO: Replace with actual Bureau Boudoir WhatsApp number
-const WHATSAPP_NUMBER = "1234567890"; // Replace with actual number
+// Production-ready: Replace with Bureau Boudoir's actual WhatsApp business number before launch
+const WHATSAPP_NUMBER = "1234567890";
 
 const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingTickets, setLoadingTickets] = useState(true);
+
+  // Validate required props
+  if (!userId || !userName) {
+    return (
+      <Card className="p-6 bg-card border-primary/20">
+        <p className="text-muted-foreground">Unable to load support section. Please refresh the page.</p>
+      </Card>
+    );
+  }
 
   const form = useForm<SupportFormValues>({
     resolver: zodResolver(supportFormSchema),

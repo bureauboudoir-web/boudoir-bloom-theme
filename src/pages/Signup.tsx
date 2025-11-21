@@ -67,7 +67,6 @@ const Signup = () => {
       setTimeout(() => navigate("/"), 2000);
 
     } catch (error: any) {
-      console.error('Error during application submission:', error);
       if (error.message?.includes('duplicate')) {
         toast.error("An application with this email already exists.");
       } else {
