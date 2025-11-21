@@ -53,7 +53,7 @@ const OnboardingBoundaries = ({ onNext, onBack, onboardingData, onComplete }: On
       boundaries_additional_notes: formData.additionalNotes
     };
 
-    const result = await onComplete(3, stepData);
+    const result = await onComplete(4, stepData);
     if (!result.error) {
       toast.success("Preferences saved!");
       onNext();

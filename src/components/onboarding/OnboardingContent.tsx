@@ -45,7 +45,7 @@ const OnboardingContent = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       content_equipment_needs: formData.equipmentNeeds
     };
 
-    const result = await onComplete(7, stepData);
+    const result = await onComplete(9, stepData);
     if (!result.error) {
       toast.success("Content requirements saved!");
       onNext();

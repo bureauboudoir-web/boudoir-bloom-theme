@@ -47,7 +47,7 @@ const OnboardingPricing = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       pricing_sexting: formData.sexting ? parseFloat(formData.sexting) : null
     };
 
-    const result = await onComplete(4, stepData);
+    const result = await onComplete(5, stepData);
     if (!result.error) {
       toast.success("Pricing information saved!");
       onNext();

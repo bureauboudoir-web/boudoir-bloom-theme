@@ -30,13 +30,33 @@ export const useOnboarding = (userId: string | undefined) => {
         .from('onboarding_data')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      if (error) {
         throw error;
       }
 
-      setOnboardingData(data);
+      // If no onboarding data exists, create it
+      if (!data && userId) {
+        const { data: newData, error: insertError } = await supabase
+          .from('onboarding_data')
+          .insert({
+            user_id: userId,
+            current_step: 1,
+            completed_steps: [],
+            is_completed: false
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          throw insertError;
+        }
+
+        setOnboardingData(newData);
+      } else {
+        setOnboardingData(data);
+      }
     } catch (error: any) {
       console.error('Error fetching onboarding data:', error);
       toast.error('Failed to load onboarding data');
