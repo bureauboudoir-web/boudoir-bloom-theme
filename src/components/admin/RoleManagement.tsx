@@ -3,11 +3,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck } from "lucide-react";
+import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { RoleRemovalDialog } from "./RoleRemovalDialog";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface UserWithRoles {
   id: string;
@@ -59,6 +70,9 @@ export const RoleManagement = () => {
     userName: string;
     userEmail: string;
   } | null>(null);
+  const [userToDelete, setUserToDelete] = useState<UserWithRoles | null>(null);
+  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -122,6 +136,46 @@ export const RoleManagement = () => {
 
     // For non-admin roles or adding roles, proceed directly
     await performRoleUpdate(userId, role, currentlyHas);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete || deleteConfirmEmail !== userToDelete.email) {
+      toast({
+        title: "Error",
+        description: "Email confirmation does not match",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke("delete-user-account", {
+        body: {
+          userId: userToDelete.id,
+          confirmEmail: deleteConfirmEmail,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `User ${userToDelete.full_name || userToDelete.email} deleted successfully`
+      });
+      setUserToDelete(null);
+      setDeleteConfirmEmail("");
+      fetchUsers();
+    } catch (error: any) {
+      console.error("Error deleting user:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete user",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const performRoleUpdate = async (userId: string, role: AppRole, currentlyHas: boolean) => {
@@ -342,6 +396,22 @@ export const RoleManagement = () => {
                         <p className="text-xs text-muted-foreground mt-2">Updating roles...</p>
                       )}
                     </div>
+
+                    {/* Delete User Button */}
+                    <div className="border-t border-border/50 pt-3">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setUserToDelete(user);
+                          setDeleteConfirmEmail("");
+                        }}
+                        className="w-full"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete User Account
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               );
@@ -354,6 +424,50 @@ export const RoleManagement = () => {
           Showing {filteredUsers.length} of {users.length} total users
         </div>
       </div>
+
+      {/* Delete User Dialog */}
+      <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User Account</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4">
+              <p>
+                This will permanently delete the user account for{" "}
+                <strong className="text-foreground">{userToDelete?.full_name || userToDelete?.email}</strong> and all associated data including:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>Profile information</li>
+                <li>All roles and permissions</li>
+                <li>Content uploads</li>
+                <li>Weekly commitments</li>
+                <li>Studio shoots</li>
+                <li>Meetings and contracts</li>
+                <li>Invoices and support tickets</li>
+              </ul>
+              <p className="text-destructive font-semibold">⚠️ This action cannot be undone.</p>
+              <div className="space-y-2">
+                <p className="font-medium text-foreground">Please type the user's email to confirm:</p>
+                <Input
+                  type="email"
+                  placeholder={userToDelete?.email}
+                  value={deleteConfirmEmail}
+                  onChange={(e) => setDeleteConfirmEmail(e.target.value)}
+                />
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              disabled={isDeleting || deleteConfirmEmail !== userToDelete?.email}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete User"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Role Removal Dialog */}
       {removalDialog && (

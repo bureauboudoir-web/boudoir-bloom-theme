@@ -26,3 +26,9 @@ verify_jwt = true  # Requires authentication
 
 [functions.send-meeting-reminder]
 verify_jwt = true  # Requires authentication
+
+[functions.send-admin-notification]
+verify_jwt = false  # Public function for signup flow
+
+[functions.delete-user-account]
+verify_jwt = true  # Requires admin authentication

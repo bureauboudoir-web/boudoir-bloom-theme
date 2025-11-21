@@ -228,12 +228,20 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate password reset link
+    // Generate password reset link with proper redirect
     let passwordResetUrl = "";
+    const origin = new URL(req.url).origin;
+    const redirectUrl = `${origin}/reset-password`;
+    
     try {
+      console.log(`Generating password reset link with redirect to: ${redirectUrl}`);
+      
       const { data: resetData, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
         type: "recovery",
         email: application.email,
+        options: {
+          redirectTo: redirectUrl
+        }
       });
 
       if (resetError) {
@@ -246,8 +254,6 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error generating password reset:", error);
     }
 
-    // Get the current origin from the request
-    const origin = req.headers.get("origin") || "https://your-domain.com";
     const loginUrl = `${origin}/login`;
 
     // Send meeting invitation email with login details
