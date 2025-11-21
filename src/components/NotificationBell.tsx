@@ -17,7 +17,7 @@ import {
 
 export interface NotificationItem {
   id: string;
-  type: "commitment" | "invoice" | "support" | "review" | "overdue";
+  type: "commitment" | "invoice" | "support" | "review" | "overdue" | "meeting";
   title: string;
   description: string;
   count?: number;
