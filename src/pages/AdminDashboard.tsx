@@ -11,6 +11,8 @@ import { AdminShoots } from "@/components/admin/AdminShoots";
 import { CreatorOverview } from "@/components/admin/CreatorOverview";
 import { ContentReview } from "@/components/admin/ContentReview";
 import { RoleManagement } from "@/components/admin/RoleManagement";
+import { RoleAuditLog } from "@/components/admin/RoleAuditLog";
+import { PermissionsManager } from "@/components/admin/PermissionsManager";
 import { AdminInvoices } from "@/components/admin/AdminInvoices";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
@@ -31,7 +33,7 @@ const AdminDashboard = () => {
     overdueCommitments,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "meetings" | "availability">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
     ...(overdueCommitments > 0 ? [{
@@ -146,6 +148,8 @@ const AdminDashboard = () => {
                 <TabsTrigger value="contracts" className="flex-shrink-0 px-4">Contracts</TabsTrigger>
                 <TabsTrigger value="support" className="flex-shrink-0 px-4">Support</TabsTrigger>
                 <TabsTrigger value="roles" className="flex-shrink-0 px-4">Roles</TabsTrigger>
+                <TabsTrigger value="audit" className="flex-shrink-0 px-4">Audit Log</TabsTrigger>
+                <TabsTrigger value="permissions" className="flex-shrink-0 px-4">Permissions</TabsTrigger>
                 <TabsTrigger value="meetings" className="flex-shrink-0 px-4">Meetings</TabsTrigger>
                 <TabsTrigger value="availability" className="flex-shrink-0 px-4">Availability</TabsTrigger>
               </TabsList>
@@ -185,6 +189,14 @@ const AdminDashboard = () => {
 
             <TabsContent value="roles">
               <RoleManagement />
+            </TabsContent>
+
+            <TabsContent value="audit">
+              <RoleAuditLog />
+            </TabsContent>
+
+            <TabsContent value="permissions">
+              <PermissionsManager />
             </TabsContent>
 
             <TabsContent value="meetings">

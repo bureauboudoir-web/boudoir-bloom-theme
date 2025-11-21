@@ -651,6 +651,33 @@ export type Database = {
           },
         ]
       }
+      permissions: {
+        Row: {
+          action: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          resource: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          resource: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          resource?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -680,6 +707,71 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      role_audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          performed_by: string | null
+          reason: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          performed_by?: string | null
+          reason?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          performed_by?: string | null
+          reason?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          target_user_id?: string
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          granted: boolean
+          id: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       studio_shoots: {
         Row: {
@@ -866,7 +958,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_modify_role: {
+        Args: {
+          _admin_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _target_user_id: string
+        }
+        Returns: boolean
+      }
       generate_invoice_number: { Args: never; Returns: string }
+      get_admin_count: { Args: never; Returns: number }
+      get_super_admin_count: { Args: never; Returns: number }
+      get_user_permissions: {
+        Args: { _user_id: string }
+        Returns: {
+          action: string
+          description: string
+          permission_name: string
+          resource: string
+        }[]
+      }
+      has_permission: {
+        Args: { _permission_name: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -877,7 +992,7 @@ export type Database = {
       update_overdue_invoices: { Args: never; Returns: undefined }
     }
     Enums: {
-      app_role: "admin" | "manager" | "creator"
+      app_role: "admin" | "manager" | "creator" | "super_admin"
       support_ticket_status: "open" | "in_progress" | "resolved"
     }
     CompositeTypes: {
@@ -1006,7 +1121,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "manager", "creator"],
+      app_role: ["admin", "manager", "creator", "super_admin"],
       support_ticket_status: ["open", "in_progress", "resolved"],
     },
   },
