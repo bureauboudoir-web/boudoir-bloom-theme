@@ -22,6 +22,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Verify JWT and get user
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.error("Missing authorization header");
       return new Response(
         JSON.stringify({ error: "Missing authorization header" }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
@@ -32,12 +33,23 @@ const handler = async (req: Request): Promise<Response> => {
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
 
-    if (authError || !user) {
+    if (authError) {
+      console.error("Auth error:", authError);
       return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
+        JSON.stringify({ error: "Unauthorized - Invalid or expired session" }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    if (!user) {
+      console.error("No user found");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - User not found" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log(`User authenticated: ${user.id}`);
 
     // Check if user has admin/manager role
     const { data: userRoles } = await supabaseClient
