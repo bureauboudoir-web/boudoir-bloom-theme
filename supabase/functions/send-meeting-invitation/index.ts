@@ -174,18 +174,44 @@ const handler = async (req: Request): Promise<Response> => {
         <!DOCTYPE html>
         <html>
           <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
-              body { font-family: Georgia, serif; background: #000; color: #fff; margin: 0; padding: 0; }
+              body { font-family: Georgia, serif; background: #0a0a0a; color: #ffffff; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
               .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
               .header { text-align: center; margin-bottom: 40px; }
-              .logo { font-size: 32px; font-weight: bold; letter-spacing: 0.02em; margin-bottom: 20px; }
-              .bureau { color: hsl(0 100% 27%); text-shadow: 0 0 20px hsl(0 100% 27% / 0.4); }
-              .boudoir { color: #d1ae94; text-shadow: 0 0 20px rgba(209, 174, 148, 0.4); }
-              .content { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(209, 174, 148, 0.2); border-radius: 8px; padding: 30px; }
-              h1 { color: #d1ae94; font-size: 24px; margin-top: 0; }
-              p { line-height: 1.6; color: rgba(255, 255, 255, 0.9); }
-              .button { display: inline-block; background: hsl(0 100% 27%); color: #fff; padding: 12px 32px; text-decoration: none; border-radius: 50px; margin: 20px 0; box-shadow: 0 0 30px hsl(0 100% 27% / 0.4); }
-              .footer { text-align: center; margin-top: 40px; color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+              .logo { font-size: 36px; font-weight: bold; letter-spacing: 0.02em; margin-bottom: 20px; line-height: 1.2; }
+              .bureau { color: #c41e3a; text-shadow: 0 0 20px rgba(196, 30, 58, 0.5); }
+              .boudoir { color: #e5c9b3; text-shadow: 0 0 20px rgba(229, 201, 179, 0.5); }
+              .content { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(229, 201, 179, 0.3); border-radius: 8px; padding: 40px 30px; }
+              h1 { color: #e5c9b3; font-size: 26px; margin-top: 0; margin-bottom: 20px; font-weight: 600; }
+              p { line-height: 1.8; color: #f5f5f5; margin: 16px 0; font-size: 16px; }
+              .button-wrapper { text-align: center; margin: 30px 0; }
+              .button { 
+                display: inline-block; 
+                background: #c41e3a; 
+                color: #ffffff !important; 
+                padding: 16px 40px; 
+                text-decoration: none; 
+                border-radius: 50px; 
+                font-weight: 700;
+                font-size: 18px;
+                letter-spacing: 0.5px;
+                box-shadow: 0 4px 20px rgba(196, 30, 58, 0.5);
+                transition: all 0.3s ease;
+              }
+              .button:hover { background: #a01829; box-shadow: 0 6px 25px rgba(196, 30, 58, 0.7); }
+              .link { color: #e5c9b3 !important; text-decoration: underline; font-weight: 500; }
+              .fallback-link { 
+                margin-top: 20px; 
+                padding: 15px; 
+                background: rgba(229, 201, 179, 0.1); 
+                border-radius: 6px; 
+                font-size: 14px; 
+                color: #d0d0d0;
+                word-break: break-all;
+              }
+              .footer { text-align: center; margin-top: 40px; color: #888888; font-size: 14px; line-height: 1.6; }
             </style>
           </head>
           <body>
@@ -197,20 +223,24 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div class="content">
                 <h1>Your Application Has Been Approved!</h1>
-                <p>Dear ${name},</p>
-                <p>Congratulations! Your application to become a Bureau Boudoir Creator has been reviewed and approved.</p>
-                <p>We've created an account for you. Please use the link below to set up your password and access your dashboard:</p>
-                <p style="text-align: center;">
+                <p>Dear <strong>${name}</strong>,</p>
+                <p>Congratulations! Your application to become a Bureau Boudoir Creator has been reviewed and <strong>approved</strong>.</p>
+                <p>We've created an account for you. Please click the button below to set up your password and access your dashboard:</p>
+                <div class="button-wrapper">
                   <a href="${passwordResetUrl}" class="button">Set Up Your Password</a>
+                </div>
+                <p class="fallback-link">
+                  <strong>Button not working?</strong> Copy and paste this link into your browser:<br>
+                  <span style="color: #e5c9b3;">${passwordResetUrl}</span>
                 </p>
                 <p>Once you've set up your password, you can log in at:<br>
-                <a href="${loginUrl}" style="color: #d1ae94;">${loginUrl}</a></p>
+                <a href="${loginUrl}" class="link">${loginUrl}</a></p>
                 <p>After logging in, you'll be able to book your introductory meeting with your BB representative. Your onboarding area will unlock after your introduction meeting.</p>
-                <p>We're thrilled to have you join the Bureau Boudoir family.</p>
-                <p>Best regards,<br>The Bureau Boudoir Team</p>
+                <p style="margin-top: 30px;">We're thrilled to have you join the Bureau Boudoir family.</p>
+                <p><strong>Best regards,</strong><br>The Bureau Boudoir Team</p>
               </div>
               <div class="footer">
-                <p>Bureau Boudoir • Amsterdam, Netherlands</p>
+                <p><strong>Bureau Boudoir</strong> • Amsterdam, Netherlands</p>
                 <p>X: @bureauboudoir • TikTok: @bureauboudoir</p>
               </div>
             </div>
