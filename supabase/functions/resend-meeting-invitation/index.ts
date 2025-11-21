@@ -145,23 +145,23 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const redirectUrl = `${appOrigin}/reset-password`;
-    console.log(`Generating password reset link with redirect to: ${redirectUrl}`);
+    const redirectUrl = `${appOrigin}/complete-setup`;
+    console.log(`Generating magic link with redirect to: ${redirectUrl}`);
 
-    // Generate new password reset link
-    const { data: resetData, error: resetError } = await supabaseClient.auth.admin.generateLink({
-      type: 'recovery',
+    // Generate new magic link
+    const { data: magicLinkData, error: magicLinkError } = await supabaseClient.auth.admin.generateLink({
+      type: 'magiclink',
       email: application.email,
       options: {
         redirectTo: redirectUrl
       }
     });
 
-    if (resetError) {
-      throw new Error(`Failed to generate password reset link: ${resetError.message}`);
+    if (magicLinkError) {
+      throw new Error(`Failed to generate magic link: ${magicLinkError.message}`);
     }
 
-    const passwordResetUrl = resetData.properties?.action_link || '';
+    const magicLinkUrl = magicLinkData.properties?.action_link || '';
     const loginUrl = `${appOrigin}/login`;
 
     // Calculate expiration time
@@ -175,10 +175,10 @@ const handler = async (req: Request): Promise<Response> => {
           name: application.name,
           email: application.email,
           loginUrl,
-          passwordResetUrl,
+          magicLinkUrl,
           applicationId: applicationId,
           userId: existingUser.id,
-          passwordResetExpiresAt: expiresAt,
+          magicLinkExpiresAt: expiresAt,
           expirationMinutes: Math.floor(expirationSeconds / 60),
         },
       }

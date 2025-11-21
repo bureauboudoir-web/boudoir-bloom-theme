@@ -118,10 +118,10 @@ export const EmailSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="w-5 h-5" />
-            Password Reset Link Expiration
+            Magic Link Expiration
           </CardTitle>
           <CardDescription>
-            Configure how long password reset links remain valid after being sent
+            Configure how long magic links remain valid after being sent to new creators
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

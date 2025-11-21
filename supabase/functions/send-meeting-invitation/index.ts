@@ -14,32 +14,25 @@ interface MeetingInvitationRequest {
   name: string;
   email: string;
   loginUrl: string;
-  passwordResetUrl: string;
+  magicLinkUrl: string;
   applicationId?: string;
   userId?: string;
-  passwordResetExpiresAt?: string;
+  magicLinkExpiresAt?: string;
   expirationMinutes?: number;
 }
 
-// Input validation helper
 const validateInput = (data: any): { valid: boolean; error?: string } => {
-  if (!data.name || typeof data.name !== 'string') {
-    return { valid: false, error: 'Name is required and must be a string' };
+  if (!data.name || typeof data.name !== 'string' || data.name.length > 100) {
+    return { valid: false, error: 'Invalid name' };
   }
-  if (data.name.length > 100) {
-    return { valid: false, error: 'Name must be less than 100 characters' };
-  }
-  if (!data.email || typeof data.email !== 'string') {
-    return { valid: false, error: 'Email is required and must be a string' };
-  }
-  if (data.email.length > 255 || !data.email.includes('@')) {
-    return { valid: false, error: 'Invalid email format or email too long' };
+  if (!data.email || typeof data.email !== 'string' || data.email.length > 255 || !data.email.includes('@')) {
+    return { valid: false, error: 'Invalid email' };
   }
   if (!data.loginUrl || typeof data.loginUrl !== 'string' || data.loginUrl.length > 500) {
     return { valid: false, error: 'Invalid loginUrl' };
   }
-  if (!data.passwordResetUrl || typeof data.passwordResetUrl !== 'string' || data.passwordResetUrl.length > 500) {
-    return { valid: false, error: 'Invalid passwordResetUrl' };
+  if (!data.magicLinkUrl || typeof data.magicLinkUrl !== 'string' || data.magicLinkUrl.length > 500) {
+    return { valid: false, error: 'Invalid magicLinkUrl' };
   }
   return { valid: true };
 };
@@ -53,7 +46,7 @@ const logEmail = async (
   applicationId?: string,
   userId?: string,
   errorMessage?: string,
-  passwordResetExpiresAt?: string
+  magicLinkExpiresAt?: string
 ) => {
   try {
     const { error } = await supabase
@@ -68,7 +61,7 @@ const logEmail = async (
         sent_at: status === 'sent' ? new Date().toISOString() : null,
         failed_at: status === 'failed' ? new Date().toISOString() : null,
         error_message: errorMessage,
-        password_reset_expires_at: passwordResetExpiresAt,
+        password_reset_expires_at: magicLinkExpiresAt,
       });
     
     if (error) {
@@ -80,7 +73,6 @@ const logEmail = async (
 };
 
 const sendEmailWithRetry = async (
-  supabase: any,
   emailData: any,
   maxRetries = 3
 ): Promise<{ success: boolean; error?: string; data?: any }> => {
@@ -105,18 +97,12 @@ const sendEmailWithRetry = async (
         lastError = `Resend API error: ${responseData.message || 'Unknown error'}`;
         console.error(`Attempt ${attempt + 1} failed:`, responseData);
         
-        // If it's an auth error, don't retry
         if (responseData.statusCode === 401 || responseData.name === 'validation_error') {
-          return { 
-            success: false, 
-            error: 'Email service authentication failed. Please check RESEND_API_KEY configuration.' 
-          };
+          return { success: false, error: 'Email service authentication failed' };
         }
         
-        // Wait before retrying (exponential backoff)
         if (attempt < maxRetries - 1) {
-          const waitTime = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
-          console.log(`Waiting ${waitTime}ms before retry...`);
+          const waitTime = Math.pow(2, attempt) * 1000;
           await new Promise(resolve => setTimeout(resolve, waitTime));
         }
         continue;
@@ -150,14 +136,13 @@ const handler = async (req: Request): Promise<Response> => {
     if (!RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not configured');
       return new Response(
-        JSON.stringify({ error: 'Email service is not configured. Please contact support.' }),
+        JSON.stringify({ error: 'Email service is not configured' }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
     const requestData = await req.json();
     
-    // Validate input
     const validation = validateInput(requestData);
     if (!validation.valid) {
       console.error('Validation error:', validation.error);
@@ -167,20 +152,20 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { name, email, loginUrl, passwordResetUrl, applicationId, userId, passwordResetExpiresAt, expirationMinutes }: MeetingInvitationRequest = requestData;
+    const { name, email, loginUrl, magicLinkUrl, applicationId, userId, magicLinkExpiresAt, expirationMinutes }: MeetingInvitationRequest = requestData;
     console.log(`Sending meeting invitation to ${email}`);
 
     const expirationText = expirationMinutes 
       ? `<p style="color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 6px; margin: 20px 0;">
-          <strong>⏰ Important:</strong> This password reset link will expire in <strong>${expirationMinutes} minutes</strong>. 
-          Please complete your password setup within this timeframe.
+          <strong>⏰ Important:</strong> This magic link will expire in <strong>${expirationMinutes} minutes</strong>. 
+          Please click the link within this timeframe to access your account.
         </p>` 
       : '';
 
     const emailData = {
       from: "Bureau Boudoir <onboarding@resend.dev>",
       to: [email],
-      subject: "Welcome to Bureau Boudoir - Set Up Your Account",
+      subject: "Welcome to Bureau Boudoir - Complete Your Account Setup",
       html: `
         <!DOCTYPE html>
         <html>
@@ -188,14 +173,14 @@ const handler = async (req: Request): Promise<Response> => {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
-              body { font-family: Georgia, serif; background: #0a0a0a; color: #ffffff; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+              body { font-family: Georgia, serif; background: #0a0a0a; color: #ffffff; margin: 0; padding: 0; }
               .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
               .header { text-align: center; margin-bottom: 40px; }
-              .logo { font-size: 36px; font-weight: bold; letter-spacing: 0.02em; margin-bottom: 20px; line-height: 1.2; }
+              .logo { font-size: 36px; font-weight: bold; letter-spacing: 0.02em; margin-bottom: 20px; }
               .bureau { color: #c41e3a; text-shadow: 0 0 20px rgba(196, 30, 58, 0.5); }
               .boudoir { color: #e5c9b3; text-shadow: 0 0 20px rgba(229, 201, 179, 0.5); }
               .content { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(229, 201, 179, 0.3); border-radius: 8px; padding: 40px 30px; }
-              h1 { color: #e5c9b3; font-size: 26px; margin-top: 0; margin-bottom: 20px; font-weight: 600; }
+              h1 { color: #e5c9b3; font-size: 26px; margin-top: 0; margin-bottom: 20px; }
               p { line-height: 1.8; color: #f5f5f5; margin: 16px 0; font-size: 16px; }
               .button-wrapper { text-align: center; margin: 30px 0; }
               .button { 
@@ -207,12 +192,9 @@ const handler = async (req: Request): Promise<Response> => {
                 border-radius: 50px; 
                 font-weight: 700;
                 font-size: 18px;
-                letter-spacing: 0.5px;
                 box-shadow: 0 4px 20px rgba(196, 30, 58, 0.5);
-                transition: all 0.3s ease;
               }
-              .button:hover { background: #a01829; box-shadow: 0 6px 25px rgba(196, 30, 58, 0.7); }
-              .link { color: #e5c9b3 !important; text-decoration: underline; font-weight: 500; }
+              .link { color: #e5c9b3 !important; text-decoration: underline; }
               .fallback-link { 
                 margin-top: 20px; 
                 padding: 15px; 
@@ -222,7 +204,7 @@ const handler = async (req: Request): Promise<Response> => {
                 color: #d0d0d0;
                 word-break: break-all;
               }
-              .footer { text-align: center; margin-top: 40px; color: #888888; font-size: 14px; line-height: 1.6; }
+              .footer { text-align: center; margin-top: 40px; color: #888888; font-size: 14px; }
             </style>
           </head>
           <body>
@@ -235,25 +217,22 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="content">
                 <h1>Your Application Has Been Approved!</h1>
                 <p>Dear <strong>${name}</strong>,</p>
-                <p>Congratulations! Your application to become a Bureau Boudoir Creator has been reviewed and <strong>approved</strong>.</p>
-                <p>We've created an account for you. Please click the button below to set up your password and access your dashboard:</p>
+                <p>Congratulations! Your application to become a Bureau Boudoir Creator has been <strong>approved</strong>.</p>
+                <p>We've created your account. Click the magic link below to instantly access your dashboard and set up your password:</p>
                 ${expirationText}
                 <div class="button-wrapper">
-                  <a href="${passwordResetUrl}" class="button">Set Up Your Password</a>
+                  <a href="${magicLinkUrl}" class="button">Access Your Account</a>
                 </div>
                 <p class="fallback-link">
-                  <strong>Button not working?</strong> Copy and paste this link into your browser:<br>
-                  <span style="color: #e5c9b3;">${passwordResetUrl}</span>
+                  <strong>Button not working?</strong> Copy and paste this link:<br>
+                  <span style="color: #e5c9b3;">${magicLinkUrl}</span>
                 </p>
-                <p>Once you've set up your password, you can log in at:<br>
-                <a href="${loginUrl}" class="link">${loginUrl}</a></p>
-                <p>After logging in, you'll be able to book your introductory meeting with your BB representative. Your onboarding area will unlock after your introduction meeting.</p>
-                <p style="margin-top: 30px;">We're thrilled to have you join the Bureau Boudoir family.</p>
+                <p>After accessing your account, you'll set up your password and can then book your introductory meeting. Your full onboarding area will unlock after your meeting.</p>
+                <p style="margin-top: 30px;">We're thrilled to have you join Bureau Boudoir.</p>
                 <p><strong>Best regards,</strong><br>The Bureau Boudoir Team</p>
               </div>
               <div class="footer">
-                <p><strong>Bureau Boudoir</strong> • Amsterdam, Netherlands</p>
-                <p>X: @bureauboudoir • TikTok: @bureauboudoir</p>
+                <p><strong>Bureau Boudoir</strong> • Amsterdam</p>
               </div>
             </div>
           </body>
@@ -261,11 +240,9 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     };
 
-    // Send email with retry logic
-    const result = await sendEmailWithRetry(supabase, emailData);
+    const result = await sendEmailWithRetry(emailData);
     
     if (result.success) {
-      // Log successful email
       await logEmail(
         supabase,
         'meeting_invitation',
@@ -275,16 +252,15 @@ const handler = async (req: Request): Promise<Response> => {
         applicationId,
         userId,
         undefined,
-        passwordResetExpiresAt
+        magicLinkExpiresAt
       );
       
-      console.log("Meeting invitation email sent successfully:", result.data);
+      console.log("Meeting invitation email sent successfully");
       return new Response(JSON.stringify(result.data), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     } else {
-      // Log failed email
       await logEmail(
         supabase,
         'meeting_invitation',
@@ -294,15 +270,11 @@ const handler = async (req: Request): Promise<Response> => {
         applicationId,
         userId,
         result.error,
-        passwordResetExpiresAt
+        magicLinkExpiresAt
       );
       
       return new Response(
-        JSON.stringify({ 
-          error: result.error,
-          statusCode: 500,
-          message: 'Failed to send email after multiple retries'
-        }),
+        JSON.stringify({ error: result.error }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -310,10 +282,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error sending meeting invitation email:", error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message || 'Failed to send invitation email',
-        details: error.toString()
-      }),
+      JSON.stringify({ error: error.message }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
