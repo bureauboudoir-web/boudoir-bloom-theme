@@ -98,76 +98,115 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing application approval for ID:", applicationId);
 
-    // Create the user account
-    const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: application.email,
-      email_confirm: true,
-      user_metadata: {
-        full_name: application.name,
-      },
-    });
+    // Check if user already exists
+    let userId: string;
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    const existingUser = existingUsers?.users.find(u => u.email === application.email);
 
-    if (authError || !authUser.user) {
-      console.error("Error creating user:", authError);
-      return new Response(
-        JSON.stringify({ error: `Failed to create user account: ${authError?.message}` }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    if (existingUser) {
+      console.log("User account already exists, using existing user");
+      userId = existingUser.id;
+    } else {
+      // Create the user account
+      const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email: application.email,
+        email_confirm: true,
+        user_metadata: {
+          full_name: application.name,
+        },
+      });
+
+      if (authError || !authUser.user) {
+        console.error("Error creating user:", authError);
+        return new Response(
+          JSON.stringify({ error: `Failed to create user account: ${authError?.message}` }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      userId = authUser.user.id;
+      console.log("Created user successfully");
     }
 
-    const userId = authUser.user.id;
-    console.log("Created user successfully");
-
-    // Insert creator role
-    const { error: roleError2 } = await supabaseAdmin
+    // Insert creator role (if not already exists)
+    const { data: existingRole } = await supabaseAdmin
       .from("user_roles")
-      .insert({ user_id: userId, role: "creator" });
+      .select("id")
+      .eq("user_id", userId)
+      .eq("role", "creator")
+      .single();
 
-    if (roleError2) {
-      console.error("Error creating role:", roleError2);
-      // Clean up: delete the auth user if role creation fails
-      await supabaseAdmin.auth.admin.deleteUser(userId);
-      return new Response(
-        JSON.stringify({ error: "Failed to assign creator role" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    if (!existingRole) {
+      const { error: roleError2 } = await supabaseAdmin
+        .from("user_roles")
+        .insert({ user_id: userId, role: "creator" });
+
+      if (roleError2) {
+        console.error("Error creating role:", roleError2);
+        return new Response(
+          JSON.stringify({ error: "Failed to assign creator role" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } else {
+      console.log("Creator role already exists");
     }
 
-    // Set access level to meeting_only
-    const { error: accessError } = await supabaseAdmin
+    // Set access level to meeting_only (if not already exists)
+    const { data: existingAccess } = await supabaseAdmin
       .from("creator_access_levels")
-      .insert({
-        user_id: userId,
-        access_level: "meeting_only",
-        granted_by: managerId,
-        granted_at: new Date().toISOString(),
-      });
+      .select("id")
+      .eq("user_id", userId)
+      .single();
 
-    if (accessError) {
-      console.error("Error setting access level:", accessError);
-      return new Response(
-        JSON.stringify({ error: "Failed to set access level" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    if (!existingAccess) {
+      const { error: accessError } = await supabaseAdmin
+        .from("creator_access_levels")
+        .insert({
+          user_id: userId,
+          access_level: "meeting_only",
+          granted_by: managerId,
+          granted_at: new Date().toISOString(),
+        });
+
+      if (accessError) {
+        console.error("Error setting access level:", accessError);
+        return new Response(
+          JSON.stringify({ error: "Failed to set access level" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } else {
+      console.log("Access level already exists");
     }
 
-    // Create meeting record
-    const { error: meetingError } = await supabaseAdmin
+    // Create meeting record (if not already exists)
+    const { data: existingMeeting } = await supabaseAdmin
       .from("creator_meetings")
-      .insert({
-        user_id: userId,
-        application_id: applicationId,
-        assigned_manager_id: managerId,
-        status: "not_booked",
-        meeting_type: "initial",
-      });
+      .select("id")
+      .eq("application_id", applicationId)
+      .single();
 
-    if (meetingError) {
-      console.error("Error creating meeting:", meetingError);
-      return new Response(
-        JSON.stringify({ error: "Failed to create meeting record" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    if (!existingMeeting) {
+      const { error: meetingError } = await supabaseAdmin
+        .from("creator_meetings")
+        .insert({
+          user_id: userId,
+          application_id: applicationId,
+          assigned_manager_id: managerId,
+          status: "not_booked",
+          meeting_type: "online",
+        });
+
+      if (meetingError) {
+        console.error("Error creating meeting:", meetingError);
+        return new Response(
+          JSON.stringify({ error: "Failed to create meeting record" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } else {
+      console.log("Meeting record already exists");
     }
 
     // Update application status
