@@ -376,7 +376,7 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
       {stats.weeklyProgress > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Weekly Progress</CardTitle>
+            <CardTitle className="text-lg">Progress</CardTitle>
             <CardDescription>Your commitment completion rate this week</CardDescription>
           </CardHeader>
           <CardContent>
