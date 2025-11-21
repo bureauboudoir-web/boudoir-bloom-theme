@@ -198,7 +198,7 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
       variant: "default" as const,
     },
     {
-      label: "View Commitments",
+      label: "Commitments",
       icon: <CheckSquare className="w-4 h-4" />,
       action: () => onNavigate('commitments'),
       variant: "secondary" as const,
