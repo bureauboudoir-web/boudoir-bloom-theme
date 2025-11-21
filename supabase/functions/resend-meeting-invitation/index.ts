@@ -167,8 +167,8 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Create direct link to our app
-    const invitationUrl = `${appOrigin}/complete-setup?token=${invitationToken}`;
+    // Create login link with setup parameters
+    const invitationUrl = `${appOrigin}/login?setup=true&token=${invitationToken}`;
     const loginUrl = `${appOrigin}/login`;
 
     console.log("Generated invitation URL:", invitationUrl);
