@@ -11,9 +11,16 @@ export interface AvailabilitySlot {
   is_available: boolean;
 }
 
+export interface DateBlock {
+  id?: string;
+  specific_date: string;
+  reason?: string;
+}
+
 export const useManagerAvailability = () => {
   const { user } = useAuth();
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [blockedDates, setBlockedDates] = useState<DateBlock[]>([]);
   const [meetingDuration, setMeetingDuration] = useState(60);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -21,6 +28,7 @@ export const useManagerAvailability = () => {
   useEffect(() => {
     if (user) {
       fetchAvailability();
+      fetchBlockedDates();
     }
   }, [user]);
 
@@ -49,6 +57,33 @@ export const useManagerAvailability = () => {
       toast.error("Failed to load availability");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBlockedDates = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('manager_availability')
+        .select('id, specific_date, start_time')
+        .eq('manager_id', user.id)
+        .not('specific_date', 'is', null)
+        .eq('is_available', false)
+        .order('specific_date', { ascending: true });
+
+      if (error) throw error;
+
+      setBlockedDates(
+        (data || []).map(item => ({
+          id: item.id,
+          specific_date: item.specific_date!,
+          reason: item.start_time, // Using start_time field to store reason
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching blocked dates:", error);
+      toast.error("Failed to load blocked dates");
     }
   };
 
@@ -191,8 +226,63 @@ export const useManagerAvailability = () => {
     }
   };
 
+  const addBlockedDate = async (date: string, reason: string = "") => {
+    if (!user) return;
+
+    // Check if date is already blocked
+    if (blockedDates.some(b => b.specific_date === date)) {
+      toast.error("This date is already blocked");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('manager_availability')
+        .insert({
+          manager_id: user.id,
+          specific_date: date,
+          start_time: reason, // Store reason in start_time field
+          end_time: "00:00",
+          is_available: false,
+          day_of_week: new Date(date).getDay(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setBlockedDates([
+        ...blockedDates,
+        { id: data.id, specific_date: date, reason },
+      ]);
+      
+      toast.success("Date blocked successfully");
+    } catch (error) {
+      console.error("Error blocking date:", error);
+      toast.error("Failed to block date");
+    }
+  };
+
+  const removeBlockedDate = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('manager_availability')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setBlockedDates(blockedDates.filter(b => b.id !== id));
+      toast.success("Date unblocked successfully");
+    } catch (error) {
+      console.error("Error unblocking date:", error);
+      toast.error("Failed to unblock date");
+    }
+  };
+
   return {
     availability,
+    blockedDates,
     meetingDuration,
     setMeetingDuration,
     loading,
@@ -201,5 +291,8 @@ export const useManagerAvailability = () => {
     updateSlot,
     removeSlot,
     saveAvailability,
+    addBlockedDate,
+    removeBlockedDate,
+    fetchBlockedDates,
   };
 };
