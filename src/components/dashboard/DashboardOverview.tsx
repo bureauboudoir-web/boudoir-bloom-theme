@@ -204,13 +204,13 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
       variant: "secondary" as const,
     },
     {
-      label: "Book Meeting",
+      label: "Meeting",
       icon: <Video className="w-4 h-4" />,
       action: () => onNavigate('meetings'),
       variant: "secondary" as const,
     },
     {
-      label: "Contact Support",
+      label: "Support",
       icon: <Mail className="w-4 h-4" />,
       action: () => onNavigate('support'),
       variant: "outline" as const,
