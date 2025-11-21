@@ -61,8 +61,6 @@ export const ApplicationsManagement = () => {
     }
 
     try {
-      console.log("Approving application via edge function...");
-      
       const { data, error } = await supabase.functions.invoke('approve-creator-application', {
         body: {
           applicationId: application.id,
@@ -71,7 +69,7 @@ export const ApplicationsManagement = () => {
       });
 
       if (error) {
-        console.error("Error from edge function:", error);
+        console.error("Edge function error:", error);
         throw new Error(error.message || "Failed to approve application");
       }
 
@@ -79,7 +77,6 @@ export const ApplicationsManagement = () => {
         throw new Error(data.error);
       }
 
-      console.log("Application approved successfully:", data);
       toast.success("Application approved! User account created and emails sent.");
       fetchApplications();
     } catch (error: any) {

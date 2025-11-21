@@ -40,7 +40,6 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
         
         const fetchedRoles = data?.map(r => r.role as AppRole) || [];
         setRoles(fetchedRoles);
-        console.log('Roles loaded:', fetchedRoles);
       } catch (error) {
         console.error('Error fetching user roles:', error);
         setRoles([]);
@@ -63,7 +62,6 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          console.log('Role change detected, refetching...');
           fetchRoles();
         }
       )
