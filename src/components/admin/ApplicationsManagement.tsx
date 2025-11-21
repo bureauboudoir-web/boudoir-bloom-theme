@@ -6,9 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, Mail, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+
+interface AdminNote {
+  note: string;
+  updated_by: string;
+  updated_at: string;
+}
 
 interface Application {
   id: string;
@@ -19,9 +25,12 @@ interface Application {
   status: string;
   created_at: string;
   admin_notes: string | null;
+  admin_notes_history: AdminNote[] | null;
   reviewed_at: string | null;
   reviewed_by: string | null;
   reviewed_by_name: string | null;
+  email_status?: string | null;
+  email_sent_at?: string | null;
 }
 
 export const ApplicationsManagement = () => {
@@ -29,6 +38,8 @@ export const ApplicationsManagement = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'declined'>('pending');
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState("");
 
   useEffect(() => {
     fetchApplications();
@@ -56,6 +67,25 @@ export const ApplicationsManagement = () => {
         ...app,
         reviewed_by_name: app.reviewed_by_profile?.full_name || null,
       }));
+
+      // For approved applications, check if emails were sent successfully
+      if (transformedData) {
+        for (const app of transformedData) {
+          if (app.status === 'approved') {
+            const { data: emailLog } = await supabase
+              .from('email_logs')
+              .select('status, sent_at')
+              .eq('application_id', app.id)
+              .eq('email_type', 'meeting_invitation')
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .single();
+            
+            app.email_status = emailLog?.status || null;
+            app.email_sent_at = emailLog?.sent_at || null;
+          }
+        }
+      }
 
       setApplications(transformedData || []);
     } catch (error) {
@@ -131,6 +161,8 @@ export const ApplicationsManagement = () => {
 
   const handleResendInvitation = async (application: Application) => {
     try {
+      toast.loading("Resending invitation...", { id: "resend-invitation" });
+      
       const { data, error } = await supabase.functions.invoke('resend-meeting-invitation', {
         body: {
           applicationId: application.id
@@ -146,11 +178,51 @@ export const ApplicationsManagement = () => {
         throw new Error(data.error);
       }
 
-      toast.success("Invitation email resent successfully!");
+      toast.success("Invitation email resent successfully! Check email logs for delivery status.", { id: "resend-invitation" });
+      fetchApplications();
     } catch (error: any) {
       console.error("Error resending invitation:", error);
-      toast.error(`Failed to resend invitation: ${error.message}`);
+      toast.error(`Failed to resend invitation: ${error.message}`, { id: "resend-invitation" });
     }
+  };
+
+  const handleSaveNote = async (applicationId: string) => {
+    if (!noteText.trim()) {
+      toast.error("Note cannot be empty");
+      return;
+    }
+
+    try {
+      toast.loading("Saving note...", { id: "save-note" });
+      
+      const { error } = await supabase
+        .from('creator_applications')
+        .update({ 
+          admin_notes: noteText,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', applicationId);
+
+      if (error) throw error;
+
+      toast.success("Note saved successfully!", { id: "save-note" });
+      setEditingNoteId(null);
+      setNoteText("");
+      fetchApplications();
+    } catch (error: any) {
+      console.error("Error saving note:", error);
+      toast.error(`Failed to save note: ${error.message}`, { id: "save-note" });
+    }
+  };
+
+  const startEditingNote = (app: Application) => {
+    setEditingNoteId(app.id);
+    setNoteText(app.admin_notes || "");
+  };
+
+  const cancelEditingNote = () => {
+    setEditingNoteId(null);
+    setNoteText("");
   };
 
   const DeclineDialog = ({ application }: { application: Application }) => {
@@ -269,6 +341,28 @@ export const ApplicationsManagement = () => {
                     <CardTitle className="text-xl">{app.name}</CardTitle>
                     <p className="text-sm text-muted-foreground">{app.email}</p>
                     <p className="text-sm text-muted-foreground">{app.phone}</p>
+                    
+                    {/* Email Status Indicator for Approved Applications */}
+                    {app.status === 'approved' && app.email_status && (
+                      <div className="flex items-center gap-2 text-xs mt-2">
+                        {app.email_status === 'sent' ? (
+                          <>
+                            <CheckCircle className="w-3 h-3 text-green-500" />
+                            <span className="text-green-500">Email sent successfully</span>
+                          </>
+                        ) : app.email_status === 'failed' ? (
+                          <>
+                            <AlertCircle className="w-3 h-3 text-destructive" />
+                            <span className="text-destructive">Email failed - use Resend Invitation</span>
+                          </>
+                        ) : (
+                          <>
+                            <Clock className="w-3 h-3 text-yellow-500" />
+                            <span className="text-yellow-500">Email {app.email_status}</span>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <Badge variant={
                     app.status === 'approved' ? 'default' :
@@ -287,8 +381,8 @@ export const ApplicationsManagement = () => {
                 </div>
 
                 {/* Application History */}
-                {(app.reviewed_at || app.reviewed_by_name || app.admin_notes) && (
-                  <div className="border-t border-border pt-4 mt-4 space-y-2">
+                {(app.reviewed_at || app.reviewed_by_name || app.admin_notes || app.admin_notes_history?.length) && (
+                  <div className="border-t border-border pt-4 mt-4 space-y-3">
                     <p className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                       <Clock className="w-4 h-4" />
                       Application History
@@ -303,14 +397,77 @@ export const ApplicationsManagement = () => {
                         Reviewed by: {app.reviewed_by_name}
                       </p>
                     )}
-                    {app.admin_notes && (
-                      <div className="mt-2">
-                        <p className="text-sm font-medium">Admin Notes:</p>
-                        <p className="text-sm text-muted-foreground bg-muted/30 p-2 rounded mt-1">
+                    
+                    {/* Admin Notes Section */}
+                    <div className="mt-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4" />
+                          Admin Notes
+                        </p>
+                        {editingNoteId !== app.id && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => startEditingNote(app)}
+                          >
+                            {app.admin_notes ? 'Edit Note' : 'Add Note'}
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {editingNoteId === app.id ? (
+                        <div className="space-y-2">
+                          <Textarea
+                            value={noteText}
+                            onChange={(e) => setNoteText(e.target.value)}
+                            placeholder="Add internal notes about this application..."
+                            rows={3}
+                            className="w-full"
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleSaveNote(app.id)}
+                            >
+                              <Save className="w-4 h-4 mr-1" />
+                              Save Note
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={cancelEditingNote}
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : app.admin_notes ? (
+                        <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded">
                           {app.admin_notes}
                         </p>
-                      </div>
-                    )}
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">No notes added yet</p>
+                      )}
+                      
+                      {/* Notes History */}
+                      {app.admin_notes_history && app.admin_notes_history.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs font-medium text-muted-foreground">Notes History:</p>
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                            {app.admin_notes_history.map((note: AdminNote, idx: number) => (
+                              <div key={idx} className="text-xs bg-muted/20 p-2 rounded">
+                                <p className="text-muted-foreground">{note.note}</p>
+                                <p className="text-muted-foreground/60 mt-1">
+                                  {new Date(note.updated_at).toLocaleString()}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
