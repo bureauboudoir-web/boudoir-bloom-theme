@@ -20,6 +20,7 @@ import { AdminMeetings } from "@/components/admin/AdminMeetings";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
 import { AdminContracts } from "@/components/admin/AdminContracts";
 import { EmailLogsView } from "@/components/admin/EmailLogsView";
+import { EmailSettings } from "@/components/admin/EmailSettings";
 import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
     overdueCommitments,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
     ...(overdueCommitments > 0 ? [{
@@ -188,6 +189,9 @@ const AdminDashboard = () => {
                   <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Email Logs
                   </TabsTrigger>
+                  <TabsTrigger value="email-settings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Email Settings
+                  </TabsTrigger>
                   
                   {/* Visual separator */}
                   <div className="w-px h-8 bg-border self-center mx-1" />
@@ -249,6 +253,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="emails" className="mt-0">
               <EmailLogsView />
+            </TabsContent>
+
+            <TabsContent value="email-settings" className="mt-0">
+              <EmailSettings />
             </TabsContent>
 
             <TabsContent value="roles" className="mt-0">

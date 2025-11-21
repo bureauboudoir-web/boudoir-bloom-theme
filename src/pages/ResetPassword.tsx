@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageContainer } from "@/components/PageContainer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,6 +16,30 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+  const [linkTracked, setLinkTracked] = useState(false);
+
+  // Track link click when component mounts
+  useEffect(() => {
+    const trackLinkClick = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email && !linkTracked) {
+          await supabase.functions.invoke('track-invitation-link', {
+            body: {
+              email: user.email,
+              action: 'clicked'
+            }
+          });
+          setLinkTracked(true);
+          console.log("Link click tracked");
+        }
+      } catch (error) {
+        console.error("Error tracking link click:", error);
+      }
+    };
+
+    trackLinkClick();
+  }, [linkTracked]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,17 +63,32 @@ const ResetPassword = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.updateUser({
+      const { data: { user }, error: updateError } = await supabase.auth.updateUser({
         password: password,
       });
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // Track that password was successfully set
+      if (user?.email) {
+        await supabase.functions.invoke('track-invitation-link', {
+          body: {
+            email: user.email,
+            action: 'used'
+          }
+        });
+      }
 
       toast.success("Password updated successfully!");
       setTimeout(() => navigate("/login"), 2000);
     } catch (error: any) {
       console.error("Error updating password:", error);
-      toast.error(error.message || "Failed to update password");
+      
+      if (error.message?.includes("expired") || error.message?.includes("invalid")) {
+        toast.error("This password reset link has expired. Please request a new one from your administrator.");
+      } else {
+        toast.error(error.message || "Failed to update password");
+      }
     } finally {
       setLoading(false);
     }
