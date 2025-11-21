@@ -2,12 +2,13 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-export type AppRole = 'admin' | 'manager' | 'creator';
+export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator';
 
 interface UserRoleContextType {
   roles: AppRole[];
   loading: boolean;
   hasRole: (role: AppRole) => boolean;
+  isSuperAdmin: boolean;
   isAdmin: boolean;
   isManager: boolean;
   isCreator: boolean;
@@ -73,16 +74,18 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   const hasRole = (role: AppRole) => roles.includes(role);
+  const isSuperAdmin = hasRole('super_admin');
   const isAdmin = hasRole('admin');
   const isManager = hasRole('manager');
   const isCreator = hasRole('creator');
-  const isAdminOrManager = isAdmin || isManager;
+  const isAdminOrManager = isSuperAdmin || isAdmin || isManager;
 
   return (
     <UserRoleContext.Provider value={{
       roles,
       loading,
       hasRole,
+      isSuperAdmin,
       isAdmin,
       isManager,
       isCreator,

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { Shield, Users, Crown, Briefcase, User as UserIcon } from "lucide-react";
+import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { RoleRemovalDialog } from "./RoleRemovalDialog";
+import { useAuth } from "@/hooks/useAuth";
 
 interface UserWithRoles {
   id: string;
@@ -16,9 +17,15 @@ interface UserWithRoles {
   roles: string[];
 }
 
-type AppRole = 'admin' | 'manager' | 'creator';
+type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator';
 
 const roleConfig = {
+  super_admin: {
+    label: 'Super Admin',
+    icon: ShieldCheck,
+    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+    description: 'Ultimate system control (cannot be removed)'
+  },
   admin: {
     label: 'Admin',
     icon: Crown,
@@ -40,10 +47,18 @@ const roleConfig = {
 };
 
 export const RoleManagement = () => {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [updatingRoles, setUpdatingRoles] = useState<Set<string>>(new Set());
+  const [removalDialog, setRemovalDialog] = useState<{
+    open: boolean;
+    userId: string;
+    role: AppRole;
+    userName: string;
+    userEmail: string;
+  } | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -87,7 +102,29 @@ export const RoleManagement = () => {
     }
   };
 
-  const handleRoleToggle = async (userId: string, role: AppRole, currentlyHas: boolean) => {
+  const handleRoleToggle = async (userId: string, role: AppRole, currentlyHas: boolean, user: UserWithRoles) => {
+    // If removing a role, show warning dialog for admin/super_admin
+    if (currentlyHas && (role === 'admin' || role === 'super_admin')) {
+      // Check admin count
+      const { data: adminCount } = await supabase.rpc('get_admin_count');
+      const isLastAdmin = adminCount === 1;
+      const isRemovingSelf = userId === currentUser?.id;
+
+      setRemovalDialog({
+        open: true,
+        userId,
+        role,
+        userName: user.full_name || '',
+        userEmail: user.email,
+      });
+      return;
+    }
+
+    // For non-admin roles or adding roles, proceed directly
+    await performRoleUpdate(userId, role, currentlyHas);
+  };
+
+  const performRoleUpdate = async (userId: string, role: AppRole, currentlyHas: boolean) => {
     setUpdatingRoles(prev => new Set(prev).add(userId));
 
     try {
@@ -120,12 +157,12 @@ export const RoleManagement = () => {
       }
 
       // Refresh users
-      fetchUsers();
-    } catch (error) {
+      await fetchUsers();
+    } catch (error: any) {
       console.error('Error updating role:', error);
       toast({
         title: "Error",
-        description: "Failed to update role",
+        description: error.message || "Failed to update role",
         variant: "destructive"
       });
     } finally {
@@ -135,6 +172,13 @@ export const RoleManagement = () => {
         return newSet;
       });
     }
+  };
+
+  const handleConfirmRemoval = async () => {
+    if (!removalDialog) return;
+    
+    await performRoleUpdate(removalDialog.userId, removalDialog.role, true);
+    setRemovalDialog(null);
   };
 
   const filteredUsers = users.filter(user => 
@@ -153,6 +197,7 @@ export const RoleManagement = () => {
     );
   }
 
+  const totalSuperAdmins = users.filter(u => u.roles.includes('super_admin')).length;
   const totalAdmins = users.filter(u => u.roles.includes('admin')).length;
   const totalManagers = users.filter(u => u.roles.includes('manager')).length;
   const totalCreators = users.filter(u => u.roles.includes('creator')).length;
@@ -166,7 +211,11 @@ export const RoleManagement = () => {
             <Shield className="w-5 h-5 text-primary" />
             <h3 className="font-serif text-xl font-bold">Role Management</h3>
           </div>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-4 text-sm flex-wrap">
+            <div className="flex items-center gap-1">
+              <ShieldCheck className="w-4 h-4 text-purple-500" />
+              <span className="text-muted-foreground">{totalSuperAdmins} Super Admins</span>
+            </div>
             <div className="flex items-center gap-1">
               <Crown className="w-4 h-4 text-red-500" />
               <span className="text-muted-foreground">{totalAdmins} Admins</span>
@@ -195,7 +244,7 @@ export const RoleManagement = () => {
         {/* Role Legend */}
         <Card className="p-4 bg-muted/30 border-border/50">
           <h4 className="text-sm font-medium mb-3">Role Descriptions</h4>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {(Object.entries(roleConfig) as [AppRole, typeof roleConfig[AppRole]][]).map(([key, config]) => {
               const Icon = config.icon;
               return (
@@ -276,7 +325,7 @@ export const RoleManagement = () => {
                                 id={`${user.id}-${role}`}
                                 checked={hasRole}
                                 disabled={isUpdating}
-                                onCheckedChange={() => handleRoleToggle(user.id, role, hasRole)}
+                                onCheckedChange={() => handleRoleToggle(user.id, role, hasRole, user)}
                               />
                               <label
                                 htmlFor={`${user.id}-${role}`}
@@ -305,6 +354,21 @@ export const RoleManagement = () => {
           Showing {filteredUsers.length} of {users.length} total users
         </div>
       </div>
+
+      {/* Role Removal Dialog */}
+      {removalDialog && (
+        <RoleRemovalDialog
+          open={removalDialog.open}
+          onOpenChange={(open) => !open && setRemovalDialog(null)}
+          onConfirm={handleConfirmRemoval}
+          userName={removalDialog.userName}
+          userEmail={removalDialog.userEmail}
+          role={removalDialog.role}
+          isLastAdmin={totalAdmins + totalSuperAdmins <= 1}
+          isRemovingSelf={removalDialog.userId === currentUser?.id}
+          isSuperAdmin={removalDialog.role === 'super_admin'}
+        />
+      )}
     </Card>
   );
 };
