@@ -17,6 +17,8 @@ interface MeetingInvitationRequest {
   passwordResetUrl: string;
   applicationId?: string;
   userId?: string;
+  passwordResetExpiresAt?: string;
+  expirationMinutes?: number;
 }
 
 // Input validation helper
@@ -50,7 +52,8 @@ const logEmail = async (
   status: string,
   applicationId?: string,
   userId?: string,
-  errorMessage?: string
+  errorMessage?: string,
+  passwordResetExpiresAt?: string
 ) => {
   try {
     const { error } = await supabase
@@ -65,6 +68,7 @@ const logEmail = async (
         sent_at: status === 'sent' ? new Date().toISOString() : null,
         failed_at: status === 'failed' ? new Date().toISOString() : null,
         error_message: errorMessage,
+        password_reset_expires_at: passwordResetExpiresAt,
       });
     
     if (error) {
@@ -163,8 +167,15 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { name, email, loginUrl, passwordResetUrl, applicationId, userId }: MeetingInvitationRequest = requestData;
+    const { name, email, loginUrl, passwordResetUrl, applicationId, userId, passwordResetExpiresAt, expirationMinutes }: MeetingInvitationRequest = requestData;
     console.log(`Sending meeting invitation to ${email}`);
+
+    const expirationText = expirationMinutes 
+      ? `<p style="color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 6px; margin: 20px 0;">
+          <strong>⏰ Important:</strong> This password reset link will expire in <strong>${expirationMinutes} minutes</strong>. 
+          Please complete your password setup within this timeframe.
+        </p>` 
+      : '';
 
     const emailData = {
       from: "Bureau Boudoir <onboarding@resend.dev>",
@@ -226,6 +237,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <p>Dear <strong>${name}</strong>,</p>
                 <p>Congratulations! Your application to become a Bureau Boudoir Creator has been reviewed and <strong>approved</strong>.</p>
                 <p>We've created an account for you. Please click the button below to set up your password and access your dashboard:</p>
+                ${expirationText}
                 <div class="button-wrapper">
                   <a href="${passwordResetUrl}" class="button">Set Up Your Password</a>
                 </div>
@@ -261,7 +273,9 @@ const handler = async (req: Request): Promise<Response> => {
         name,
         'sent',
         applicationId,
-        userId
+        userId,
+        undefined,
+        passwordResetExpiresAt
       );
       
       console.log("Meeting invitation email sent successfully:", result.data);
@@ -279,7 +293,8 @@ const handler = async (req: Request): Promise<Response> => {
         'failed',
         applicationId,
         userId,
-        result.error
+        result.error,
+        passwordResetExpiresAt
       );
       
       return new Response(

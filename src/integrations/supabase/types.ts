@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_uploads: {
         Row: {
           commitment_id: string | null
@@ -297,7 +329,10 @@ export type Database = {
           failed_at: string | null
           id: string
           last_retry_at: string | null
+          link_clicked_at: string | null
+          link_used_at: string | null
           max_retries: number
+          password_reset_expires_at: string | null
           recipient_email: string
           recipient_name: string | null
           retry_count: number
@@ -315,7 +350,10 @@ export type Database = {
           failed_at?: string | null
           id?: string
           last_retry_at?: string | null
+          link_clicked_at?: string | null
+          link_used_at?: string | null
           max_retries?: number
+          password_reset_expires_at?: string | null
           recipient_email: string
           recipient_name?: string | null
           retry_count?: number
@@ -333,7 +371,10 @@ export type Database = {
           failed_at?: string | null
           id?: string
           last_retry_at?: string | null
+          link_clicked_at?: string | null
+          link_used_at?: string | null
           max_retries?: number
+          password_reset_expires_at?: string | null
           recipient_email?: string
           recipient_name?: string | null
           retry_count?: number

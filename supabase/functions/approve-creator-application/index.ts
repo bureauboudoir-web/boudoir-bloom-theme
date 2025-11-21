@@ -228,6 +228,15 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Get expiration duration from admin settings
+    const { data: expirationSetting } = await supabaseAdmin
+      .from("admin_settings")
+      .select("setting_value")
+      .eq("setting_key", "password_reset_expiration_seconds")
+      .single();
+
+    const expirationSeconds = expirationSetting?.setting_value as number || 3600; // Default 1 hour
+
     // Generate password reset link with proper redirect
     // Get app origin from request headers (referer or origin)
     const referer = req.headers.get('referer') || req.headers.get('origin') || '';
@@ -263,6 +272,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     const loginUrl = appOrigin ? `${appOrigin}/login` : '/login';
 
+    // Calculate expiration time
+    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000)).toISOString();
+
     // Send meeting invitation email with login details
     try {
       await supabaseAdmin.functions.invoke("send-meeting-invitation", {
@@ -273,6 +285,8 @@ const handler = async (req: Request): Promise<Response> => {
           passwordResetUrl: passwordResetUrl || loginUrl,
           applicationId: applicationId,
           userId: userId,
+          passwordResetExpiresAt: expiresAt,
+          expirationMinutes: Math.floor(expirationSeconds / 60),
         },
       });
       console.log("Meeting invitation email sent successfully");
@@ -287,6 +301,7 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         userId,
         message: "Application approved successfully",
+        expiresAt,
       }),
       {
         status: 200,

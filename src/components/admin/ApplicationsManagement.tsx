@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { InvitationExpiryStatus } from "./InvitationExpiryStatus";
 
 interface AdminNote {
   note: string;
@@ -31,6 +32,9 @@ interface Application {
   reviewed_by_name: string | null;
   email_status?: string | null;
   email_sent_at?: string | null;
+  password_reset_expires_at?: string | null;
+  link_clicked_at?: string | null;
+  link_used_at?: string | null;
 }
 
 export const ApplicationsManagement = () => {
@@ -98,7 +102,7 @@ export const ApplicationsManagement = () => {
           if (app.status === 'approved') {
             const { data: emailLog } = await supabase
               .from('email_logs')
-              .select('status, sent_at')
+              .select('status, sent_at, password_reset_expires_at, link_clicked_at, link_used_at')
               .eq('application_id', app.id)
               .eq('email_type', 'meeting_invitation')
               .order('created_at', { ascending: false })
@@ -107,6 +111,9 @@ export const ApplicationsManagement = () => {
             
             app.email_status = emailLog?.status || null;
             app.email_sent_at = emailLog?.sent_at || null;
+            app.password_reset_expires_at = emailLog?.password_reset_expires_at || null;
+            app.link_clicked_at = emailLog?.link_clicked_at || null;
+            app.link_used_at = emailLog?.link_used_at || null;
           }
         }
       }
@@ -417,29 +424,13 @@ export const ApplicationsManagement = () => {
                     
                     {/* Email Status Indicator for Approved Applications */}
                     {app.status === 'approved' && (
-                      <div className="flex items-center gap-2 text-xs mt-2">
-                        {app.email_status === 'sent' ? (
-                          <>
-                            <CheckCircle className="w-3 h-3 text-green-500" />
-                            <span className="text-green-500">Email sent successfully</span>
-                          </>
-                        ) : app.email_status === 'failed' ? (
-                          <>
-                            <AlertCircle className="w-3 h-3 text-destructive" />
-                            <span className="text-destructive">Email failed - use Resend Invitation</span>
-                          </>
-                        ) : app.email_status ? (
-                          <>
-                            <Clock className="w-3 h-3 text-yellow-500" />
-                            <span className="text-yellow-500">Email {app.email_status}</span>
-                          </>
-                        ) : (
-                          <>
-                            <AlertCircle className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-muted-foreground">Email status unavailable (legacy approval) - use Resend Invitation</span>
-                          </>
-                        )}
-                      </div>
+                      <InvitationExpiryStatus 
+                        emailStatus={app.email_status}
+                        emailSentAt={app.email_sent_at}
+                        passwordResetExpiresAt={app.password_reset_expires_at}
+                        linkClickedAt={app.link_clicked_at}
+                        linkUsedAt={app.link_used_at}
+                      />
                     )}
                   </div>
                   <Badge variant={
