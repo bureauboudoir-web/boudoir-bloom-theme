@@ -318,14 +318,17 @@ const Dashboard = () => {
 
               {/* Third Section */}
               <div className="space-y-2">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start border-primary/40 hover:bg-primary/10"
-                  onClick={() => navigate("/admin")}
-                >
-                  <Shield className="w-4 h-4 mr-2" />
-                  Admin Dashboard
-                </Button>
+                {/* Only show Admin Dashboard link to admin/manager users */}
+                {isAdminOrManager && (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-primary/40 hover:bg-primary/10"
+                    onClick={() => navigate("/admin")}
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin Dashboard
+                  </Button>
+                )}
                 <Button
                   variant={activeTab === "support" ? "default" : "ghost"}
                   className={`w-full justify-start ${activeTab === "support" ? "border-l-4 border-primary" : ""}`}
