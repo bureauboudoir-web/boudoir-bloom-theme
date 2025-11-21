@@ -185,6 +185,13 @@ export const ApplicationsManagement = () => {
 
   const handleResendInvitation = async (application: Application) => {
     try {
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Your session has expired. Please log in again.");
+        return;
+      }
+
       toast.loading("Resending invitation...", { id: "resend-invitation" });
       
       const { data, error } = await supabase.functions.invoke('resend-meeting-invitation', {
@@ -206,7 +213,13 @@ export const ApplicationsManagement = () => {
       fetchApplications();
     } catch (error: any) {
       console.error("Error resending invitation:", error);
-      toast.error(`Failed to resend invitation: ${error.message}`, { id: "resend-invitation" });
+      
+      // Provide more specific error messages
+      if (error.message?.includes("Unauthorized") || error.message?.includes("401")) {
+        toast.error("Authentication failed. Please refresh the page and log in again.", { id: "resend-invitation" });
+      } else {
+        toast.error(`Failed to resend invitation: ${error.message}`, { id: "resend-invitation" });
+      }
     }
   };
 
