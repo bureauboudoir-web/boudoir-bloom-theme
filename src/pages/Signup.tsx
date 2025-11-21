@@ -46,7 +46,7 @@ const Signup = () => {
 
     try {
       // Insert application with pending status
-      const { error: appError } = await supabase
+      const { data: application, error: appError } = await supabase
         .from('creator_applications')
         .insert([{
           name: formData.name,
@@ -54,7 +54,9 @@ const Signup = () => {
           phone: formData.phone,
           experience_level: formData.experience,
           status: 'pending'
-        }]);
+        }])
+        .select()
+        .single();
 
       if (appError) throw appError;
 
@@ -62,6 +64,21 @@ const Signup = () => {
       await supabase.functions.invoke('send-application-received', {
         body: { email: formData.email, name: formData.name }
       });
+
+      // Send notification to admins
+      try {
+        await supabase.functions.invoke('send-admin-notification', {
+          body: {
+            applicationId: application.id,
+            applicantName: formData.name,
+            applicantEmail: formData.email,
+            experienceLevel: formData.experience,
+          }
+        });
+      } catch (notifError) {
+        console.error("Error sending admin notification:", notifError);
+        // Don't fail the whole process if notification fails
+      }
 
       toast.success("Application submitted! Check your email for confirmation.");
       setTimeout(() => navigate("/"), 2000);
