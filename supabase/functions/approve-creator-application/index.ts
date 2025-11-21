@@ -235,57 +235,57 @@ const handler = async (req: Request): Promise<Response> => {
       .eq("setting_key", "password_reset_expiration_seconds")
       .single();
 
-    const expirationSeconds = expirationSetting?.setting_value as number || 3600; // Default 1 hour
+    const expirationSeconds = expirationSetting?.setting_value as number || 3600;
 
-    // Generate password reset link with proper redirect
-    // Get app origin from request headers (referer or origin)
+    // Get app origin from request headers
     const referer = req.headers.get('referer') || req.headers.get('origin') || '';
     const appOrigin = referer ? new URL(referer).origin : '';
     
     if (!appOrigin) {
-      console.error("Could not determine app origin, using fallback");
+      console.error("Could not determine app origin");
+      return new Response(
+        JSON.stringify({ error: "Unable to determine app origin" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
     
-    let passwordResetUrl = "";
-    const redirectUrl = appOrigin ? `${appOrigin}/reset-password` : '/reset-password';
-    
-    try {
-      console.log(`Generating password reset link with redirect to: ${redirectUrl}`);
-      
-      const { data: resetData, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
-        type: "recovery",
-        email: application.email,
-        options: {
-          redirectTo: redirectUrl
-        }
-      });
+    const redirectUrl = `${appOrigin}/complete-setup`;
+    console.log(`Generating magic link with redirect to: ${redirectUrl}`);
 
-      if (resetError) {
-        console.error("Error generating password reset link:", resetError);
-      } else {
-        passwordResetUrl = resetData.properties?.action_link || "";
-        console.log("Password reset link generated successfully");
+    // Generate magic link for passwordless login
+    const { data: magicLinkData, error: magicLinkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: "magiclink",
+      email: application.email,
+      options: {
+        redirectTo: redirectUrl
       }
-    } catch (error) {
-      console.error("Error generating password reset:", error);
+    });
+
+    if (magicLinkError) {
+      console.error("Error generating magic link:", magicLinkError);
+      return new Response(
+        JSON.stringify({ error: `Failed to generate magic link: ${magicLinkError.message}` }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const loginUrl = appOrigin ? `${appOrigin}/login` : '/login';
+    const magicLinkUrl = magicLinkData.properties?.action_link || "";
+    const loginUrl = `${appOrigin}/login`;
 
     // Calculate expiration time
     const expiresAt = new Date(Date.now() + (expirationSeconds * 1000)).toISOString();
 
-    // Send meeting invitation email with login details
+    // Send meeting invitation email with magic link
     try {
       await supabaseAdmin.functions.invoke("send-meeting-invitation", {
         body: {
           email: application.email,
           name: application.name,
           loginUrl: loginUrl,
-          passwordResetUrl: passwordResetUrl || loginUrl,
+          magicLinkUrl: magicLinkUrl,
           applicationId: applicationId,
           userId: userId,
-          passwordResetExpiresAt: expiresAt,
+          magicLinkExpiresAt: expiresAt,
           expirationMinutes: Math.floor(expirationSeconds / 60),
         },
       });

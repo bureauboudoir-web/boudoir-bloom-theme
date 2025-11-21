@@ -59,7 +59,7 @@ export const InvitationExpiryStatus = ({
       <div className="flex items-center gap-2 text-xs">
         <CheckCircle className="w-3 h-3 text-green-500" />
         <span className="text-green-500">
-          Password set {formatDistanceToNow(new Date(linkUsedAt), { addSuffix: true })}
+          Setup completed {formatDistanceToNow(new Date(linkUsedAt), { addSuffix: true })}
         </span>
       </div>
     );
@@ -72,7 +72,7 @@ export const InvitationExpiryStatus = ({
         <div className="flex items-center gap-2 text-xs">
           <MousePointer className="w-3 h-3 text-blue-500" />
           <span className="text-blue-500">
-            Link clicked {formatDistanceToNow(new Date(linkClickedAt), { addSuffix: true })}
+            Magic link opened {formatDistanceToNow(new Date(linkClickedAt), { addSuffix: true })}
           </span>
         </div>
         {passwordResetExpiresAt && (
@@ -80,7 +80,7 @@ export const InvitationExpiryStatus = ({
             {isExpired ? (
               <>
                 <XCircle className="w-3 h-3 text-destructive" />
-                <span className="text-destructive">Link expired - Resend invitation</span>
+                <span className="text-destructive">Magic link expired - Resend invitation</span>
               </>
             ) : (
               <>
@@ -111,7 +111,7 @@ export const InvitationExpiryStatus = ({
             {isExpired ? (
               <>
                 <XCircle className="w-3 h-3 text-destructive" />
-                <span className="text-destructive">Link expired - Resend invitation</span>
+                <span className="text-destructive">Magic link expired - Resend invitation</span>
               </>
             ) : (
               <>
