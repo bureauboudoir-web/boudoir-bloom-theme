@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Twitter, Instagram } from "lucide-react";
+import { X, Instagram, Youtube, Music } from "lucide-react";
 import StreetLampIcon from "./StreetLampIcon";
 
 export const SharedFooter = () => {
@@ -38,10 +38,16 @@ export const SharedFooter = () => {
           {/* Social Icons */}
           <div className="flex gap-6">
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-              <Twitter className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Instagram className="w-5 h-5" />
+            </a>
+            <a href="https://www.youtube.com/@BureauBoudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Youtube className="w-5 h-5" />
+            </a>
+            <a href="https://www.tiktok.com/@bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Music className="w-5 h-5" />
             </a>
           </div>
 
