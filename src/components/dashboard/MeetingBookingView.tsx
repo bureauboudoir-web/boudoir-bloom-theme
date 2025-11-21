@@ -92,6 +92,26 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     if (!managerInfo || !meetingData?.assigned_manager_id) return;
 
     try {
+      const dateStr = format(selectedDate, 'yyyy-MM-dd');
+      
+      // First check if this specific date is blocked
+      const { data: blockedCheck, error: blockedError } = await supabase
+        .from('manager_availability')
+        .select('*')
+        .eq('manager_id', meetingData.assigned_manager_id)
+        .eq('specific_date', dateStr)
+        .eq('is_available', false)
+        .maybeSingle();
+
+      if (blockedError) throw blockedError;
+
+      // If date is blocked, return no slots
+      if (blockedCheck) {
+        setAvailableSlots([]);
+        return;
+      }
+
+      // Otherwise, fetch regular weekly availability
       const dayOfWeek = selectedDate.getDay();
       
       const { data, error } = await supabase
@@ -99,7 +119,8 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
         .select('*')
         .eq('manager_id', meetingData.assigned_manager_id)
         .eq('day_of_week', dayOfWeek)
-        .eq('is_available', true);
+        .eq('is_available', true)
+        .is('specific_date', null);
 
       if (error) throw error;
 

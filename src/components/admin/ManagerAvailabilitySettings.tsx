@@ -6,10 +6,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useManagerAvailability } from "@/hooks/useManagerAvailability";
 import { AvailabilityCalendar } from "./AvailabilityCalendar";
+import { DateBlockingManager } from "./DateBlockingManager";
 
 export const ManagerAvailabilitySettings = () => {
   const {
     availability,
+    blockedDates,
     meetingDuration,
     setMeetingDuration,
     loading,
@@ -18,6 +20,8 @@ export const ManagerAvailabilitySettings = () => {
     updateSlot,
     removeSlot,
     saveAvailability,
+    addBlockedDate,
+    removeBlockedDate,
   } = useManagerAvailability();
 
   if (loading) {
@@ -33,6 +37,14 @@ export const ManagerAvailabilitySettings = () => {
 
   return (
     <div className="space-y-6">
+      {/* Date Blocking Section */}
+      <DateBlockingManager
+        blockedDates={blockedDates}
+        onAddBlock={addBlockedDate}
+        onRemoveBlock={removeBlockedDate}
+      />
+
+      {/* Weekly Availability Section */}
       <Card className="border-border bg-card">
         <CardHeader>
           <div className="flex items-center justify-between">
