@@ -105,28 +105,41 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate("/dashboard")}
+                className="shrink-0"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <Shield className="w-6 h-6 text-primary" />
-                <h1 className="font-serif text-2xl font-bold">Admin Dashboard</h1>
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary shrink-0" />
+                <h1 className="font-serif text-lg sm:text-2xl font-bold">Admin Dashboard</h1>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               <NotificationBell
                 notifications={adminNotificationItems}
                 totalCount={totalNotifications}
               />
-              <Button variant="outline" onClick={() => navigate("/dashboard")}>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/dashboard")}
+                className="hidden sm:inline-flex"
+              >
                 Back to Dashboard
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/dashboard")}
+                className="sm:hidden"
+              >
+                Back
               </Button>
             </div>
           </div>
@@ -134,76 +147,119 @@ const AdminDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <Card className="p-6 bg-card border-primary/20">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <Card className="p-3 sm:p-6 bg-card border-primary/20">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
-            <div className="mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              <TabsList className="inline-flex w-auto min-w-full">
-                <TabsTrigger value="applications" className="flex-shrink-0 px-4">Applications</TabsTrigger>
-                <TabsTrigger value="overview" className="flex-shrink-0 px-4">Overview</TabsTrigger>
-                <TabsTrigger value="commitments" className="flex-shrink-0 px-4">Commitments</TabsTrigger>
-                <TabsTrigger value="shoots" className="flex-shrink-0 px-4">Shoots</TabsTrigger>
-                <TabsTrigger value="review" className="flex-shrink-0 px-4">Review</TabsTrigger>
-                <TabsTrigger value="invoices" className="flex-shrink-0 px-4">Invoices</TabsTrigger>
-                <TabsTrigger value="contracts" className="flex-shrink-0 px-4">Contracts</TabsTrigger>
-                <TabsTrigger value="support" className="flex-shrink-0 px-4">Support</TabsTrigger>
-                <TabsTrigger value="roles" className="flex-shrink-0 px-4">Roles</TabsTrigger>
-                <TabsTrigger value="audit" className="flex-shrink-0 px-4">Audit Log</TabsTrigger>
-                <TabsTrigger value="permissions" className="flex-shrink-0 px-4">Permissions</TabsTrigger>
-                <TabsTrigger value="meetings" className="flex-shrink-0 px-4">Meetings</TabsTrigger>
-                <TabsTrigger value="availability" className="flex-shrink-0 px-4">Availability</TabsTrigger>
-              </TabsList>
+            {/* Scrollable tabs container with fade indicators */}
+            <div className="relative mb-4 sm:mb-6 -mx-3 sm:mx-0">
+              {/* Left fade indicator */}
+              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none hidden sm:block" />
+              
+              {/* Right fade indicator */}
+              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none hidden sm:block" />
+              
+              <div className="overflow-x-auto overflow-y-hidden px-3 sm:px-0 pb-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                <TabsList className="inline-flex w-auto gap-1">
+                  <TabsTrigger value="applications" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Applications
+                  </TabsTrigger>
+                  <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Commitments
+                  </TabsTrigger>
+                  <TabsTrigger value="shoots" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Shoots
+                  </TabsTrigger>
+                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Review
+                  </TabsTrigger>
+                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Invoices
+                  </TabsTrigger>
+                  <TabsTrigger value="contracts" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Contracts
+                  </TabsTrigger>
+                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Support
+                  </TabsTrigger>
+                  
+                  {/* Visual separator */}
+                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  
+                  <TabsTrigger value="roles" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Roles
+                  </TabsTrigger>
+                  <TabsTrigger value="audit" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Audit Log
+                  </TabsTrigger>
+                  <TabsTrigger value="permissions" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Permissions
+                  </TabsTrigger>
+                  
+                  {/* Visual separator */}
+                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  
+                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Meetings
+                  </TabsTrigger>
+                  <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Availability
+                  </TabsTrigger>
+                </TabsList>
+              </div>
             </div>
 
-            <TabsContent value="applications">
+            <TabsContent value="applications" className="mt-0">
               <ApplicationsManagement />
             </TabsContent>
 
-            <TabsContent value="overview">
+            <TabsContent value="overview" className="mt-0">
               <CreatorOverview />
             </TabsContent>
 
-            <TabsContent value="commitments">
+            <TabsContent value="commitments" className="mt-0">
               <AdminCommitments />
             </TabsContent>
 
-            <TabsContent value="shoots">
+            <TabsContent value="shoots" className="mt-0">
               <AdminShoots />
             </TabsContent>
 
-            <TabsContent value="review">
+            <TabsContent value="review" className="mt-0">
               <ContentReview />
             </TabsContent>
 
-            <TabsContent value="invoices">
+            <TabsContent value="invoices" className="mt-0">
               <AdminInvoices />
             </TabsContent>
 
-            <TabsContent value="contracts">
+            <TabsContent value="contracts" className="mt-0">
               <AdminContracts />
             </TabsContent>
 
-            <TabsContent value="support">
+            <TabsContent value="support" className="mt-0">
               <AdminSupportTickets />
             </TabsContent>
 
-            <TabsContent value="roles">
+            <TabsContent value="roles" className="mt-0">
               <RoleManagement />
             </TabsContent>
 
-            <TabsContent value="audit">
+            <TabsContent value="audit" className="mt-0">
               <RoleAuditLog />
             </TabsContent>
 
-            <TabsContent value="permissions">
+            <TabsContent value="permissions" className="mt-0">
               <PermissionsManager />
             </TabsContent>
 
-            <TabsContent value="meetings">
+            <TabsContent value="meetings" className="mt-0">
               <AdminMeetings />
             </TabsContent>
 
-            <TabsContent value="availability">
+            <TabsContent value="availability" className="mt-0">
               <ManagerAvailabilitySettings />
             </TabsContent>
           </Tabs>
