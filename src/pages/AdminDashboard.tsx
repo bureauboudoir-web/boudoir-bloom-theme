@@ -16,6 +16,7 @@ import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
 import { AdminMeetings } from "@/components/admin/AdminMeetings";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
+import { AdminContracts } from "@/components/admin/AdminContracts";
 import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
@@ -30,7 +31,7 @@ const AdminDashboard = () => {
     overdueCommitments,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "meetings" | "availability">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
     ...(overdueCommitments > 0 ? [{
@@ -133,7 +134,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 bg-card border-primary/20">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
             <div className="mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <TabsList className="inline-flex w-auto min-w-full">
                 <TabsTrigger value="applications" className="flex-shrink-0 px-4">Applications</TabsTrigger>
@@ -142,6 +143,7 @@ const AdminDashboard = () => {
                 <TabsTrigger value="shoots" className="flex-shrink-0 px-4">Shoots</TabsTrigger>
                 <TabsTrigger value="review" className="flex-shrink-0 px-4">Review</TabsTrigger>
                 <TabsTrigger value="invoices" className="flex-shrink-0 px-4">Invoices</TabsTrigger>
+                <TabsTrigger value="contracts" className="flex-shrink-0 px-4">Contracts</TabsTrigger>
                 <TabsTrigger value="support" className="flex-shrink-0 px-4">Support</TabsTrigger>
                 <TabsTrigger value="roles" className="flex-shrink-0 px-4">Roles</TabsTrigger>
                 <TabsTrigger value="meetings" className="flex-shrink-0 px-4">Meetings</TabsTrigger>
@@ -171,6 +173,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="invoices">
               <AdminInvoices />
+            </TabsContent>
+
+            <TabsContent value="contracts">
+              <AdminContracts />
             </TabsContent>
 
             <TabsContent value="support">

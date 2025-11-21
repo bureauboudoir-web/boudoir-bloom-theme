@@ -168,6 +168,60 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_contracts: {
+        Row: {
+          contract_signed: boolean | null
+          contract_template_url: string | null
+          created_at: string | null
+          id: string
+          signed_at: string | null
+          signed_contract_url: string | null
+          template_uploaded_at: string | null
+          updated_at: string | null
+          uploaded_by: string | null
+          user_id: string
+        }
+        Insert: {
+          contract_signed?: boolean | null
+          contract_template_url?: string | null
+          created_at?: string | null
+          id?: string
+          signed_at?: string | null
+          signed_contract_url?: string | null
+          template_uploaded_at?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+          user_id: string
+        }
+        Update: {
+          contract_signed?: boolean | null
+          contract_template_url?: string | null
+          created_at?: string | null
+          id?: string
+          signed_at?: string | null
+          signed_contract_url?: string | null
+          template_uploaded_at?: string | null
+          updated_at?: string | null
+          uploaded_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_contracts_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_contracts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_meetings: {
         Row: {
           application_id: string | null
