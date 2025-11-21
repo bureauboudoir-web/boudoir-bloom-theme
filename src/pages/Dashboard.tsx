@@ -24,6 +24,7 @@ import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { CreatorContract } from "@/components/dashboard/CreatorContract";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -44,7 +45,7 @@ const Dashboard = () => {
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdminOrManager, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
-  const [activeTab, setActiveTab] = useState<"onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support">("onboarding");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support">("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -282,6 +283,13 @@ const Dashboard = () => {
 
           {/* Main Content */}
           <div className="md:col-span-3 w-full">
+            {activeTab === "overview" && user && (
+              <DashboardOverview 
+                userId={user.id}
+                onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
+              />
+            )}
+
             {activeTab === "onboarding" && (
               <div>
                 <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">

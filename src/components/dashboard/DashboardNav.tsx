@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support";
+type TabId = "overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -40,6 +40,12 @@ export const DashboardNav = ({
   };
 
   const navSections = [
+    {
+      title: "Dashboard",
+      items: [
+        { id: "overview" as TabId, label: "Overview", icon: <CheckSquare className="w-4 h-4" /> },
+      ]
+    },
     {
       title: "Profile & Setup",
       items: [
