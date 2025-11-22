@@ -11,8 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User } from "lucide-react";
 import { format } from "date-fns";
+import { useUserRole } from "@/hooks/useUserRole";
+
 import { AssistedOnboarding } from "./AssistedOnboarding";
 
 interface Meeting {
@@ -26,15 +28,22 @@ interface Meeting {
   status: string;
   duration_minutes: number;
   meeting_notes: string | null;
+  created_at: string | null;
   profiles: {
     full_name: string;
     email: string;
     profile_picture_url: string | null;
   } | null;
+  manager?: {
+    id: string;
+    full_name: string | null;
+    email: string;
+  } | null;
 }
 
 export const AdminMeetings = () => {
   const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
@@ -52,7 +61,7 @@ export const AdminMeetings = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('creator_meetings')
         .select(`
           *,
@@ -60,10 +69,22 @@ export const AdminMeetings = () => {
             full_name,
             email,
             profile_picture_url
+          ),
+          manager:assigned_manager_id (
+            id,
+            full_name,
+            email
           )
         `)
-        .eq('assigned_manager_id', user.id)
         .order('meeting_date', { ascending: true });
+
+      // Admins and super_admins see all meetings
+      // Managers see only their assigned meetings
+      if (!isSuperAdmin && !isAdmin) {
+        query = query.eq('assigned_manager_id', user.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setMeetings((data || []) as any);
@@ -156,6 +177,16 @@ export const AdminMeetings = () => {
   const MeetingCard = ({ meeting }: { meeting: Meeting }) => {
     if (!meeting.profiles) return null;
     
+    const isNew = meeting.created_at && 
+      (new Date().getTime() - new Date(meeting.created_at).getTime()) < 24 * 60 * 60 * 1000;
+    
+    const getTimeAgo = (date: string) => {
+      const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+      if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+      if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+      return `${Math.floor(seconds / 86400)}d ago`;
+    };
+    
     return (
     <Card className="border-border">
       <CardContent className="p-6">
@@ -179,12 +210,32 @@ export const AdminMeetings = () => {
           <div className="flex-1 space-y-3">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-lg text-foreground">{meeting.profiles.full_name}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-lg text-foreground">{meeting.profiles.full_name}</h3>
+                  {isNew && (
+                    <span className="px-2 py-0.5 text-xs font-semibold bg-primary text-primary-foreground rounded">
+                      NEW
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground">{meeting.profiles.email}</p>
+                {(isSuperAdmin || isAdmin) && meeting.manager && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                    <User className="h-3 w-3" />
+                    Assigned to: {meeting.manager.full_name}
+                  </p>
+                )}
               </div>
-              <Badge className={getStatusColor(meeting.status)}>
-                {meeting.status}
-              </Badge>
+              <div className="flex flex-col items-end gap-1">
+                <Badge className={getStatusColor(meeting.status)}>
+                  {meeting.status}
+                </Badge>
+                {meeting.created_at && (
+                  <span className="text-xs text-muted-foreground">
+                    {getTimeAgo(meeting.created_at)}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-sm">

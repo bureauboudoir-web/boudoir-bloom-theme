@@ -33,11 +33,21 @@ const AdminDashboard = () => {
     pendingReviews, 
     pendingInvoiceConfirmations, 
     overdueCommitments,
+    upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
   const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
+    ...(upcomingMeetings > 0 ? [{
+      id: 'upcoming-meetings',
+      type: 'meeting' as const,
+      title: 'Upcoming Meetings',
+      description: `${upcomingMeetings} meeting${upcomingMeetings === 1 ? '' : 's'} scheduled this week`,
+      count: upcomingMeetings,
+      color: 'blue' as const,
+      action: () => setActiveTab('meetings'),
+    }] : []),
     ...(overdueCommitments > 0 ? [{
       id: 'overdue-commitments',
       type: 'overdue' as const,
