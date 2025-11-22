@@ -228,7 +228,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Get expiration duration from admin settings
+     // Get expiration duration from admin settings
     const { data: expirationSetting } = await supabaseAdmin
       .from("admin_settings")
       .select("setting_value")
@@ -249,40 +249,37 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate custom secure token
-    const invitationToken = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
-    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
+    // Generate password reset link using Supabase's native auth system
+    const { data: resetLinkData, error: resetLinkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'recovery',
+      email: application.email,
+      options: {
+        redirectTo: `${appOrigin}/dashboard`
+      }
+    });
 
-    // Store token in database
-    const { error: tokenError } = await supabaseAdmin
-      .from("invitation_tokens")
-      .insert({
-        user_id: userId,
-        application_id: applicationId,
-        token: invitationToken,
-        expires_at: expiresAt.toISOString(),
-      });
-
-    if (tokenError) {
-      console.error("Error storing invitation token:", tokenError);
+    if (resetLinkError || !resetLinkData) {
+      console.error('Error generating password reset link:', resetLinkError);
       return new Response(
-        JSON.stringify({ error: "Failed to create invitation token" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: 'Failed to generate password reset link' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Create direct link to our app
-    const invitationUrl = `${appOrigin}/complete-setup?token=${invitationToken}`;
+    const passwordResetUrl = resetLinkData.properties.action_link;
     const loginUrl = `${appOrigin}/login`;
+    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
 
-    // Send meeting invitation email with custom invitation link
+    console.log("Password reset URL generated successfully");
+
+    // Send meeting invitation email with password reset link
     try {
       await supabaseAdmin.functions.invoke("send-meeting-invitation", {
         body: {
           email: application.email,
           name: application.name,
           loginUrl: loginUrl,
-          magicLinkUrl: invitationUrl,
+          magicLinkUrl: passwordResetUrl,
           applicationId: applicationId,
           userId: userId,
           magicLinkExpiresAt: expiresAt.toISOString(),
