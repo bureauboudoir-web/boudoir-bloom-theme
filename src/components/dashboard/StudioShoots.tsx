@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Calendar, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { StatusBadge, type Status } from "@/components/StatusBadge";
@@ -20,6 +21,14 @@ interface StudioShoot {
   status: Status;
   marketing_notes: string | null;
   created_by_user_id: string | null;
+  shoot_type: string | null;
+  crew_size: number | null;
+  video_staff_name: string | null;
+  photo_staff_name: string | null;
+  equipment_needed: string | null;
+  duration_hours: number | null;
+  budget: number | null;
+  special_requirements: string | null;
 }
 
 interface StudioShootsProps {
@@ -274,9 +283,32 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
                           </div>
                         </div>
                         <h3 className="font-medium text-lg">{shoot.title}</h3>
+                        {shoot.shoot_type && (
+                          <Badge className="capitalize">{shoot.shoot_type} Shoot</Badge>
+                        )}
                         {shoot.location && (
                           <p className="text-sm text-muted-foreground">
                             📍 {shoot.location}
+                          </p>
+                        )}
+                        {shoot.duration_hours && (
+                          <p className="text-sm">⏱️ Duration: {shoot.duration_hours} hours</p>
+                        )}
+                        {(shoot.video_staff_name || shoot.photo_staff_name) && (
+                          <div className="text-sm space-y-1">
+                            <p className="font-medium">Staff:</p>
+                            {shoot.video_staff_name && <p>🎥 Video: {shoot.video_staff_name}</p>}
+                            {shoot.photo_staff_name && <p>📷 Photo: {shoot.photo_staff_name}</p>}
+                          </div>
+                        )}
+                        {shoot.equipment_needed && (
+                          <p className="text-sm">
+                            <span className="font-medium">Equipment:</span> {shoot.equipment_needed}
+                          </p>
+                        )}
+                        {shoot.special_requirements && (
+                          <p className="text-sm">
+                            <span className="font-medium">Special Requirements:</span> {shoot.special_requirements}
                           </p>
                         )}
                         {shoot.description && (
