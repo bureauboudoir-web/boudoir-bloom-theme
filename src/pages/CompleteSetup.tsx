@@ -109,10 +109,25 @@ export default function CompleteSetup() {
 
       if (signInError) throw signInError;
 
-      // Redirect to dashboard
-      setTimeout(() => {
+      // Fetch user's access level to determine redirect
+      const { data: accessData } = await supabase
+        .from('creator_access_levels')
+        .select('access_level')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      toast.success("Account setup complete!");
+      
+      // Redirect based on access level
+      if (accessData?.access_level === 'meeting_only') {
+        navigate("/dashboard?view=booking");
+      } else if (accessData?.access_level === 'full_access') {
         navigate("/dashboard");
-      }, 1000);
+      } else {
+        // No access or undefined - show error
+        toast.error("Your account access is being configured. Please contact support.");
+        navigate("/login");
+      }
       
     } catch (error: any) {
       console.error("Error setting password:", error);

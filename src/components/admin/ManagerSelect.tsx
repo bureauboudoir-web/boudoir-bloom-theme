@@ -13,9 +13,10 @@ interface ManagerSelectProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
+  excludeUserId?: string; // Used to prevent self-assignment
 }
 
-export const ManagerSelect = ({ value, onChange, label = "Assign to" }: ManagerSelectProps) => {
+export const ManagerSelect = ({ value, onChange, label = "Assign to", excludeUserId }: ManagerSelectProps) => {
   const [managers, setManagers] = useState<Manager[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +49,12 @@ export const ManagerSelect = ({ value, onChange, label = "Assign to" }: ManagerS
 
       if (profileError) throw profileError;
 
-      setManagers(profiles || []);
+      // Filter out the excluded user if provided (to prevent self-assignment)
+      const filteredProfiles = excludeUserId 
+        ? profiles?.filter(p => p.id !== excludeUserId) || []
+        : profiles || [];
+
+      setManagers(filteredProfiles);
     } catch (error) {
       console.error("Error fetching managers:", error);
     } finally {

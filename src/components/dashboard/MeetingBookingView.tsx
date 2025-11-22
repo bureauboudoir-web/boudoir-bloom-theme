@@ -33,6 +33,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
   const [selectedTime, setSelectedTime] = useState<string>();
   const [meetingType, setMeetingType] = useState<'online' | 'in_person'>('online');
   const [loading, setLoading] = useState(false);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const [meetingData, setMeetingData] = useState<any>(null);
   const [managerInfo, setManagerInfo] = useState<ManagerInfo | null>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
@@ -62,6 +63,13 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
       if (error) throw error;
 
       if (data) {
+        // Check for self-assignment (shouldn't happen but validate)
+        if (data.assigned_manager_id === user.id) {
+          toast.error("Configuration error: Please contact support to assign a proper manager.");
+          setLoading(false);
+          return;
+        }
+
         setMeetingData(data);
         
         // Fetch manager info separately if assigned
@@ -74,6 +82,9 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
           
           if (managerData) {
             setManagerInfo(managerData);
+          } else {
+            // Manager ID exists but profile not found
+            toast.error("Manager profile not found. Please contact support.");
           }
         }
         if (data.meeting_date) {
@@ -93,8 +104,13 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
   };
 
   const fetchAvailableSlots = async (selectedDate: Date) => {
-    if (!managerInfo || !meetingData?.assigned_manager_id) return;
+    if (!managerInfo || !meetingData?.assigned_manager_id) {
+      setAvailableSlots([]);
+      setLoadingSlots(false);
+      return;
+    }
 
+    setLoadingSlots(true);
     try {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
       
@@ -112,6 +128,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
       // If date is blocked, return no slots
       if (blockedCheck) {
         setAvailableSlots([]);
+        setLoadingSlots(false);
         return;
       }
 
@@ -153,7 +170,10 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
       setAvailableSlots(slots);
     } catch (error) {
       console.error("Error fetching slots:", error);
+      toast.error("Failed to load available time slots");
       setAvailableSlots([]);
+    } finally {
+      setLoadingSlots(false);
     }
   };
 
@@ -347,106 +367,141 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {managerInfo && (
-            <Card className="border-border bg-background/50">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <User className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Your Representative</p>
-                    <p className="text-sm text-muted-foreground">{managerInfo.full_name}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {!isBookingDisabled && (
+          {!meetingData?.assigned_manager_id ? (
+            <div className="bg-muted/50 border border-border/50 rounded-lg p-8 text-center">
+              <p className="text-muted-foreground mb-2">
+                Your meeting representative hasn't been assigned yet.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                You'll receive an email once your representative is assigned and you can book a meeting.
+              </p>
+            </div>
+          ) : !managerInfo ? (
+            <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-8 text-center">
+              <p className="text-destructive mb-2">
+                Manager profile not found.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Please contact support to resolve this issue.
+              </p>
+            </div>
+          ) : (
             <>
-              <div>
-                <Label className="text-base mb-3 block">Meeting Type</Label>
-                <RadioGroup value={meetingType} onValueChange={(value: any) => setMeetingType(value)}>
-                  <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
-                    <RadioGroupItem value="online" id="online" />
-                    <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer flex-1">
-                      <Video className="h-4 w-4 text-primary" />
-                      <span>Online Meeting</span>
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
-                    <RadioGroupItem value="in_person" id="in_person" />
-                    <Label htmlFor="in_person" className="flex items-center gap-2 cursor-pointer flex-1">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span>In-Person Meeting</span>
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div>
-                <Label className="text-base mb-3 block">Select Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? format(date, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="center">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              {date && availableSlots.length > 0 && (
-                <div>
-                  <Label className="text-base mb-3 block">Select Time</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {availableSlots.map((slot) => (
-                      <Button
-                        key={slot.time}
-                        variant={selectedTime === slot.time ? "default" : "outline"}
-                        onClick={() => setSelectedTime(slot.time)}
-                        className={cn(
-                          "justify-center",
-                          selectedTime === slot.time && "bg-primary text-primary-foreground"
-                        )}
-                      >
-                        <Clock className="h-4 w-4 mr-1" />
-                        {slot.time}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+              {managerInfo && (
+                <Card className="border-border bg-background/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <User className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">Your Representative</p>
+                        <p className="text-sm text-muted-foreground">{managerInfo.full_name}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
 
-              {date && availableSlots.length === 0 && (
-                <div className="text-center p-4 border border-border rounded-lg bg-background/50">
-                  <p className="text-sm text-muted-foreground">
-                    No available time slots for this date. Please select another date.
-                  </p>
-                </div>
-              )}
+              {!isBookingDisabled && (
+                <>
+                  <div>
+                    <Label className="text-base mb-3 block">Meeting Type</Label>
+                    <RadioGroup value={meetingType} onValueChange={(value: any) => setMeetingType(value)}>
+                      <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
+                        <RadioGroupItem value="online" id="online" />
+                        <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer flex-1">
+                          <Video className="h-4 w-4 text-primary" />
+                          <span>Online Meeting</span>
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 p-3 border border-border rounded-lg">
+                        <RadioGroupItem value="in_person" id="in_person" />
+                        <Label htmlFor="in_person" className="flex items-center gap-2 cursor-pointer flex-1">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <span>In-Person Meeting</span>
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
 
-              <Button 
-                onClick={handleBookMeeting}
-                disabled={!date || !selectedTime || loading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                {loading ? "Booking..." : "Request Meeting"}
-              </Button>
+                  <div>
+                    <Label className="text-base mb-3 block">Select Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date ? format(date, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="center">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {date && availableSlots.length > 0 && (
+                    <div>
+                      <Label className="text-base mb-3 block">Select Time</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {availableSlots.map((slot) => (
+                          <Button
+                            key={slot.time}
+                            variant={selectedTime === slot.time ? "default" : "outline"}
+                            onClick={() => setSelectedTime(slot.time)}
+                            className={cn(
+                              "justify-center",
+                              selectedTime === slot.time && "bg-primary text-primary-foreground"
+                            )}
+                          >
+                            <Clock className="h-4 w-4 mr-1" />
+                            {slot.time}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {date && loadingSlots && (
+                    <div className="text-center p-4 border border-border rounded-lg bg-background/50">
+                      <p className="text-sm text-muted-foreground">
+                        Loading available times...
+                      </p>
+                    </div>
+                  )}
+
+                  {date && !loadingSlots && availableSlots.length === 0 && (
+                    <div className="bg-muted/50 border border-border/50 rounded-lg p-6 text-center">
+                      <p className="text-muted-foreground">
+                        No available time slots for this date.
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {managerInfo 
+                          ? "Your representative hasn't set up availability for this day yet. Please try another date or contact support."
+                          : "Please select a different date."}
+                      </p>
+                    </div>
+                  )}
+
+                  <Button 
+                    onClick={handleBookMeeting}
+                    disabled={!date || !selectedTime || loading}
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    {loading ? "Booking..." : "Request Meeting"}
+                  </Button>
+                </>
+              )}
             </>
           )}
 
