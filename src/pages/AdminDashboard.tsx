@@ -21,6 +21,7 @@ import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabil
 import { AdminContracts } from "@/components/admin/AdminContracts";
 import { EmailLogsView } from "@/components/admin/EmailLogsView";
 import { EmailSettings } from "@/components/admin/EmailSettings";
+import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
 import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 
@@ -36,7 +37,7 @@ const AdminDashboard = () => {
     upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests">("overview");
 
   const adminNotificationItems: NotificationItem[] = [
     ...(upcomingMeetings > 0 ? [{
@@ -225,6 +226,13 @@ const AdminDashboard = () => {
                   <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Availability
                   </TabsTrigger>
+                  
+                  {/* Visual separator */}
+                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  
+                  <TabsTrigger value="tests" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Tests
+                  </TabsTrigger>
                 </TabsList>
               </div>
             </div>
@@ -287,6 +295,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="availability" className="mt-0">
               <ManagerAvailabilitySettings />
+            </TabsContent>
+
+            <TabsContent value="tests" className="mt-0">
+              <TestManagerFlow />
             </TabsContent>
           </Tabs>
         </Card>
