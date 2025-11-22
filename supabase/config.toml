@@ -47,3 +47,6 @@ verify_jwt = false  # Public function for token verification flow
 
 [functions.complete-invitation-setup]
 verify_jwt = false  # Public function for password setup flow
+
+[functions.test-manager-flow]
+verify_jwt = false  # Public function for automated testing
