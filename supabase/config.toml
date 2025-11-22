@@ -30,5 +30,8 @@ verify_jwt = true  # Requires authentication
 [functions.send-admin-notification]
 verify_jwt = false  # Public function for signup flow
 
+[functions.complete-invitation]
+verify_jwt = false  # Public function for password setup flow
+
 [functions.delete-user-account]
 verify_jwt = true  # Requires admin authentication
