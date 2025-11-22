@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, DollarSign, FileText, Calendar, Loader2, Filter } from "lucide-react";
+import { CheckCircle, DollarSign, FileText, Calendar, Loader2, Filter, Search } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -60,9 +60,23 @@ export const AdminInvoices = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showPaymentReceivedDialog, setShowPaymentReceivedDialog] = useState(false);
+
+  const filteredInvoices = invoices.filter(invoice => {
+    if (!searchQuery) return statusFilter === "all" || invoice.status === statusFilter;
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = (
+      invoice.invoice_number.toLowerCase().includes(query) ||
+      invoice.profiles?.full_name?.toLowerCase().includes(query) ||
+      invoice.profiles?.email.toLowerCase().includes(query) ||
+      invoice.description.toLowerCase().includes(query)
+    );
+    const matchesStatus = statusFilter === "all" || invoice.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -419,22 +433,33 @@ export const AdminInvoices = () => {
 
       {/* Invoice List */}
       <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <h3 className="font-semibold text-lg">All Invoices</h3>
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); fetchInvoices(); }}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="creator_paid">Creator Paid</SelectItem>
-                <SelectItem value="payment_confirmed">Confirmed</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search invoices..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="creator_paid">Creator Paid</SelectItem>
+                  <SelectItem value="payment_confirmed">Confirmed</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -442,8 +467,10 @@ export const AdminInvoices = () => {
           <div className="flex justify-center py-8">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : invoices.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">No invoices found</p>
+        ) : filteredInvoices.length === 0 ? (
+          <p className="text-center text-muted-foreground py-8">
+            {searchQuery || statusFilter !== "all" ? "No invoices match your search" : "No invoices found"}
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <Table>
@@ -458,7 +485,7 @@ export const AdminInvoices = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {invoices.map((invoice) => (
+                {filteredInvoices.map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">{invoice.invoice_number}</TableCell>
                     <TableCell>

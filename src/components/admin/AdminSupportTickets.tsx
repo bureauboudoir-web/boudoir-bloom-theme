@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Send, Check } from "lucide-react";
+import { MessageSquare, Send, Check, Search } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface SupportTicket {
   id: string;
@@ -38,9 +39,21 @@ const AdminSupportTickets = () => {
   const { isSuperAdmin, isAdmin } = useUserRole();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
   const [response, setResponse] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const filteredTickets = tickets.filter(ticket => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      ticket.subject.toLowerCase().includes(query) ||
+      ticket.message.toLowerCase().includes(query) ||
+      ticket.profiles?.full_name?.toLowerCase().includes(query) ||
+      ticket.profiles?.email.toLowerCase().includes(query)
+    );
+  });
 
   useEffect(() => {
     if (user) {
@@ -196,23 +209,36 @@ const AdminSupportTickets = () => {
   return (
     <>
       <Card className="p-6 bg-card border-primary/20">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="font-serif text-2xl font-bold mb-1">Support Tickets</h2>
-            <p className="text-muted-foreground">
-              Manage creator support requests
-            </p>
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-serif text-2xl font-bold mb-1">Support Tickets</h2>
+              <p className="text-muted-foreground">
+                Manage creator support requests
+              </p>
+            </div>
+            <Badge variant="outline" className="text-lg px-3 py-1">
+              {filteredTickets.filter((t) => t.status !== "resolved").length} Open
+            </Badge>
           </div>
-          <Badge variant="outline" className="text-lg px-3 py-1">
-            {tickets.filter((t) => t.status !== "resolved").length} Open
-          </Badge>
+          <div className="relative">
+            <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search tickets by subject, message, or creator..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
 
-        {tickets.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">No support tickets yet.</p>
+        {filteredTickets.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">
+            {searchQuery ? "No tickets match your search" : "No support tickets yet."}
+          </p>
         ) : (
           <div className="space-y-4">
-            {tickets.map((ticket) => (
+            {filteredTickets.map((ticket) => (
               <div
                 key={ticket.id}
                 className="border border-border rounded-lg p-4 space-y-3 hover:border-primary/40 transition-colors"

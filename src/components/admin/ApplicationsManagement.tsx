@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { InvitationExpiryStatus } from "./InvitationExpiryStatus";
@@ -433,44 +434,67 @@ export const ApplicationsManagement = () => {
     );
   }
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredApplications = applications.filter(app => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      app.name.toLowerCase().includes(query) ||
+      app.email.toLowerCase().includes(query) ||
+      app.phone.includes(query)
+    );
+  });
+
   return (
     <div className="space-y-6">
-      <div className="flex gap-2">
-        <Button
-          variant={filter === 'pending' ? 'default' : 'outline'}
-          onClick={() => setFilter('pending')}
-        >
-          Pending
-        </Button>
-        <Button
-          variant={filter === 'approved' ? 'default' : 'outline'}
-          onClick={() => setFilter('approved')}
-        >
-          Approved
-        </Button>
-        <Button
-          variant={filter === 'declined' ? 'default' : 'outline'}
-          onClick={() => setFilter('declined')}
-        >
-          Declined
-        </Button>
-        <Button
-          variant={filter === 'all' ? 'default' : 'outline'}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </Button>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant={filter === 'pending' ? 'default' : 'outline'}
+            onClick={() => setFilter('pending')}
+          >
+            Pending
+          </Button>
+          <Button
+            variant={filter === 'approved' ? 'default' : 'outline'}
+            onClick={() => setFilter('approved')}
+          >
+            Approved
+          </Button>
+          <Button
+            variant={filter === 'declined' ? 'default' : 'outline'}
+            onClick={() => setFilter('declined')}
+          >
+            Declined
+          </Button>
+          <Button
+            variant={filter === 'all' ? 'default' : 'outline'}
+            onClick={() => setFilter('all')}
+          >
+            All
+          </Button>
+        </div>
+        <div className="relative flex-1 sm:max-w-xs">
+          <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by name, email, or phone..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
       </div>
 
       <div className="grid gap-4">
-        {applications.length === 0 ? (
+        {filteredApplications.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              No applications found
+              {searchQuery ? "No applications match your search" : "No applications found"}
             </CardContent>
           </Card>
         ) : (
-          applications.map((app) => (
+          filteredApplications.map((app) => (
             <Card key={app.id}>
               <CardHeader>
                 <div className="flex items-start justify-between">
