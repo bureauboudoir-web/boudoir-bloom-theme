@@ -104,13 +104,20 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
   };
 
   const fetchAvailableSlots = async (selectedDate: Date) => {
+    console.log("fetchAvailableSlots called", { 
+      selectedDate, 
+      hasManagerInfo: !!managerInfo, 
+      assignedManagerId: meetingData?.assigned_manager_id 
+    });
+
+    setLoadingSlots(true);
+
     if (!managerInfo || !meetingData?.assigned_manager_id) {
+      console.log("No manager info or assigned manager ID, exiting early");
       setAvailableSlots([]);
       setLoadingSlots(false);
       return;
     }
-
-    setLoadingSlots(true);
     try {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
       
@@ -134,6 +141,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
       // Otherwise, fetch regular weekly availability
       const dayOfWeek = selectedDate.getDay();
+      console.log("Fetching weekly availability for day:", dayOfWeek);
       
       const { data, error } = await supabase
         .from('manager_availability')
@@ -144,6 +152,8 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
         .is('specific_date', null);
 
       if (error) throw error;
+
+      console.log("Manager availability data:", data);
 
       const slots: TimeSlot[] = [];
       
@@ -167,6 +177,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
         }
       });
 
+      console.log("Generated time slots:", slots);
       setAvailableSlots(slots);
     } catch (error) {
       console.error("Error fetching slots:", error);
