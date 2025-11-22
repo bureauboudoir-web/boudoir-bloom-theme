@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "./useUserRole";
 
 export const useAdminNotifications = () => {
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [newSupportTickets, setNewSupportTickets] = useState(0);
   const [pendingReviews, setPendingReviews] = useState(0);
   const [pendingInvoiceConfirmations, setPendingInvoiceConfirmations] = useState(0);
   const [overdueCommitments, setOverdueCommitments] = useState(0);
+  const [upcomingMeetings, setUpcomingMeetings] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,6 +54,28 @@ export const useAdminNotifications = () => {
           .lt('created_at', sevenDaysAgo.toISOString());
 
         setOverdueCommitments(overdueCount || 0);
+
+        // Count upcoming meetings (next 7 days)
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const sevenDaysFromNow = new Date();
+          sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+          
+          let meetingsQuery = supabase
+            .from('creator_meetings')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'confirmed')
+            .gte('meeting_date', new Date().toISOString())
+            .lte('meeting_date', sevenDaysFromNow.toISOString());
+
+          // If not admin/super_admin, filter by assigned manager
+          if (!isSuperAdmin && !isAdmin) {
+            meetingsQuery = meetingsQuery.eq('assigned_manager_id', user.id);
+          }
+
+          const { count: meetingsCount } = await meetingsQuery;
+          setUpcomingMeetings(meetingsCount || 0);
+        }
       } catch (error) {
         console.error('Error fetching admin notifications:', error);
       } finally {
@@ -121,24 +146,42 @@ export const useAdminNotifications = () => {
       )
       .subscribe();
 
+    const meetingsChannel = supabase
+      .channel('admin_meetings_notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'creator_meetings',
+        },
+        () => {
+          fetchAdminNotifications();
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(ticketsChannel);
       supabase.removeChannel(reviewsChannel);
       supabase.removeChannel(invoicesChannel);
       supabase.removeChannel(commitmentsChannel);
+      supabase.removeChannel(meetingsChannel);
     };
-  }, []);
+  }, [isSuperAdmin, isAdmin]);
 
   return {
     newSupportTickets,
     pendingReviews,
     pendingInvoiceConfirmations,
     overdueCommitments,
+    upcomingMeetings,
     loading,
     totalNotifications:
       newSupportTickets +
       pendingReviews +
       pendingInvoiceConfirmations +
-      overdueCommitments,
+      overdueCommitments +
+      upcomingMeetings,
   };
 };
