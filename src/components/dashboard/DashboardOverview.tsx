@@ -65,97 +65,177 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
     if (userId) {
       fetchDashboardData();
     }
-  }, [userId]);
+  }, [userId, isCreator, isManager, isAdmin, isSuperAdmin]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Fetch all data in parallel
-      const [
-        commitmentsData,
-        meetingsData,
-        invoicesData,
-        uploadsData,
-        shootsData
-      ] = await Promise.all([
-        supabase
-          .from('weekly_commitments')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('is_completed', false),
-        supabase
-          .from('creator_meetings')
-          .select('*')
-          .eq('user_id', userId)
-          .in('status', ['pending', 'confirmed'])
-          .gte('meeting_date', new Date().toISOString()),
-        supabase
-          .from('invoices')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('status', 'pending'),
-        supabase
+      // Role-specific data fetching
+      if (isSuperAdmin || isAdmin) {
+        // Admin stats: all pending applications, content to review, total creators, support tickets
+        const [applicationsData, contentData, creatorsData, ticketsData] = await Promise.all([
+          supabase.from('creator_applications').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('content_uploads').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('support_tickets').select('*', { count: 'exact', head: true }).eq('status', 'open')
+        ]);
+
+        setStats({
+          pendingCommitments: applicationsData.count || 0,
+          upcomingMeetings: contentData.count || 0,
+          pendingInvoices: creatorsData.count || 0,
+          totalUploads: ticketsData.count || 0,
+          weeklyProgress: 0,
+        });
+
+        // Fetch recent admin activity
+        const { data: recentContent } = await supabase
           .from('content_uploads')
           .select('*')
-          .eq('user_id', userId)
           .order('created_at', { ascending: false })
-          .limit(5),
-        supabase
-          .from('studio_shoots')
-          .select('*')
-          .eq('user_id', userId)
-          .order('shoot_date', { ascending: false })
-          .limit(3)
-      ]);
+          .limit(8);
 
-      // Calculate stats
-      const totalCommitments = commitmentsData.data?.length || 0;
-      const completedCommitments = 0; // This would need a separate query
-      const weeklyProgress = totalCommitments > 0 
-        ? Math.round((completedCommitments / totalCommitments) * 100) 
-        : 0;
-
-      setStats({
-        pendingCommitments: totalCommitments,
-        upcomingMeetings: meetingsData.data?.length || 0,
-        pendingInvoices: invoicesData.data?.length || 0,
-        totalUploads: uploadsData.data?.length || 0,
-        weeklyProgress,
-      });
-
-      // Build recent activity feed
-      const activities: RecentActivity[] = [];
-
-      // Add recent uploads
-      uploadsData.data?.forEach(upload => {
-        activities.push({
+        const activities: RecentActivity[] = recentContent?.map(upload => ({
           id: upload.id,
           type: 'upload',
-          title: 'Content Uploaded',
+          title: 'Content Submitted',
           description: upload.file_name,
           timestamp: upload.created_at || '',
           status: upload.status || 'pending_review',
+        })) || [];
+
+        setRecentActivity(activities);
+      } else if (isManager) {
+        // Manager stats: assigned creators' data
+        const { data: assignedCreators } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('assigned_manager_id', userId);
+
+        const creatorIds = assignedCreators?.map(c => c.id) || [];
+
+        if (creatorIds.length > 0) {
+          const [contentData, commitmentsData, meetingsData, ticketsData] = await Promise.all([
+            supabase.from('content_uploads').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('status', 'pending_review'),
+            supabase.from('weekly_commitments').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('is_completed', false),
+            supabase.from('creator_meetings').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).in('status', ['pending', 'confirmed']),
+            supabase.from('support_tickets').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('status', 'open')
+          ]);
+
+          setStats({
+            pendingCommitments: commitmentsData.count || 0,
+            upcomingMeetings: meetingsData.count || 0,
+            pendingInvoices: creatorIds.length,
+            totalUploads: contentData.count || 0,
+            weeklyProgress: 0,
+          });
+
+          // Fetch recent manager activity
+          const { data: recentContent } = await supabase
+            .from('content_uploads')
+            .select('*')
+            .in('user_id', creatorIds)
+            .order('created_at', { ascending: false })
+            .limit(8);
+
+          const activities: RecentActivity[] = recentContent?.map(upload => ({
+            id: upload.id,
+            type: 'upload',
+            title: 'Creator Content',
+            description: upload.file_name,
+            timestamp: upload.created_at || '',
+            status: upload.status || 'pending_review',
+          })) || [];
+
+          setRecentActivity(activities);
+        } else {
+          setStats({ pendingCommitments: 0, upcomingMeetings: 0, pendingInvoices: 0, totalUploads: 0, weeklyProgress: 0 });
+          setRecentActivity([]);
+        }
+      } else {
+        // Creator stats: their own data
+        const [
+          commitmentsData,
+          meetingsData,
+          invoicesData,
+          uploadsData,
+          shootsData
+        ] = await Promise.all([
+          supabase
+            .from('weekly_commitments')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('is_completed', false),
+          supabase
+            .from('creator_meetings')
+            .select('*')
+            .eq('user_id', userId)
+            .in('status', ['pending', 'confirmed'])
+            .gte('meeting_date', new Date().toISOString()),
+          supabase
+            .from('invoices')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('status', 'pending'),
+          supabase
+            .from('content_uploads')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(5),
+          supabase
+            .from('studio_shoots')
+            .select('*')
+            .eq('user_id', userId)
+            .order('shoot_date', { ascending: false })
+            .limit(3)
+        ]);
+
+        const totalCommitments = commitmentsData.data?.length || 0;
+        const completedCommitments = 0;
+        const weeklyProgress = totalCommitments > 0 
+          ? Math.round((completedCommitments / totalCommitments) * 100) 
+          : 0;
+
+        setStats({
+          pendingCommitments: totalCommitments,
+          upcomingMeetings: meetingsData.data?.length || 0,
+          pendingInvoices: invoicesData.data?.length || 0,
+          totalUploads: uploadsData.data?.length || 0,
+          weeklyProgress,
         });
-      });
 
-      // Add recent shoots
-      shootsData.data?.forEach(shoot => {
-        activities.push({
-          id: shoot.id,
-          type: 'shoot',
-          title: 'Studio Shoot',
-          description: shoot.title,
-          timestamp: shoot.shoot_date,
-          status: shoot.status || 'scheduled',
+        // Build recent activity feed for creators
+        const activities: RecentActivity[] = [];
+
+        uploadsData.data?.forEach(upload => {
+          activities.push({
+            id: upload.id,
+            type: 'upload',
+            title: 'Content Uploaded',
+            description: upload.file_name,
+            timestamp: upload.created_at || '',
+            status: upload.status || 'pending_review',
+          });
         });
-      });
 
-      // Sort by timestamp
-      activities.sort((a, b) => 
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      );
+        shootsData.data?.forEach(shoot => {
+          activities.push({
+            id: shoot.id,
+            type: 'shoot',
+            title: 'Studio Shoot',
+            description: shoot.title,
+            timestamp: shoot.shoot_date,
+            status: shoot.status || 'scheduled',
+          });
+        });
 
-      setRecentActivity(activities.slice(0, 8));
+        activities.sort((a, b) => 
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+
+        setRecentActivity(activities.slice(0, 8));
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -163,40 +243,120 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
     }
   };
 
-  const statCards = [
-    {
-      title: "Pending Commitments",
-      value: stats.pendingCommitments,
-      icon: <CheckSquare className="w-5 h-5" />,
-      color: "text-amber-500",
-      bgColor: "bg-amber-500/10",
-      action: () => onNavigate('commitments'),
-    },
-    {
-      title: "Upcoming Meetings",
-      value: stats.upcomingMeetings,
-      icon: <Calendar className="w-5 h-5" />,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-      action: () => onNavigate('meetings'),
-    },
-    {
-      title: "Pending Invoices",
-      value: stats.pendingInvoices,
-      icon: <DollarSign className="w-5 h-5" />,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
-      action: () => onNavigate('invoices'),
-    },
-    {
-      title: "Recent Uploads",
-      value: stats.totalUploads,
-      icon: <Upload className="w-5 h-5" />,
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-      action: () => onNavigate('upload'),
-    },
-  ];
+  // Role-specific stat cards
+  const getStatCards = () => {
+    if (isSuperAdmin || isAdmin) {
+      return [
+        {
+          title: "Pending Applications",
+          value: stats.pendingCommitments,
+          icon: <ClipboardList className="w-5 h-5" />,
+          color: "text-amber-500",
+          bgColor: "bg-amber-500/10",
+          action: () => window.location.href = '/admin',
+        },
+        {
+          title: "Content to Review",
+          value: stats.upcomingMeetings,
+          icon: <FileCheck className="w-5 h-5" />,
+          color: "text-blue-500",
+          bgColor: "bg-blue-500/10",
+          action: () => window.location.href = '/admin',
+        },
+        {
+          title: "Total Creators",
+          value: stats.pendingInvoices,
+          icon: <Users className="w-5 h-5" />,
+          color: "text-green-500",
+          bgColor: "bg-green-500/10",
+          action: () => window.location.href = '/admin',
+        },
+        {
+          title: "Open Tickets",
+          value: stats.totalUploads,
+          icon: <Mail className="w-5 h-5" />,
+          color: "text-purple-500",
+          bgColor: "bg-purple-500/10",
+          action: () => window.location.href = '/admin',
+        },
+      ];
+    }
+
+    if (isManager) {
+      return [
+        {
+          title: "Pending Tasks",
+          value: stats.pendingCommitments,
+          icon: <CheckSquare className="w-5 h-5" />,
+          color: "text-amber-500",
+          bgColor: "bg-amber-500/10",
+          action: () => window.location.href = '/manager',
+        },
+        {
+          title: "Scheduled Meetings",
+          value: stats.upcomingMeetings,
+          icon: <Calendar className="w-5 h-5" />,
+          color: "text-blue-500",
+          bgColor: "bg-blue-500/10",
+          action: () => window.location.href = '/manager',
+        },
+        {
+          title: "Assigned Creators",
+          value: stats.pendingInvoices,
+          icon: <Users className="w-5 h-5" />,
+          color: "text-green-500",
+          bgColor: "bg-green-500/10",
+          action: () => window.location.href = '/manager',
+        },
+        {
+          title: "Content to Review",
+          value: stats.totalUploads,
+          icon: <Upload className="w-5 h-5" />,
+          color: "text-purple-500",
+          bgColor: "bg-purple-500/10",
+          action: () => window.location.href = '/manager',
+        },
+      ];
+    }
+
+    // Creator stat cards
+    return [
+      {
+        title: "Pending Commitments",
+        value: stats.pendingCommitments,
+        icon: <CheckSquare className="w-5 h-5" />,
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        action: () => onNavigate('commitments'),
+      },
+      {
+        title: "Upcoming Meetings",
+        value: stats.upcomingMeetings,
+        icon: <Calendar className="w-5 h-5" />,
+        color: "text-blue-500",
+        bgColor: "bg-blue-500/10",
+        action: () => onNavigate('meetings'),
+      },
+      {
+        title: "Pending Invoices",
+        value: stats.pendingInvoices,
+        icon: <DollarSign className="w-5 h-5" />,
+        color: "text-green-500",
+        bgColor: "bg-green-500/10",
+        action: () => onNavigate('invoices'),
+      },
+      {
+        title: "Recent Uploads",
+        value: stats.totalUploads,
+        icon: <Upload className="w-5 h-5" />,
+        color: "text-purple-500",
+        bgColor: "bg-purple-500/10",
+        action: () => onNavigate('upload'),
+      },
+    ];
+  };
+
+  const statCards = getStatCards();
 
   // Role-specific quick actions
   const getQuickActions = () => {

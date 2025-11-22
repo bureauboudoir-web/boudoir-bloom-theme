@@ -36,6 +36,7 @@ import { NotificationBell, NotificationItem } from "@/components/NotificationBel
 import { supabase } from "@/integrations/supabase/client";
 import { NoAccessView } from "@/components/dashboard/NoAccessView";
 import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
+import { ContentLibrary } from "@/components/dashboard/ContentLibrary";
 import { toast } from "sonner";
 
 const Dashboard = () => {
@@ -45,7 +46,7 @@ const Dashboard = () => {
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -358,6 +359,10 @@ const Dashboard = () => {
 
             {activeTab === "meetings" && user && (
               <MeetingBookingView mode="management" />
+            )}
+
+            {activeTab === "library" && user && (
+              <ContentLibrary userId={user.id} />
             )}
           </div>
         </div>

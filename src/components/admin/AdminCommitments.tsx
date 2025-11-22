@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, type ContentTypeCategory } from "@/components/ContentTypeIcon";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,12 +23,22 @@ export const AdminCommitments = () => {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [selectedCreator, setSelectedCreator] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [newCommitment, setNewCommitment] = useState({
     content_type: "",
     length: "",
     description: "",
     marketing_notes: "",
     content_type_category: "" as ContentTypeCategory | "",
+  });
+
+  const filteredCreators = creators.filter(creator => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      creator.email.toLowerCase().includes(query) ||
+      creator.full_name?.toLowerCase().includes(query)
+    );
   });
 
   useEffect(() => {
@@ -146,6 +156,15 @@ export const AdminCommitments = () => {
         <div>
           <h3 className="font-serif text-xl font-bold mb-4">Assign Weekly Commitment</h3>
           <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search creators by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Select Creator</label>
               <Select value={selectedCreator} onValueChange={setSelectedCreator}>
@@ -153,7 +172,7 @@ export const AdminCommitments = () => {
                   <SelectValue placeholder="Choose a creator..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {creators.map((creator) => (
+                  {filteredCreators.map((creator) => (
                     <SelectItem key={creator.id} value={creator.id}>
                       {creator.full_name || creator.email}
                     </SelectItem>

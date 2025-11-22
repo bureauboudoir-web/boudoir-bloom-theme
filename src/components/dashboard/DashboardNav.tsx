@@ -8,11 +8,12 @@ import {
   Calendar, 
   CheckSquare, 
   Shield, 
-  DollarSign 
+  DollarSign,
+  FolderOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support";
+type TabId = "overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -59,6 +60,7 @@ export const DashboardNav = ({
         { id: "account" as TabId, label: "Creator Profile", icon: <User className="w-4 h-4" /> },
         { id: "meetings" as TabId, label: "My Meetings", icon: <Calendar className="w-4 h-4" /> },
         { id: "upload" as TabId, label: "Uploads", icon: <Upload className="w-4 h-4" /> },
+        { id: "library" as TabId, label: "Content Library", icon: <FolderOpen className="w-4 h-4" /> },
       ]
     },
     {

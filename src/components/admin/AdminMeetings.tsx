@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search } from "lucide-react";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 
@@ -46,8 +46,20 @@ export const AdminMeetings = () => {
   const { isSuperAdmin, isAdmin } = useUserRole();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [actionDialog, setActionDialog] = useState<'complete' | 'assist' | null>(null);
+
+  const filteredMeetings = meetings.filter(meeting => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      meeting.profiles?.full_name?.toLowerCase().includes(query) ||
+      meeting.profiles?.email.toLowerCase().includes(query) ||
+      meeting.meeting_type.toLowerCase().includes(query) ||
+      meeting.meeting_notes?.toLowerCase().includes(query)
+    );
+  });
   const [meetingNotes, setMeetingNotes] = useState("");
 
   useEffect(() => {
@@ -300,8 +312,8 @@ export const AdminMeetings = () => {
   );
 };
 
-  const upcomingMeetings = meetings.filter(m => m.status === 'confirmed');
-  const pastMeetings = meetings.filter(m => ['completed', 'cancelled'].includes(m.status));
+  const upcomingMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
+  const pastMeetings = filteredMeetings.filter(m => ['completed', 'cancelled'].includes(m.status));
 
   if (loading) {
     return <div className="text-center py-8">Loading meetings...</div>;
@@ -309,6 +321,16 @@ export const AdminMeetings = () => {
 
   return (
     <div className="space-y-6">
+      <div className="relative">
+        <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search meetings by creator name, email, type, or notes..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
       <Tabs defaultValue="upcoming" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="upcoming">
@@ -323,7 +345,7 @@ export const AdminMeetings = () => {
           {upcomingMeetings.length === 0 ? (
             <Card className="border-border">
               <CardContent className="p-8 text-center text-muted-foreground">
-                No upcoming confirmed meetings
+                {searchQuery ? "No meetings match your search" : "No upcoming confirmed meetings"}
               </CardContent>
             </Card>
           ) : (
@@ -335,7 +357,7 @@ export const AdminMeetings = () => {
           {pastMeetings.length === 0 ? (
             <Card className="border-border">
               <CardContent className="p-8 text-center text-muted-foreground">
-                No past meetings
+                {searchQuery ? "No meetings match your search" : "No past meetings"}
               </CardContent>
             </Card>
           ) : (
