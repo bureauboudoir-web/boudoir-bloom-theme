@@ -400,6 +400,42 @@ export type Database = {
           },
         ]
       }
+      google_drive_connections: {
+        Row: {
+          access_token: string
+          created_at: string | null
+          folder_id: string | null
+          id: string
+          last_sync_at: string | null
+          refresh_token: string
+          sync_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string | null
+          folder_id?: string | null
+          id?: string
+          last_sync_at?: string | null
+          refresh_token: string
+          sync_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string | null
+          folder_id?: string | null
+          id?: string
+          last_sync_at?: string | null
+          refresh_token?: string
+          sync_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       invitation_tokens: {
         Row: {
           application_id: string | null
@@ -1032,6 +1068,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sync_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          file_id: string
+          id: string
+          status: string
+          sync_direction: string
+          synced_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          file_id: string
+          id?: string
+          status?: string
+          sync_direction: string
+          synced_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          file_id?: string
+          id?: string
+          status?: string
+          sync_direction?: string
+          synced_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
