@@ -145,37 +145,30 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate custom secure token
-    const invitationToken = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
-    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
+    // Generate password reset link using Supabase's native auth system
+    const { data: resetLinkData, error: resetLinkError } = await supabaseClient.auth.admin.generateLink({
+      type: 'recovery',
+      email: application.email,
+      options: {
+        redirectTo: `${appOrigin}/dashboard`
+      }
+    });
 
-    // Store token in database
-    const { error: tokenError } = await supabaseClient
-      .from("invitation_tokens")
-      .insert({
-        user_id: existingUser.id,
-        application_id: applicationId,
-        token: invitationToken,
-        expires_at: expiresAt.toISOString(),
-      });
-
-    if (tokenError) {
-      console.error("Error storing invitation token:", tokenError);
+    if (resetLinkError || !resetLinkData) {
+      console.error('Error generating password reset link:', resetLinkError);
       return new Response(
-        JSON.stringify({ error: "Failed to create invitation token" }),
+        JSON.stringify({ error: 'Failed to generate password reset link' }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Create login link with setup parameters
-    const invitationUrl = `${appOrigin}/login?setup=true&token=${invitationToken}`;
+    const passwordResetUrl = resetLinkData.properties.action_link;
     const loginUrl = `${appOrigin}/login`;
+    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
 
-    console.log("Generated invitation URL:", invitationUrl);
-    console.log("App origin:", appOrigin);
-    console.log("Token:", invitationToken);
+    console.log("Password reset URL generated successfully");
 
-    // Send the meeting invitation email
+    // Send the meeting invitation email with password reset link
     const { data: emailData, error: emailError } = await supabaseClient.functions.invoke(
       'send-meeting-invitation',
       {
@@ -183,7 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
           name: application.name,
           email: application.email,
           loginUrl,
-          magicLinkUrl: invitationUrl,
+          magicLinkUrl: passwordResetUrl,
           applicationId: applicationId,
           userId: existingUser.id,
           magicLinkExpiresAt: expiresAt.toISOString(),
@@ -211,7 +204,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Invitation email resent successfully",
+        message: "Password setup email resent successfully",
         userId: existingUser.id,
         expiresAt: expiresAt.toISOString(),
       }),
