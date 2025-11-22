@@ -317,6 +317,13 @@ export type Database = {
             referencedRelation: "creator_applications"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_assigned_manager"
+            columns: ["assigned_manager_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       email_logs: {
