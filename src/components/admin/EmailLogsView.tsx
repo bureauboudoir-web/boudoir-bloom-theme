@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, RefreshCw, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { PaginationControls } from "./shared/PaginationControls";
 
 interface EmailLog {
   id: string;
@@ -26,6 +27,8 @@ export const EmailLogsView = () => {
   const [logs, setLogs] = useState<EmailLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'sent' | 'failed' | 'pending'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     fetchLogs();
@@ -73,6 +76,12 @@ export const EmailLogsView = () => {
     const variant = status === 'sent' ? 'default' : status === 'failed' ? 'destructive' : 'secondary';
     return <Badge variant={variant}>{status}</Badge>;
   };
+  
+  const totalPages = Math.ceil(logs.length / itemsPerPage);
+  const paginatedLogs = logs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   if (loading) {
     return <div className="text-center py-8">Loading email logs...</div>;
@@ -120,14 +129,15 @@ export const EmailLogsView = () => {
       </div>
 
       <div className="grid gap-4">
-        {logs.length === 0 ? (
+        {paginatedLogs.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
               No email logs found
             </CardContent>
           </Card>
         ) : (
-          logs.map((log) => (
+          <>
+            {paginatedLogs.map((log) => (
             <Card key={log.id}>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -188,7 +198,21 @@ export const EmailLogsView = () => {
                 )}
               </CardContent>
             </Card>
-          ))
+          ))}
+          {totalPages > 1 && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={itemsPerPage}
+              totalItems={logs.length}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={(items) => {
+                setItemsPerPage(items);
+                setCurrentPage(1);
+              }}
+            />
+          )}
+          </>
         )}
       </div>
     </div>

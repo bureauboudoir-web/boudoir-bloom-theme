@@ -16,6 +16,9 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
 import { format } from "date-fns";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { PaginationControls } from "./shared/PaginationControls";
+import { CommitmentsKanbanView } from "./CommitmentsKanbanView";
+import { ViewModeToggle, ViewMode } from "./shared/ViewModeToggle";
 
 interface Creator {
   id: string;
@@ -50,6 +53,9 @@ export const AdminCommitments = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("assign");
   const [expandedCommitments, setExpandedCommitments] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [stats, setStats] = useState({
     active: 0,
     overdue: 0,
@@ -358,13 +364,32 @@ export const AdminCommitments = () => {
       </div>
 
       {/* Tabs */}
+      <div className="flex items-center justify-between mb-4">
+        <Tabs value={activeTab} onValueChange={(v) => {
+          setActiveTab(v);
+          setCurrentPage(1);
+        }} className="flex-1">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="assign">Assign New</TabsTrigger>
+            <TabsTrigger value="active">Active ({activeCommitments.length})</TabsTrigger>
+            <TabsTrigger value="overdue">Overdue ({overdueCommitments.length})</TabsTrigger>
+            <TabsTrigger value="completed">Completed ({completedCommitments.length})</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        {activeTab !== 'assign' && (
+          <ViewModeToggle value={viewMode} onValueChange={setViewMode} showKanban={true} />
+        )}
+      </div>
+      
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="assign">Assign New</TabsTrigger>
-          <TabsTrigger value="active">Active ({activeCommitments.length})</TabsTrigger>
-          <TabsTrigger value="overdue">Overdue ({overdueCommitments.length})</TabsTrigger>
-          <TabsTrigger value="completed">Completed ({completedCommitments.length})</TabsTrigger>
-        </TabsList>
+        <div className="hidden">
+          <TabsList>
+            <TabsTrigger value="assign">Assign New</TabsTrigger>
+            <TabsTrigger value="active">Active</TabsTrigger>
+            <TabsTrigger value="overdue">Overdue</TabsTrigger>
+            <TabsTrigger value="completed">Completed</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Assign New Tab */}
         <TabsContent value="assign">

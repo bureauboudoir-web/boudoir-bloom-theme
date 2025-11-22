@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { PaginationControls } from "./shared/PaginationControls";
 
 interface SupportTicket {
   id: string;
@@ -43,6 +44,8 @@ const AdminSupportTickets = () => {
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
   const [response, setResponse] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const filteredTickets = tickets.filter(ticket => {
     if (!searchQuery) return true;
@@ -198,6 +201,12 @@ const AdminSupportTickets = () => {
     }
   };
 
+  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+  const paginatedTickets = filteredTickets.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   if (loading) {
     return (
       <Card className="p-6 bg-card border-primary/20">
@@ -232,13 +241,14 @@ const AdminSupportTickets = () => {
           </div>
         </div>
 
-        {filteredTickets.length === 0 ? (
+        {paginatedTickets.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">
             {searchQuery ? "No tickets match your search" : "No support tickets yet."}
           </p>
         ) : (
-          <div className="space-y-4">
-            {filteredTickets.map((ticket) => (
+          <>
+            <div className="space-y-4">
+              {paginatedTickets.map((ticket) => (
               <div
                 key={ticket.id}
                 className="border border-border rounded-lg p-4 space-y-3 hover:border-primary/40 transition-colors"
@@ -298,7 +308,21 @@ const AdminSupportTickets = () => {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+            {totalPages > 1 && (
+              <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                itemsPerPage={itemsPerPage}
+                totalItems={filteredTickets.length}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={(items) => {
+                  setItemsPerPage(items);
+                  setCurrentPage(1);
+                }}
+              />
+            )}
+          </>
         )}
       </Card>
 

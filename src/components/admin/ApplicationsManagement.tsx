@@ -11,6 +11,10 @@ import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle,
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { InvitationExpiryStatus } from "./InvitationExpiryStatus";
+import { PaginationControls } from "./shared/PaginationControls";
+import { ApplicationsKanbanView } from "./ApplicationsKanbanView";
+import { ViewModeToggle, ViewMode } from "./shared/ViewModeToggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ManagerSelect } from "./ManagerSelect";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -50,6 +54,9 @@ export const ApplicationsManagement = () => {
   const [noteText, setNoteText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedApps, setExpandedApps] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   useEffect(() => {
     fetchApplications();
@@ -456,56 +463,91 @@ export const ApplicationsManagement = () => {
       app.phone.includes(query)
     );
   });
+  
+  const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  const paginatedApplications = filteredApplications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           <Button
             variant={filter === 'pending' ? 'default' : 'outline'}
-            onClick={() => setFilter('pending')}
+            onClick={() => {
+              setFilter('pending');
+              setCurrentPage(1);
+            }}
           >
             Pending
           </Button>
           <Button
             variant={filter === 'approved' ? 'default' : 'outline'}
-            onClick={() => setFilter('approved')}
+            onClick={() => {
+              setFilter('approved');
+              setCurrentPage(1);
+            }}
           >
             Approved
           </Button>
           <Button
             variant={filter === 'declined' ? 'default' : 'outline'}
-            onClick={() => setFilter('declined')}
+            onClick={() => {
+              setFilter('declined');
+              setCurrentPage(1);
+            }}
           >
             Declined
           </Button>
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
-            onClick={() => setFilter('all')}
+            onClick={() => {
+              setFilter('all');
+              setCurrentPage(1);
+            }}
           >
             All
           </Button>
         </div>
-        <div className="relative flex-1 sm:max-w-xs">
-          <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by name, email, or phone..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+        <div className="flex items-center gap-2">
+          <ViewModeToggle value={viewMode} onValueChange={setViewMode} showKanban={true} />
+          <div className="relative flex-1 sm:max-w-xs">
+            <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name, email, or phone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="grid gap-4">
-        {filteredApplications.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-muted-foreground">
-              {searchQuery ? "No applications match your search" : "No applications found"}
-            </CardContent>
-          </Card>
-        ) : (
-          filteredApplications.map((app) => {
+      {viewMode === 'kanban' ? (
+        <ApplicationsKanbanView 
+          applications={filteredApplications}
+          onApprove={(app) => {
+            setSelectedApp(app);
+            setApproveDialog(true);
+          }}
+          onDecline={(app) => {
+            setSelectedApp(app);
+            setDeclineDialog(true);
+          }}
+        />
+      ) : (
+        <>
+          <div className="grid gap-4">
+            {paginatedApplications.length === 0 ? (
+              <Card>
+                <CardContent className="py-8 text-center text-muted-foreground">
+                  {searchQuery ? "No applications match your search" : "No applications found"}
+                </CardContent>
+              </Card>
+            ) : (
+              paginatedApplications.map((app) => {
             const isExpanded = expandedApps.has(app.id);
             
             return (

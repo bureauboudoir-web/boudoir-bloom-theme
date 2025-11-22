@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 
 import { AssistedOnboarding } from "./AssistedOnboarding";
+import { PaginationControls } from "./shared/PaginationControls";
 
 interface Meeting {
   id: string;
@@ -49,6 +50,8 @@ export const AdminMeetings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [actionDialog, setActionDialog] = useState<'complete' | 'assist' | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const filteredMeetings = meetings.filter(meeting => {
     if (!searchQuery) return true;
@@ -314,6 +317,18 @@ export const AdminMeetings = () => {
 
   const upcomingMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
   const pastMeetings = filteredMeetings.filter(m => ['completed', 'cancelled'].includes(m.status));
+  
+  const totalPagesUpcoming = Math.ceil(upcomingMeetings.length / itemsPerPage);
+  const totalPagesPast = Math.ceil(pastMeetings.length / itemsPerPage);
+  
+  const paginatedUpcoming = upcomingMeetings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const paginatedPast = pastMeetings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   if (loading) {
     return <div className="text-center py-8">Loading meetings...</div>;
@@ -342,26 +357,56 @@ export const AdminMeetings = () => {
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-4 mt-6">
-          {upcomingMeetings.length === 0 ? (
+          {paginatedUpcoming.length === 0 ? (
             <Card className="border-border">
               <CardContent className="p-8 text-center text-muted-foreground">
                 {searchQuery ? "No meetings match your search" : "No upcoming confirmed meetings"}
               </CardContent>
             </Card>
           ) : (
-            upcomingMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)
+            <>
+              {paginatedUpcoming.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
+              {totalPagesUpcoming > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPagesUpcoming}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={upcomingMeetings.length}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={(items) => {
+                    setItemsPerPage(items);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
           )}
         </TabsContent>
 
         <TabsContent value="past" className="space-y-4 mt-6">
-          {pastMeetings.length === 0 ? (
+          {paginatedPast.length === 0 ? (
             <Card className="border-border">
               <CardContent className="p-8 text-center text-muted-foreground">
                 {searchQuery ? "No meetings match your search" : "No past meetings"}
               </CardContent>
             </Card>
           ) : (
-            pastMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)
+            <>
+              {paginatedPast.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
+              {totalPagesPast > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPagesPast}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={pastMeetings.length}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={(items) => {
+                    setItemsPerPage(items);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
           )}
         </TabsContent>
       </Tabs>
