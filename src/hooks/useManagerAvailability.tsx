@@ -179,41 +179,51 @@ export const useManagerAvailability = () => {
 
     setSaving(true);
     try {
-      // Upsert logic: Update existing, insert new, delete removed
-      const existingSlots = availability.filter(s => s.id);
-      const newSlots = availability.filter(s => !s.id);
+      // Use upsert to handle unique constraint (manager_id + day_of_week)
+      const slotsToUpsert = availability.map(slot => ({
+        id: slot.id, // Include ID if exists
+        manager_id: user.id,
+        day_of_week: slot.day_of_week,
+        start_time: slot.start_time,
+        end_time: slot.end_time,
+        is_available: slot.is_available,
+        meeting_duration_minutes: meetingDuration,
+        specific_date: null,
+      }));
 
-      // Update existing slots
-      for (const slot of existingSlots) {
-        const { error } = await supabase
+      // Delete all existing weekly availability for days not in the new list
+      const daysToKeep = availability.map(slot => slot.day_of_week);
+      
+      if (daysToKeep.length > 0) {
+        const { error: deleteError } = await supabase
           .from('manager_availability')
-          .update({
-            start_time: slot.start_time,
-            end_time: slot.end_time,
-            is_available: slot.is_available,
-            meeting_duration_minutes: meetingDuration,
-          })
-          .eq('id', slot.id);
+          .delete()
+          .eq('manager_id', user.id)
+          .is('specific_date', null)
+          .not('day_of_week', 'in', `(${daysToKeep.join(',')})`);
 
-        if (error) throw error;
+        if (deleteError && deleteError.code !== 'PGRST116') throw deleteError;
+      } else {
+        // Delete all if no days to keep
+        const { error: deleteError } = await supabase
+          .from('manager_availability')
+          .delete()
+          .eq('manager_id', user.id)
+          .is('specific_date', null);
+
+        if (deleteError) throw deleteError;
       }
 
-      // Insert new slots
-      if (newSlots.length > 0) {
-        const slotsToInsert = newSlots.map(slot => ({
-          manager_id: user.id,
-          day_of_week: slot.day_of_week,
-          start_time: slot.start_time,
-          end_time: slot.end_time,
-          is_available: slot.is_available,
-          meeting_duration_minutes: meetingDuration,
-        }));
-
-        const { error } = await supabase
+      // Upsert all slots (will update if conflict on manager_id+day_of_week)
+      if (slotsToUpsert.length > 0) {
+        const { error: upsertError } = await supabase
           .from('manager_availability')
-          .insert(slotsToInsert);
+          .upsert(slotsToUpsert, {
+            onConflict: 'manager_id,day_of_week',
+            ignoreDuplicates: false,
+          });
 
-        if (error) throw error;
+        if (upsertError) throw upsertError;
       }
 
       toast.success("Availability saved successfully");
