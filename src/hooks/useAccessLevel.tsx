@@ -7,7 +7,7 @@ export type AccessLevel = 'no_access' | 'meeting_only' | 'full_access';
 
 export const useAccessLevel = () => {
   const { user } = useAuth();
-  const { isAdmin, isManager, isSuperAdmin } = useUserRole();
+  const { isAdmin, isManager, isSuperAdmin, loading: rolesLoading } = useUserRole();
   const [accessLevel, setAccessLevel] = useState<AccessLevel>('no_access');
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +24,11 @@ export const useAccessLevel = () => {
     if (!user) return;
 
     try {
+      // Wait for roles to finish loading before making decisions
+      if (rolesLoading) {
+        return;
+      }
+
       // Admins, managers, and super admins get automatic full access
       if (isAdmin || isManager || isSuperAdmin) {
         setAccessLevel('full_access');
