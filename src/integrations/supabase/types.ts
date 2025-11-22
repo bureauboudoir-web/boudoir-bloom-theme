@@ -968,46 +968,70 @@ export type Database = {
       }
       studio_shoots: {
         Row: {
+          budget: number | null
           created_at: string
           created_by_user_id: string | null
+          crew_size: number | null
           description: string | null
+          duration_hours: number | null
+          equipment_needed: string | null
           id: string
           location: string | null
           marketing_notes: string | null
           notes: string | null
+          photo_staff_name: string | null
           shoot_date: string
+          shoot_type: string | null
+          special_requirements: string | null
           status: string | null
           title: string
           updated_at: string
           user_id: string
+          video_staff_name: string | null
         }
         Insert: {
+          budget?: number | null
           created_at?: string
           created_by_user_id?: string | null
+          crew_size?: number | null
           description?: string | null
+          duration_hours?: number | null
+          equipment_needed?: string | null
           id?: string
           location?: string | null
           marketing_notes?: string | null
           notes?: string | null
+          photo_staff_name?: string | null
           shoot_date: string
+          shoot_type?: string | null
+          special_requirements?: string | null
           status?: string | null
           title: string
           updated_at?: string
           user_id: string
+          video_staff_name?: string | null
         }
         Update: {
+          budget?: number | null
           created_at?: string
           created_by_user_id?: string | null
+          crew_size?: number | null
           description?: string | null
+          duration_hours?: number | null
+          equipment_needed?: string | null
           id?: string
           location?: string | null
           marketing_notes?: string | null
           notes?: string | null
+          photo_staff_name?: string | null
           shoot_date?: string
+          shoot_type?: string | null
+          special_requirements?: string | null
           status?: string | null
           title?: string
           updated_at?: string
           user_id?: string
+          video_staff_name?: string | null
         }
         Relationships: [
           {
@@ -1125,46 +1149,64 @@ export type Database = {
       }
       weekly_commitments: {
         Row: {
+          assigned_by_name: string | null
+          completed_at: string | null
           content_type: string
           content_type_category: string | null
           created_at: string
           created_by_user_id: string | null
           description: string
+          due_date: string | null
+          estimated_time_hours: number | null
           id: string
           is_completed: boolean
           length: string | null
           marketing_notes: string | null
           notes: string | null
+          priority: string | null
+          revision_count: number | null
           status: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          assigned_by_name?: string | null
+          completed_at?: string | null
           content_type: string
           content_type_category?: string | null
           created_at?: string
           created_by_user_id?: string | null
           description: string
+          due_date?: string | null
+          estimated_time_hours?: number | null
           id?: string
           is_completed?: boolean
           length?: string | null
           marketing_notes?: string | null
           notes?: string | null
+          priority?: string | null
+          revision_count?: number | null
           status?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          assigned_by_name?: string | null
+          completed_at?: string | null
           content_type?: string
           content_type_category?: string | null
           created_at?: string
           created_by_user_id?: string | null
           description?: string
+          due_date?: string | null
+          estimated_time_hours?: number | null
           id?: string
           is_completed?: boolean
           length?: string | null
           marketing_notes?: string | null
           notes?: string | null
+          priority?: string | null
+          revision_count?: number | null
           status?: string | null
           updated_at?: string
           user_id?: string

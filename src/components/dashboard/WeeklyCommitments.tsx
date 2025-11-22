@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, contentTypeColors, type ContentTypeCategory } from "@/components/ContentTypeIcon";
 import { StatusBadge, type Status } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CardSkeleton } from "@/components/ui/loading-skeletons";
+import { format } from "date-fns";
 
 interface WeeklyCommitment {
   id: string;
@@ -23,6 +25,10 @@ interface WeeklyCommitment {
   content_type_category: ContentTypeCategory | null;
   marketing_notes: string | null;
   created_by_user_id: string | null;
+  priority: string | null;
+  due_date: string | null;
+  estimated_time_hours: number | null;
+  completed_at: string | null;
 }
 
 interface WeeklyCommitmentsProps {
@@ -313,6 +319,16 @@ const WeeklyCommitments = ({ userId }: WeeklyCommitmentsProps) => {
                           {contentTypeLabels[commitment.content_type_category]}
                         </span>
                       )}
+                      {commitment.priority && (
+                        <Badge variant={
+                          commitment.priority === 'urgent' ? 'destructive' :
+                          commitment.priority === 'high' ? 'default' :
+                          'secondary'
+                        } className="capitalize">
+                          {commitment.priority === 'urgent' && '🔥 '}
+                          {commitment.priority}
+                        </Badge>
+                      )}
                       <StatusBadge status={commitment.status} />
                     </div>
                     <div className="flex items-center gap-2">
@@ -325,6 +341,17 @@ const WeeklyCommitments = ({ userId }: WeeklyCommitmentsProps) => {
                         </span>
                       )}
                     </div>
+                    {commitment.due_date && (
+                      <p className={`text-sm ${new Date(commitment.due_date) < new Date() && !commitment.is_completed ? 'text-red-600 font-medium' : 'text-muted-foreground'}`}>
+                        📅 Due: {format(new Date(commitment.due_date), 'PPP')}
+                        {new Date(commitment.due_date) < new Date() && !commitment.is_completed && ' - Overdue'}
+                      </p>
+                    )}
+                    {commitment.estimated_time_hours && (
+                      <p className="text-sm text-muted-foreground">
+                        ⏱️ Est. Time: {commitment.estimated_time_hours} hours
+                      </p>
+                    )}
                     <p className={`text-sm ${commitment.is_completed ? 'text-muted-foreground' : 'text-foreground/80'}`}>
                       {commitment.description}
                     </p>

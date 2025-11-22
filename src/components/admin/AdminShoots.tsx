@@ -5,10 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Plus, Calendar, Users, Video, Camera, Search, Clock, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { StatsCard } from "./StatsCard";
+import { format } from "date-fns";
 
 interface Creator {
   id: string;
@@ -16,23 +22,67 @@ interface Creator {
   full_name: string | null;
 }
 
+interface Shoot {
+  id: string;
+  user_id: string;
+  title: string;
+  shoot_date: string;
+  location: string | null;
+  description: string | null;
+  marketing_notes: string | null;
+  status: string;
+  shoot_type: string | null;
+  crew_size: number | null;
+  video_staff_name: string | null;
+  photo_staff_name: string | null;
+  equipment_needed: string | null;
+  duration_hours: number | null;
+  budget: number | null;
+  special_requirements: string | null;
+  profiles: {
+    full_name: string | null;
+    email: string;
+  };
+}
+
 export const AdminShoots = () => {
   const { user } = useAuth();
   const { isSuperAdmin, isAdmin } = useUserRole();
   const [creators, setCreators] = useState<Creator[]>([]);
+  const [shoots, setShoots] = useState<Shoot[]>([]);
   const [selectedCreator, setSelectedCreator] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("schedule");
+  const [stats, setStats] = useState({
+    total: 0,
+    upcoming: 0,
+    videoStaff: 0,
+    photoStaff: 0,
+  });
   const [newShoot, setNewShoot] = useState({
     title: "",
     shoot_date: "",
     location: "",
     description: "",
     marketing_notes: "",
+    shoot_type: "solo" as "solo" | "duo" | "group" | "couples",
+    crew_size: 1,
+    video_staff_name: "",
+    photo_staff_name: "",
+    equipment_needed: "",
+    duration_hours: 2,
+    budget: 0,
+    special_requirements: "",
+    hasVideoStaff: false,
+    hasPhotoStaff: false,
   });
 
   useEffect(() => {
     if (user) {
       fetchCreators();
+      fetchShoots();
+      fetchStats();
     }
   }, [user]);
 
@@ -40,7 +90,6 @@ export const AdminShoots = () => {
     try {
       let creatorIds: string[] = [];
 
-      // If manager (not admin/super_admin), filter by assigned creators
       if (!isSuperAdmin && !isAdmin && user) {
         const { data: assignedMeetings } = await supabase
           .from('creator_meetings')
@@ -60,7 +109,6 @@ export const AdminShoots = () => {
         .select('id, email, full_name')
         .order('email');
 
-      // Apply filter for managers
       if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
         query = query.in('id', creatorIds);
       }
@@ -76,6 +124,48 @@ export const AdminShoots = () => {
         description: "Failed to load creators",
         variant: "destructive"
       });
+    }
+  };
+
+  const fetchShoots = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('studio_shoots')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name,
+            email
+          )
+        `)
+        .order('shoot_date', { ascending: false });
+
+      if (error) throw error;
+      setShoots(data || []);
+    } catch (error) {
+      console.error('Error fetching shoots:', error);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const { data: allShoots } = await supabase
+        .from('studio_shoots')
+        .select('*');
+
+      const now = new Date();
+      const upcomingShoots = allShoots?.filter(s => new Date(s.shoot_date) > now) || [];
+      const videoStaffCount = allShoots?.filter(s => s.video_staff_name).length || 0;
+      const photoStaffCount = allShoots?.filter(s => s.photo_staff_name).length || 0;
+
+      setStats({
+        total: allShoots?.length || 0,
+        upcoming: upcomingShoots.length,
+        videoStaff: videoStaffCount,
+        photoStaff: photoStaffCount,
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
     }
   };
 
@@ -111,6 +201,14 @@ export const AdminShoots = () => {
           location: newShoot.location || null,
           description: newShoot.description || null,
           marketing_notes: newShoot.marketing_notes || null,
+          shoot_type: newShoot.shoot_type,
+          crew_size: newShoot.crew_size,
+          video_staff_name: newShoot.hasVideoStaff ? newShoot.video_staff_name : null,
+          photo_staff_name: newShoot.hasPhotoStaff ? newShoot.photo_staff_name : null,
+          equipment_needed: newShoot.equipment_needed || null,
+          duration_hours: newShoot.duration_hours,
+          budget: newShoot.budget > 0 ? newShoot.budget : null,
+          special_requirements: newShoot.special_requirements || null,
           status: 'pending'
         });
 
@@ -118,7 +216,7 @@ export const AdminShoots = () => {
 
       toast({
         title: "Success",
-        description: "Shoot scheduled for creator",
+        description: "Shoot scheduled successfully",
       });
 
       setNewShoot({
@@ -127,8 +225,20 @@ export const AdminShoots = () => {
         location: "",
         description: "",
         marketing_notes: "",
+        shoot_type: "solo",
+        crew_size: 1,
+        video_staff_name: "",
+        photo_staff_name: "",
+        equipment_needed: "",
+        duration_hours: 2,
+        budget: 0,
+        special_requirements: "",
+        hasVideoStaff: false,
+        hasPhotoStaff: false,
       });
       setIsAdding(false);
+      fetchShoots();
+      fetchStats();
     } catch (error) {
       console.error("Error scheduling shoot:", error);
       toast({
@@ -139,91 +249,426 @@ export const AdminShoots = () => {
     }
   };
 
+  const handleDeleteShoot = async (shootId: string) => {
+    try {
+      const { error } = await supabase
+        .from('studio_shoots')
+        .delete()
+        .eq('id', shootId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Shoot deleted successfully",
+      });
+
+      fetchShoots();
+      fetchStats();
+    } catch (error) {
+      console.error('Error deleting shoot:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete shoot",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const filteredShoots = shoots.filter(shoot => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      shoot.title.toLowerCase().includes(searchLower) ||
+      shoot.profiles.full_name?.toLowerCase().includes(searchLower) ||
+      shoot.profiles.email.toLowerCase().includes(searchLower) ||
+      shoot.location?.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const upcomingShoots = filteredShoots.filter(s => new Date(s.shoot_date) > new Date());
+  const pastShoots = filteredShoots.filter(s => new Date(s.shoot_date) <= new Date());
+
+  const getShootTypeBadge = (type: string | null) => {
+    const colors = {
+      solo: "bg-blue-500/10 text-blue-500",
+      duo: "bg-purple-500/10 text-purple-500",
+      group: "bg-green-500/10 text-green-500",
+      couples: "bg-pink-500/10 text-pink-500",
+    };
+    return <Badge className={colors[type as keyof typeof colors] || ""}>{type || 'N/A'}</Badge>;
+  };
+
   return (
-    <Card className="p-6 bg-card border-primary/20">
-      <div className="space-y-6">
-        <div>
-          <h3 className="font-serif text-xl font-bold mb-4">Schedule Studio Shoot</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Select Creator</label>
-              <Select value={selectedCreator} onValueChange={setSelectedCreator}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a creator..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {creators.map((creator) => (
-                    <SelectItem key={creator.id} value={creator.id}>
-                      {creator.full_name || creator.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatsCard
+          title="Total Shoots"
+          value={stats.total}
+          icon={Calendar}
+          description="All time"
+        />
+        <StatsCard
+          title="Upcoming"
+          value={stats.upcoming}
+          icon={Clock}
+          description="Next 7 days"
+        />
+        <StatsCard
+          title="Video Staff"
+          value={stats.videoStaff}
+          icon={Video}
+          description="Assigned shoots"
+        />
+        <StatsCard
+          title="Photo Staff"
+          value={stats.photoStaff}
+          icon={Camera}
+          description="Assigned shoots"
+        />
+      </div>
 
-            {selectedCreator && (
-              <>
-                {!isAdding ? (
-                  <Button
-                    onClick={() => setIsAdding(true)}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Schedule New Shoot
-                  </Button>
-                ) : (
-                  <Card className="p-4 bg-muted/30 border-primary/20">
-                    <div className="space-y-3">
-                      <Input
-                        placeholder="Shoot Title"
-                        value={newShoot.title}
-                        onChange={(e) => setNewShoot({ ...newShoot, title: e.target.value })}
-                      />
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Search by creator, title, or location..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-                      <Input
-                        type="datetime-local"
-                        value={newShoot.shoot_date}
-                        onChange={(e) => setNewShoot({ ...newShoot, shoot_date: e.target.value })}
-                      />
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="schedule">Schedule New</TabsTrigger>
+          <TabsTrigger value="upcoming">Upcoming ({upcomingShoots.length})</TabsTrigger>
+          <TabsTrigger value="past">Past ({pastShoots.length})</TabsTrigger>
+          <TabsTrigger value="all">All Shoots</TabsTrigger>
+        </TabsList>
 
-                      <Input
-                        placeholder="Location"
-                        value={newShoot.location}
-                        onChange={(e) => setNewShoot({ ...newShoot, location: e.target.value })}
-                      />
+        {/* Schedule New Tab */}
+        <TabsContent value="schedule">
+          <Card className="p-6">
+            <h3 className="font-serif text-xl font-bold mb-4">Schedule Studio Shoot</h3>
+            <div className="space-y-4">
+              <div>
+                <Label>Select Creator</Label>
+                <Select value={selectedCreator} onValueChange={setSelectedCreator}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a creator..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {creators.map((creator) => (
+                      <SelectItem key={creator.id} value={creator.id}>
+                        {creator.full_name || creator.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-                      <Textarea
-                        placeholder="Description"
-                        value={newShoot.description}
-                        onChange={(e) => setNewShoot({ ...newShoot, description: e.target.value })}
-                      />
+              {selectedCreator && (
+                <>
+                  {!isAdding ? (
+                    <Button onClick={() => setIsAdding(true)} className="w-full">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Schedule New Shoot
+                    </Button>
+                  ) : (
+                    <Card className="p-4 bg-muted/30">
+                      <div className="space-y-4">
+                        {/* Basic Info */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold">Basic Information</h4>
+                          <Input
+                            placeholder="Shoot Title"
+                            value={newShoot.title}
+                            onChange={(e) => setNewShoot({ ...newShoot, title: e.target.value })}
+                          />
+                          <Input
+                            type="datetime-local"
+                            value={newShoot.shoot_date}
+                            onChange={(e) => setNewShoot({ ...newShoot, shoot_date: e.target.value })}
+                          />
+                          <Input
+                            placeholder="Location"
+                            value={newShoot.location}
+                            onChange={(e) => setNewShoot({ ...newShoot, location: e.target.value })}
+                          />
+                        </div>
 
-                      <Textarea
-                        placeholder="Marketing Notes (visible to creator)"
-                        value={newShoot.marketing_notes}
-                        onChange={(e) => setNewShoot({ ...newShoot, marketing_notes: e.target.value })}
-                      />
+                        {/* Shoot Type */}
+                        <div className="space-y-2">
+                          <Label>Shoot Type</Label>
+                          <Select 
+                            value={newShoot.shoot_type} 
+                            onValueChange={(value: "solo" | "duo" | "group" | "couples") => 
+                              setNewShoot({ ...newShoot, shoot_type: value })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="solo">Solo Shoot</SelectItem>
+                              <SelectItem value="duo">Duo Shoot</SelectItem>
+                              <SelectItem value="group">Group Shoot (3+)</SelectItem>
+                              <SelectItem value="couples">Couples Shoot</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
-                      <div className="flex gap-2">
-                        <Button onClick={handleScheduleShoot} className="flex-1">
-                          Schedule Shoot
-                        </Button>
-                        <Button
-                          onClick={() => setIsAdding(false)}
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          Cancel
-                        </Button>
+                        {/* Duration & Crew */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label>Duration (hours)</Label>
+                            <Input
+                              type="number"
+                              min="0.5"
+                              step="0.5"
+                              value={newShoot.duration_hours}
+                              onChange={(e) => setNewShoot({ ...newShoot, duration_hours: parseFloat(e.target.value) })}
+                            />
+                          </div>
+                          <div>
+                            <Label>Crew Size</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              value={newShoot.crew_size}
+                              onChange={(e) => setNewShoot({ ...newShoot, crew_size: parseInt(e.target.value) })}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Staff Assignment */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold">Staff Assignment</h4>
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="video-staff"
+                              checked={newShoot.hasVideoStaff}
+                              onCheckedChange={(checked) => 
+                                setNewShoot({ ...newShoot, hasVideoStaff: !!checked })
+                              }
+                            />
+                            <Label htmlFor="video-staff">Video Staff</Label>
+                          </div>
+                          {newShoot.hasVideoStaff && (
+                            <Input
+                              placeholder="Video Staff Name"
+                              value={newShoot.video_staff_name}
+                              onChange={(e) => setNewShoot({ ...newShoot, video_staff_name: e.target.value })}
+                            />
+                          )}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="photo-staff"
+                              checked={newShoot.hasPhotoStaff}
+                              onCheckedChange={(checked) => 
+                                setNewShoot({ ...newShoot, hasPhotoStaff: !!checked })
+                              }
+                            />
+                            <Label htmlFor="photo-staff">Photo Staff</Label>
+                          </div>
+                          {newShoot.hasPhotoStaff && (
+                            <Input
+                              placeholder="Photo Staff Name"
+                              value={newShoot.photo_staff_name}
+                              onChange={(e) => setNewShoot({ ...newShoot, photo_staff_name: e.target.value })}
+                            />
+                          )}
+                        </div>
+
+                        {/* Technical Details */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold">Technical Details</h4>
+                          <Textarea
+                            placeholder="Equipment Needed (cameras, lighting, etc.)"
+                            value={newShoot.equipment_needed}
+                            onChange={(e) => setNewShoot({ ...newShoot, equipment_needed: e.target.value })}
+                          />
+                          <Textarea
+                            placeholder="Special Requirements (props, costumes, etc.)"
+                            value={newShoot.special_requirements}
+                            onChange={(e) => setNewShoot({ ...newShoot, special_requirements: e.target.value })}
+                          />
+                        </div>
+
+                        {/* Notes & Budget */}
+                        <div className="space-y-3">
+                          <Textarea
+                            placeholder="Description"
+                            value={newShoot.description}
+                            onChange={(e) => setNewShoot({ ...newShoot, description: e.target.value })}
+                          />
+                          <Textarea
+                            placeholder="Marketing Notes (visible to creator)"
+                            value={newShoot.marketing_notes}
+                            onChange={(e) => setNewShoot({ ...newShoot, marketing_notes: e.target.value })}
+                          />
+                          <div>
+                            <Label>Budget (Optional)</Label>
+                            <Input
+                              type="number"
+                              min="0"
+                              value={newShoot.budget}
+                              onChange={(e) => setNewShoot({ ...newShoot, budget: parseFloat(e.target.value) })}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button onClick={handleScheduleShoot} className="flex-1">
+                            Schedule Shoot
+                          </Button>
+                          <Button
+                            onClick={() => setIsAdding(false)}
+                            variant="outline"
+                            className="flex-1"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
+                    </Card>
+                  )}
+                </>
+              )}
+            </div>
+          </Card>
+        </TabsContent>
+
+        {/* Upcoming Shoots Tab */}
+        <TabsContent value="upcoming">
+          <div className="space-y-4">
+            {upcomingShoots.map((shoot) => (
+              <Card key={shoot.id} className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold">{shoot.title}</h4>
+                      {getShootTypeBadge(shoot.shoot_type)}
+                      <Badge variant={shoot.status === 'confirmed' ? 'default' : 'secondary'}>
+                        {shoot.status}
+                      </Badge>
                     </div>
-                  </Card>
-                )}
-              </>
+                    <p className="text-sm text-muted-foreground">
+                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                    </p>
+                    <p className="text-sm">
+                      {format(new Date(shoot.shoot_date), 'PPP p')}
+                    </p>
+                    {shoot.location && <p className="text-sm">📍 {shoot.location}</p>}
+                    {shoot.duration_hours && (
+                      <p className="text-sm">⏱️ {shoot.duration_hours} hours</p>
+                    )}
+                    {(shoot.video_staff_name || shoot.photo_staff_name) && (
+                      <div className="mt-2 text-sm">
+                        <p className="font-medium">Staff:</p>
+                        {shoot.video_staff_name && <p>🎥 Video: {shoot.video_staff_name}</p>}
+                        {shoot.photo_staff_name && <p>📷 Photo: {shoot.photo_staff_name}</p>}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteShoot(shoot.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </Card>
+            ))}
+            {upcomingShoots.length === 0 && (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No upcoming shoots</p>
+              </Card>
             )}
           </div>
-        </div>
-      </div>
-    </Card>
+        </TabsContent>
+
+        {/* Past Shoots Tab */}
+        <TabsContent value="past">
+          <div className="space-y-4">
+            {pastShoots.map((shoot) => (
+              <Card key={shoot.id} className="p-4 opacity-75">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold">{shoot.title}</h4>
+                      {getShootTypeBadge(shoot.shoot_type)}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                    </p>
+                    <p className="text-sm">
+                      {format(new Date(shoot.shoot_date), 'PPP p')}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteShoot(shoot.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </Card>
+            ))}
+            {pastShoots.length === 0 && (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No past shoots</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
+        {/* All Shoots Tab */}
+        <TabsContent value="all">
+          <div className="space-y-4">
+            {filteredShoots.map((shoot) => (
+              <Card key={shoot.id} className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold">{shoot.title}</h4>
+                      {getShootTypeBadge(shoot.shoot_type)}
+                      <Badge variant={shoot.status === 'confirmed' ? 'default' : 'secondary'}>
+                        {shoot.status}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                    </p>
+                    <p className="text-sm">
+                      {format(new Date(shoot.shoot_date), 'PPP p')}
+                    </p>
+                    {shoot.description && (
+                      <p className="text-sm mt-2">{shoot.description}</p>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteShoot(shoot.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </Card>
+            ))}
+            {filteredShoots.length === 0 && (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No shoots found</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
