@@ -14,11 +14,18 @@ import {
   AlertCircle,
   ArrowRight,
   Mail,
-  Video
+  Video,
+  Users,
+  FileCheck,
+  BarChart3,
+  Settings,
+  UserPlus,
+  ClipboardList
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface DashboardStats {
   pendingCommitments: number;
@@ -43,6 +50,7 @@ interface DashboardOverviewProps {
 }
 
 export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps) => {
+  const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     pendingCommitments: 0,
     upcomingMeetings: 0,
@@ -190,32 +198,96 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
     },
   ];
 
-  const quickActions = [
-    {
-      label: "Upload Content",
-      icon: <Upload className="w-4 h-4" />,
-      action: () => onNavigate('upload'),
-      variant: "default" as const,
-    },
-    {
-      label: "Commitments",
-      icon: <CheckSquare className="w-4 h-4" />,
-      action: () => onNavigate('commitments'),
-      variant: "secondary" as const,
-    },
-    {
-      label: "Meeting",
-      icon: <Video className="w-4 h-4" />,
-      action: () => onNavigate('meetings'),
-      variant: "secondary" as const,
-    },
-    {
-      label: "Support",
-      icon: <Mail className="w-4 h-4" />,
-      action: () => onNavigate('support'),
-      variant: "outline" as const,
-    },
-  ];
+  // Role-specific quick actions
+  const getQuickActions = () => {
+    if (isSuperAdmin || isAdmin) {
+      return [
+        {
+          label: "Manage Applications",
+          icon: <ClipboardList className="w-4 h-4" />,
+          action: () => window.location.href = '/admin',
+          variant: "default" as const,
+        },
+        {
+          label: "Review Content",
+          icon: <FileCheck className="w-4 h-4" />,
+          action: () => window.location.href = '/admin',
+          variant: "secondary" as const,
+        },
+        {
+          label: "Manage Users",
+          icon: <Users className="w-4 h-4" />,
+          action: () => window.location.href = '/admin',
+          variant: "secondary" as const,
+        },
+        {
+          label: "Analytics",
+          icon: <BarChart3 className="w-4 h-4" />,
+          action: () => window.location.href = '/admin',
+          variant: "outline" as const,
+        },
+      ];
+    }
+
+    if (isManager) {
+      return [
+        {
+          label: "Review Applications",
+          icon: <ClipboardList className="w-4 h-4" />,
+          action: () => window.location.href = '/manager',
+          variant: "default" as const,
+        },
+        {
+          label: "Assign Tasks",
+          icon: <UserPlus className="w-4 h-4" />,
+          action: () => window.location.href = '/manager',
+          variant: "secondary" as const,
+        },
+        {
+          label: "Schedule Shoots",
+          icon: <Video className="w-4 h-4" />,
+          action: () => window.location.href = '/manager',
+          variant: "secondary" as const,
+        },
+        {
+          label: "View Reports",
+          icon: <BarChart3 className="w-4 h-4" />,
+          action: () => window.location.href = '/manager',
+          variant: "outline" as const,
+        },
+      ];
+    }
+
+    // Default creator actions
+    return [
+      {
+        label: "Upload Content",
+        icon: <Upload className="w-4 h-4" />,
+        action: () => onNavigate('upload'),
+        variant: "default" as const,
+      },
+      {
+        label: "Commitments",
+        icon: <CheckSquare className="w-4 h-4" />,
+        action: () => onNavigate('commitments'),
+        variant: "secondary" as const,
+      },
+      {
+        label: "Book Meeting",
+        icon: <Video className="w-4 h-4" />,
+        action: () => onNavigate('meetings'),
+        variant: "secondary" as const,
+      },
+      {
+        label: "Support",
+        icon: <Mail className="w-4 h-4" />,
+        action: () => onNavigate('support'),
+        variant: "outline" as const,
+      },
+    ];
+  };
+
+  const quickActions = getQuickActions();
 
   const getActivityIcon = (type: string) => {
     switch (type) {
