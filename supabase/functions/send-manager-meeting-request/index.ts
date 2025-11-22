@@ -56,11 +56,11 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         ` : ''}
         
-        <h1 style="color: #d1ae94;">New Meeting Request 📅</h1>
+        <h1 style="color: #d1ae94;">New Meeting Booked 📅</h1>
         
         <p>Hi ${managerName},</p>
         
-        <p>You have a new meeting request from <strong>${creatorName}</strong>.</p>
+        <p><strong>${creatorName}</strong> has booked a meeting with you. The meeting has been automatically confirmed.</p>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="margin-top: 0; color: #333;">Creator Information</h2>
@@ -68,20 +68,16 @@ const handler = async (req: Request): Promise<Response> => {
           <p><strong>Email:</strong> ${creatorEmail}</p>
         </div>
 
-        <div style="background-color: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h2 style="margin-top: 0; color: #333;">Requested Meeting Details</h2>
+        <div style="background-color: #e8f5e9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4caf50;">
+          <h2 style="margin-top: 0; color: #2e7d32;">✓ Confirmed Meeting Details</h2>
           <p><strong>Date:</strong> ${meetingDate}</p>
           <p><strong>Time:</strong> ${meetingTime}</p>
           <p><strong>Type:</strong> ${meetingType === 'online' ? '💻 Online Meeting' : '📍 In-Person Meeting'}</p>
         </div>
-        
-        <div style="background-color: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; margin: 20px 0;">
-          <p style="margin: 0;"><strong>Action Required:</strong> Please confirm or decline this meeting request in your admin dashboard.</p>
-        </div>
 
         <div style="text-align: center; margin: 30px 0;">
           <a href="${dashboardUrl}" style="background-color: #d1ae94; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-            View Meeting Request
+            View in Dashboard
           </a>
         </div>
         
@@ -102,8 +98,8 @@ const handler = async (req: Request): Promise<Response> => {
         from: "Bureau Boudoir <onboarding@resend.dev>",
         to: [testRecipientEmail], // Send to creator's email for testing
         subject: isTestMode 
-          ? `[TEST] Meeting Request from ${creatorName} (intended for ${managerName})`
-          : `New Meeting Request from ${creatorName}`,
+          ? `[TEST] Meeting Booked: ${creatorName} (intended for ${managerName})`
+          : `New Meeting Booked: ${creatorName}`,
         html: emailHtml,
       }),
     });

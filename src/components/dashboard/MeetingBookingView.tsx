@@ -196,19 +196,20 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
     setLoading(true);
     try {
+      // Auto-confirm the meeting immediately
       const { error } = await supabase
         .from('creator_meetings')
         .update({ 
           meeting_date: startOfDay(date).toISOString(),
           meeting_time: selectedTime,
           meeting_type: meetingType,
-          status: 'pending'
+          status: 'confirmed'
         })
         .eq('id', meetingData.id);
 
       if (error) throw error;
 
-      // Send notification to manager
+      // Send notifications to both creator and manager
       if (managerInfo && user) {
         try {
           const { data: profileData } = await supabase
@@ -217,25 +218,40 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
             .eq('id', user.id)
             .single();
 
+          const meetingDateFormatted = format(date, "PPP");
+          
+          // Send confirmation to creator
+          await supabase.functions.invoke('send-meeting-confirmation', {
+            body: {
+              creatorEmail: profileData?.email || user.email,
+              creatorName: profileData?.full_name || 'Creator',
+              managerName: managerInfo.full_name,
+              meetingDate: meetingDateFormatted,
+              meetingTime: selectedTime,
+              meetingType: meetingType,
+            }
+          });
+
+          // Send notification to manager
           await supabase.functions.invoke('send-manager-meeting-request', {
             body: {
               managerEmail: managerInfo.email,
               managerName: managerInfo.full_name,
               creatorName: profileData?.full_name || 'New Creator',
               creatorEmail: profileData?.email || user.email,
-              meetingDate: format(date, "PPP"),
+              meetingDate: meetingDateFormatted,
               meetingTime: selectedTime,
               meetingType: meetingType,
               dashboardUrl: `${window.location.origin}/admin`,
             }
           });
         } catch (emailError) {
-          console.error("Error sending manager notification:", emailError);
+          console.error("Error sending notifications:", emailError);
           // Don't fail the whole operation if email fails
         }
       }
 
-      toast.success("Meeting request sent! Your manager will confirm shortly.");
+      toast.success("Meeting confirmed! 🎉 Check your email for details.");
       fetchMeetingData();
     } catch (error: any) {
       console.error("Error booking meeting:", error);
@@ -250,13 +266,13 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     
     const statusConfig: Record<string, { label: string; className: string }> = {
       not_booked: { label: 'Not Booked', className: 'bg-muted text-muted-foreground' },
-      pending: { label: 'Pending Confirmation', className: 'bg-yellow-500/20 text-yellow-700' },
-      confirmed: { label: 'Confirmed', className: 'bg-green-500/20 text-green-700' },
-      completed: { label: 'Completed', className: 'bg-blue-500/20 text-blue-700' },
+      pending: { label: 'Awaiting Confirmation', className: 'bg-yellow-500/10 text-yellow-700 border border-yellow-500/20' },
+      confirmed: { label: '✓ Confirmed', className: 'bg-green-500/10 text-green-700 border border-green-500/20' },
+      completed: { label: 'Completed', className: 'bg-blue-500/10 text-blue-700 border border-blue-500/20' },
     };
 
     const config = statusConfig[meetingData.status] || statusConfig.not_booked;
-    return <Badge className={config.className}>{config.label}</Badge>;
+    return <Badge variant="outline" className={config.className}>{config.label}</Badge>;
   };
 
   const isBookingDisabled = ['confirmed', 'completed'].includes(meetingData?.status);
