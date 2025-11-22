@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: testCreatorId,
           assigned_manager_id: testManagerId,
           status: "confirmed",
-          meeting_type: "initial",
+          meeting_type: "in_person",
           meeting_date: new Date().toISOString(),
           meeting_time: "10:00:00"
         })
