@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck, Trash2 } from "lucide-react";
+import { PaginationControls } from "./shared/PaginationControls";
 import { Input } from "@/components/ui/input";
 import { RoleRemovalDialog } from "./RoleRemovalDialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -74,6 +75,9 @@ export const RoleManagement = () => {
   const [userToDelete, setUserToDelete] = useState<UserWithRoles | null>(null);
   const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchUsers();
@@ -241,6 +245,12 @@ export const RoleManagement = () => {
     user.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   if (loading) {
     return (
       <Card className="p-6 bg-card border-primary/20">
@@ -321,19 +331,27 @@ export const RoleManagement = () => {
 
         {/* Users List */}
         <div className="space-y-3">
-          {filteredUsers.length === 0 ? (
+          {paginatedUsers.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
               {searchTerm ? 'No users found matching your search' : 'No users found'}
             </p>
           ) : (
-            filteredUsers.map((user) => {
+            paginatedUsers.map((user) => {
               const isUpdating = updatingRoles.has(user.id);
               
               return (
-                <Card key={user.id} className="p-4 bg-muted/30 border-primary/20">
+                <Card key={user.id} className="p-4 bg-muted/30 border-primary/20 hover:border-primary/40 transition-colors">
                   <div className="space-y-3">
-                    {/* User Info */}
-                    <div className="flex items-start justify-between">
+                    {/* User Info - Always Visible */}
+                    <div className="flex items-start justify-between cursor-pointer" onClick={() => {
+                      const newExpanded = new Set(expandedUsers);
+                      if (newExpanded.has(user.id)) {
+                        newExpanded.delete(user.id);
+                      } else {
+                        newExpanded.add(user.id);
+                      }
+                      setExpandedUsers(newExpanded);
+                    }}>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <h4 className="font-medium">{user.full_name || 'Unnamed User'}</h4>
@@ -350,7 +368,7 @@ export const RoleManagement = () => {
                       </div>
                       
                       {/* Current Roles Badges */}
-                      <div className="flex gap-2 flex-wrap justify-end">
+                      <div className="flex gap-2 flex-wrap justify-end items-start">
                         {user.roles.map(role => {
                           const config = roleConfig[role as AppRole];
                           if (!config) return null;
@@ -367,56 +385,77 @@ export const RoleManagement = () => {
                             </Badge>
                           );
                         })}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const newExpanded = new Set(expandedUsers);
+                            if (newExpanded.has(user.id)) {
+                              newExpanded.delete(user.id);
+                            } else {
+                              newExpanded.add(user.id);
+                            }
+                            setExpandedUsers(newExpanded);
+                          }}
+                        >
+                          {expandedUsers.has(user.id) ? "Hide" : "Manage"}
+                        </Button>
                       </div>
                     </div>
 
-                    {/* Role Toggles */}
-                    <div className="border-t border-border/50 pt-3">
-                      <p className="text-xs text-muted-foreground mb-2">Assign Roles:</p>
-                      <div className="flex gap-4 flex-wrap">
-                        {(Object.entries(roleConfig) as [AppRole, typeof roleConfig[AppRole]][]).map(([role, config]) => {
-                          const hasRole = user.roles.includes(role);
-                          const Icon = config.icon;
-                          
-                          return (
-                            <div key={role} className="flex items-center gap-2">
-                              <Checkbox
-                                id={`${user.id}-${role}`}
-                                checked={hasRole}
-                                disabled={isUpdating}
-                                onCheckedChange={() => handleRoleToggle(user.id, role, hasRole, user)}
-                              />
-                              <label
-                                htmlFor={`${user.id}-${role}`}
-                                className="flex items-center gap-1.5 text-sm cursor-pointer select-none"
-                              >
-                                <Icon className={`w-4 h-4 ${config.color.split(' ')[0]}`} />
-                                <span>{config.label}</span>
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      {isUpdating && (
-                        <p className="text-xs text-muted-foreground mt-2">Updating roles...</p>
-                      )}
-                    </div>
+                    {/* Role Toggles - Collapsed by Default */}
+                    {expandedUsers.has(user.id) && (
+                      <>
+                        <div className="border-t border-border/50 pt-3">
+                          <p className="text-xs text-muted-foreground mb-2">Assign Roles:</p>
+                          <div className="flex gap-4 flex-wrap">
+                            {(Object.entries(roleConfig) as [AppRole, typeof roleConfig[AppRole]][]).map(([role, config]) => {
+                              const hasRole = user.roles.includes(role);
+                              const Icon = config.icon;
+                              
+                              return (
+                                <div key={role} className="flex items-center gap-2">
+                                  <Checkbox
+                                    id={`${user.id}-${role}`}
+                                    checked={hasRole}
+                                    disabled={isUpdating}
+                                    onCheckedChange={() => handleRoleToggle(user.id, role, hasRole, user)}
+                                  />
+                                  <label
+                                    htmlFor={`${user.id}-${role}`}
+                                    className="flex items-center gap-1.5 text-sm cursor-pointer select-none"
+                                  >
+                                    <Icon className={`w-4 h-4 ${config.color.split(' ')[0]}`} />
+                                    <span>{config.label}</span>
+                                  </label>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {isUpdating && (
+                            <p className="text-xs text-muted-foreground mt-2">Updating roles...</p>
+                          )}
+                        </div>
 
-                    {/* Delete User Button */}
-                    <div className="border-t border-border/50 pt-3">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          setUserToDelete(user);
-                          setDeleteConfirmEmail("");
-                        }}
-                        className="w-full"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete User Account
-                      </Button>
-                    </div>
+                        {/* Delete User Button */}
+                        <div className="border-t border-border/50 pt-3">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              setUserToDelete(user);
+                              setDeleteConfirmEmail("");
+                            }}
+                            className="w-full"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete User Account
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </Card>
               );
@@ -424,10 +463,20 @@ export const RoleManagement = () => {
           )}
         </div>
 
-        {/* Summary */}
-        <div className="text-sm text-muted-foreground text-center pt-4 border-t border-border/50">
-          Showing {filteredUsers.length} of {users.length} total users
-        </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredUsers.length}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={(items) => {
+              setItemsPerPage(items);
+              setCurrentPage(1);
+            }}
+          />
+        )}
       </div>
       </Card>
 

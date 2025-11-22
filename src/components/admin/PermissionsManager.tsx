@@ -8,6 +8,7 @@ import { Shield, ShieldCheck, Lock, Eye, Edit, Trash2, Plus } from "lucide-react
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface Permission {
   id: string;
@@ -175,65 +176,85 @@ export const PermissionsManager = () => {
           ))}
         </div>
 
-        <div className="space-y-6">
-          {Object.entries(groupedPermissions).map(([resource, perms]) => (
-            <div key={resource}>
-              <h3 className="text-lg font-semibold mb-3 capitalize flex items-center gap-2">
-                <div className="h-8 w-1 bg-primary rounded-full" />
-                {resource}
-              </h3>
-              
-              <div className="space-y-2 ml-3">
-                {perms.map((perm) => (
-                  <div key={perm.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className="text-xs">
-                            {getActionIcon(perm.action)}
-                            <span className="ml-1 capitalize">{perm.action}</span>
-                          </Badge>
-                          <span className="font-medium text-sm">{perm.name}</span>
-                        </div>
-                        {perm.description && (
-                          <p className="text-sm text-muted-foreground">{perm.description}</p>
-                        )}
-                      </div>
+        <Accordion type="multiple" className="w-full">
+          {Object.entries(groupedPermissions).map(([resource, perms]) => {
+            const permissionCounts = roles.map(role => ({
+              role,
+              count: perms.filter(p => hasPermission(role, p.id)).length,
+              total: perms.length
+            }));
+
+            return (
+              <AccordionItem key={resource} value={resource}>
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center justify-between w-full pr-4">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-1 bg-primary rounded-full" />
+                      <h3 className="text-lg font-semibold capitalize">{resource}</h3>
                     </div>
-
-                    <Separator className="my-3" />
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {roles.map((role) => {
-                        const granted = hasPermission(role, perm.id);
-                        const isDisabled = role === 'super_admin';
-                        
-                        return (
-                          <div
-                            key={role}
-                            className={`flex items-center gap-2 p-2 rounded border ${
-                              granted ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/30'
-                            } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted'}`}
-                            onClick={() => !isDisabled && togglePermission(role, perm.id, granted)}
-                          >
-                            <Checkbox
-                              checked={granted}
-                              disabled={isDisabled}
-                              className="pointer-events-none"
-                            />
-                            <span className="text-xs font-medium capitalize">
-                              {getRoleLabel(role)}
-                            </span>
-                          </div>
-                        );
-                      })}
+                    <div className="flex gap-2 flex-wrap">
+                      {permissionCounts.map(({ role, count, total }) => (
+                        <Badge key={role} className={getRoleColor(role)} variant="outline">
+                          {getRoleLabel(role)}: {count}/{total}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 ml-3 pt-2">
+                    {perms.map((perm) => (
+                      <div key={perm.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="outline" className="text-xs">
+                                {getActionIcon(perm.action)}
+                                <span className="ml-1 capitalize">{perm.action}</span>
+                              </Badge>
+                              <span className="font-medium text-sm">{perm.name}</span>
+                            </div>
+                            {perm.description && (
+                              <p className="text-sm text-muted-foreground">{perm.description}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <Separator className="my-3" />
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {roles.map((role) => {
+                            const granted = hasPermission(role, perm.id);
+                            const isDisabled = role === 'super_admin';
+                            
+                            return (
+                              <div
+                                key={role}
+                                className={`flex items-center gap-2 p-2 rounded border ${
+                                  granted ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/30'
+                                } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted'}`}
+                                onClick={() => !isDisabled && togglePermission(role, perm.id, granted)}
+                              >
+                                <Checkbox
+                                  checked={granted}
+                                  disabled={isDisabled}
+                                  className="pointer-events-none"
+                                />
+                                <span className="text-xs font-medium capitalize">
+                                  {getRoleLabel(role)}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
       </CardContent>
     </Card>
   );

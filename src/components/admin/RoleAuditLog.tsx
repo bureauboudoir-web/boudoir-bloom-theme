@@ -5,9 +5,19 @@ import { format } from "date-fns";
 import { Shield, ShieldCheck, ShieldX, Clock, User, Users } from "lucide-react";
 import { AppRole } from "@/hooks/useUserRole";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PaginationControls } from "./shared/PaginationControls";
+import { useState } from "react";
 
 export const RoleAuditLog = () => {
   const { logs, loading } = useRoleAudit();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  
+  const totalPages = Math.ceil(logs.length / itemsPerPage);
+  const paginatedLogs = logs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const getRoleColor = (role: AppRole) => {
     const colors = {
@@ -78,8 +88,9 @@ export const RoleAuditLog = () => {
             <p>No role changes recorded yet</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {logs.map((log) => (
+          <>
+            <div className="space-y-3">
+              {paginatedLogs.map((log) => (
               <div
                 key={log.id}
                 className="flex items-start gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
@@ -142,7 +153,21 @@ export const RoleAuditLog = () => {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+            {totalPages > 1 && (
+              <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                itemsPerPage={itemsPerPage}
+                totalItems={logs.length}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={(items) => {
+                  setItemsPerPage(items);
+                  setCurrentPage(1);
+                }}
+              />
+            )}
+          </>
         )}
       </CardContent>
     </Card>

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
+import { PaginationControls } from "./shared/PaginationControls";
 
 interface ContentUpload {
   id: string;
@@ -43,6 +44,8 @@ export const ContentReview = () => {
     approved: 0,
     revisionRate: 0,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   useEffect(() => {
     if (user) {
@@ -205,6 +208,12 @@ export const ContentReview = () => {
       upload.profiles.email.toLowerCase().includes(searchLower)
     );
   });
+  
+  const totalPages = Math.ceil(filteredUploads.length / itemsPerPage);
+  const paginatedUploads = filteredUploads.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   if (loading) {
     return (
@@ -289,8 +298,9 @@ export const ContentReview = () => {
             No uploads found
           </p>
         ) : (
-          <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-4"}>
-            {filteredUploads.map((upload) => (
+          <>
+            <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-4"}>
+              {paginatedUploads.map((upload) => (
               <Card key={upload.id} className="p-4 bg-muted/30 border-primary/20">
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
@@ -359,8 +369,22 @@ export const ContentReview = () => {
                   </div>
                 </div>
               </Card>
-            ))}
-          </div>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                itemsPerPage={itemsPerPage}
+                totalItems={filteredUploads.length}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={(items) => {
+                  setItemsPerPage(items);
+                  setCurrentPage(1);
+                }}
+              />
+            )}
+          </>
         )}
       </Card>
     </div>

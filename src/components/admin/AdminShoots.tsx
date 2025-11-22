@@ -14,6 +14,9 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
+import { PaginationControls } from "./shared/PaginationControls";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 
 interface Creator {
@@ -65,6 +68,8 @@ export const AdminShoots = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("schedule");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [stats, setStats] = useState({
     total: 0,
     upcoming: 0,
@@ -352,6 +357,25 @@ export const AdminShoots = () => {
 
   const upcomingShoots = filteredShoots.filter(s => new Date(s.shoot_date) > new Date());
   const pastShoots = filteredShoots.filter(s => new Date(s.shoot_date) <= new Date());
+  
+  const totalPagesUpcoming = Math.ceil(upcomingShoots.length / itemsPerPage);
+  const totalPagesPast = Math.ceil(pastShoots.length / itemsPerPage);
+  const totalPagesAll = Math.ceil(filteredShoots.length / itemsPerPage);
+  
+  const paginatedUpcoming = upcomingShoots.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const paginatedPast = pastShoots.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const paginatedAll = filteredShoots.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  
+  const [expandedShoots, setExpandedShoots] = useState<Set<string>>(new Set());
 
   const getShootTypeBadge = (type: string | null) => {
     const colors = {
@@ -644,138 +668,157 @@ export const AdminShoots = () => {
 
         {/* Upcoming Shoots Tab */}
         <TabsContent value="upcoming">
-          <div className="space-y-4">
-            {upcomingShoots.map((shoot) => (
-              <Card key={shoot.id} className="p-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold">{shoot.title}</h4>
-                      {getShootTypeBadge(shoot.shoot_type)}
-                      <Badge variant={shoot.status === 'confirmed' ? 'default' : 'secondary'}>
-                        {shoot.status}
-                      </Badge>
-                    </div>
-                    {/* Show all participants */}
-                    {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 0 ? (
-                      <div className="space-y-2 mb-2">
-                        <p className="font-medium text-sm">Participants:</p>
-                        {(shoot as any).shoot_participants.map((p: any) => (
-                          <div key={p.id} className="flex items-center gap-2 text-sm">
-                            <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
-                              {p.role}
-                            </Badge>
-                            <span>{p.profiles?.full_name || p.profiles?.email}</span>
-                            <Badge className={
-                              p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
-                              p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
-                              'bg-yellow-500/20 text-yellow-500'
-                            }>
-                              {p.response_status}
+          {paginatedUpcoming.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground">{searchQuery ? "No shoots match your search" : "No upcoming shoots"}</p>
+            </Card>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {paginatedUpcoming.map((shoot) => (
+                  <Collapsible key={shoot.id}>
+                    <Card>
+                      <CollapsibleTrigger className="w-full">
+                        <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                          <div className="flex items-center gap-3 flex-1 text-left">
+                            <ChevronDown className={`w-4 h-4 transition-transform ${expandedShoots.has(shoot.id) ? 'rotate-180' : ''}`} />
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-semibold">{shoot.title}</h4>
+                                {getShootTypeBadge(shoot.shoot_type)}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {format(new Date(shoot.shoot_date), 'PPP')}
+                                {shoot.location && ` • ${shoot.location}`}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={shoot.status === 'confirmed' ? 'default' : 'secondary'}>
+                              {shoot.status}
                             </Badge>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Creator: {shoot.profiles.full_name || shoot.profiles.email}
-                      </p>
-                    )}
-                    <p className="text-sm">
-                      {format(new Date(shoot.shoot_date), 'PPP p')}
-                    </p>
-                    {shoot.location && <p className="text-sm">📍 {shoot.location}</p>}
-                    {shoot.duration_hours && (
-                      <p className="text-sm">⏱️ {shoot.duration_hours} hours</p>
-                    )}
-                    {(shoot.video_staff_name || shoot.photo_staff_name) && (
-                      <div className="mt-2 text-sm">
-                        <p className="font-medium">Staff:</p>
-                        {shoot.video_staff_name && <p>🎥 Video: {shoot.video_staff_name}</p>}
-                        {shoot.photo_staff_name && <p>📷 Photo: {shoot.photo_staff_name}</p>}
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteShoot(shoot.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </Card>
-            ))}
-            {upcomingShoots.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No upcoming shoots</p>
-              </Card>
-            )}
-          </div>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="px-4 pb-4 pt-2 border-t space-y-3">
+                          {shoot.shoot_participants && shoot.shoot_participants.length > 0 && (
+                            <div>
+                              <p className="font-medium text-sm mb-2">Participants:</p>
+                              <div className="space-y-1">
+                                {shoot.shoot_participants.map((p) => (
+                                  <div key={p.id} className="flex items-center gap-2 text-sm">
+                                    <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
+                                      {p.role}
+                                    </Badge>
+                                    <span>{p.profiles?.full_name || p.profiles?.email}</span>
+                                    <Badge className={
+                                      p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
+                                      p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
+                                      'bg-yellow-500/20 text-yellow-500'
+                                    }>
+                                      {p.response_status}
+                                    </Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {shoot.duration_hours && <p className="text-sm">Duration: {shoot.duration_hours} hours</p>}
+                          {(shoot.video_staff_name || shoot.photo_staff_name) && (
+                            <div className="text-sm">
+                              <p className="font-medium mb-1">Staff:</p>
+                              {shoot.video_staff_name && <p>Video: {shoot.video_staff_name}</p>}
+                              {shoot.photo_staff_name && <p>Photo: {shoot.photo_staff_name}</p>}
+                            </div>
+                          )}
+                          {shoot.description && (
+                            <p className="text-sm text-muted-foreground">{shoot.description}</p>
+                          )}
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteShoot(shoot.id)}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete Shoot
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
+                ))}
+              </div>
+              {totalPagesUpcoming > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPagesUpcoming}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={upcomingShoots.length}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={(items) => {
+                    setItemsPerPage(items);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
 
         {/* Past Shoots Tab */}
         <TabsContent value="past">
-          <div className="space-y-4">
-            {pastShoots.map((shoot) => (
-              <Card key={shoot.id} className="p-4 opacity-75">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold">{shoot.title}</h4>
-                      {getShootTypeBadge(shoot.shoot_type)}
-                    </div>
-                    {/* Show all participants */}
-                    {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 0 ? (
-                      <div className="space-y-2 mb-2">
-                        <p className="font-medium text-sm">Participants:</p>
-                        {(shoot as any).shoot_participants.map((p: any) => (
-                          <div key={p.id} className="flex items-center gap-2 text-sm">
-                            <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
-                              {p.role}
-                            </Badge>
-                            <span>{p.profiles?.full_name || p.profiles?.email}</span>
-                            <Badge className={
-                              p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
-                              p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
-                              'bg-yellow-500/20 text-yellow-500'
-                            }>
-                              {p.response_status}
-                            </Badge>
-                          </div>
-                        ))}
+          {paginatedPast.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground">{searchQuery ? "No shoots match your search" : "No past shoots"}</p>
+            </Card>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {paginatedPast.map((shoot) => (
+                  <Card key={shoot.id} className="p-4 opacity-75">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{shoot.title}</h4>
+                          {getShootTypeBadge(shoot.shoot_type)}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                        </p>
+                        <p className="text-sm">{format(new Date(shoot.shoot_date), 'PPP p')}</p>
                       </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Creator: {shoot.profiles.full_name || shoot.profiles.email}
-                      </p>
-                    )}
-                    <p className="text-sm">
-                      {format(new Date(shoot.shoot_date), 'PPP p')}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteShoot(shoot.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </Card>
-            ))}
-            {pastShoots.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No past shoots</p>
-              </Card>
-            )}
-          </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              {totalPagesPast > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPagesPast}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={pastShoots.length}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={(items) => {
+                    setItemsPerPage(items);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
 
         {/* All Shoots Tab */}
         <TabsContent value="all">
-          <div className="space-y-4">
-            {filteredShoots.map((shoot) => (
+          {paginatedAll.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground">{searchQuery ? "No shoots match your search" : "No shoots yet"}</p>
+            </Card>
+          ) : (
+            <>
+              <div className="space-y-4">
+                {paginatedAll.map((shoot) => (
               <Card key={shoot.id} className="p-4">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -827,13 +870,23 @@ export const AdminShoots = () => {
                   </Button>
                 </div>
               </Card>
-            ))}
-            {filteredShoots.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No shoots found</p>
-              </Card>
-            )}
-          </div>
+                ))}
+              </div>
+              {totalPagesAll > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPagesAll}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={filteredShoots.length}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={(items) => {
+                    setItemsPerPage(items);
+                    setCurrentPage(1);
+                  }}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
       </Tabs>
     </div>
