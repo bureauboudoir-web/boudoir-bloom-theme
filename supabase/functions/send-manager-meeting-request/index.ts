@@ -35,10 +35,27 @@ const handler = async (req: Request): Promise<Response> => {
       dashboardUrl
     }: ManagerNotificationRequest = await req.json();
 
-    console.log("Sending manager meeting request notification to:", managerEmail);
+    // TEMPORARY: For testing, send to creator's email instead of manager's
+    // Remove this after verifying your domain at https://resend.com/domains
+    const testRecipientEmail = creatorEmail; // Send to creator for testing
+    const isTestMode = testRecipientEmail !== managerEmail;
+    
+    console.log("Sending manager meeting request notification");
+    console.log(`Test mode: ${isTestMode}`);
+    console.log(`Intended recipient: ${managerEmail}`);
+    console.log(`Actual recipient (for testing): ${testRecipientEmail}`);
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        ${isTestMode ? `
+          <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-bottom: 20px;">
+            <p style="margin: 0; color: #856404;">
+              <strong>⚠️ TEST MODE:</strong> This email should have been sent to <strong>${managerEmail}</strong> but was sent to you for testing.
+              <br>To send to the actual manager, verify your domain at <a href="https://resend.com/domains">resend.com/domains</a>
+            </p>
+          </div>
+        ` : ''}
+        
         <h1 style="color: #d1ae94;">New Meeting Request 📅</h1>
         
         <p>Hi ${managerName},</p>
@@ -83,8 +100,10 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Bureau Boudoir <onboarding@resend.dev>",
-        to: [managerEmail],
-        subject: `New Meeting Request from ${creatorName}`,
+        to: [testRecipientEmail], // Send to creator's email for testing
+        subject: isTestMode 
+          ? `[TEST] Meeting Request from ${creatorName} (intended for ${managerName})`
+          : `New Meeting Request from ${creatorName}`,
         html: emailHtml,
       }),
     });
