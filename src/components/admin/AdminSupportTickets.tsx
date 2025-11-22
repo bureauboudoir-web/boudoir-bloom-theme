@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Send, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +34,8 @@ interface SupportTicket {
 }
 
 const AdminSupportTickets = () => {
+  const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
@@ -39,15 +43,42 @@ const AdminSupportTickets = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchTickets();
-  }, []);
+    if (user) {
+      fetchTickets();
+    }
+  }, [user]);
 
   const fetchTickets = async () => {
     try {
-      const { data, error } = await supabase
+      let creatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        creatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (creatorIds.length === 0) {
+          setTickets([]);
+          setLoading(false);
+          return;
+        }
+      }
+
+      let query = supabase
         .from("support_tickets")
         .select("*")
         .order("created_at", { ascending: false });
+
+      // Apply filter for managers
+      if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
+        query = query.in('user_id', creatorIds);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 

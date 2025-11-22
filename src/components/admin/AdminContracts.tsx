@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, Download, CheckCircle2, XCircle, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface Creator {
   id: string;
@@ -26,6 +27,7 @@ interface Contract {
 
 export const AdminContracts = () => {
   const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [creators, setCreators] = useState<Creator[]>([]);
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   const [selectedCreator, setSelectedCreator] = useState<string>("");
@@ -33,12 +35,32 @@ export const AdminContracts = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCreators();
-    fetchContracts();
-  }, []);
+    if (user) {
+      fetchCreators();
+      fetchContracts();
+    }
+  }, [user]);
 
   const fetchCreators = async () => {
     try {
+      let assignedCreatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        assignedCreatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (assignedCreatorIds.length === 0) {
+          setCreators([]);
+          setLoading(false);
+          return;
+        }
+      }
+
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -46,7 +68,18 @@ export const AdminContracts = () => {
 
       if (rolesError) throw rolesError;
 
-      const creatorIds = roles?.map(r => r.user_id) || [];
+      let creatorIds = roles?.map(r => r.user_id) || [];
+
+      // Filter to only assigned creators for managers
+      if (!isSuperAdmin && !isAdmin && assignedCreatorIds.length > 0) {
+        creatorIds = creatorIds.filter(id => assignedCreatorIds.includes(id));
+      }
+
+      if (creatorIds.length === 0) {
+        setCreators([]);
+        setLoading(false);
+        return;
+      }
 
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')

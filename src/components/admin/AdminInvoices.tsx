@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, DollarSign, FileText, Calendar, Loader2, Filter } from "lucide-react";
 import { format } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +53,8 @@ type Creator = {
 
 export const AdminInvoices = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,12 +76,31 @@ export const AdminInvoices = () => {
   });
 
   useEffect(() => {
-    fetchCreators();
-    fetchInvoices();
-  }, []);
+    if (user) {
+      fetchCreators();
+      fetchInvoices();
+    }
+  }, [user]);
 
   const fetchCreators = async () => {
     try {
+      let assignedCreatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        assignedCreatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (assignedCreatorIds.length === 0) {
+          setCreators([]);
+          return;
+        }
+      }
+
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -85,7 +108,12 @@ export const AdminInvoices = () => {
 
       if (rolesError) throw rolesError;
 
-      const creatorIds = userRoles?.map(r => r.user_id) || [];
+      let creatorIds = userRoles?.map(r => r.user_id) || [];
+
+      // Filter to only assigned creators for managers
+      if (!isSuperAdmin && !isAdmin && assignedCreatorIds.length > 0) {
+        creatorIds = creatorIds.filter(id => assignedCreatorIds.includes(id));
+      }
       
       if (creatorIds.length === 0) {
         setCreators([]);
@@ -117,6 +145,24 @@ export const AdminInvoices = () => {
       // First update overdue invoices
       await supabase.rpc('update_overdue_invoices');
 
+      let creatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        creatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (creatorIds.length === 0) {
+          setInvoices([]);
+          setLoading(false);
+          return;
+        }
+      }
+
       let query = supabase
         .from('invoices')
         .select(`
@@ -127,6 +173,11 @@ export const AdminInvoices = () => {
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
+      }
+
+      // Apply filter for managers
+      if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
+        query = query.in('user_id', creatorIds);
       }
 
       const { data, error } = await query;
