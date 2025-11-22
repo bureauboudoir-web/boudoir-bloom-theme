@@ -35,3 +35,9 @@ verify_jwt = false  # Public function for password setup flow
 
 [functions.delete-user-account]
 verify_jwt = true  # Requires admin authentication
+
+[functions.verify-invitation-token]
+verify_jwt = false  # Public function for token verification flow
+
+[functions.complete-invitation-setup]
+verify_jwt = false  # Public function for password setup flow
