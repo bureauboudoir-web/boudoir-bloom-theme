@@ -7,6 +7,8 @@ import { Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useManagerAvailability } from "@/hooks/useManagerAvailability";
 import { AvailabilityCalendar } from "./AvailabilityCalendar";
 import { DateBlockingManager } from "./DateBlockingManager";
+import { AvailabilityPresets } from "./AvailabilityPresets";
+import { useState } from "react";
 
 export const ManagerAvailabilitySettings = () => {
   const {
@@ -22,7 +24,25 @@ export const ManagerAvailabilitySettings = () => {
     saveAvailability,
     addBlockedDate,
     removeBlockedDate,
+    copyToWeekdays,
+    copyToWeekend,
+    clearDay,
   } = useManagerAvailability();
+
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  const handleAddSlot = (dayIndex: number, startTime?: string, endTime?: string) => {
+    setSelectedDay(dayIndex);
+    if (startTime && endTime) {
+      addSlot(dayIndex, startTime, endTime);
+    } else {
+      addSlot(dayIndex);
+    }
+  };
+
+  const handleApplyPreset = (dayIndex: number, startTime: string, endTime: string) => {
+    addSlot(dayIndex, startTime, endTime);
+  };
 
   if (loading) {
     return (
@@ -91,16 +111,25 @@ export const ManagerAvailabilitySettings = () => {
             </Alert>
           )}
 
+          {/* Quick Presets */}
+          <AvailabilityPresets
+            onApplyPreset={handleApplyPreset}
+            onCopyToWeekdays={copyToWeekdays}
+            onCopyToWeekend={copyToWeekend}
+            onClearDay={clearDay}
+            selectedDay={selectedDay}
+          />
+
           {/* Visual Calendar Grid */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-foreground">Weekly Schedule</h3>
-              <p className="text-xs text-muted-foreground">Click + to add time slots for each day</p>
+              <p className="text-xs text-muted-foreground">24-hour format • Click + to add slots</p>
             </div>
             
             <AvailabilityCalendar
               availability={availability}
-              onAddSlot={addSlot}
+              onAddSlot={handleAddSlot}
               onUpdateSlot={updateSlot}
               onRemoveSlot={removeSlot}
             />

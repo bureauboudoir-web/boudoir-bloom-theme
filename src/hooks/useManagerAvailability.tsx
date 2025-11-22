@@ -280,6 +280,68 @@ export const useManagerAvailability = () => {
     }
   };
 
+  const copyToWeekdays = (sourceDayIndex: number) => {
+    const sourceSlots = availability.filter(slot => slot.day_of_week === sourceDayIndex);
+    if (sourceSlots.length === 0) {
+      toast.error("No slots to copy. Add time slots to the source day first.");
+      return;
+    }
+
+    const weekdayIndices = [1, 2, 3, 4, 5]; // Mon-Fri (Sunday=0)
+    const targetDays = weekdayIndices.filter(day => day !== sourceDayIndex);
+    
+    const newSlots = targetDays.flatMap(dayIndex => 
+      sourceSlots.map(slot => ({
+        ...slot,
+        day_of_week: dayIndex,
+        id: undefined, // Remove ID so it's treated as new
+      }))
+    );
+
+    // Remove existing slots for target days
+    const filteredAvailability = availability.filter(
+      slot => !targetDays.includes(slot.day_of_week)
+    );
+
+    setAvailability([...filteredAvailability, ...newSlots]);
+    toast.success("Copied to weekdays (Mon-Fri). Don't forget to save.");
+  };
+
+  const copyToWeekend = (sourceDayIndex: number) => {
+    const sourceSlots = availability.filter(slot => slot.day_of_week === sourceDayIndex);
+    if (sourceSlots.length === 0) {
+      toast.error("No slots to copy. Add time slots to the source day first.");
+      return;
+    }
+
+    const weekendIndices = [0, 6]; // Sun, Sat
+    const targetDays = weekendIndices.filter(day => day !== sourceDayIndex);
+    
+    const newSlots = targetDays.flatMap(dayIndex => 
+      sourceSlots.map(slot => ({
+        ...slot,
+        day_of_week: dayIndex,
+        id: undefined, // Remove ID so it's treated as new
+      }))
+    );
+
+    // Remove existing slots for target days
+    const filteredAvailability = availability.filter(
+      slot => !targetDays.includes(slot.day_of_week)
+    );
+
+    setAvailability([...filteredAvailability, ...newSlots]);
+    toast.success("Copied to weekend (Sat-Sun). Don't forget to save.");
+  };
+
+  const clearDay = (dayIndex: number) => {
+    const filteredAvailability = availability.filter(
+      slot => slot.day_of_week !== dayIndex
+    );
+    setAvailability(filteredAvailability);
+    toast.success("Day cleared. Don't forget to save.");
+  };
+
   return {
     availability,
     blockedDates,
@@ -294,5 +356,8 @@ export const useManagerAvailability = () => {
     addBlockedDate,
     removeBlockedDate,
     fetchBlockedDates,
+    copyToWeekdays,
+    copyToWeekend,
+    clearDay,
   };
 };

@@ -14,7 +14,14 @@ interface AvailabilityCalendarProps {
 }
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const WORK_HOURS = Array.from({ length: 9 }, (_, i) => i + 9); // 9am to 5pm
+const ALL_HOURS = Array.from({ length: 24 }, (_, i) => i); // 0-23 hours (24-hour format)
+
+const formatHour = (hour: number) => {
+  if (hour === 0) return '12 AM';
+  if (hour === 12) return '12 PM';
+  if (hour < 12) return `${hour} AM`;
+  return `${hour - 12} PM`;
+};
 
 export const AvailabilityCalendar = ({ 
   availability, 
@@ -32,13 +39,19 @@ export const AvailabilityCalendar = ({
 
   const timeToPosition = (time: string): number => {
     const [hours, minutes] = time.split(':').map(Number);
-    return ((hours - 9) * 60 + minutes) / (8 * 60) * 100; // 8 hours = 9am-5pm
+    const totalMinutes = hours * 60 + minutes;
+    const totalDayMinutes = 24 * 60;
+    return (totalMinutes / totalDayMinutes) * 100;
   };
 
   const getSlotHeight = (start: string, end: string): number => {
-    const startPos = timeToPosition(start);
-    const endPos = timeToPosition(end);
-    return endPos - startPos;
+    const [startHours, startMinutes] = start.split(':').map(Number);
+    const [endHours, endMinutes] = end.split(':').map(Number);
+    const startTotalMinutes = startHours * 60 + startMinutes;
+    const endTotalMinutes = endHours * 60 + endMinutes;
+    const durationMinutes = endTotalMinutes - startTotalMinutes;
+    const totalDayMinutes = 24 * 60;
+    return (durationMinutes / totalDayMinutes) * 100;
   };
 
   return (
@@ -65,41 +78,45 @@ export const AvailabilityCalendar = ({
                 </div>
               </div>
 
-              {/* Visual Timeline */}
+              {/* Visual Timeline - Scrollable 24-hour view */}
               <div className="p-3 space-y-2">
-                <div className="relative h-48 sm:h-64 bg-muted/20 rounded border border-border">
-                  {/* Hour markers */}
-                  {WORK_HOURS.map((hour) => (
-                    <div
-                      key={hour}
-                      className="absolute left-0 right-0 border-t border-border/30"
-                      style={{ top: `${((hour - 9) / 8) * 100}%` }}
-                    >
-                      <span className="absolute -left-1 sm:-left-2 -top-2 text-[9px] sm:text-[10px] text-muted-foreground">
-                        {hour}:00
-                      </span>
-                    </div>
-                  ))}
-
-                  {/* Time slot blocks */}
-                  {daySlots.map(({ slot, index }) => (
-                    <div
-                      key={index}
-                      className={`absolute left-2 right-2 rounded px-1 py-0.5 cursor-pointer transition-colors ${
-                        slot.is_available 
-                          ? 'bg-primary/20 border border-primary/40 hover:bg-primary/30' 
-                          : 'bg-muted border border-border hover:bg-muted/80'
-                      }`}
-                      style={{
-                        top: `${timeToPosition(slot.start_time)}%`,
-                        height: `${getSlotHeight(slot.start_time, slot.end_time)}%`,
-                      }}
-                    >
-                      <div className="text-[9px] sm:text-[10px] font-medium text-foreground">
-                        {slot.start_time} - {slot.end_time}
+                <div className="relative h-48 sm:h-64 bg-muted/20 rounded border border-border overflow-y-auto">
+                  <div className="relative min-h-[600px]">
+                    {/* Hour markers - every 2 hours */}
+                    {ALL_HOURS.filter(h => h % 2 === 0).map((hour) => (
+                      <div
+                        key={hour}
+                        className="absolute left-0 right-0 border-t border-border/30"
+                        style={{ top: `${(hour / 24) * 100}%` }}
+                      >
+                        <span className={`absolute left-1 -top-2 text-[9px] sm:text-[10px] ${
+                          hour >= 9 && hour < 17 ? 'text-primary font-medium' : 'text-muted-foreground'
+                        }`}>
+                          {formatHour(hour)}
+                        </span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+
+                    {/* Time slot blocks */}
+                    {daySlots.map(({ slot, index }) => (
+                      <div
+                        key={index}
+                        className={`absolute left-12 right-2 rounded px-1 py-0.5 cursor-pointer transition-colors ${
+                          slot.is_available 
+                            ? 'bg-primary/20 border border-primary/40 hover:bg-primary/30' 
+                            : 'bg-muted border border-border hover:bg-muted/80'
+                        }`}
+                        style={{
+                          top: `${timeToPosition(slot.start_time)}%`,
+                          height: `${getSlotHeight(slot.start_time, slot.end_time)}%`,
+                        }}
+                      >
+                        <div className="text-[9px] sm:text-[10px] font-medium text-foreground">
+                          {slot.start_time} - {slot.end_time}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Slot Details */}
