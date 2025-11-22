@@ -3,6 +3,12 @@ project_id = "pohxtstwslymiqrxmlal"
 # Edge Function Security Configuration
 # Functions that require authentication to prevent unauthorized access
 
+[functions.create-manager-account]
+verify_jwt = true  # Requires admin authentication
+
+[functions.send-manager-welcome]
+verify_jwt = false  # Internal function called by create-manager-account
+
 [functions.approve-creator-application]
 verify_jwt = true  # Requires admin/manager authentication
 
