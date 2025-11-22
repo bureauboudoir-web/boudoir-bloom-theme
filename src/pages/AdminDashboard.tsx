@@ -33,7 +33,6 @@ const AdminDashboard = () => {
     pendingReviews, 
     pendingInvoiceConfirmations, 
     overdueCommitments,
-    pendingMeetingRequests,
     totalNotifications 
   } = useAdminNotifications();
   const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings">("overview");
@@ -47,15 +46,6 @@ const AdminDashboard = () => {
       count: overdueCommitments,
       color: 'red' as const,
       action: () => setActiveTab('commitments'),
-    }] : []),
-    ...(pendingMeetingRequests > 0 ? [{
-      id: 'pending-meetings',
-      type: 'meeting' as const,
-      title: 'Meeting Requests',
-      description: `${pendingMeetingRequests} creator${pendingMeetingRequests === 1 ? '' : 's'} waiting for meeting confirmation`,
-      count: pendingMeetingRequests,
-      color: 'yellow' as const,
-      action: () => setActiveTab('meetings'),
     }] : []),
     ...(newSupportTickets > 0 ? [{
       id: 'support-tickets',

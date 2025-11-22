@@ -38,9 +38,7 @@ export const AdminMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
-  const [actionDialog, setActionDialog] = useState<'confirm' | 'complete' | 'assist' | null>(null);
-  const [meetingLink, setMeetingLink] = useState("");
-  const [meetingLocation, setMeetingLocation] = useState("");
+  const [actionDialog, setActionDialog] = useState<'complete' | 'assist' | null>(null);
   const [meetingNotes, setMeetingNotes] = useState("");
 
   useEffect(() => {
@@ -74,61 +72,6 @@ export const AdminMeetings = () => {
       toast.error("Failed to load meetings");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleConfirmMeeting = async () => {
-    if (!selectedMeeting) return;
-
-    const updates: any = {
-      status: 'confirmed',
-    };
-
-    if (selectedMeeting.meeting_type === 'online' && meetingLink) {
-      updates.meeting_link = meetingLink;
-    }
-    if (selectedMeeting.meeting_type === 'in_person' && meetingLocation) {
-      updates.meeting_location = meetingLocation;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('creator_meetings')
-        .update(updates)
-        .eq('id', selectedMeeting.id);
-
-      if (error) throw error;
-
-      // Send confirmation email
-      if (selectedMeeting.profiles) {
-        try {
-          await supabase.functions.invoke('send-meeting-confirmation', {
-            body: {
-              creatorEmail: selectedMeeting.profiles.email,
-              creatorName: selectedMeeting.profiles.full_name,
-              managerName: user?.email || 'Your Manager',
-              meetingDate: selectedMeeting.meeting_date ? format(new Date(selectedMeeting.meeting_date), "PPP") : '',
-              meetingTime: selectedMeeting.meeting_time,
-              meetingType: selectedMeeting.meeting_type,
-              meetingLink: meetingLink,
-              meetingLocation: meetingLocation,
-            }
-          });
-        } catch (emailError) {
-          console.error("Error sending confirmation email:", emailError);
-          // Don't fail the whole operation if email fails
-        }
-      }
-
-      toast.success("Meeting confirmed!");
-      setActionDialog(null);
-      setSelectedMeeting(null);
-      setMeetingLink("");
-      setMeetingLocation("");
-      fetchMeetings();
-    } catch (error) {
-      console.error("Error confirming meeting:", error);
-      toast.error("Failed to confirm meeting");
     }
   };
 
@@ -285,29 +228,6 @@ export const AdminMeetings = () => {
             )}
 
             <div className="flex gap-2 pt-2">
-              {meeting.status === 'pending' && (
-                <>
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setSelectedMeeting(meeting);
-                      setActionDialog('confirm');
-                    }}
-                    className="bg-primary text-primary-foreground"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-1" />
-                    Confirm
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleCancelMeeting(meeting.id)}
-                  >
-                    <XCircle className="h-4 w-4 mr-1" />
-                    Decline
-                  </Button>
-                </>
-              )}
               {meeting.status === 'confirmed' && (
                 <Button
                   size="sm"
@@ -329,7 +249,6 @@ export const AdminMeetings = () => {
   );
 };
 
-  const pendingMeetings = meetings.filter(m => m.status === 'pending');
   const upcomingMeetings = meetings.filter(m => m.status === 'confirmed');
   const pastMeetings = meetings.filter(m => ['completed', 'cancelled'].includes(m.status));
 
@@ -339,11 +258,8 @@ export const AdminMeetings = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="pending" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="pending">
-            Pending ({pendingMeetings.length})
-          </TabsTrigger>
+      <Tabs defaultValue="upcoming" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="upcoming">
             Upcoming ({upcomingMeetings.length})
           </TabsTrigger>
@@ -351,18 +267,6 @@ export const AdminMeetings = () => {
             Past ({pastMeetings.length})
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="pending" className="space-y-4 mt-6">
-          {pendingMeetings.length === 0 ? (
-            <Card className="border-border">
-              <CardContent className="p-8 text-center text-muted-foreground">
-                No pending meeting requests
-              </CardContent>
-            </Card>
-          ) : (
-            pendingMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)
-          )}
-        </TabsContent>
 
         <TabsContent value="upcoming" className="space-y-4 mt-6">
           {upcomingMeetings.length === 0 ? (
@@ -388,48 +292,6 @@ export const AdminMeetings = () => {
           )}
         </TabsContent>
       </Tabs>
-
-      <Dialog open={actionDialog === 'confirm'} onOpenChange={() => setActionDialog(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Meeting</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {selectedMeeting?.meeting_type === 'online' && (
-              <div>
-                <Label htmlFor="link">Meeting Link</Label>
-                <Input
-                  id="link"
-                  value={meetingLink}
-                  onChange={(e) => setMeetingLink(e.target.value)}
-                  placeholder="https://zoom.us/j/..."
-                  className="mt-2"
-                />
-              </div>
-            )}
-            {selectedMeeting?.meeting_type === 'in_person' && (
-              <div>
-                <Label htmlFor="location">Meeting Location</Label>
-                <Input
-                  id="location"
-                  value={meetingLocation}
-                  onChange={(e) => setMeetingLocation(e.target.value)}
-                  placeholder="Office address or venue"
-                  className="mt-2"
-                />
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setActionDialog(null)}>
-              Cancel
-            </Button>
-            <Button onClick={handleConfirmMeeting} className="bg-primary text-primary-foreground">
-              Confirm Meeting
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={actionDialog === 'complete'} onOpenChange={() => setActionDialog(null)}>
         <DialogContent>
