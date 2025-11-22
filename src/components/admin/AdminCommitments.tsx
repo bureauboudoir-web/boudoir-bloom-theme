@@ -321,6 +321,20 @@ export const AdminCommitments = () => {
     c.due_date && new Date(c.due_date) < new Date()
   );
   const completedCommitments = commitments.filter(c => c.is_completed);
+  
+  // Pagination for each tab
+  const paginatedActiveCommitments = activeCommitments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const paginatedOverdueCommitments = overdueCommitments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const paginatedCompletedCommitments = completedCommitments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="space-y-6">
@@ -553,55 +567,187 @@ export const AdminCommitments = () => {
 
         {/* Active Commitments Tab */}
         <TabsContent value="active">
-          <div className="space-y-3">
-            {activeCommitments.map((commitment) => renderCommitmentCard(commitment))}
-            {activeCommitments.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No active commitments</p>
-              </Card>
-            )}
-          </div>
+          {viewMode === 'kanban' ? (
+            <CommitmentsKanbanView 
+              commitments={activeCommitments}
+              onStatusChange={async (id, newStatus) => {
+                try {
+                  const { error } = await supabase
+                    .from('weekly_commitments')
+                    .update({ status: newStatus })
+                    .eq('id', id);
+                  
+                  if (error) throw error;
+                  
+                  toast({
+                    title: "Success",
+                    description: "Commitment status updated",
+                  });
+                  fetchCommitments();
+                  fetchStats();
+                } catch (error) {
+                  console.error('Error updating status:', error);
+                  toast({
+                    title: "Error",
+                    description: "Failed to update status",
+                    variant: "destructive"
+                  });
+                }
+              }}
+            />
+          ) : (
+            <>
+              <div className="space-y-3">
+                {paginatedActiveCommitments.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No active commitments</p>
+                  </Card>
+                ) : (
+                  paginatedActiveCommitments.map((commitment) => renderCommitmentCard(commitment))
+                )}
+              </div>
+              
+              {activeCommitments.length > 0 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(activeCommitments.length / itemsPerPage)}
+                  totalItems={activeCommitments.length}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
 
         {/* Overdue Tab */}
         <TabsContent value="overdue">
-          <div className="space-y-3">
-            {overdueCommitments.map((commitment) => renderCommitmentCard(commitment, true))}
-            {overdueCommitments.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No overdue commitments</p>
-              </Card>
-            )}
-          </div>
+          {viewMode === 'kanban' ? (
+            <CommitmentsKanbanView 
+              commitments={overdueCommitments}
+              onStatusChange={async (id, newStatus) => {
+                try {
+                  const { error } = await supabase
+                    .from('weekly_commitments')
+                    .update({ status: newStatus })
+                    .eq('id', id);
+                  
+                  if (error) throw error;
+                  
+                  toast({
+                    title: "Success",
+                    description: "Commitment status updated",
+                  });
+                  fetchCommitments();
+                  fetchStats();
+                } catch (error) {
+                  console.error('Error updating status:', error);
+                  toast({
+                    title: "Error",
+                    description: "Failed to update status",
+                    variant: "destructive"
+                  });
+                }
+              }}
+            />
+          ) : (
+            <>
+              <div className="space-y-3">
+                {paginatedOverdueCommitments.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No overdue commitments</p>
+                  </Card>
+                ) : (
+                  paginatedOverdueCommitments.map((commitment) => renderCommitmentCard(commitment, true))
+                )}
+              </div>
+              
+              {overdueCommitments.length > 0 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(overdueCommitments.length / itemsPerPage)}
+                  totalItems={overdueCommitments.length}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
 
         {/* Completed Tab */}
         <TabsContent value="completed">
-          <div className="space-y-3">
-            {completedCommitments.map((commitment) => (
-              <Card key={commitment.id} className="p-4 opacity-75">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold line-through">{commitment.content_type}</h4>
-                      <Badge variant="outline" className="bg-green-500/10 text-green-500">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Completed
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Creator: {commitment.profiles.full_name || commitment.profiles.email}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-            {completedCommitments.length === 0 && (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No completed commitments</p>
-              </Card>
-            )}
-          </div>
+          {viewMode === 'kanban' ? (
+            <CommitmentsKanbanView 
+              commitments={completedCommitments}
+              onStatusChange={async (id, newStatus) => {
+                try {
+                  const { error } = await supabase
+                    .from('weekly_commitments')
+                    .update({ status: newStatus })
+                    .eq('id', id);
+                  
+                  if (error) throw error;
+                  
+                  toast({
+                    title: "Success",
+                    description: "Commitment status updated",
+                  });
+                  fetchCommitments();
+                  fetchStats();
+                } catch (error) {
+                  console.error('Error updating status:', error);
+                  toast({
+                    title: "Error",
+                    description: "Failed to update status",
+                    variant: "destructive"
+                  });
+                }
+              }}
+            />
+          ) : (
+            <>
+              <div className="space-y-3">
+                {paginatedCompletedCommitments.length === 0 ? (
+                  <Card className="p-8 text-center">
+                    <p className="text-muted-foreground">No completed commitments</p>
+                  </Card>
+                ) : (
+                  paginatedCompletedCommitments.map((commitment) => (
+                    <Card key={commitment.id} className="p-4 opacity-75">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold line-through">{commitment.content_type}</h4>
+                            <Badge variant="outline" className="bg-green-500/10 text-green-500">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Completed
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Creator: {commitment.profiles.full_name || commitment.profiles.email}
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                )}
+              </div>
+              
+              {completedCommitments.length > 0 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(completedCommitments.length / itemsPerPage)}
+                  totalItems={completedCommitments.length}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                />
+              )}
+            </>
+          )}
         </TabsContent>
       </Tabs>
     </div>

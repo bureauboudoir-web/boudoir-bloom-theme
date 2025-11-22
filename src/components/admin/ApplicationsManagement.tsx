@@ -57,6 +57,9 @@ export const ApplicationsManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
+  const [approveDialog, setApproveDialog] = useState(false);
+  const [declineDialog, setDeclineDialog] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -529,12 +532,14 @@ export const ApplicationsManagement = () => {
         <ApplicationsKanbanView 
           applications={filteredApplications}
           onApprove={(app) => {
-            setSelectedApp(app);
-            setApproveDialog(true);
+            // Trigger approve dialog - will be handled by ApproveDialog component
+            const event = new CustomEvent('openApproveDialog', { detail: app });
+            window.dispatchEvent(event);
           }}
           onDecline={(app) => {
-            setSelectedApp(app);
-            setDeclineDialog(true);
+            // Trigger decline dialog - will be handled by DeclineDialog component  
+            const event = new CustomEvent('openDeclineDialog', { detail: app });
+            window.dispatchEvent(event);
           }}
         />
       ) : (
@@ -725,7 +730,18 @@ export const ApplicationsManagement = () => {
             );
           })
         )}
-      </div>
+          </div>
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredApplications.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={setItemsPerPage}
+          />
+        </>
+      )}
     </div>
   );
 };
