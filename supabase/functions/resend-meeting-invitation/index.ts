@@ -128,47 +128,47 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: expirationSetting } = await supabaseClient
       .from("admin_settings")
       .select("setting_value")
-      .eq("setting_key", "password_reset_expiration_seconds")
+      .eq("setting_key", "password_reset_expiration_hours")
       .single();
 
-    const expirationSeconds = expirationSetting?.setting_value as number || 3600; // Default 1 hour
+    const expirationHours = expirationSetting?.setting_value as number || 72;
+    const expirationMinutes = expirationHours * 60;
+
+    console.log(`Creating invitation token with ${expirationHours} hours expiration`);
+
+    // Create invitation token
+    const invitationToken = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + expirationMinutes * 60 * 1000);
+
+    const { error: tokenError } = await supabaseClient
+      .from("invitation_tokens")
+      .insert({
+        token: invitationToken,
+        user_id: existingUser.id,
+        application_id: applicationId,
+        expires_at: expiresAt.toISOString(),
+      });
+
+    if (tokenError) {
+      console.error("Error creating invitation token:", tokenError);
+      return new Response(
+        JSON.stringify({ error: "Failed to create invitation token" }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
     // Get app origin from request headers
     const referer = req.headers.get('referer') || req.headers.get('origin') || '';
     const appOrigin = referer ? new URL(referer).origin : '';
-    
-    if (!appOrigin) {
-      console.error("Could not determine app origin from request headers");
-      return new Response(
-        JSON.stringify({ error: "Unable to determine app origin" }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
 
-    // Generate password reset link using Supabase's native auth system
-    const { data: resetLinkData, error: resetLinkError } = await supabaseClient.auth.admin.generateLink({
-      type: 'recovery',
-      email: application.email,
-      options: {
-        redirectTo: `${appOrigin}/dashboard`
-      }
-    });
-
-    if (resetLinkError || !resetLinkData) {
-      console.error('Error generating password reset link:', resetLinkError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to generate password reset link' }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    const passwordResetUrl = resetLinkData.properties.action_link;
+    // Generate edge function invitation URL
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const invitationUrl = `${supabaseUrl}/functions/v1/complete-invitation?token=${invitationToken}`;
     const loginUrl = `${appOrigin}/login`;
-    const expiresAt = new Date(Date.now() + (expirationSeconds * 1000));
+    
+    console.log("Invitation token created successfully");
 
-    console.log("Password reset URL generated successfully");
-
-    // Send the meeting invitation email with password reset link
+    // Send the meeting invitation email with invitation link
     const { data: emailData, error: emailError } = await supabaseClient.functions.invoke(
       'send-meeting-invitation',
       {
@@ -176,11 +176,11 @@ const handler = async (req: Request): Promise<Response> => {
           name: application.name,
           email: application.email,
           loginUrl,
-          magicLinkUrl: passwordResetUrl,
+          magicLinkUrl: invitationUrl,
           applicationId: applicationId,
           userId: existingUser.id,
           magicLinkExpiresAt: expiresAt.toISOString(),
-          expirationMinutes: Math.floor(expirationSeconds / 60),
+          expirationMinutes: expirationMinutes,
         },
       }
     );
