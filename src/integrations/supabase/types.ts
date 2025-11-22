@@ -966,6 +966,57 @@ export type Database = {
           },
         ]
       }
+      shoot_participants: {
+        Row: {
+          created_at: string | null
+          id: string
+          invited_at: string | null
+          notified_at: string | null
+          responded_at: string | null
+          response_status: string | null
+          role: string | null
+          shoot_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invited_at?: string | null
+          notified_at?: string | null
+          responded_at?: string | null
+          response_status?: string | null
+          role?: string | null
+          shoot_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invited_at?: string | null
+          notified_at?: string | null
+          responded_at?: string | null
+          response_status?: string | null
+          role?: string | null
+          shoot_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shoot_participants_shoot_id_fkey"
+            columns: ["shoot_id"]
+            isOneToOne: false
+            referencedRelation: "studio_shoots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shoot_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       studio_shoots: {
         Row: {
           budget: number | null
