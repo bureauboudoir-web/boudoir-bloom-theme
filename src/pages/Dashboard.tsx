@@ -43,7 +43,7 @@ const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
-  const { isAdminOrManager, roles, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support">("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -237,8 +237,11 @@ const Dashboard = () => {
                       onTabChange={setActiveTab}
                       pendingCommitments={pendingCommitments}
                       newInvoices={newInvoices}
-                      isAdminOrManager={isAdminOrManager}
+                      isAdmin={isAdmin}
+                      isSuperAdmin={isSuperAdmin}
+                      isManagerOnly={isManagerOnly}
                       onAdminClick={() => navigate("/admin")}
+                      onManagerClick={() => navigate("/manager")}
                       onMobileMenuClose={() => setMobileMenuOpen(false)}
                     />
                   </div>
@@ -276,8 +279,11 @@ const Dashboard = () => {
               onTabChange={setActiveTab}
               pendingCommitments={pendingCommitments}
               newInvoices={newInvoices}
-              isAdminOrManager={isAdminOrManager}
+              isAdmin={isAdmin}
+              isSuperAdmin={isSuperAdmin}
+              isManagerOnly={isManagerOnly}
               onAdminClick={() => navigate("/admin")}
+              onManagerClick={() => navigate("/manager")}
             />
           </Card>
 

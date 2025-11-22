@@ -19,8 +19,11 @@ interface DashboardNavProps {
   onTabChange: (tab: TabId) => void;
   pendingCommitments: number;
   newInvoices: number;
-  isAdminOrManager: boolean;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
+  isManagerOnly: boolean;
   onAdminClick: () => void;
+  onManagerClick: () => void;
   onMobileMenuClose?: () => void;
 }
 
@@ -29,8 +32,11 @@ export const DashboardNav = ({
   onTabChange,
   pendingCommitments,
   newInvoices,
-  isAdminOrManager,
+  isAdmin,
+  isSuperAdmin,
+  isManagerOnly,
   onAdminClick,
+  onManagerClick,
   onMobileMenuClose,
 }: DashboardNavProps) => {
   
@@ -115,20 +121,35 @@ export const DashboardNav = ({
         </div>
       ))}
 
-      {/* Admin Dashboard - Special Treatment */}
-      {isAdminOrManager && (
-        <div className="pt-4 border-t border-border">
-          <Button
-            variant="outline"
-            className="w-full justify-start h-11 px-3 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all"
-            onClick={() => {
-              onAdminClick();
-              onMobileMenuClose?.();
-            }}
-          >
-            <Shield className="w-4 h-4 mr-3 text-primary" />
-            <span className="text-sm font-medium">Admin Dashboard</span>
-          </Button>
+      {/* Admin/Manager Dashboard - Special Treatment */}
+      {(isAdmin || isSuperAdmin || isManagerOnly) && (
+        <div className="pt-4 border-t border-border space-y-2">
+          {(isAdmin || isSuperAdmin) && (
+            <Button
+              variant="outline"
+              className="w-full justify-start h-11 px-3 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all"
+              onClick={() => {
+                onAdminClick();
+                onMobileMenuClose?.();
+              }}
+            >
+              <Shield className="w-4 h-4 mr-3 text-primary" />
+              <span className="text-sm font-medium">Admin Dashboard</span>
+            </Button>
+          )}
+          {isManagerOnly && (
+            <Button
+              variant="outline"
+              className="w-full justify-start h-11 px-3 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all"
+              onClick={() => {
+                onManagerClick();
+                onMobileMenuClose?.();
+              }}
+            >
+              <Shield className="w-4 h-4 mr-3 text-primary" />
+              <span className="text-sm font-medium">Manager Dashboard</span>
+            </Button>
+          )}
         </div>
       )}
     </nav>

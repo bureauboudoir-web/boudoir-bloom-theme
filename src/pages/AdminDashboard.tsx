@@ -28,7 +28,7 @@ import { NotificationBell, NotificationItem } from "@/components/NotificationBel
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isAdminOrManager, loading: roleLoading } = useUserRole();
+  const { isAdmin, isSuperAdmin, isManager, loading: roleLoading } = useUserRole();
   const { 
     newSupportTickets, 
     pendingReviews, 
@@ -87,17 +87,22 @@ const AdminDashboard = () => {
     }] : []),
   ];
 
+  // Redirect if not admin or super_admin (managers go to manager dashboard)
+  useEffect(() => {
+    if (!roleLoading) {
+      if (isManager && !isAdmin && !isSuperAdmin) {
+        navigate("/manager");
+      } else if (!isAdmin && !isSuperAdmin) {
+        navigate("/dashboard");
+      }
+    }
+  }, [isAdmin, isManager, isSuperAdmin, roleLoading, navigate]);
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/login");
     }
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (!authLoading && !roleLoading && user && !isAdminOrManager) {
-      navigate("/dashboard");
-    }
-  }, [isAdminOrManager, roleLoading, authLoading, user, navigate]);
 
   if (authLoading || roleLoading) {
     return (
@@ -110,7 +115,7 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!isAdminOrManager) {
+  if (!isAdmin && !isSuperAdmin) {
     return null;
   }
 
