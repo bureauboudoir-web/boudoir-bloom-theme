@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, type ContentTypeCategory } from "@/components/ContentTypeIcon";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface Creator {
   id: string;
@@ -16,6 +18,8 @@ interface Creator {
 }
 
 export const AdminCommitments = () => {
+  const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [creators, setCreators] = useState<Creator[]>([]);
   const [selectedCreator, setSelectedCreator] = useState("");
   const [isAdding, setIsAdding] = useState(false);
@@ -28,15 +32,41 @@ export const AdminCommitments = () => {
   });
 
   useEffect(() => {
-    fetchCreators();
-  }, []);
+    if (user) {
+      fetchCreators();
+    }
+  }, [user]);
 
   const fetchCreators = async () => {
     try {
-      const { data, error } = await supabase
+      let creatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        creatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (creatorIds.length === 0) {
+          setCreators([]);
+          return;
+        }
+      }
+
+      let query = supabase
         .from('profiles')
         .select('id, email, full_name')
         .order('email');
+
+      // Apply filter for managers
+      if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
+        query = query.in('id', creatorIds);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setCreators(data || []);

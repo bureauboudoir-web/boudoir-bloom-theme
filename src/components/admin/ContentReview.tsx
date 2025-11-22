@@ -7,6 +7,8 @@ import { ExternalLink, CheckCircle, XCircle, Clock, Video, Image as ImageIcon, F
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface ContentUpload {
   id: string;
@@ -27,16 +29,38 @@ interface ContentUpload {
 }
 
 export const ContentReview = () => {
+  const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [uploads, setUploads] = useState<ContentUpload[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
   useEffect(() => {
-    fetchUploads();
-  }, [filterStatus]);
+    if (user) {
+      fetchUploads();
+    }
+  }, [filterStatus, user]);
 
   const fetchUploads = async () => {
     try {
+      let creatorIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        creatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (creatorIds.length === 0) {
+          setUploads([]);
+          setLoading(false);
+          return;
+        }
+      }
+
       let query = supabase
         .from('content_uploads')
         .select(`
@@ -50,6 +74,11 @@ export const ContentReview = () => {
 
       if (filterStatus !== 'all') {
         query = query.eq('status', filterStatus);
+      }
+
+      // Apply filter for managers
+      if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
+        query = query.in('user_id', creatorIds);
       }
 
       const { data, error } = await query;

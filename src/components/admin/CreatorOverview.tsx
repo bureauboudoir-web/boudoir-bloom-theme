@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Users, CheckCircle, Clock, XCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface CreatorStats {
   id: string;
@@ -18,19 +20,48 @@ interface CreatorStats {
 }
 
 export const CreatorOverview = () => {
+  const { user } = useAuth();
+  const { isSuperAdmin, isAdmin } = useUserRole();
   const [creators, setCreators] = useState<CreatorStats[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCreatorStats();
-  }, []);
+    if (user) {
+      fetchCreatorStats();
+    }
+  }, [user]);
 
   const fetchCreatorStats = async () => {
     try {
-      const { data: profiles, error: profilesError } = await supabase
+      let profileIds: string[] = [];
+
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        const { data: assignedMeetings } = await supabase
+          .from('creator_meetings')
+          .select('user_id')
+          .eq('assigned_manager_id', user.id);
+
+        profileIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
+
+        if (profileIds.length === 0) {
+          setCreators([]);
+          setLoading(false);
+          return;
+        }
+      }
+
+      let query = supabase
         .from('profiles')
         .select('id, email, full_name')
         .order('email');
+
+      // Apply filter for managers
+      if (!isSuperAdmin && !isAdmin && profileIds.length > 0) {
+        query = query.in('id', profileIds);
+      }
+
+      const { data: profiles, error: profilesError } = await query;
 
       if (profilesError) throw profilesError;
 
@@ -175,7 +206,7 @@ export const CreatorOverview = () => {
 
         {creators.length === 0 && (
           <p className="text-center text-muted-foreground py-8">
-            No creators found
+            {!isSuperAdmin && !isAdmin ? "No creators assigned to you yet" : "No creators found"}
           </p>
         )}
       </div>
