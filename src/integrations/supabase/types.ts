@@ -834,6 +834,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          assigned_manager_id: string | null
           created_at: string | null
           email: string
           full_name: string | null
@@ -843,6 +844,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          assigned_manager_id?: string | null
           created_at?: string | null
           email: string
           full_name?: string | null
@@ -852,6 +854,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          assigned_manager_id?: string | null
           created_at?: string | null
           email?: string
           full_name?: string | null
