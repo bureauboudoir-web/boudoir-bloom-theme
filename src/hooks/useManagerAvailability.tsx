@@ -342,6 +342,56 @@ export const useManagerAvailability = () => {
     toast.success("Day cleared. Don't forget to save.");
   };
 
+  const updateDaySchedule = (dayIndex: number, enabled: boolean, startTime: string, endTime: string) => {
+    // Remove existing slots for this day
+    const filteredAvailability = availability.filter(s => s.day_of_week !== dayIndex);
+    
+    if (enabled) {
+      // Validate times
+      if (startTime >= endTime) {
+        toast.error("End time must be after start time");
+        return;
+      }
+
+      // Add new slot for this day
+      const newSlot: AvailabilitySlot = {
+        day_of_week: dayIndex,
+        start_time: startTime,
+        end_time: endTime,
+        is_available: true,
+      };
+      
+      setAvailability([...filteredAvailability, newSlot]);
+    } else {
+      // Just remove the day's slots
+      setAvailability(filteredAvailability);
+    }
+  };
+
+  const setBusinessHours = () => {
+    const businessSlots: AvailabilitySlot[] = [];
+    // Monday-Friday (1-5, since Sunday=0)
+    for (let dayIndex = 1; dayIndex <= 5; dayIndex++) {
+      businessSlots.push({
+        day_of_week: dayIndex,
+        start_time: "09:00",
+        end_time: "17:00",
+        is_available: true,
+      });
+    }
+    
+    // Remove all weekday slots and add business hours
+    const weekendSlots = availability.filter(s => s.day_of_week === 0 || s.day_of_week === 6);
+    setAvailability([...weekendSlots, ...businessSlots]);
+    
+    toast.success("Business hours set (Mon-Fri 9am-5pm). Don't forget to save.");
+  };
+
+  const clearAllAvailability = () => {
+    setAvailability([]);
+    toast.success("All availability cleared. Don't forget to save if you want to keep this change.");
+  };
+
   return {
     availability,
     blockedDates,
@@ -359,5 +409,8 @@ export const useManagerAvailability = () => {
     copyToWeekdays,
     copyToWeekend,
     clearDay,
+    updateDaySchedule,
+    setBusinessHours,
+    clearAllAvailability,
   };
 };
