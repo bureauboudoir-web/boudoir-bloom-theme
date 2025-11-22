@@ -55,13 +55,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     try {
       const { data, error } = await supabase
         .from('creator_meetings')
-        .select(`
-          *,
-          manager:profiles!assigned_manager_id (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -69,8 +63,18 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
       if (data) {
         setMeetingData(data);
-        if (data.manager && !Array.isArray(data.manager)) {
-          setManagerInfo(data.manager as any);
+        
+        // Fetch manager info separately if assigned
+        if (data.assigned_manager_id) {
+          const { data: managerData } = await supabase
+            .from('profiles')
+            .select('id, full_name, email')
+            .eq('id', data.assigned_manager_id)
+            .single();
+          
+          if (managerData) {
+            setManagerInfo(managerData);
+          }
         }
         if (data.meeting_date) {
           setDate(new Date(data.meeting_date));

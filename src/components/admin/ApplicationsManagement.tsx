@@ -10,6 +10,7 @@ import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle,
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { InvitationExpiryStatus } from "./InvitationExpiryStatus";
+import { ManagerSelect } from "./ManagerSelect";
 
 interface AdminNote {
   note: string;
@@ -127,9 +128,9 @@ export const ApplicationsManagement = () => {
     }
   };
 
-  const handleApprove = async (application: Application) => {
-    if (!user?.id) {
-      toast.error("You must be logged in to approve applications");
+  const handleApprove = async (application: Application, managerId: string) => {
+    if (!managerId) {
+      toast.error("Please select an admin/manager to assign");
       return;
     }
 
@@ -137,7 +138,7 @@ export const ApplicationsManagement = () => {
       const { data, error } = await supabase.functions.invoke('approve-creator-application', {
         body: {
           applicationId: application.id,
-          managerId: user.id
+          managerId: managerId
         }
       });
 
@@ -278,6 +279,62 @@ export const ApplicationsManagement = () => {
   const cancelEditingNote = () => {
     setEditingNoteId(null);
     setNoteText("");
+  };
+
+  const ApproveDialog = ({ application }: { application: Application }) => {
+    const [selectedManager, setSelectedManager] = useState("");
+    const [showDialog, setShowDialog] = useState(false);
+
+    return (
+      <>
+        <Button
+          size="sm"
+          onClick={() => setShowDialog(true)}
+          className="bg-primary"
+        >
+          <CheckCircle className="w-4 h-4 mr-1" />
+          Approve
+        </Button>
+
+        {showDialog && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md">
+              <CardHeader>
+                <CardTitle>Approve Application</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Select an admin or manager to handle this creator's meetings:
+                  </p>
+                  <ManagerSelect 
+                    value={selectedManager}
+                    onChange={setSelectedManager}
+                    label="Assign to"
+                  />
+                </div>
+
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" onClick={() => setShowDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      handleApprove(application, selectedManager);
+                      setShowDialog(false);
+                    }}
+                    disabled={!selectedManager}
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Approve Application
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </>
+    );
   };
 
   const DeclineDialog = ({ application }: { application: Application }) => {
@@ -544,14 +601,7 @@ export const ApplicationsManagement = () => {
                 <div className="flex gap-2 flex-wrap">
                   {app.status === 'pending' && (
                     <>
-                      <Button
-                        size="sm"
-                        onClick={() => handleApprove(app)}
-                        className="bg-primary"
-                      >
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                        Approve
-                      </Button>
+                      <ApproveDialog application={app} />
                       <DeclineDialog application={app} />
                     </>
                   )}
