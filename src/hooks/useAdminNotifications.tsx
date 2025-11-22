@@ -6,7 +6,6 @@ export const useAdminNotifications = () => {
   const [pendingReviews, setPendingReviews] = useState(0);
   const [pendingInvoiceConfirmations, setPendingInvoiceConfirmations] = useState(0);
   const [overdueCommitments, setOverdueCommitments] = useState(0);
-  const [pendingMeetingRequests, setPendingMeetingRequests] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,14 +51,6 @@ export const useAdminNotifications = () => {
           .lt('created_at', sevenDaysAgo.toISOString());
 
         setOverdueCommitments(overdueCount || 0);
-
-        // Count pending meeting requests (creator requested, waiting for manager confirmation)
-        const { count: meetingsCount } = await supabase
-          .from('creator_meetings')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'pending');
-
-        setPendingMeetingRequests(meetingsCount || 0);
       } catch (error) {
         console.error('Error fetching admin notifications:', error);
       } finally {
@@ -130,27 +121,11 @@ export const useAdminNotifications = () => {
       )
       .subscribe();
 
-    const meetingsChannel = supabase
-      .channel('admin_meetings_notifications')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'creator_meetings',
-        },
-        () => {
-          fetchAdminNotifications();
-        }
-      )
-      .subscribe();
-
     return () => {
       supabase.removeChannel(ticketsChannel);
       supabase.removeChannel(reviewsChannel);
       supabase.removeChannel(invoicesChannel);
       supabase.removeChannel(commitmentsChannel);
-      supabase.removeChannel(meetingsChannel);
     };
   }, []);
 
@@ -159,13 +134,11 @@ export const useAdminNotifications = () => {
     pendingReviews,
     pendingInvoiceConfirmations,
     overdueCommitments,
-    pendingMeetingRequests,
     loading,
     totalNotifications:
       newSupportTickets +
       pendingReviews +
       pendingInvoiceConfirmations +
-      overdueCommitments +
-      pendingMeetingRequests,
+      overdueCommitments,
   };
 };
