@@ -29,6 +29,16 @@ interface StudioShoot {
   duration_hours: number | null;
   budget: number | null;
   special_requirements: string | null;
+  shoot_participants?: Array<{
+    id: string;
+    user_id: string;
+    role: string;
+    response_status: string;
+    profiles: {
+      full_name: string | null;
+      email: string;
+    };
+  }>;
 }
 
 interface StudioShootsProps {
@@ -53,14 +63,42 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
 
   const fetchShoots = async () => {
     try {
+      // Get all shoots where user is either primary creator OR a participant
+      const { data: participations, error: partError } = await supabase
+        .from("shoot_participants")
+        .select("shoot_id")
+        .eq("user_id", userId);
+
+      if (partError) throw partError;
+
+      const shootIds = participations?.map(p => p.shoot_id) || [];
+
+      if (shootIds.length === 0) {
+        setShoots([]);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("studio_shoots")
-        .select("*")
-        .eq("user_id", userId)
+        .select(`
+          *,
+          shoot_participants (
+            id,
+            user_id,
+            role,
+            response_status,
+            profiles:user_id (
+              full_name,
+              email
+            )
+          )
+        `)
+        .in("id", shootIds)
         .order("shoot_date", { ascending: true });
 
       if (error) throw error;
-      setShoots((data || []) as StudioShoot[]);
+      setShoots((data || []) as any);
     } catch (error) {
       console.error("Error fetching shoots:", error);
       toast({
@@ -141,18 +179,22 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
     }
   };
 
-  const handleConfirm = async (id: string) => {
+  const handleConfirm = async (shootId: string) => {
     try {
       const { error } = await supabase
-        .from("studio_shoots")
-        .update({ status: 'confirmed' })
-        .eq('id', id);
+        .from("shoot_participants")
+        .update({ 
+          response_status: 'confirmed',
+          responded_at: new Date().toISOString()
+        })
+        .eq('shoot_id', shootId)
+        .eq('user_id', userId);
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: "Shoot confirmed"
+        description: "Shoot participation confirmed"
       });
       fetchShoots();
     } catch (error) {
@@ -165,18 +207,22 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
     }
   };
 
-  const handleDecline = async (id: string) => {
+  const handleDecline = async (shootId: string) => {
     try {
       const { error } = await supabase
-        .from("studio_shoots")
-        .update({ status: 'declined' })
-        .eq('id', id);
+        .from("shoot_participants")
+        .update({ 
+          response_status: 'declined',
+          responded_at: new Date().toISOString()
+        })
+        .eq('shoot_id', shootId)
+        .eq('user_id', userId);
 
       if (error) throw error;
 
       toast({
         title: "Declined",
-        description: "Shoot declined"
+        description: "Shoot participation declined"
       });
       fetchShoots();
     } catch (error) {
@@ -326,16 +372,41 @@ const StudioShoots = ({ userId }: StudioShootsProps) => {
                             Marketing: {shoot.marketing_notes}
                           </p>
                         )}
-                        {shoot.status === 'pending' && (
-                          <div className="flex gap-2 mt-2">
+                        
+                        {/* Show all other participants */}
+                        {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 1 && (
+                          <div className="mt-3 p-3 bg-muted/50 rounded">
+                            <p className="text-sm font-medium mb-2">Other Participants:</p>
+                            {(shoot as any).shoot_participants
+                              .filter((p: any) => p.user_id !== userId)
+                              .map((participant: any) => (
+                                <div key={participant.id} className="flex items-center gap-2 text-sm mb-1">
+                                  <Badge variant="outline" className="text-xs">
+                                    {participant.role}
+                                  </Badge>
+                                  <span>{participant.profiles?.full_name || participant.profiles?.email}</span>
+                                  <Badge className={
+                                    participant.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
+                                    participant.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
+                                    'bg-yellow-500/20 text-yellow-500'
+                                  }>
+                                    {participant.response_status}
+                                  </Badge>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+
+                        {/* Show confirm/decline buttons if status is pending */}
+                        {(shoot as any).shoot_participants?.find((p: any) => p.user_id === userId)?.response_status === 'pending' && (
+                          <div className="flex gap-2 mt-3">
                             <Button
                               onClick={() => handleConfirm(shoot.id)}
                               size="sm"
-                              variant="outline"
-                              className="text-green-600 border-green-600/20 hover:bg-green-600/10"
+                              className="bg-green-600 hover:bg-green-700"
                             >
                               <Check className="w-3 h-3 mr-1" />
-                              Confirm
+                              Confirm Participation
                             </Button>
                             <Button
                               onClick={() => handleDecline(shoot.id)}

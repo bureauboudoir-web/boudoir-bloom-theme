@@ -43,6 +43,16 @@ interface Shoot {
     full_name: string | null;
     email: string;
   };
+  shoot_participants?: Array<{
+    id: string;
+    user_id: string;
+    role: string;
+    response_status: string;
+    profiles: {
+      full_name: string | null;
+      email: string;
+    };
+  }>;
 }
 
 export const AdminShoots = () => {
@@ -51,6 +61,7 @@ export const AdminShoots = () => {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [shoots, setShoots] = useState<Shoot[]>([]);
   const [selectedCreator, setSelectedCreator] = useState("");
+  const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("schedule");
@@ -136,6 +147,16 @@ export const AdminShoots = () => {
           profiles:user_id (
             full_name,
             email
+          ),
+          shoot_participants (
+            id,
+            user_id,
+            role,
+            response_status,
+            profiles:user_id (
+              full_name,
+              email
+            )
           )
         `)
         .order('shoot_date', { ascending: false });
@@ -170,10 +191,14 @@ export const AdminShoots = () => {
   };
 
   const handleScheduleShoot = async () => {
-    if (!selectedCreator) {
+    const creatorsToAdd = newShoot.shoot_type === 'solo' 
+      ? [selectedCreator] 
+      : selectedCreators;
+
+    if (creatorsToAdd.length === 0) {
       toast({
-        title: "No Creator Selected",
-        description: "Please select a creator first",
+        title: "No Creators Selected",
+        description: "Please select at least one creator",
         variant: "destructive"
       });
       return;
@@ -191,10 +216,12 @@ export const AdminShoots = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      const { error } = await supabase
+      // 1. Create the shoot (primary creator = first selected)
+      const primaryCreatorId = creatorsToAdd[0];
+      const { data: shoot, error: shootError } = await supabase
         .from("studio_shoots")
         .insert({
-          user_id: selectedCreator,
+          user_id: primaryCreatorId,
           created_by_user_id: user?.id,
           title: newShoot.title,
           shoot_date: newShoot.shoot_date,
@@ -210,15 +237,53 @@ export const AdminShoots = () => {
           budget: newShoot.budget > 0 ? newShoot.budget : null,
           special_requirements: newShoot.special_requirements || null,
           status: 'pending'
-        });
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (shootError) throw shootError;
+
+      // 2. Add all creators to shoot_participants table
+      const participants = creatorsToAdd.map((creatorId, index) => ({
+        shoot_id: shoot.id,
+        user_id: creatorId,
+        role: index === 0 ? 'primary' : 'participant',
+        response_status: 'pending'
+      }));
+
+      const { error: participantsError } = await supabase
+        .from("shoot_participants")
+        .insert(participants);
+
+      if (participantsError) throw participantsError;
+
+      // 3. Send notifications to all creators
+      for (const creatorId of creatorsToAdd) {
+        const creator = creators.find(c => c.id === creatorId);
+        if (creator) {
+          await supabase.functions.invoke('send-shoot-invitation', {
+            body: {
+              creatorName: creator.full_name || creator.email,
+              creatorEmail: creator.email,
+              shootTitle: newShoot.title,
+              shootDate: newShoot.shoot_date,
+              shootType: newShoot.shoot_type,
+              location: newShoot.location,
+              duration: newShoot.duration_hours,
+              userId: creatorId,
+              shootId: shoot.id
+            }
+          });
+        }
+      }
 
       toast({
         title: "Success",
-        description: "Shoot scheduled successfully",
+        description: `Shoot scheduled with ${creatorsToAdd.length} creator(s). Notifications sent.`,
       });
 
+      setSelectedCreator("");
+      setSelectedCreators([]);
       setNewShoot({
         title: "",
         shoot_date: "",
@@ -353,23 +418,80 @@ export const AdminShoots = () => {
           <Card className="p-6">
             <h3 className="font-serif text-xl font-bold mb-4">Schedule Studio Shoot</h3>
             <div className="space-y-4">
-              <div>
-                <Label>Select Creator</Label>
-                <Select value={selectedCreator} onValueChange={setSelectedCreator}>
+              {/* Shoot Type Selection First */}
+              <div className="space-y-2">
+                <Label>Shoot Type</Label>
+                <Select 
+                  value={newShoot.shoot_type} 
+                  onValueChange={(value: "solo" | "duo" | "group" | "couples") => {
+                    setNewShoot({ ...newShoot, shoot_type: value });
+                    setSelectedCreator("");
+                    setSelectedCreators([]);
+                  }}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Choose a creator..." />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {creators.map((creator) => (
-                      <SelectItem key={creator.id} value={creator.id}>
-                        {creator.full_name || creator.email}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="solo">Solo Shoot</SelectItem>
+                    <SelectItem value="duo">Duo Shoot</SelectItem>
+                    <SelectItem value="group">Group Shoot (3+)</SelectItem>
+                    <SelectItem value="couples">Couples Shoot</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {selectedCreator && (
+              {/* Show single creator select for solo shoots */}
+              {newShoot.shoot_type === 'solo' && (
+                <div>
+                  <Label>Select Creator</Label>
+                  <Select value={selectedCreator} onValueChange={setSelectedCreator}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a creator..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {creators.map((creator) => (
+                        <SelectItem key={creator.id} value={creator.id}>
+                          {creator.full_name || creator.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Show multi-select for duo/group/couples shoots */}
+              {newShoot.shoot_type !== 'solo' && (
+                <div className="space-y-2">
+                  <Label>Select Creators (Multiple)</Label>
+                  <div className="max-h-48 overflow-y-auto border rounded-md p-3 space-y-2">
+                    {creators.map((creator) => (
+                      <div key={creator.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`creator-${creator.id}`}
+                          checked={selectedCreators.includes(creator.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedCreators([...selectedCreators, creator.id]);
+                            } else {
+                              setSelectedCreators(selectedCreators.filter(id => id !== creator.id));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={`creator-${creator.id}`} className="cursor-pointer font-normal">
+                          {creator.full_name || creator.email}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Selected: {selectedCreators.length} creator(s)
+                  </p>
+                </div>
+              )}
+
+              {((newShoot.shoot_type === 'solo' && selectedCreator) || 
+                (newShoot.shoot_type !== 'solo' && selectedCreators.length > 0)) && (
                 <>
                   {!isAdding ? (
                     <Button onClick={() => setIsAdding(true)} className="w-full">
@@ -397,27 +519,6 @@ export const AdminShoots = () => {
                             value={newShoot.location}
                             onChange={(e) => setNewShoot({ ...newShoot, location: e.target.value })}
                           />
-                        </div>
-
-                        {/* Shoot Type */}
-                        <div className="space-y-2">
-                          <Label>Shoot Type</Label>
-                          <Select 
-                            value={newShoot.shoot_type} 
-                            onValueChange={(value: "solo" | "duo" | "group" | "couples") => 
-                              setNewShoot({ ...newShoot, shoot_type: value })
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="solo">Solo Shoot</SelectItem>
-                              <SelectItem value="duo">Duo Shoot</SelectItem>
-                              <SelectItem value="group">Group Shoot (3+)</SelectItem>
-                              <SelectItem value="couples">Couples Shoot</SelectItem>
-                            </SelectContent>
-                          </Select>
                         </div>
 
                         {/* Duration & Crew */}
@@ -555,9 +656,31 @@ export const AdminShoots = () => {
                         {shoot.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
-                    </p>
+                    {/* Show all participants */}
+                    {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 0 ? (
+                      <div className="space-y-2 mb-2">
+                        <p className="font-medium text-sm">Participants:</p>
+                        {(shoot as any).shoot_participants.map((p: any) => (
+                          <div key={p.id} className="flex items-center gap-2 text-sm">
+                            <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
+                              {p.role}
+                            </Badge>
+                            <span>{p.profiles?.full_name || p.profiles?.email}</span>
+                            <Badge className={
+                              p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
+                              p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
+                              'bg-yellow-500/20 text-yellow-500'
+                            }>
+                              {p.response_status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                      </p>
+                    )}
                     <p className="text-sm">
                       {format(new Date(shoot.shoot_date), 'PPP p')}
                     </p>
@@ -602,9 +725,31 @@ export const AdminShoots = () => {
                       <h4 className="font-semibold">{shoot.title}</h4>
                       {getShootTypeBadge(shoot.shoot_type)}
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
-                    </p>
+                    {/* Show all participants */}
+                    {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 0 ? (
+                      <div className="space-y-2 mb-2">
+                        <p className="font-medium text-sm">Participants:</p>
+                        {(shoot as any).shoot_participants.map((p: any) => (
+                          <div key={p.id} className="flex items-center gap-2 text-sm">
+                            <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
+                              {p.role}
+                            </Badge>
+                            <span>{p.profiles?.full_name || p.profiles?.email}</span>
+                            <Badge className={
+                              p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
+                              p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
+                              'bg-yellow-500/20 text-yellow-500'
+                            }>
+                              {p.response_status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                      </p>
+                    )}
                     <p className="text-sm">
                       {format(new Date(shoot.shoot_date), 'PPP p')}
                     </p>
@@ -641,9 +786,31 @@ export const AdminShoots = () => {
                         {shoot.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Creator: {shoot.profiles.full_name || shoot.profiles.email}
-                    </p>
+                    {/* Show all participants */}
+                    {(shoot as any).shoot_participants && (shoot as any).shoot_participants.length > 0 ? (
+                      <div className="space-y-2 mb-2">
+                        <p className="font-medium text-sm">Participants:</p>
+                        {(shoot as any).shoot_participants.map((p: any) => (
+                          <div key={p.id} className="flex items-center gap-2 text-sm">
+                            <Badge variant={p.role === 'primary' ? 'default' : 'outline'} className="text-xs">
+                              {p.role}
+                            </Badge>
+                            <span>{p.profiles?.full_name || p.profiles?.email}</span>
+                            <Badge className={
+                              p.response_status === 'confirmed' ? 'bg-green-500/20 text-green-500' :
+                              p.response_status === 'declined' ? 'bg-red-500/20 text-red-500' : 
+                              'bg-yellow-500/20 text-yellow-500'
+                            }>
+                              {p.response_status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Creator: {shoot.profiles.full_name || shoot.profiles.email}
+                      </p>
+                    )}
                     <p className="text-sm">
                       {format(new Date(shoot.shoot_date), 'PPP p')}
                     </p>
