@@ -8,13 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, AlertCircle, CheckCircle, Clock, TrendingUp } from "lucide-react";
+import { Plus, Search, AlertCircle, CheckCircle, Clock, TrendingUp, ChevronDown } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, type ContentTypeCategory } from "@/components/ContentTypeIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
 import { format } from "date-fns";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Creator {
   id: string;
@@ -48,6 +49,7 @@ export const AdminCommitments = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("assign");
+  const [expandedCommitments, setExpandedCommitments] = useState<Set<string>>(new Set());
   const [stats, setStats] = useState({
     active: 0,
     overdue: 0,
@@ -240,6 +242,16 @@ export const AdminCommitments = () => {
     }
   };
 
+  const toggleExpand = (commitmentId: string) => {
+    const newExpanded = new Set(expandedCommitments);
+    if (newExpanded.has(commitmentId)) {
+      newExpanded.delete(commitmentId);
+    } else {
+      newExpanded.add(commitmentId);
+    }
+    setExpandedCommitments(newExpanded);
+  };
+
   const getPriorityBadge = (priority: string | null) => {
     const colors = {
       low: "bg-blue-500/10 text-blue-500",
@@ -248,6 +260,54 @@ export const AdminCommitments = () => {
       urgent: "bg-red-500/10 text-red-500",
     };
     return <Badge className={colors[priority as keyof typeof colors] || colors.medium}>{priority || 'medium'}</Badge>;
+  };
+
+  const renderCommitmentCard = (commitment: Commitment, isOverdue = false) => {
+    const isExpanded = expandedCommitments.has(commitment.id);
+    
+    return (
+      <Collapsible key={commitment.id} open={isExpanded} onOpenChange={() => toggleExpand(commitment.id)}>
+        <Card className={isOverdue ? "border-red-500/20" : ""}>
+          <CollapsibleTrigger className="w-full">
+            <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 flex-1">
+                <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                <div className="text-left flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-semibold">{commitment.content_type}</h4>
+                    {getPriorityBadge(commitment.priority)}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {commitment.profiles.full_name || commitment.profiles.email}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {isOverdue ? (
+                  <Badge variant="destructive">Overdue</Badge>
+                ) : (
+                  <Badge variant="secondary">{commitment.status}</Badge>
+                )}
+              </div>
+            </div>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent>
+            <div className="px-4 pb-4 border-t space-y-3 pt-3">
+              {commitment.due_date && (
+                <p className={`text-sm ${isOverdue ? 'text-red-600' : ''}`}>
+                  📅 {isOverdue ? 'Was due:' : 'Due:'} {format(new Date(commitment.due_date), 'PPP')}
+                </p>
+              )}
+              {commitment.estimated_time_hours && (
+                <p className="text-sm">⏱️ Est. {commitment.estimated_time_hours}h</p>
+              )}
+              <p className="text-sm">{commitment.description}</p>
+            </div>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+    );
   };
 
   const activeCommitments = commitments.filter(c => !c.is_completed);
@@ -468,34 +528,8 @@ export const AdminCommitments = () => {
 
         {/* Active Commitments Tab */}
         <TabsContent value="active">
-          <div className="space-y-4">
-            {activeCommitments.map((commitment) => (
-              <Card key={commitment.id} className="p-4">
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-semibold">{commitment.content_type}</h4>
-                        {getPriorityBadge(commitment.priority)}
-                        <Badge variant="secondary">{commitment.status}</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Creator: {commitment.profiles.full_name || commitment.profiles.email}
-                      </p>
-                      {commitment.due_date && (
-                        <p className="text-sm">
-                          📅 Due: {format(new Date(commitment.due_date), 'PPP')}
-                        </p>
-                      )}
-                      {commitment.estimated_time_hours && (
-                        <p className="text-sm">⏱️ Est. {commitment.estimated_time_hours}h</p>
-                      )}
-                      <p className="text-sm mt-2">{commitment.description}</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
+          <div className="space-y-3">
+            {activeCommitments.map((commitment) => renderCommitmentCard(commitment))}
             {activeCommitments.length === 0 && (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">No active commitments</p>
@@ -506,29 +540,8 @@ export const AdminCommitments = () => {
 
         {/* Overdue Tab */}
         <TabsContent value="overdue">
-          <div className="space-y-4">
-            {overdueCommitments.map((commitment) => (
-              <Card key={commitment.id} className="p-4 border-red-500/20">
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-semibold">{commitment.content_type}</h4>
-                        {getPriorityBadge(commitment.priority)}
-                        <Badge variant="destructive">Overdue</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Creator: {commitment.profiles.full_name || commitment.profiles.email}
-                      </p>
-                      <p className="text-sm text-red-600">
-                        📅 Was due: {format(new Date(commitment.due_date!), 'PPP')}
-                      </p>
-                      <p className="text-sm mt-2">{commitment.description}</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
+          <div className="space-y-3">
+            {overdueCommitments.map((commitment) => renderCommitmentCard(commitment, true))}
             {overdueCommitments.length === 0 && (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">No overdue commitments</p>
@@ -539,23 +552,21 @@ export const AdminCommitments = () => {
 
         {/* Completed Tab */}
         <TabsContent value="completed">
-          <div className="space-y-4">
+          <div className="space-y-3">
             {completedCommitments.map((commitment) => (
               <Card key={commitment.id} className="p-4 opacity-75">
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-semibold line-through">{commitment.content_type}</h4>
-                        <Badge variant="outline" className="bg-green-500/10 text-green-500">
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Completed
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Creator: {commitment.profiles.full_name || commitment.profiles.email}
-                      </p>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold line-through">{commitment.content_type}</h4>
+                      <Badge variant="outline" className="bg-green-500/10 text-green-500">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Completed
+                      </Badge>
                     </div>
+                    <p className="text-sm text-muted-foreground">
+                      Creator: {commitment.profiles.full_name || commitment.profiles.email}
+                    </p>
                   </div>
                 </div>
               </Card>

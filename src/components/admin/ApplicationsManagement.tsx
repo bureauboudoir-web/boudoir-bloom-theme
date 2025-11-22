@@ -7,11 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw, Search } from "lucide-react";
+import { CheckCircle, XCircle, Mail, Clock, MessageSquare, Save, X, AlertCircle, RefreshCw, Search, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { InvitationExpiryStatus } from "./InvitationExpiryStatus";
 import { ManagerSelect } from "./ManagerSelect";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface AdminNote {
   note: string;
@@ -47,6 +48,8 @@ export const ApplicationsManagement = () => {
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'declined'>('pending');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedApps, setExpandedApps] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchApplications();
@@ -434,7 +437,15 @@ export const ApplicationsManagement = () => {
     );
   }
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const toggleExpand = (appId: string) => {
+    const newExpanded = new Set(expandedApps);
+    if (newExpanded.has(appId)) {
+      newExpanded.delete(appId);
+    } else {
+      newExpanded.add(appId);
+    }
+    setExpandedApps(newExpanded);
+  };
 
   const filteredApplications = applications.filter(app => {
     if (!searchQuery) return true;
@@ -494,155 +505,183 @@ export const ApplicationsManagement = () => {
             </CardContent>
           </Card>
         ) : (
-          filteredApplications.map((app) => (
-            <Card key={app.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-xl">{app.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{app.email}</p>
-                    <p className="text-sm text-muted-foreground">{app.phone}</p>
-                    
-                    {/* Email Status Indicator for Approved Applications */}
-                    {app.status === 'approved' && (
-                      <InvitationExpiryStatus 
-                        emailStatus={app.email_status}
-                        emailSentAt={app.email_sent_at}
-                        passwordResetExpiresAt={app.password_reset_expires_at}
-                        linkClickedAt={app.link_clicked_at}
-                        linkUsedAt={app.link_used_at}
-                      />
-                    )}
-                  </div>
-                  <Badge variant={
-                    app.status === 'approved' ? 'default' :
-                    app.status === 'declined' ? 'destructive' : 'secondary'
-                  }>
-                    {app.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <p className="text-sm"><strong>Experience:</strong> {app.experience_level}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Applied: {new Date(app.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-
-                {/* Application History */}
-                {(app.reviewed_at || app.reviewed_by_name || app.admin_notes || app.admin_notes_history?.length) && (
-                  <div className="border-t border-border pt-4 mt-4 space-y-3">
-                    <p className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      Application History
-                    </p>
-                    {app.reviewed_at && (
-                      <p className="text-sm text-muted-foreground">
-                        Reviewed: {new Date(app.reviewed_at).toLocaleDateString()} at {new Date(app.reviewed_at).toLocaleTimeString()}
-                      </p>
-                    )}
-                    {app.reviewed_by_name && (
-                      <p className="text-sm text-muted-foreground">
-                        Reviewed by: {app.reviewed_by_name}
-                      </p>
-                    )}
-                    
-                    {/* Admin Notes Section */}
-                    <div className="mt-3 space-y-2">
+          filteredApplications.map((app) => {
+            const isExpanded = expandedApps.has(app.id);
+            
+            return (
+              <Collapsible key={app.id} open={isExpanded} onOpenChange={() => toggleExpand(app.id)}>
+                <Card>
+                  <CollapsibleTrigger className="w-full">
+                    <CardHeader className="hover:bg-muted/50 transition-colors">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4" />
-                          Admin Notes
+                        <div className="flex items-center gap-3">
+                          <ChevronDown className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          <div className="text-left space-y-1">
+                            <CardTitle className="text-xl">{app.name}</CardTitle>
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                              <span>{app.email}</span>
+                              <span>•</span>
+                              <span>{app.experience_level}</span>
+                              <span>•</span>
+                              <span>{new Date(app.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {app.status === 'approved' && app.email_status === 'sent' && (
+                            <Badge variant="outline" className="bg-green-500/10 text-green-500">
+                              <Mail className="w-3 h-3 mr-1" />
+                              Email Sent
+                            </Badge>
+                          )}
+                          <Badge variant={
+                            app.status === 'approved' ? 'default' :
+                            app.status === 'declined' ? 'destructive' : 'secondary'
+                          }>
+                            {app.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <CardContent className="space-y-4 pt-4 border-t">
+                      <div>
+                        <p className="text-sm"><strong>Phone:</strong> {app.phone}</p>
+                        <p className="text-sm"><strong>Experience:</strong> {app.experience_level}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Applied: {new Date(app.created_at).toLocaleDateString()}
                         </p>
-                        {editingNoteId !== app.id && (
+                      </div>
+
+                      {/* Email Status for Approved Applications */}
+                      {app.status === 'approved' && (
+                        <InvitationExpiryStatus 
+                          emailStatus={app.email_status}
+                          emailSentAt={app.email_sent_at}
+                          passwordResetExpiresAt={app.password_reset_expires_at}
+                          linkClickedAt={app.link_clicked_at}
+                          linkUsedAt={app.link_used_at}
+                        />
+                      )}
+
+                      {/* Application History */}
+                      {(app.reviewed_at || app.reviewed_by_name || app.admin_notes || app.admin_notes_history?.length) && (
+                        <div className="border-t border-border pt-4 mt-4 space-y-3">
+                          <p className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            Application History
+                          </p>
+                          {app.reviewed_at && (
+                            <p className="text-sm text-muted-foreground">
+                              Reviewed: {new Date(app.reviewed_at).toLocaleDateString()} at {new Date(app.reviewed_at).toLocaleTimeString()}
+                            </p>
+                          )}
+                          {app.reviewed_by_name && (
+                            <p className="text-sm text-muted-foreground">
+                              Reviewed by: {app.reviewed_by_name}
+                            </p>
+                          )}
+                          
+                          {/* Admin Notes Section */}
+                          <div className="mt-3 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4" />
+                                Admin Notes
+                              </p>
+                              {editingNoteId !== app.id && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => startEditingNote(app)}
+                                >
+                                  {app.admin_notes ? 'Edit Note' : 'Add Note'}
+                                </Button>
+                              )}
+                            </div>
+                            
+                            {editingNoteId === app.id ? (
+                              <div className="space-y-2">
+                                <Textarea
+                                  value={noteText}
+                                  onChange={(e) => setNoteText(e.target.value)}
+                                  placeholder="Add internal notes about this application..."
+                                  rows={3}
+                                  className="w-full"
+                                />
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleSaveNote(app.id)}
+                                  >
+                                    <Save className="w-4 h-4 mr-1" />
+                                    Save Note
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={cancelEditingNote}
+                                  >
+                                    <X className="w-4 h-4 mr-1" />
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : app.admin_notes ? (
+                              <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded">
+                                {app.admin_notes}
+                              </p>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">No notes added yet</p>
+                            )}
+                            
+                            {/* Notes History */}
+                            {app.admin_notes_history && app.admin_notes_history.length > 0 && (
+                              <div className="mt-3 space-y-2">
+                                <p className="text-xs font-medium text-muted-foreground">Notes History:</p>
+                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                  {app.admin_notes_history.map((note: AdminNote, idx: number) => (
+                                    <div key={idx} className="text-xs bg-muted/20 p-2 rounded">
+                                      <p className="text-muted-foreground">{note.note}</p>
+                                      <p className="text-muted-foreground/60 mt-1">
+                                        {new Date(note.updated_at).toLocaleString()}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 flex-wrap">
+                        {app.status === 'pending' && (
+                          <>
+                            <ApproveDialog application={app} />
+                            <DeclineDialog application={app} />
+                          </>
+                        )}
+                        {app.status === 'approved' && (
                           <Button
                             size="sm"
-                            variant="ghost"
-                            onClick={() => startEditingNote(app)}
+                            variant="outline"
+                            onClick={() => handleResendInvitation(app)}
                           >
-                            {app.admin_notes ? 'Edit Note' : 'Add Note'}
+                            <Mail className="w-4 h-4 mr-1" />
+                            Resend Invitation
                           </Button>
                         )}
                       </div>
-                      
-                      {editingNoteId === app.id ? (
-                        <div className="space-y-2">
-                          <Textarea
-                            value={noteText}
-                            onChange={(e) => setNoteText(e.target.value)}
-                            placeholder="Add internal notes about this application..."
-                            rows={3}
-                            className="w-full"
-                          />
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              onClick={() => handleSaveNote(app.id)}
-                            >
-                              <Save className="w-4 h-4 mr-1" />
-                              Save Note
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={cancelEditingNote}
-                            >
-                              <X className="w-4 h-4 mr-1" />
-                              Cancel
-                            </Button>
-                          </div>
-                        </div>
-                      ) : app.admin_notes ? (
-                        <p className="text-sm text-muted-foreground bg-muted/30 p-3 rounded">
-                          {app.admin_notes}
-                        </p>
-                      ) : (
-                        <p className="text-sm text-muted-foreground italic">No notes added yet</p>
-                      )}
-                      
-                      {/* Notes History */}
-                      {app.admin_notes_history && app.admin_notes_history.length > 0 && (
-                        <div className="mt-3 space-y-2">
-                          <p className="text-xs font-medium text-muted-foreground">Notes History:</p>
-                          <div className="space-y-2 max-h-40 overflow-y-auto">
-                            {app.admin_notes_history.map((note: AdminNote, idx: number) => (
-                              <div key={idx} className="text-xs bg-muted/20 p-2 rounded">
-                                <p className="text-muted-foreground">{note.note}</p>
-                                <p className="text-muted-foreground/60 mt-1">
-                                  {new Date(note.updated_at).toLocaleString()}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex gap-2 flex-wrap">
-                  {app.status === 'pending' && (
-                    <>
-                      <ApproveDialog application={app} />
-                      <DeclineDialog application={app} />
-                    </>
-                  )}
-                  {app.status === 'approved' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleResendInvitation(app)}
-                    >
-                      <Mail className="w-4 h-4 mr-1" />
-                      Resend Invitation
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            );
+          })
         )}
       </div>
     </div>
