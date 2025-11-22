@@ -9,6 +9,7 @@ import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck, Trash2 
 import { Input } from "@/components/ui/input";
 import { RoleRemovalDialog } from "./RoleRemovalDialog";
 import { useAuth } from "@/hooks/useAuth";
+import { CreateManagerAccount } from "./CreateManagerAccount";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -257,15 +258,19 @@ export const RoleManagement = () => {
   const totalCreators = users.filter(u => u.roles.includes('creator')).length;
 
   return (
-    <Card className="p-6 bg-card border-primary/20">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            <h3 className="font-serif text-xl font-bold">Role Management</h3>
-          </div>
-          <div className="flex items-center gap-4 text-sm flex-wrap">
+    <div className="space-y-6">
+      {/* Create Manager Account Form */}
+      <CreateManagerAccount onSuccess={fetchUsers} />
+
+      <Card className="p-6 bg-card border-primary/20">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" />
+              <h3 className="font-serif text-xl font-bold">Role Management</h3>
+            </div>
+            <div className="flex items-center gap-4 text-sm flex-wrap">
             <div className="flex items-center gap-1">
               <ShieldCheck className="w-4 h-4 text-purple-500" />
               <span className="text-muted-foreground">{totalSuperAdmins} Super Admins</span>
@@ -424,6 +429,7 @@ export const RoleManagement = () => {
           Showing {filteredUsers.length} of {users.length} total users
         </div>
       </div>
+      </Card>
 
       {/* Delete User Dialog */}
       <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
@@ -483,6 +489,6 @@ export const RoleManagement = () => {
           isSuperAdmin={removalDialog.role === 'super_admin'}
         />
       )}
-    </Card>
+    </div>
   );
 };
