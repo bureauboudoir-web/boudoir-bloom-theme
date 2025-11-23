@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu } from "lucide-react";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu, Clock, Lock as LockIcon, Lightbulb } from "lucide-react";
 import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
 import OnboardingBody from "@/components/onboarding/OnboardingBody";
 import OnboardingBackstory from "@/components/onboarding/OnboardingBackstory";
@@ -34,6 +34,7 @@ import { useAccessLevel, AccessLevel } from "@/hooks/useAccessLevel";
 import { useMeetingStatus } from "@/hooks/useMeetingStatus";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,7 +58,17 @@ const Dashboard = () => {
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const totalSteps = 10;
-  const progress = (currentStep / totalSteps) * 100;
+  
+  // Dynamic step calculation based on access level
+  const getVisibleTotalSteps = () => {
+    if (accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted) {
+      return 2; // Only show pre-meeting steps
+    }
+    return 10; // Show all steps
+  };
+  
+  const visibleTotalSteps = getVisibleTotalSteps();
+  const progress = (currentStep / visibleTotalSteps) * 100;
   const currentStepConfig = getStepConfig(currentStep);
 
   // Security check: Ensure user has proper role assigned
@@ -340,10 +351,24 @@ const Dashboard = () => {
 
             {activeTab === "onboarding" && (
               <div>
+                {/* Limited Access Banner */}
+                {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && (
+                  <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
+                    <Clock className="h-4 w-4 text-amber-500" />
+                    <AlertDescription className="text-sm">
+                      <span className="font-semibold">Limited Access Mode:</span> Complete steps 1-2 now, then book your meeting to unlock the remaining 8 sections.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">
                   <div className="space-y-4">
                     <div>
-                      <h2 className="font-serif text-xl sm:text-2xl font-bold mb-1">Complete Your Onboarding</h2>
+                      <h2 className="font-serif text-xl sm:text-2xl font-bold mb-1">
+                        {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
+                          ? "Pre-Meeting Setup" 
+                          : "Complete Your Onboarding"}
+                      </h2>
                       {currentStepConfig && (
                         <p className="text-sm text-muted-foreground">
                           {currentStepConfig.label} - {currentStepConfig.description}
@@ -353,7 +378,9 @@ const Dashboard = () => {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-sm text-muted-foreground">
-                          Step {currentStep} of {totalSteps}
+                          {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
+                            ? `Pre-Meeting: Step ${currentStep} of ${visibleTotalSteps}`
+                            : `Step ${currentStep} of ${visibleTotalSteps}`}
                         </p>
                         {currentStepConfig && (
                           <Badge variant={currentStepConfig.stage === "pre-meeting" ? "default" : "secondary"} className="text-xs">
@@ -362,9 +389,45 @@ const Dashboard = () => {
                         )}
                       </div>
                       <Progress value={progress} />
+                      {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep <= 2 && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          ✨ 8 more sections unlock after your meeting
+                        </p>
+                      )}
                     </div>
                   </div>
                 </Card>
+
+                {/* Preview of Post-Meeting Steps */}
+                {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep === 2 && (
+                  <Card className="p-4 mb-4 bg-muted/30 border-dashed">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <LockIcon className="h-4 w-4 text-muted-foreground" />
+                        <h3 className="font-semibold text-sm">Unlocks After Your Meeting</h3>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-muted-foreground">
+                        <div>✓ Social Media</div>
+                        <div>✓ Physical Details</div>
+                        <div>✓ Boundaries</div>
+                        <div>✓ Backstory</div>
+                        <div>✓ Content Preferences</div>
+                        <div>✓ Pricing</div>
+                        <div>✓ Scripts</div>
+                        <div>✓ Commitments</div>
+                      </div>
+                      <Button 
+                        onClick={() => setActiveTab('meetings')} 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full mt-2"
+                      >
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Book Your Meeting
+                      </Button>
+                    </div>
+                  </Card>
+                )}
                 
                 {renderOnboardingStep()}
               </div>

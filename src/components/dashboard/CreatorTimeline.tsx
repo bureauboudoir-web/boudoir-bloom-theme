@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useCreatorTimeline } from "@/hooks/useCreatorTimeline";
-import { CheckCircle2, Circle, Lock } from "lucide-react";
+import { CheckCircle2, Circle, Lock, Lightbulb } from "lucide-react";
 import { format } from "date-fns";
 import { AccessLevel } from "@/hooks/useAccessLevel";
 import { useMemo } from "react";
@@ -88,33 +88,41 @@ export const CreatorTimeline = ({ accessLevel, meetingCompleted }: CreatorTimeli
   };
 
   return (
-    <Card className="p-6 space-y-6">
-      {/* Header */}
-      <div className="space-y-2">
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-primary/10 to-background">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Your Creator Journey</h2>
+          <div>
+            <CardTitle className="text-2xl font-serif">
+              {accessLevel === 'meeting_only' && !meetingCompleted 
+                ? "Getting Started" 
+                : "Your Creator Journey"}
+            </CardTitle>
+            <CardDescription>
+              {accessLevel === 'meeting_only' && !meetingCompleted
+                ? "Complete your application and meeting to unlock full access"
+                : "Track your progress through the onboarding process"}
+            </CardDescription>
+          </div>
           {timeline.isComplete && (
             <Badge variant="default" className="bg-green-500">
               ✓ Complete
             </Badge>
           )}
         </div>
-        <p className="text-sm text-muted-foreground">
-          Track your progress from application to full access
-        </p>
-      </div>
+      </CardHeader>
 
-      {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Overall Progress</span>
-          <span className="font-semibold">{adjustedProgress}%</span>
+      <CardContent className="p-6 space-y-6">
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Overall Progress</span>
+            <span className="font-semibold">{adjustedProgress}%</span>
+          </div>
+          <Progress value={adjustedProgress} className="h-3" />
+          <p className="text-xs text-muted-foreground">
+            {visibleStages.filter(s => s.status === 'completed').length} of {visibleStages.length} stages completed
+          </p>
         </div>
-        <Progress value={adjustedProgress} className="h-3" />
-        <p className="text-xs text-muted-foreground">
-          {visibleStages.filter(s => s.status === 'completed').length} of {visibleStages.length} stages completed
-        </p>
-      </div>
 
       {/* Timeline Stages */}
       <div className="space-y-4 relative">
@@ -167,23 +175,46 @@ export const CreatorTimeline = ({ accessLevel, meetingCompleted }: CreatorTimeli
         ))}
       </div>
 
-      {/* Current Stage Call to Action */}
-      {timeline.currentStage && !timeline.isComplete && (
-        <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-          <h3 className="font-semibold text-sm mb-1">Next Step:</h3>
-          <p className="text-sm text-muted-foreground">{timeline.currentStage.description}</p>
+      {/* What Happens After Meeting Section */}
+      {accessLevel === 'meeting_only' && !meetingCompleted && (
+        <div className="mt-6 pt-6 border-t border-border">
+          <div className="flex items-start gap-3">
+            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+              <Lightbulb className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold mb-1">What happens after your meeting?</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Once you complete your introduction meeting, you'll unlock access to:
+              </p>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium">Complete Your Profile</span>
+                    <p className="text-muted-foreground text-xs">Add social media, physical details, boundaries, backstory, pricing, scripts, and content preferences</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium">Contract Signing</span>
+                    <p className="text-muted-foreground text-xs">Review and sign your creator agreement</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium">Full Platform Access</span>
+                    <p className="text-muted-foreground text-xs">Upload content, manage commitments, view invoices, and access all features</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* Completion Message */}
-      {timeline.isComplete && (
-        <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
-          <h3 className="font-semibold text-lg mb-1">🎉 Congratulations!</h3>
-          <p className="text-sm text-muted-foreground">
-            You've completed your onboarding journey. Welcome to Bureau Boudoir!
-          </p>
-        </div>
-      )}
+      </CardContent>
     </Card>
   );
 };
