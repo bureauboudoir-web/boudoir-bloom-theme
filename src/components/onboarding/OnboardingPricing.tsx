@@ -16,6 +16,7 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingPricingProps {
   onNext: () => void;
@@ -54,6 +55,23 @@ const OnboardingPricing = ({
       });
     }
   }, [onboardingData, form]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: form.watch(),
+    onSave: async (data) => {
+      await onComplete(8, {
+        pricing_subscription: data.subscription ? parseFloat(data.subscription) : null,
+        pricing_ppv_photo: data.ppvPhoto ? parseFloat(data.ppvPhoto) : null,
+        pricing_ppv_video: data.ppvVideo ? parseFloat(data.ppvVideo) : null,
+        pricing_custom_content: data.customContent ? parseFloat(data.customContent) : null,
+        pricing_chat: data.chat ? parseFloat(data.chat) : null,
+        pricing_sexting: data.sexting ? parseFloat(data.sexting) : null,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const onSubmit = async (values: z.infer<typeof onboardingPricingSchema>) => {
     const stepData = {

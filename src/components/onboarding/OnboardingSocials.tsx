@@ -9,6 +9,7 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { useUrlPreview } from "@/hooks/useUrlPreview";
 import { UrlPreviewCard } from "./UrlPreviewCard";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingSocialsProps {
   onboardingData?: any;
@@ -74,6 +75,16 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
   const onlyfansPreview = useUrlPreview(onlyfansUrl);
   const fanslyPreview = useUrlPreview(fanslyUrl);
   const otherPreview = useUrlPreview(otherUrl);
+
+  // Auto-save form data
+  useAutoSave({
+    data: form.watch(),
+    onSave: async (data) => {
+      await onComplete(3, data);
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await onComplete(3, data);

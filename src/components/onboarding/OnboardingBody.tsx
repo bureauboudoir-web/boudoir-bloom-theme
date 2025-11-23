@@ -16,6 +16,7 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingBodyProps {
   onNext: () => void;
@@ -58,6 +59,25 @@ const OnboardingBody = ({
       });
     }
   }, [onboardingData, form]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: form.watch(),
+    onSave: async (data) => {
+      await onComplete(4, {
+        body_height: data.height ? parseFloat(data.height) : null,
+        body_weight: data.weight ? parseFloat(data.weight) : null,
+        body_type: data.bodyType,
+        body_hair_color: data.hairColor,
+        body_eye_color: data.eyeColor,
+        body_tattoos: data.tattoos,
+        body_piercings: data.piercings,
+        body_distinctive_features: data.distinctiveFeatures,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const onSubmit = async (values: z.infer<typeof onboardingBodySchema>) => {
     const stepData = {
