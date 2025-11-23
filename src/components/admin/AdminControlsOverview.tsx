@@ -15,10 +15,15 @@ import {
   TrendingUp,
   Clock,
   Volume2,
-  VolumeX
+  VolumeX,
+  History
 } from "lucide-react";
 import { CreatorsOnboardingOverview } from "@/components/dashboard/CreatorsOnboardingOverview";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
+import { useNotificationHistory } from "@/hooks/useNotificationHistory";
+import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminControlsOverviewProps {
   onNavigate: (tab: string) => void;
@@ -34,6 +39,7 @@ interface QuickStats {
 }
 
 export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps) {
+  const { user } = useAuth();
   const [stats, setStats] = useState<QuickStats>({
     pendingApplications: 0,
     pendingAccessRequests: 0,
@@ -43,7 +49,9 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
     openSupportTickets: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
   const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
+  const { logNotification, unreadCount } = useNotificationHistory(user?.id);
 
   useEffect(() => {
     fetchAdminStats();
@@ -54,6 +62,12 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_applications' }, (payload) => {
         console.log('New application received:', payload);
         playNotificationSound();
+        logNotification(
+          'application',
+          'New Creator Application',
+          `Application received from ${payload.new.name}`,
+          'normal'
+        );
         fetchAdminStats();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_applications' }, () => {
@@ -66,6 +80,12 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_access_levels' }, (payload) => {
         console.log('New access request:', payload);
         playNotificationSound();
+        logNotification(
+          'access_request',
+          'New Access Request',
+          `Creator needs access approval`,
+          'urgent'
+        );
         fetchAdminStats();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_access_levels' }, () => {
@@ -78,6 +98,12 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'content_uploads' }, (payload) => {
         console.log('New content uploaded:', payload);
         playNotificationSound();
+        logNotification(
+          'content',
+          'New Content to Review',
+          `New ${payload.new.content_type || 'content'} uploaded`,
+          'normal'
+        );
         fetchAdminStats();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'content_uploads' }, () => {
@@ -90,6 +116,12 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_tickets' }, (payload) => {
         console.log('New support ticket:', payload);
         playNotificationSound();
+        logNotification(
+          'support',
+          'New Support Ticket',
+          `${payload.new.subject}`,
+          'normal'
+        );
         fetchAdminStats();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'support_tickets' }, () => {
@@ -103,7 +135,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       supabase.removeChannel(contentChannel);
       supabase.removeChannel(ticketsChannel);
     };
-  }, [playNotificationSound]);
+  }, [playNotificationSound, logNotification]);
 
   const fetchAdminStats = async () => {
     try {
@@ -219,10 +251,10 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
 
   return (
     <div className="space-y-6">
-      {/* Sound Notification Toggle */}
+      {/* Settings & History Bar */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {isSoundEnabled ? (
                 <Volume2 className="w-4 h-4 text-primary" />
@@ -232,15 +264,37 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
               <Label htmlFor="sound-notifications" className="cursor-pointer">
                 Sound notifications for new tasks
               </Label>
+              <Switch
+                id="sound-notifications"
+                checked={isSoundEnabled}
+                onCheckedChange={toggleSound}
+              />
             </div>
-            <Switch
-              id="sound-notifications"
-              checked={isSoundEnabled}
-              onCheckedChange={toggleSound}
-            />
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowHistory(true)}
+              className="relative"
+            >
+              <History className="w-4 h-4 mr-2" />
+              Notification History
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1.5">
+                  {unreadCount}
+                </Badge>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Notification History Dialog */}
+      <Dialog open={showHistory} onOpenChange={setShowHistory}>
+        <DialogContent className="max-w-3xl">
+          {user && <NotificationHistoryPanel userId={user.id} onClose={() => setShowHistory(false)} />}
+        </DialogContent>
+      </Dialog>
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
