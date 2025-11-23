@@ -318,9 +318,46 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
         </DialogContent>
       </Dialog>
 
-      {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        {quickActions.map((action) => (
+      {/* Featured Action - Most Important */}
+      {(() => {
+        const featuredAction = quickActions[0];
+        const FeaturedIcon = featuredAction.icon;
+        
+        return (
+          <Card
+            className={`cursor-pointer transition-all hover:shadow-xl ${
+              featuredAction.urgent ? "border-2 border-primary ring-2 ring-primary/20" : ""
+            }`}
+            onClick={featuredAction.action}
+          >
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-xl ${featuredAction.bgColor} flex items-center justify-center`}>
+                    <FeaturedIcon className={`w-8 h-8 ${featuredAction.color}`} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl mb-1">{featuredAction.title}</CardTitle>
+                    <CardDescription className="text-base flex items-center gap-2">
+                      {featuredAction.description}
+                      {featuredAction.urgent && (
+                        <Badge variant="destructive">Urgent - Action Required</Badge>
+                      )}
+                    </CardDescription>
+                  </div>
+                </div>
+                <Button size="lg" variant={featuredAction.urgent ? "default" : "outline"}>
+                  View Now
+                </Button>
+              </div>
+            </CardHeader>
+          </Card>
+        );
+      })()}
+
+      {/* Quick Actions Grid - 4 Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {quickActions.slice(1).map((action) => (
           <Card
             key={action.title}
             className={`cursor-pointer transition-all hover:shadow-lg ${
