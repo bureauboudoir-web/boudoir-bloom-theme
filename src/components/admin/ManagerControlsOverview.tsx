@@ -46,6 +46,37 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
 
   useEffect(() => {
     fetchManagerData();
+
+    // Subscribe to realtime updates
+    const meetingsChannel = supabase
+      .channel('manager-meetings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_meetings' }, () => {
+        console.log('Meetings changed, refreshing manager data');
+        fetchManagerData();
+      })
+      .subscribe();
+
+    const onboardingChannel = supabase
+      .channel('manager-onboarding-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'onboarding_data' }, () => {
+        console.log('Onboarding data changed, refreshing manager data');
+        fetchManagerData();
+      })
+      .subscribe();
+
+    const profilesChannel = supabase
+      .channel('manager-profiles-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `assigned_manager_id=eq.${managerId}` }, () => {
+        console.log('Assigned creators changed, refreshing manager data');
+        fetchManagerData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(meetingsChannel);
+      supabase.removeChannel(onboardingChannel);
+      supabase.removeChannel(profilesChannel);
+    };
   }, [managerId]);
 
   const fetchManagerData = async () => {
