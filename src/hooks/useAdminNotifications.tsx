@@ -3,12 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "./useUserRole";
 
 export const useAdminNotifications = () => {
-  const { isSuperAdmin, isAdmin } = useUserRole();
+  const { isSuperAdmin, isAdmin, isManager } = useUserRole();
   const [newSupportTickets, setNewSupportTickets] = useState(0);
   const [pendingReviews, setPendingReviews] = useState(0);
   const [pendingInvoiceConfirmations, setPendingInvoiceConfirmations] = useState(0);
   const [overdueCommitments, setOverdueCommitments] = useState(0);
   const [upcomingMeetings, setUpcomingMeetings] = useState(0);
+  const [pendingActivations, setPendingActivations] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -75,6 +76,33 @@ export const useAdminNotifications = () => {
 
           const { count: meetingsCount } = await meetingsQuery;
           setUpcomingMeetings(meetingsCount || 0);
+
+          // Count pending activations (creators with meeting_only access)
+          let activationsQuery = supabase
+            .from('creator_access_levels')
+            .select('user_id', { count: 'exact', head: true })
+            .eq('access_level', 'meeting_only');
+
+          // If manager (not admin), only count assigned creators
+          if (isManager && !isAdmin && !isSuperAdmin) {
+            // Get creator IDs assigned to this manager
+            const { data: assignedCreators } = await supabase
+              .from('creator_meetings')
+              .select('user_id')
+              .eq('assigned_manager_id', user.id);
+            
+            const assignedUserIds = assignedCreators?.map(c => c.user_id) || [];
+            if (assignedUserIds.length > 0) {
+              activationsQuery = activationsQuery.in('user_id', assignedUserIds);
+            } else {
+              setPendingActivations(0);
+            }
+          }
+
+          if (isAdmin || isSuperAdmin || (isManager && user)) {
+            const { count: activationsCount } = await activationsQuery;
+            setPendingActivations(activationsCount || 0);
+          }
         }
       } catch (error) {
         console.error('Error fetching admin notifications:', error);
@@ -168,7 +196,7 @@ export const useAdminNotifications = () => {
       supabase.removeChannel(commitmentsChannel);
       supabase.removeChannel(meetingsChannel);
     };
-  }, [isSuperAdmin, isAdmin]);
+  }, [isSuperAdmin, isAdmin, isManager]);
 
   return {
     newSupportTickets,
@@ -176,12 +204,14 @@ export const useAdminNotifications = () => {
     pendingInvoiceConfirmations,
     overdueCommitments,
     upcomingMeetings,
+    pendingActivations,
     loading,
     totalNotifications:
       newSupportTickets +
       pendingReviews +
       pendingInvoiceConfirmations +
       overdueCommitments +
-      upcomingMeetings,
+      upcomingMeetings +
+      pendingActivations,
   };
 };
