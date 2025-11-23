@@ -148,61 +148,127 @@ const Home = () => {
             Our Creator Services
           </h2>
           
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-            {/* Planning */}
-            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
-              <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                  <Lightbulb className="w-7 h-7 text-[#d1ae94]" />
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            {/* Left: Main Content */}
+            <div className="space-y-8">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                We provide comprehensive end-to-end support for creators, handling every aspect of your digital presence 
+                so you can focus on what you do best.
+              </p>
+              
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Strategic Brand Development</h4>
+                    <p className="text-sm text-muted-foreground">
+                      We craft your unique persona, define boundaries, and position you strategically in the market for maximum appeal and authenticity.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Professional Content Production</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Studio-quality shoots with expert lighting, styling, and direction. High-end visual content that sets you apart from amateur creators.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Data-Driven Marketing</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Proven content strategies, audience building techniques, and social media optimization backed by analytics and performance tracking.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Round-the-Clock Support</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Dedicated team access 24/7, real-time analytics, strategic guidance, and continuous optimization of your creator business.
+                    </p>
+                  </div>
                 </div>
               </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Planning</h3>
-              <p className="text-sm text-muted-foreground">
-                Persona development, boundaries, brand strategy, and market positioning.
-              </p>
-            </Card>
-
-            {/* Production */}
-            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
-              <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                  <Camera className="w-7 h-7 text-[#d1ae94]" />
-                </div>
-              </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Production</h3>
-              <p className="text-sm text-muted-foreground">
-                Studio shoots, lighting, styling, posing, and high-end visual content.
-              </p>
-            </Card>
-
-            {/* Marketing */}
-            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
-              <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                  <Megaphone className="w-7 h-7 text-[#d1ae94]" />
-                </div>
-              </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Marketing    </h3>
-              <p className="text-sm text-muted-foreground">
-                Content strategy, storytelling, social hooks, and audience building.
-              </p>
-            </Card>
-
-            {/* Sales */}
+            </div>
             
-
-            {/* Support */}
-            <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all text-center p-6 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
-              <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                  <HeadphonesIcon className="w-7 h-7 text-[#d1ae94]" />
+            {/* Right: Service Cards */}
+            <div className="grid grid-cols-1 gap-4">
+              {/* Planning */}
+              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                    <Lightbulb className="w-6 h-6 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Planning</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Persona development, boundaries, brand strategy, and market positioning.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <h3 className="font-serif text-lg font-bold mb-2 text-[#d1ae94]">Support</h3>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
-              </p>
-            </Card>
+              </Card>
+
+              {/* Production */}
+              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                    <Camera className="w-6 h-6 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Production</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Studio shoots, lighting, styling, posing, and high-end visual content.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Marketing */}
+              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                    <Megaphone className="w-6 h-6 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Marketing</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Content strategy, storytelling, social hooks, and audience building.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Support */}
+              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
+                    <HeadphonesIcon className="w-6 h-6 text-[#d1ae94]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Support</h3>
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
