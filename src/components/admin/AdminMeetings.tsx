@@ -260,36 +260,34 @@ export const AdminMeetings = () => {
                 <Clock className="h-4 w-4 flex-shrink-0" />
                 <span>{meeting.meeting_time || "Not set"} ({meeting.duration_minutes}min)</span>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                {meeting.meeting_type === 'online' ? (
-                  <>
-                    <Video className="h-4 w-4 flex-shrink-0" />
-                    Online Meeting
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="h-4 w-4 flex-shrink-0" />
-                    In-Person
-                  </>
-                )}
-              </div>
             </div>
 
-            {meeting.meeting_link && (
-              <div className="text-sm break-all">
-                <span className="text-muted-foreground">Link: </span>
-                <a href={meeting.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                  {meeting.meeting_link}
-                </a>
-              </div>
-            )}
-
-            {meeting.meeting_location && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Location: </span>
-                <span className="text-foreground">{meeting.meeting_location}</span>
-              </div>
-            )}
+            {/* Meeting Type and Location/Link */}
+            <div className="space-y-2 text-sm">
+              {meeting.meeting_type === 'online' ? (
+                <div className="flex items-start gap-2 text-muted-foreground">
+                  <Video className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <span className="block">Online Meeting</span>
+                    {meeting.meeting_link && (
+                      <a href={meeting.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">
+                        {meeting.meeting_link}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2 text-muted-foreground">
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <span className="block">In-Person</span>
+                    {meeting.meeting_location && (
+                      <span className="text-foreground">{meeting.meeting_location}</span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Reschedule Request UI */}
             {meeting.reschedule_requested && meeting.reschedule_new_date && (
