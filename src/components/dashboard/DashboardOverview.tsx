@@ -373,25 +373,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Manage Applications",
           icon: ClipboardList,
-          action: () => onNavigate ? onNavigate('applications') : navigate('/admin'),
+          action: () => onNavigate('admin'),
           variant: "default" as const,
         },
         {
           label: "Review Content",
           icon: FileCheck,
-          action: () => onNavigate ? onNavigate('review') : navigate('/admin'),
+          action: () => onNavigate('admin'),
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
           icon: Users,
-          action: () => onNavigate ? onNavigate('creators') : navigate('/admin'),
+          action: () => onNavigate('admin'),
           variant: "secondary" as const,
         },
         {
-          label: "System Settings",
-          icon: Settings,
-          action: () => navigate('/settings'),
+          label: "Analytics",
+          icon: BarChart3,
+          action: () => onNavigate('admin'),
           variant: "outline" as const,
         },
       ];
