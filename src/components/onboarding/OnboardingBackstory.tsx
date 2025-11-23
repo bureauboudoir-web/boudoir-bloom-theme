@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import {
 import { MapPin, Heart, User, Sparkles, Palette, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { OnboardingData } from "@/hooks/useOnboarding";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingBackstoryProps {
   onNext: () => void;
@@ -144,6 +145,47 @@ const OnboardingBackstory = ({
       setBecoming(onboardingData.backstory_becoming || "");
     }
   }, [onboardingData]);
+
+  // Auto-save data
+  const backstoryData = useMemo(() => ({
+    backstory_years_in_amsterdam: yearsInAmsterdam,
+    backstory_neighborhood: neighborhood,
+    backstory_years_working_centrum: yearsWorkingCentrum,
+    backstory_what_brought_you: whatBroughtYou,
+    backstory_what_you_love: whatYouLove,
+    backstory_rld_fascination: rldFascination,
+    backstory_rld_feeling: rldFeeling,
+    backstory_rld_atmosphere: rldAtmosphere,
+    backstory_career_story: careerStory,
+    backstory_past_shaped_you: pastShapedYou,
+    backstory_content_expression: contentExpression,
+    backstory_alter_ego: alterEgo,
+    backstory_persona_sentence: personaSentence,
+    backstory_character_secret: characterSecret,
+    backstory_moment_changed_you: momentChangedYou,
+    backstory_confident_spot: confidentSpot,
+    backstory_vulnerable_spot: vulnerableSpot,
+    backstory_colors: colors,
+    backstory_lighting: lighting,
+    backstory_time_of_night: timeOfNight,
+    backstory_amsterdam_goals: amsterdamGoals,
+    backstory_how_changed: howChanged,
+    backstory_becoming: becoming,
+  }), [
+    yearsInAmsterdam, neighborhood, yearsWorkingCentrum, whatBroughtYou, whatYouLove,
+    rldFascination, rldFeeling, rldAtmosphere, careerStory, pastShapedYou,
+    contentExpression, alterEgo, personaSentence, characterSecret, momentChangedYou,
+    confidentSpot, vulnerableSpot, colors, lighting, timeOfNight,
+    amsterdamGoals, howChanged, becoming
+  ]);
+
+  useAutoSave({
+    data: backstoryData,
+    onSave: async (data) => {
+      await onComplete(6, data);
+    },
+    delay: 2000,
+  });
 
   const toggleAtmosphere = (value: string) => {
     setRldAtmosphere(prev =>
