@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -10,9 +12,12 @@ import {
   AlertCircle,
   CheckCircle,
   UserCog,
-  Video
+  Video,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
+import { useSoundNotification } from "@/hooks/useSoundNotification";
 
 interface ManagerControlsOverviewProps {
   managerId: string;
@@ -43,6 +48,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
   const [upcomingMeetings, setUpcomingMeetings] = useState<UpcomingMeeting[]>([]);
   const [pendingTasks, setPendingTasks] = useState(0);
   const [loading, setLoading] = useState(true);
+  const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
 
   useEffect(() => {
     fetchManagerData();
@@ -50,24 +56,43 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
     // Subscribe to realtime updates
     const meetingsChannel = supabase
       .channel('manager-meetings-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_meetings' }, () => {
-        console.log('Meetings changed, refreshing manager data');
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_meetings' }, (payload) => {
+        console.log('New meeting scheduled:', payload);
+        playNotificationSound();
+        fetchManagerData();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_meetings' }, (payload) => {
+        // Play sound only for status changes to 'confirmed' or reschedule requests
+        if (payload.new.status === 'confirmed' || payload.new.reschedule_requested) {
+          playNotificationSound();
+        }
         fetchManagerData();
       })
       .subscribe();
 
     const onboardingChannel = supabase
       .channel('manager-onboarding-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'onboarding_data' }, () => {
-        console.log('Onboarding data changed, refreshing manager data');
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'onboarding_data' }, (payload) => {
+        // Play sound when creator gets stuck (not updated in 7+ days)
+        const oldDate = new Date(payload.old.updated_at);
+        const newDate = new Date(payload.new.updated_at);
+        const daysDiff = Math.floor((newDate.getTime() - oldDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysDiff > 7 && !payload.new.is_completed) {
+          playNotificationSound();
+        }
         fetchManagerData();
       })
       .subscribe();
 
     const profilesChannel = supabase
       .channel('manager-profiles-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `assigned_manager_id=eq.${managerId}` }, () => {
-        console.log('Assigned creators changed, refreshing manager data');
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `assigned_manager_id=eq.${managerId}` }, (payload) => {
+        // Play sound when a new creator is assigned
+        if (payload.old.assigned_manager_id !== managerId && payload.new.assigned_manager_id === managerId) {
+          console.log('New creator assigned:', payload);
+          playNotificationSound();
+        }
         fetchManagerData();
       })
       .subscribe();
@@ -77,7 +102,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       supabase.removeChannel(onboardingChannel);
       supabase.removeChannel(profilesChannel);
     };
-  }, [managerId]);
+  }, [managerId, playNotificationSound]);
 
   const fetchManagerData = async () => {
     try {
@@ -182,6 +207,29 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
 
   return (
     <div className="space-y-6">
+      {/* Sound Notification Toggle */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isSoundEnabled ? (
+                <Volume2 className="w-4 h-4 text-primary" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-muted-foreground" />
+              )}
+              <Label htmlFor="manager-sound-notifications" className="cursor-pointer">
+                Sound notifications for new tasks
+              </Label>
+            </div>
+            <Switch
+              id="manager-sound-notifications"
+              checked={isSoundEnabled}
+              onCheckedChange={toggleSound}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Quick Stats */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
