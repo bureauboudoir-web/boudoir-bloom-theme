@@ -72,6 +72,8 @@ const Dashboard = () => {
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager">("overview");
+  const [adminSubTab, setAdminSubTab] = useState<string>("overview");
+  const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -533,7 +535,7 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <Tabs defaultValue="overview" className="space-y-6">
+                  <Tabs value={adminSubTab} onValueChange={setAdminSubTab} className="space-y-6">
                     <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
                       <TabsTrigger value="overview">Overview</TabsTrigger>
                       <TabsTrigger value="applications">Applications</TabsTrigger>
@@ -555,7 +557,7 @@ const Dashboard = () => {
                     </TabsList>
 
                     <TabsContent value="overview">
-                      <AdminControlsOverview onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                      <AdminControlsOverview onNavigate={(tab) => setAdminSubTab(tab)} />
                     </TabsContent>
 
                     <TabsContent value="applications">
@@ -637,7 +639,7 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <Tabs defaultValue="overview" className="space-y-6">
+                  <Tabs value={managerSubTab} onValueChange={setManagerSubTab} className="space-y-6">
                     <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
                       <TabsTrigger value="overview">Overview</TabsTrigger>
                       <TabsTrigger value="applications">Applications</TabsTrigger>
@@ -652,7 +654,7 @@ const Dashboard = () => {
 
                     <TabsContent value="overview" className="space-y-4">
                       <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
-                      <ManagerControlsOverview managerId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                      <ManagerControlsOverview managerId={user.id} onNavigate={(tab) => setManagerSubTab(tab)} />
                     </TabsContent>
 
                     <TabsContent value="applications">
