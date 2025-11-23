@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock, Lock, AlertCircle } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock, Lock, AlertCircle, Settings } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 import { AccessLevel } from "@/hooks/useAccessLevel";
@@ -107,9 +107,15 @@ export const CreatorProfile = ({
           <h2 className="text-2xl font-bold">Creator Profile</h2>
           <p className="text-muted-foreground">Your onboarding information</p>
         </div>
-        <Badge variant={isOnboardingComplete ? "default" : "secondary"}>
-          {isOnboardingComplete ? "Profile Complete" : "In Progress"}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => window.location.hash = '#settings'}>
+            <Settings className="h-4 w-4 mr-2" />
+            Edit Settings
+          </Button>
+          <Badge variant={isOnboardingComplete ? "default" : "secondary"}>
+            {isOnboardingComplete ? "Profile Complete" : "In Progress"}
+          </Badge>
+        </div>
       </div>
 
       {!isOnboardingComplete && (

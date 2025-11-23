@@ -450,7 +450,7 @@ const Dashboard = () => {
             )}
 
             {activeTab === "settings" && user && (
-              <Settings userId={user.id} />
+              <Settings userId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
             )}
             
             {activeTab === "upload" && user && accessLevel === 'full_access' && (
