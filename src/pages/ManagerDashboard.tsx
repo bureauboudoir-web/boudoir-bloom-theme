@@ -29,6 +29,7 @@ const ManagerDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
   const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "settings">("applications");
+  const [showWelcome, setShowWelcome] = useState(false);
   
   const {
     newSupportTickets,
@@ -103,9 +104,6 @@ const ManagerDashboard = () => {
       </div>
     );
   }
-
-  // Check if this is first time login
-  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     const checkFirstLogin = async () => {

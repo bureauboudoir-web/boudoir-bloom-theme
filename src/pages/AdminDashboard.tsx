@@ -47,6 +47,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
   const [creatingTestAccounts, setCreatingTestAccounts] = useState(false);
   const [testAccountsCreated, setTestAccountsCreated] = useState<any[]>([]);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const handleCreateTestAccounts = async () => {
     setCreatingTestAccounts(true);
@@ -166,9 +167,6 @@ const AdminDashboard = () => {
   if (!isAdmin && !isSuperAdmin) {
     return null;
   }
-
-  // Check if this is first time login
-  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     const checkFirstLogin = async () => {
