@@ -5,10 +5,41 @@ import { Badge } from "@/components/ui/badge";
 import { useCreatorTimeline } from "@/hooks/useCreatorTimeline";
 import { CheckCircle2, Circle, Lock } from "lucide-react";
 import { format } from "date-fns";
+import { AccessLevel } from "@/hooks/useAccessLevel";
+import { useMemo } from "react";
 
-export const CreatorTimeline = () => {
+interface CreatorTimelineProps {
+  accessLevel?: AccessLevel;
+  meetingCompleted?: boolean;
+}
+
+export const CreatorTimeline = ({ accessLevel, meetingCompleted }: CreatorTimelineProps = {}) => {
   const { t } = useTranslation();
   const { data: timeline, isLoading } = useCreatorTimeline();
+
+  // Filter visible stages based on access level
+  const visibleStages = useMemo(() => {
+    if (!timeline?.stages) return [];
+    
+    // If user has full access or meeting completed, show all stages
+    if (accessLevel === 'full_access' || meetingCompleted) {
+      return timeline.stages;
+    }
+    
+    // If meeting_only, only show pre-meeting stages (Application & Meeting)
+    if (accessLevel === 'meeting_only') {
+      return timeline.stages.slice(0, 2); // First 2 stages only
+    }
+    
+    return timeline.stages;
+  }, [timeline?.stages, accessLevel, meetingCompleted]);
+
+  // Calculate adjusted progress based on visible stages
+  const adjustedProgress = useMemo(() => {
+    if (visibleStages.length === 0) return 0;
+    const completedCount = visibleStages.filter(s => s.status === 'completed').length;
+    return Math.round((completedCount / visibleStages.length) * 100);
+  }, [visibleStages]);
 
   if (isLoading) {
     return (
@@ -77,11 +108,11 @@ export const CreatorTimeline = () => {
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Overall Progress</span>
-          <span className="font-semibold">{timeline.progressPercentage}%</span>
+          <span className="font-semibold">{adjustedProgress}%</span>
         </div>
-        <Progress value={timeline.progressPercentage} className="h-3" />
+        <Progress value={adjustedProgress} className="h-3" />
         <p className="text-xs text-muted-foreground">
-          {timeline.completedStages} of {timeline.totalStages} stages completed
+          {visibleStages.filter(s => s.status === 'completed').length} of {visibleStages.length} stages completed
         </p>
       </div>
 
@@ -90,7 +121,7 @@ export const CreatorTimeline = () => {
         {/* Vertical line */}
         <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-border" />
 
-        {timeline.stages.map((stage, index) => (
+        {visibleStages.map((stage, index) => (
           <div
             key={stage.id}
             className={`relative flex gap-4 p-4 rounded-lg border-2 transition-all ${getStatusColor(

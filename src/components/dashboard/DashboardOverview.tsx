@@ -50,9 +50,10 @@ interface DashboardOverviewProps {
   userId: string;
   onNavigate: (tab: string) => void;
   accessLevel?: 'no_access' | 'meeting_only' | 'full_access';
+  meetingCompleted?: boolean;
 }
 
-export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_access' }: DashboardOverviewProps) => {
+export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_access', meetingCompleted }: DashboardOverviewProps) => {
   const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     pendingCommitments: 0,
@@ -527,7 +528,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
             <CardDescription>Track your progress through the onboarding process</CardDescription>
           </CardHeader>
           <CardContent>
-            <CreatorTimeline />
+            <CreatorTimeline accessLevel={accessLevel} meetingCompleted={meetingCompleted} />
           </CardContent>
         </Card>
 

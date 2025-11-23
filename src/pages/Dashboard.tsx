@@ -334,6 +334,7 @@ const Dashboard = () => {
                 userId={user.id}
                 onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
                 accessLevel={accessLevel}
+                meetingCompleted={meetingStatus?.meetingCompleted}
               />
             )}
 
@@ -379,6 +380,8 @@ const Dashboard = () => {
                   setCurrentStep(step);
                   setActiveTab("onboarding");
                 }}
+                accessLevel={accessLevel}
+                meetingCompleted={meetingStatus?.meetingCompleted}
               />
             )}
             
