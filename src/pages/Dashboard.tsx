@@ -65,7 +65,7 @@ const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
-  const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isSuperAdmin, isManagerOnly, isCreator, isManager, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager">("overview");
@@ -311,6 +311,8 @@ const Dashboard = () => {
                       isAdmin={isAdmin}
                       isSuperAdmin={isSuperAdmin}
                       isManagerOnly={isManagerOnly}
+                      isCreator={isCreator}
+                      isManager={isManager}
                       onAdminClick={() => setActiveTab("admin")}
                       onManagerClick={() => setActiveTab("manager")}
                       onMobileMenuClose={() => setMobileMenuOpen(false)}
@@ -355,6 +357,8 @@ const Dashboard = () => {
               isAdmin={isAdmin}
               isSuperAdmin={isSuperAdmin}
               isManagerOnly={isManagerOnly}
+              isCreator={isCreator}
+              isManager={isManager}
               onAdminClick={() => setActiveTab("admin")}
               onManagerClick={() => setActiveTab("manager")}
               accessLevel={accessLevel}
