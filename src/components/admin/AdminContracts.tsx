@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Download, CheckCircle2, XCircle, FileText } from "lucide-react";
+import { Upload, Download, CheckCircle2, XCircle, FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { ContractGenerator } from "./ContractGenerator";
 
 interface Creator {
   id: string;
@@ -23,6 +24,10 @@ interface Contract {
   contract_signed: boolean;
   template_uploaded_at: string | null;
   signed_at: string | null;
+  generated_pdf_url: string | null;
+  generation_status: string | null;
+  contract_data: any;
+  contract_version: string | null;
 }
 
 export const AdminContracts = () => {
@@ -33,6 +38,8 @@ export const AdminContracts = () => {
   const [selectedCreator, setSelectedCreator] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showContractGenerator, setShowContractGenerator] = useState(false);
+  const [selectedCreatorForGeneration, setSelectedCreatorForGeneration] = useState<string>();
 
   useEffect(() => {
     if (user) {
@@ -205,9 +212,29 @@ export const AdminContracts = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Upload Contract Template</CardTitle>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Contract Management</CardTitle>
+              <CardDescription>
+                Generate new contracts or upload templates for creators
+              </CardDescription>
+            </div>
+            <Button 
+              onClick={() => setShowContractGenerator(true)}
+              className="bg-rose-gold hover:bg-rose-gold/90"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Generate New Contract
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Upload Contract Template (Legacy)</CardTitle>
           <CardDescription>
-            Upload a contract template for a specific creator
+            Upload a contract template for a specific creator (old method)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -263,6 +290,7 @@ export const AdminContracts = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Creator</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Template</TableHead>
                 <TableHead>Signed</TableHead>
                 <TableHead>Actions</TableHead>
@@ -278,6 +306,15 @@ export const AdminContracts = () => {
                         <div className="font-medium">{creator.full_name}</div>
                         <div className="text-sm text-muted-foreground">{creator.email}</div>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      {contract?.generation_status === 'generated' ? (
+                        <span className="text-sm text-green-600">Generated</span>
+                      ) : contract?.generation_status === 'pending' ? (
+                        <span className="text-sm text-yellow-600">Pending</span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Not generated</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {contract?.contract_template_url ? (
@@ -304,13 +341,34 @@ export const AdminContracts = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
+                        <Button
+                          onClick={() => {
+                            setSelectedCreatorForGeneration(creator.id);
+                            setShowContractGenerator(true);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="text-rose-gold border-rose-gold hover:bg-rose-gold/10"
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Generate
+                        </Button>
+                        {contract?.generated_pdf_url && (
+                          <Button
+                            onClick={() => window.open(contract.generated_pdf_url!, '_blank')}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        )}
                         {contract?.contract_template_url && (
                           <Button
                             onClick={() => downloadContract(contract.contract_template_url!, 'template.pdf')}
                             variant="outline"
                             size="sm"
                           >
-                            <Download className="h-4 w-4" />
+                            <FileText className="h-4 w-4" />
                           </Button>
                         )}
                         {contract?.signed_contract_url && (
@@ -332,6 +390,18 @@ export const AdminContracts = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <ContractGenerator
+        open={showContractGenerator}
+        onOpenChange={(open) => {
+          setShowContractGenerator(open);
+          if (!open) {
+            setSelectedCreatorForGeneration(undefined);
+            fetchContracts(); // Refresh contracts after closing
+          }
+        }}
+        creatorId={selectedCreatorForGeneration}
+      />
     </div>
   );
 };

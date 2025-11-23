@@ -22,6 +22,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ContractPreview } from "./ContractPreview";
+import { useContractGeneration } from "@/hooks/useContractGeneration";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
@@ -55,6 +56,7 @@ interface ContractGeneratorProps {
 
 export const ContractGenerator = ({ open, onOpenChange, creatorId }: ContractGeneratorProps) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const { generateContract, isGenerating } = useContractGeneration();
   const [contractData, setContractData] = useState<ContractData>({
     creator_id: "",
     creator_name: "",
@@ -164,8 +166,20 @@ export const ContractGenerator = ({ open, onOpenChange, creatorId }: ContractGen
   };
 
   const handleGeneratePDF = async () => {
-    toast.success("PDF generation will be implemented in Session 2");
-    onOpenChange(false);
+    try {
+      const result = await generateContract(contractData);
+      console.log("Contract generated:", result);
+      toast.success("Contract PDF generated successfully!");
+      
+      // Wait a moment to show success message, then close
+      setTimeout(() => {
+        onOpenChange(false);
+        setStep(1); // Reset to step 1 for next use
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to generate contract:", error);
+      // Error toast already shown in useContractGeneration
+    }
   };
 
   return (
@@ -381,11 +395,15 @@ export const ContractGenerator = ({ open, onOpenChange, creatorId }: ContractGen
             </Card>
 
             <div className="flex justify-between">
-              <Button variant="outline" onClick={handleBack}>
+              <Button variant="outline" onClick={handleBack} disabled={isGenerating}>
                 <ChevronLeft className="w-4 h-4 mr-2" /> Back to Preview
               </Button>
-              <Button onClick={handleGeneratePDF} className="bg-rose-gold hover:bg-rose-gold/90">
-                Complete
+              <Button 
+                onClick={handleGeneratePDF} 
+                className="bg-rose-gold hover:bg-rose-gold/90"
+                disabled={isGenerating}
+              >
+                {isGenerating ? "Generating PDF..." : "Generate PDF & Send"}
               </Button>
             </div>
           </div>
