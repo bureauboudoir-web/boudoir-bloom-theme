@@ -62,6 +62,7 @@ import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabil
 import { AccessManagement } from "@/components/admin/AccessManagement";
 import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
+import { Analytics } from "@/components/admin/Analytics";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -543,6 +544,7 @@ const Dashboard = () => {
                   <Tabs value={adminSubTab} onValueChange={setAdminSubTab} className="space-y-6">
                     <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
                       <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="analytics">Analytics</TabsTrigger>
                       <TabsTrigger value="applications">Applications</TabsTrigger>
                       <TabsTrigger value="creators">Creators</TabsTrigger>
                       <TabsTrigger value="commitments">Commitments</TabsTrigger>
@@ -563,6 +565,10 @@ const Dashboard = () => {
 
                     <TabsContent value="overview">
                       <AdminControlsOverview onNavigate={(tab) => setAdminSubTab(tab)} />
+                    </TabsContent>
+
+                    <TabsContent value="analytics">
+                      <Analytics />
                     </TabsContent>
 
                     <TabsContent value="applications">
