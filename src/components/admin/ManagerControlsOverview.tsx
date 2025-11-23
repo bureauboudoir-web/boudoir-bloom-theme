@@ -14,10 +14,14 @@ import {
   UserCog,
   Video,
   Volume2,
-  VolumeX
+  VolumeX,
+  History
 } from "lucide-react";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
+import { useNotificationHistory } from "@/hooks/useNotificationHistory";
+import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ManagerControlsOverviewProps {
   managerId: string;
@@ -48,7 +52,9 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
   const [upcomingMeetings, setUpcomingMeetings] = useState<UpcomingMeeting[]>([]);
   const [pendingTasks, setPendingTasks] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
   const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
+  const { logNotification, unreadCount } = useNotificationHistory(managerId);
 
   useEffect(() => {
     fetchManagerData();
@@ -59,12 +65,26 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_meetings' }, (payload) => {
         console.log('New meeting scheduled:', payload);
         playNotificationSound();
+        logNotification(
+          'meeting',
+          'New Meeting Scheduled',
+          `Meeting scheduled with creator`,
+          'normal'
+        );
         fetchManagerData();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_meetings' }, (payload) => {
         // Play sound only for status changes to 'confirmed' or reschedule requests
         if (payload.new.status === 'confirmed' || payload.new.reschedule_requested) {
           playNotificationSound();
+          logNotification(
+            'meeting',
+            payload.new.reschedule_requested ? 'Meeting Reschedule Request' : 'Meeting Confirmed',
+            payload.new.reschedule_requested 
+              ? `Creator requested to reschedule meeting: ${payload.new.reschedule_reason}` 
+              : 'Meeting has been confirmed',
+            payload.new.reschedule_requested ? 'urgent' : 'normal'
+          );
         }
         fetchManagerData();
       })
@@ -92,6 +112,12 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         if (payload.old.assigned_manager_id !== managerId && payload.new.assigned_manager_id === managerId) {
           console.log('New creator assigned:', payload);
           playNotificationSound();
+          logNotification(
+            'creator_assigned',
+            'New Creator Assigned',
+            `${payload.new.full_name || 'A creator'} has been assigned to you`,
+            'normal'
+          );
         }
         fetchManagerData();
       })
@@ -102,7 +128,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       supabase.removeChannel(onboardingChannel);
       supabase.removeChannel(profilesChannel);
     };
-  }, [managerId, playNotificationSound]);
+  }, [managerId, playNotificationSound, logNotification]);
 
   const fetchManagerData = async () => {
     try {
@@ -207,10 +233,10 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
 
   return (
     <div className="space-y-6">
-      {/* Sound Notification Toggle */}
+      {/* Settings & History Bar */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {isSoundEnabled ? (
                 <Volume2 className="w-4 h-4 text-primary" />
@@ -220,15 +246,37 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
               <Label htmlFor="manager-sound-notifications" className="cursor-pointer">
                 Sound notifications for new tasks
               </Label>
+              <Switch
+                id="manager-sound-notifications"
+                checked={isSoundEnabled}
+                onCheckedChange={toggleSound}
+              />
             </div>
-            <Switch
-              id="manager-sound-notifications"
-              checked={isSoundEnabled}
-              onCheckedChange={toggleSound}
-            />
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowHistory(true)}
+              className="relative"
+            >
+              <History className="w-4 h-4 mr-2" />
+              Notification History
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1.5">
+                  {unreadCount}
+                </Badge>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Notification History Dialog */}
+      <Dialog open={showHistory} onOpenChange={setShowHistory}>
+        <DialogContent className="max-w-3xl">
+          <NotificationHistoryPanel userId={managerId} onClose={() => setShowHistory(false)} />
+        </DialogContent>
+      </Dialog>
 
       {/* Quick Stats */}
       <div className="grid gap-4 md:grid-cols-3">
