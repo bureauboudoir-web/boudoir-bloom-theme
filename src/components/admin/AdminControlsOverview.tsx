@@ -16,7 +16,8 @@ import {
   Clock,
   Volume2,
   VolumeX,
-  History
+  History,
+  Calendar
 } from "lucide-react";
 import { CreatorsOnboardingOverview } from "@/components/dashboard/CreatorsOnboardingOverview";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
@@ -24,6 +25,7 @@ import { useNotificationHistory } from "@/hooks/useNotificationHistory";
 import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { TestDataGenerator } from "./TestDataGenerator";
 
 interface AdminControlsOverviewProps {
   onNavigate: (tab: string) => void;
@@ -36,6 +38,7 @@ interface QuickStats {
   totalCreators: number;
   activeContracts: number;
   openSupportTickets: number;
+  upcomingMeetings: number;
 }
 
 export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps) {
@@ -47,6 +50,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
     totalCreators: 0,
     activeContracts: 0,
     openSupportTickets: 0,
+    upcomingMeetings: 0,
   });
   const [loading, setLoading] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
@@ -175,6 +179,13 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
         .select('id')
         .eq('status', 'open');
 
+      // Upcoming meetings (confirmed or not_booked)
+      const { data: meetings } = await supabase
+        .from('creator_meetings')
+        .select('id')
+        .in('status', ['confirmed', 'not_booked'])
+        .gte('meeting_date', new Date().toISOString());
+
       setStats({
         pendingApplications: applications?.length || 0,
         pendingAccessRequests: accessRequests?.length || 0,
@@ -182,6 +193,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
         totalCreators: creators?.length || 0,
         activeContracts: contracts?.length || 0,
         openSupportTickets: tickets?.length || 0,
+        upcomingMeetings: meetings?.length || 0,
       });
     } catch (error) {
       console.error('Error fetching admin stats:', error);
@@ -217,6 +229,15 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       bgColor: "bg-purple-500/10",
       action: () => onNavigate("review"),
       urgent: stats.contentToReview > 0,
+    },
+    {
+      title: "Manage Meetings",
+      description: `${stats.upcomingMeetings} upcoming`,
+      icon: Calendar,
+      color: "text-indigo-500",
+      bgColor: "bg-indigo-500/10",
+      action: () => onNavigate("meetings"),
+      urgent: stats.upcomingMeetings > 0,
     },
     {
       title: "Support Tickets",
@@ -297,7 +318,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       </Dialog>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {quickActions.map((action) => (
           <Card
             key={action.title}
@@ -346,6 +367,9 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
           </div>
         </CardContent>
       </Card>
+
+      {/* Test Data Generator */}
+      <TestDataGenerator />
 
       {/* Creators Onboarding Overview */}
       <CreatorsOnboardingOverview onNavigate={onNavigate} />
