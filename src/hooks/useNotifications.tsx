@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTimelineNotifications } from "./useTimelineNotifications";
 
 export const useNotifications = (userId: string | undefined) => {
   const [pendingCommitments, setPendingCommitments] = useState(0);
   const [newInvoices, setNewInvoices] = useState(0);
   const [newSupportResponses, setNewSupportResponses] = useState(0);
   const [loading, setLoading] = useState(true);
+  
+  const { timelineNotifications, timelineCount } = useTimelineNotifications(userId);
 
   useEffect(() => {
     if (!userId) {
@@ -124,7 +127,8 @@ export const useNotifications = (userId: string | undefined) => {
     pendingCommitments,
     newInvoices,
     newSupportResponses,
+    timelineNotifications,
     loading,
-    totalNotifications: pendingCommitments + newInvoices + newSupportResponses,
+    totalNotifications: pendingCommitments + newInvoices + newSupportResponses + timelineCount,
   };
 };
