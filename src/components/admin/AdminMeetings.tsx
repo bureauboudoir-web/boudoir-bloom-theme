@@ -514,12 +514,15 @@ export const AdminMeetings = () => {
                 {stats.needsAction}
               </Badge>
             )}
+            <p className="text-[10px] text-muted-foreground hidden sm:block">Complete meetings to grant access</p>
           </TabsTrigger>
-          <TabsTrigger value="upcoming" className="py-2">
-            Upcoming ({upcomingMeetings.length})
+          <TabsTrigger value="upcoming" className="flex-col gap-1 py-2">
+            <span>Upcoming ({upcomingMeetings.length})</span>
+            <p className="text-[10px] text-muted-foreground hidden sm:block">Scheduled Meet Your Rep</p>
           </TabsTrigger>
-          <TabsTrigger value="past" className="py-2">
-            Past ({pastMeetings.length})
+          <TabsTrigger value="past" className="flex-col gap-1 py-2">
+            <span>Past ({pastMeetings.length})</span>
+            <p className="text-[10px] text-muted-foreground hidden sm:block">Completed & Cancelled</p>
           </TabsTrigger>
         </TabsList>
 
@@ -529,7 +532,7 @@ export const AdminMeetings = () => {
               <CardContent className="p-8 text-center">
                 <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
                 <p className="text-lg font-medium mb-1">All caught up!</p>
-                <p className="text-sm text-muted-foreground">No meetings need completion at this time</p>
+                <p className="text-sm text-muted-foreground">No "Meet Your Rep" meetings need completion</p>
               </CardContent>
             </Card>
           ) : (
@@ -543,7 +546,7 @@ export const AdminMeetings = () => {
           {paginatedUpcoming.length === 0 ? (
             <Card className="border-border">
               <CardContent className="p-8 text-center text-muted-foreground">
-                {searchQuery ? "No meetings match your search" : "No upcoming confirmed meetings"}
+                {searchQuery ? "No meetings match your search" : "No upcoming \"Meet Your Rep\" meetings scheduled"}
               </CardContent>
             </Card>
           ) : (
