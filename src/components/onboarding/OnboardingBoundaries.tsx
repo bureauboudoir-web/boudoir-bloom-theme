@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingBoundariesProps {
   onNext: () => void;
@@ -42,6 +43,21 @@ const OnboardingBoundaries = ({ onNext, onBack, onboardingData, onComplete }: On
       });
     }
   }, [onboardingData]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: formData,
+    onSave: async (data) => {
+      await onComplete(5, {
+        boundaries_comfortable_with: data.comfortableWith,
+        boundaries_hard_limits: data.hardLimits,
+        boundaries_soft_limits: data.softLimits,
+        boundaries_additional_notes: data.additionalNotes,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

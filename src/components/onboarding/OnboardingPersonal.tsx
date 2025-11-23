@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingPersonalProps {
   onNext: () => void;
@@ -51,6 +52,25 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
       });
     }
   }, [onboardingData, form]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: form.watch(),
+    onSave: async (data) => {
+      await onComplete(1, {
+        personal_full_name: data.fullName,
+        personal_date_of_birth: data.dateOfBirth,
+        personal_nationality: data.nationality,
+        personal_location: data.location,
+        personal_phone_number: data.phoneNumber,
+        personal_email: data.email,
+        personal_emergency_contact: data.emergencyContact,
+        personal_emergency_phone: data.emergencyPhone,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const onSubmit = async (values: z.infer<typeof onboardingPersonalSchema>) => {
     const stepData = {

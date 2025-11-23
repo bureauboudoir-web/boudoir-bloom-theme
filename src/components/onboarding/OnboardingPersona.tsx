@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingPersonaProps {
   onNext: () => void;
@@ -54,6 +55,23 @@ const OnboardingPersona = ({
       });
     }
   }, [onboardingData, form]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: form.watch(),
+    onSave: async (data) => {
+      await onComplete(2, {
+        persona_stage_name: data.stageName,
+        persona_description: data.description,
+        persona_backstory: data.backstory,
+        persona_personality: data.personality,
+        persona_interests: data.interests,
+        persona_fantasy: data.fantasy,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const onSubmit = async (values: z.infer<typeof onboardingPersonaSchema>) => {
     const stepData = {

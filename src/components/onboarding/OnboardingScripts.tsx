@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingScriptsProps {
   onNext: () => void;
@@ -30,6 +31,21 @@ const OnboardingScripts = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       });
     }
   }, [onboardingData]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: formData,
+    onSave: async (data) => {
+      await onComplete(9, {
+        scripts_greeting: data.greeting,
+        scripts_sexting: data.sexting,
+        scripts_ppv: data.ppv,
+        scripts_renewal: data.renewal,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

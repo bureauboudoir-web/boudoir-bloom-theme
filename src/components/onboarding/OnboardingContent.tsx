@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface OnboardingContentProps {
   onNext: () => void;
@@ -33,6 +34,22 @@ const OnboardingContent = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       });
     }
   }, [onboardingData]);
+
+  // Auto-save form data
+  useAutoSave({
+    data: formData,
+    onSave: async (data) => {
+      await onComplete(7, {
+        content_photo_count: data.photoCount ? parseInt(data.photoCount) : null,
+        content_video_count: data.videoCount ? parseInt(data.videoCount) : null,
+        content_themes: data.contentThemes,
+        content_shooting_preferences: data.shootingPreferences,
+        content_equipment_needs: data.equipmentNeeds,
+      });
+    },
+    delay: 2000,
+    enabled: true,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
