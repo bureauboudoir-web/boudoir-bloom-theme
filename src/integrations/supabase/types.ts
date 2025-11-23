@@ -876,6 +876,7 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          preferred_language: string | null
           profile_picture_url: string | null
           updated_at: string | null
         }
@@ -886,6 +887,7 @@ export type Database = {
           full_name?: string | null
           id: string
           phone?: string | null
+          preferred_language?: string | null
           profile_picture_url?: string | null
           updated_at?: string | null
         }
@@ -896,6 +898,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          preferred_language?: string | null
           profile_picture_url?: string | null
           updated_at?: string | null
         }

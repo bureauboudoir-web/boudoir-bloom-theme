@@ -1,0 +1,65 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms & Conditions",
+    "login": "Login",
+    "signup": "Become a Creator",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Dashboard",
+      "profileSetup": "Profile & Setup",
+      "workPayments": "Work & Payments",
+      "supportAdmin": "Support & Admin"
+    },
+    "nav": {
+      "overview": "Overview",
+      "onboarding": "Onboarding",
+      "account": "Creator Profile",
+      "meetings": "My Meetings",
+      "upload": "Uploads",
+      "library": "Content Library",
+      "commitments": "Commitments",
+      "shoots": "Studio Shoots",
+      "invoices": "Invoices",
+      "contract": "Contract",
+      "support": "Contact Us",
+      "adminDashboard": "Admin Dashboard",
+      "managerDashboard": "Manager Dashboard"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Empowering creators in Amsterdam",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms & Conditions",
+    "copyright": "© 2024 Bureau Boudoir. All rights reserved.",
+    "social": {
+      "twitter": "Follow us on X",
+      "instagram": "Follow us on Instagram",
+      "youtube": "Subscribe on YouTube",
+      "tiktok": "Follow us on TikTok"
+    }
+  }
+}

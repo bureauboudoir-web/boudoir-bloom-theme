@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -40,6 +41,7 @@ export const DashboardNav = ({
   onManagerClick,
   onMobileMenuClose,
 }: DashboardNavProps) => {
+  const { t } = useTranslation();
   
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
@@ -48,46 +50,46 @@ export const DashboardNav = ({
 
   const navSections = [
     {
-      title: "Dashboard",
+      title: t('dashboard.sections.dashboard'),
       items: [
-        { id: "overview" as TabId, label: "Overview", icon: <CheckSquare className="w-4 h-4" /> },
+        { id: "overview" as TabId, label: t('dashboard.nav.overview'), icon: <CheckSquare className="w-4 h-4" /> },
       ]
     },
     {
-      title: "Profile & Setup",
+      title: t('dashboard.sections.profileSetup'),
       items: [
-        { id: "onboarding" as TabId, label: "Onboarding", icon: <FileText className="w-4 h-4" /> },
-        { id: "account" as TabId, label: "Creator Profile", icon: <User className="w-4 h-4" /> },
-        { id: "meetings" as TabId, label: "My Meetings", icon: <Calendar className="w-4 h-4" /> },
-        { id: "upload" as TabId, label: "Uploads", icon: <Upload className="w-4 h-4" /> },
-        { id: "library" as TabId, label: "Content Library", icon: <FolderOpen className="w-4 h-4" /> },
+        { id: "onboarding" as TabId, label: t('dashboard.nav.onboarding'), icon: <FileText className="w-4 h-4" /> },
+        { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> },
+        { id: "meetings" as TabId, label: t('dashboard.nav.meetings'), icon: <Calendar className="w-4 h-4" /> },
+        { id: "upload" as TabId, label: t('dashboard.nav.upload'), icon: <Upload className="w-4 h-4" /> },
+        { id: "library" as TabId, label: t('dashboard.nav.library'), icon: <FolderOpen className="w-4 h-4" /> },
       ]
     },
     {
-      title: "Work & Payments",
+      title: t('dashboard.sections.workPayments'),
       items: [
         { 
           id: "commitments" as TabId, 
-          label: "Commitments", 
+          label: t('dashboard.nav.commitments'), 
           icon: <CheckSquare className="w-4 h-4" />,
           badge: pendingCommitments,
           badgeVariant: "secondary" as const
         },
-        { id: "shoots" as TabId, label: "Studio Shoots", icon: <Calendar className="w-4 h-4" /> },
+        { id: "shoots" as TabId, label: t('dashboard.nav.shoots'), icon: <Calendar className="w-4 h-4" /> },
         { 
           id: "invoices" as TabId, 
-          label: "Invoices", 
+          label: t('dashboard.nav.invoices'), 
           icon: <DollarSign className="w-4 h-4" />,
           badge: newInvoices,
           badgeVariant: "destructive" as const
         },
-        { id: "contract" as TabId, label: "Contract", icon: <FileText className="w-4 h-4" /> },
+        { id: "contract" as TabId, label: t('dashboard.nav.contract'), icon: <FileText className="w-4 h-4" /> },
       ]
     },
     {
-      title: "Support & Admin",
+      title: t('dashboard.sections.supportAdmin'),
       items: [
-        { id: "support" as TabId, label: "Contact Us", icon: <Mail className="w-4 h-4" /> },
+        { id: "support" as TabId, label: t('dashboard.nav.support'), icon: <Mail className="w-4 h-4" /> },
       ]
     }
   ];
@@ -136,7 +138,7 @@ export const DashboardNav = ({
               }}
             >
               <Shield className="w-4 h-4 mr-3 text-primary" />
-              <span className="text-sm font-medium">Admin Dashboard</span>
+              <span className="text-sm font-medium">{t('dashboard.nav.adminDashboard')}</span>
             </Button>
           )}
           {isManagerOnly && (
@@ -149,7 +151,7 @@ export const DashboardNav = ({
               }}
             >
               <Shield className="w-4 h-4 mr-3 text-primary" />
-              <span className="text-sm font-medium">Manager Dashboard</span>
+              <span className="text-sm font-medium">{t('dashboard.nav.managerDashboard')}</span>
             </Button>
           )}
         </div>
