@@ -381,7 +381,13 @@ const Dashboard = () => {
             {activeTab === "overview" && user && (
               <DashboardOverview 
                 userId={user.id}
-                onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
+                onNavigate={(tab, subTab) => {
+                  setActiveTab(tab as typeof activeTab);
+                  if (subTab) {
+                    if (tab === 'admin') setAdminSubTab(subTab);
+                    if (tab === 'manager') setManagerSubTab(subTab);
+                  }
+                }}
                 accessLevel={accessLevel}
                 meetingCompleted={meetingStatus?.meetingCompleted}
               />

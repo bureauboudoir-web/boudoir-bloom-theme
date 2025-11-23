@@ -51,7 +51,7 @@ interface RecentActivity {
 
 interface DashboardOverviewProps {
   userId: string;
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: string, subTab?: string) => void;
   accessLevel?: 'no_access' | 'meeting_only' | 'full_access';
   meetingCompleted?: boolean;
 }
@@ -373,25 +373,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Manage Applications",
           icon: ClipboardList,
-          action: () => onNavigate('admin'),
+          action: () => onNavigate('admin', 'applications'),
           variant: "default" as const,
         },
         {
           label: "Review Content",
           icon: FileCheck,
-          action: () => onNavigate('admin'),
+          action: () => onNavigate('admin', 'review'),
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
           icon: Users,
-          action: () => onNavigate('admin'),
+          action: () => onNavigate('admin', 'access'),
           variant: "secondary" as const,
         },
         {
           label: "Analytics",
           icon: BarChart3,
-          action: () => onNavigate('admin'),
+          action: () => onNavigate('admin', 'analytics'),
           variant: "outline" as const,
         },
       ];
