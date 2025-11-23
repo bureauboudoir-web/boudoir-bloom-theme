@@ -3,10 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Users, CheckCircle, Clock, XCircle, ChevronDown } from "lucide-react";
+import { Users, CheckCircle, Clock, XCircle, ChevronDown, ShieldCheck, Calendar as CalendarIcon, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { format } from "date-fns";
 
 interface CreatorStats {
   id: string;
@@ -18,6 +19,10 @@ interface CreatorStats {
   pending_shoots: number;
   confirmed_shoots: number;
   declined_shoots: number;
+  access_level: string | null;
+  meeting_status: string | null;
+  meeting_date: string | null;
+  assigned_manager_name: string | null;
 }
 
 export const CreatorOverview = () => {
@@ -55,7 +60,7 @@ export const CreatorOverview = () => {
 
       let query = supabase
         .from('profiles')
-        .select('id, email, full_name')
+        .select('id, email, full_name, assigned_manager_id')
         .order('email');
 
       // Apply filter for managers
@@ -67,8 +72,17 @@ export const CreatorOverview = () => {
 
       if (profilesError) throw profilesError;
 
+      // Get manager names
+      const managerIds = [...new Set(profiles?.map(p => p.assigned_manager_id).filter(Boolean))] as string[];
+      const { data: managers } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', managerIds);
+      
+      const managerMap = new Map(managers?.map(m => [m.id, m.full_name]) || []);
+
       const statsPromises = (profiles || []).map(async (profile) => {
-        const [commitments, shoots] = await Promise.all([
+        const [commitments, shoots, accessLevel, meeting] = await Promise.all([
           supabase
             .from('weekly_commitments')
             .select('status')
@@ -76,7 +90,17 @@ export const CreatorOverview = () => {
           supabase
             .from('studio_shoots')
             .select('status')
+            .eq('user_id', profile.id),
+          supabase
+            .from('creator_access_levels')
+            .select('access_level')
             .eq('user_id', profile.id)
+            .maybeSingle(),
+          supabase
+            .from('creator_meetings')
+            .select('status, meeting_date')
+            .eq('user_id', profile.id)
+            .maybeSingle()
         ]);
 
         const commitmentsData = commitments.data || [];
@@ -90,6 +114,10 @@ export const CreatorOverview = () => {
           pending_shoots: shootsData.filter(s => s.status === 'pending').length,
           confirmed_shoots: shootsData.filter(s => s.status === 'confirmed').length,
           declined_shoots: shootsData.filter(s => s.status === 'declined').length,
+          access_level: accessLevel.data?.access_level || null,
+          meeting_status: meeting.data?.status || null,
+          meeting_date: meeting.data?.meeting_date || null,
+          assigned_manager_name: profile.assigned_manager_id ? managerMap.get(profile.assigned_manager_id) || null : null,
         };
       });
 
@@ -146,11 +174,43 @@ export const CreatorOverview = () => {
               <Card className="bg-muted/30 border-primary/20">
                 <CollapsibleTrigger className="w-full">
                   <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-1">
                       <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                      <div className="text-left">
-                        <h4 className="font-semibold">{creator.full_name || 'Unnamed Creator'}</h4>
-                        <p className="text-sm text-muted-foreground">{creator.email}</p>
+                      <div className="text-left flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-semibold">{creator.full_name || 'Unnamed Creator'}</h4>
+                          {creator.access_level === 'full_access' && (
+                            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                              <ShieldCheck className="w-3 h-3 mr-1" />
+                              Full Access
+                            </Badge>
+                          )}
+                          {creator.access_level === 'meeting_only' && (
+                            <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                              Meeting Only
+                            </Badge>
+                          )}
+                          {creator.meeting_status === 'completed' && (
+                            <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                              ✓ Meeting Done
+                            </Badge>
+                          )}
+                          {creator.meeting_status === 'confirmed' && creator.meeting_date && (
+                            <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                              <CalendarIcon className="w-3 h-3 mr-1" />
+                              {format(new Date(creator.meeting_date), 'MMM dd')}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span>{creator.email}</span>
+                          {creator.assigned_manager_name && (
+                            <span className="flex items-center gap-1">
+                              <UserIcon className="w-3 h-3" />
+                              {creator.assigned_manager_name}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

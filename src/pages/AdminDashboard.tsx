@@ -22,6 +22,9 @@ import { AdminContracts } from "@/components/admin/AdminContracts";
 import { EmailLogsView } from "@/components/admin/EmailLogsView";
 import { EmailSettings } from "@/components/admin/EmailSettings";
 import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
+import { AccessManagement } from "@/components/admin/AccessManagement";
+import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
+import Settings from "@/pages/Settings";
 import { ArrowLeft, Shield, Wrench } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -40,7 +43,7 @@ const AdminDashboard = () => {
     upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests" | "dev-tools">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
   const [creatingTestAccounts, setCreatingTestAccounts] = useState(false);
   const [testAccountsCreated, setTestAccountsCreated] = useState<any[]>([]);
 
@@ -284,6 +287,19 @@ const AdminDashboard = () => {
                   <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Availability
                   </TabsTrigger>
+                  <TabsTrigger value="access" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Access
+                  </TabsTrigger>
+                  <TabsTrigger value="access-audit" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Access Audit
+                  </TabsTrigger>
+                  
+                  {/* Visual separator */}
+                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  
+                  <TabsTrigger value="settings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Settings
+                  </TabsTrigger>
                   
                   {/* Visual separator */}
                   <div className="w-px h-8 bg-border self-center mx-1" />
@@ -362,6 +378,18 @@ const AdminDashboard = () => {
 
             <TabsContent value="availability" className="mt-0">
               <ManagerAvailabilitySettings />
+            </TabsContent>
+
+            <TabsContent value="access" className="mt-0">
+              <AccessManagement />
+            </TabsContent>
+
+            <TabsContent value="access-audit" className="mt-0">
+              <AccessAuditLog />
+            </TabsContent>
+
+            <TabsContent value="settings" className="mt-0">
+              {user?.id && <Settings userId={user.id} />}
             </TabsContent>
 
             <TabsContent value="tests" className="mt-0">
