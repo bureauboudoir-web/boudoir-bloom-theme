@@ -358,6 +358,13 @@ export type Database = {
           meeting_notes: string | null
           meeting_time: string | null
           meeting_type: string | null
+          previous_meeting_date: string | null
+          previous_meeting_time: string | null
+          reschedule_new_date: string | null
+          reschedule_new_time: string | null
+          reschedule_reason: string | null
+          reschedule_requested: boolean | null
+          reschedule_requested_at: string | null
           status: string | null
           updated_at: string | null
           user_id: string
@@ -375,6 +382,13 @@ export type Database = {
           meeting_notes?: string | null
           meeting_time?: string | null
           meeting_type?: string | null
+          previous_meeting_date?: string | null
+          previous_meeting_time?: string | null
+          reschedule_new_date?: string | null
+          reschedule_new_time?: string | null
+          reschedule_reason?: string | null
+          reschedule_requested?: boolean | null
+          reschedule_requested_at?: string | null
           status?: string | null
           updated_at?: string | null
           user_id: string
@@ -392,6 +406,13 @@ export type Database = {
           meeting_notes?: string | null
           meeting_time?: string | null
           meeting_type?: string | null
+          previous_meeting_date?: string | null
+          previous_meeting_time?: string | null
+          reschedule_new_date?: string | null
+          reschedule_new_time?: string | null
+          reschedule_reason?: string | null
+          reschedule_requested?: boolean | null
+          reschedule_requested_at?: string | null
           status?: string | null
           updated_at?: string | null
           user_id?: string

@@ -22,7 +22,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
   {
     id: 3,
     label: "Social Media",
-    stage: "pre-meeting",
+    stage: "post-meeting",
     description: "Your social media handles and platforms",
   },
   {

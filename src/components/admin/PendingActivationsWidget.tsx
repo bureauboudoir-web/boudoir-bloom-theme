@@ -127,6 +127,38 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
 
   useEffect(() => {
     fetchPendingCreators();
+
+    // Real-time subscription for access level changes
+    const channel = supabase
+      .channel('pending_activations_realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'creator_access_levels',
+        },
+        (payload) => {
+          console.log('Access level changed:', payload);
+          fetchPendingCreators();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'creator_meetings',
+        },
+        () => {
+          fetchPendingCreators();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const getMeetingBadge = (creator: PendingCreator) => {
@@ -180,9 +212,9 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         <div className="space-y-3">
           {pendingCreators.map((creator) => (
             <Card key={creator.id} className="p-4 bg-background">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3 flex-1">
-                  <Avatar className="h-10 w-10">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex items-start gap-3 flex-1 min-w-0 w-full sm:w-auto">
+                  <Avatar className="h-10 w-10 flex-shrink-0">
                     <AvatarImage src={creator.profile_picture_url || undefined} />
                     <AvatarFallback>
                       {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
@@ -190,14 +222,14 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                       <p className="font-medium truncate">{creator.full_name || 'No name'}</p>
                       {getMeetingBadge(creator)}
                     </div>
                     <p className="text-sm text-muted-foreground truncate">{creator.email}</p>
                     
                     {creator.meeting_date && (
-                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
                           <span>{format(new Date(creator.meeting_date), 'MMM dd, yyyy')}</span>
@@ -213,9 +245,10 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
                   <Button
                     size="sm"
+                    className="flex-1 sm:flex-none"
                     onClick={() => {
                       setSelectedCreator(creator);
                       setShowGrantDialog(true);
@@ -226,6 +259,7 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
                   <Button
                     size="sm"
                     variant="outline"
+                    className="flex-1 sm:flex-none"
                     onClick={onNavigateToMeetings}
                   >
                     <ExternalLink className="h-4 w-4" />

@@ -31,6 +31,11 @@ interface Meeting {
   duration_minutes: number;
   meeting_notes: string | null;
   created_at: string | null;
+  reschedule_requested: boolean | null;
+  reschedule_reason: string | null;
+  reschedule_new_date: string | null;
+  reschedule_new_time: string | null;
+  reschedule_requested_at: string | null;
   profiles: {
     full_name: string;
     email: string;
@@ -173,9 +178,9 @@ export const AdminMeetings = () => {
     
     return (
     <Card className="border-border">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="flex-shrink-0 mx-auto sm:mx-0">
             {meeting.profiles.profile_picture_url ? (
               <img
                 src={meeting.profiles.profile_picture_url}
@@ -191,10 +196,10 @@ export const AdminMeetings = () => {
             )}
           </div>
 
-          <div className="flex-1 space-y-3">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2">
+          <div className="flex-1 space-y-3 w-full">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div className="w-full sm:w-auto">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-semibold text-lg text-foreground">{meeting.profiles.full_name}</h3>
                   {isNew && (
                     <span className="px-2 py-0.5 text-xs font-semibold bg-primary text-primary-foreground rounded">
@@ -202,7 +207,7 @@ export const AdminMeetings = () => {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground">{meeting.profiles.email}</p>
+                <p className="text-sm text-muted-foreground truncate">{meeting.profiles.email}</p>
                 {(isSuperAdmin || isAdmin) && meeting.manager && (
                   <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                     <User className="h-3 w-3" />
@@ -210,7 +215,7 @@ export const AdminMeetings = () => {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-1">
+              <div className="flex flex-col items-start sm:items-end gap-1">
                 <Badge className={getStatusColor(meeting.status)}>
                   {meeting.status}
                 </Badge>
@@ -222,24 +227,24 @@ export const AdminMeetings = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                {meeting.meeting_date ? format(new Date(meeting.meeting_date), "PPP") : "Not set"}
+                <Calendar className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{meeting.meeting_date ? format(new Date(meeting.meeting_date), "PPP") : "Not set"}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                {meeting.meeting_time || "Not set"} ({meeting.duration_minutes}min)
+                <Clock className="h-4 w-4 flex-shrink-0" />
+                <span>{meeting.meeting_time || "Not set"} ({meeting.duration_minutes}min)</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 {meeting.meeting_type === 'online' ? (
                   <>
-                    <Video className="h-4 w-4" />
+                    <Video className="h-4 w-4 flex-shrink-0" />
                     Online Meeting
                   </>
                 ) : (
                   <>
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="h-4 w-4 flex-shrink-0" />
                     In-Person
                   </>
                 )}
@@ -247,7 +252,7 @@ export const AdminMeetings = () => {
             </div>
 
             {meeting.meeting_link && (
-              <div className="text-sm">
+              <div className="text-sm break-all">
                 <span className="text-muted-foreground">Link: </span>
                 <a href={meeting.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   {meeting.meeting_link}
@@ -260,6 +265,100 @@ export const AdminMeetings = () => {
                 <span className="text-muted-foreground">Location: </span>
                 <span className="text-foreground">{meeting.meeting_location}</span>
               </div>
+            )}
+
+            {/* Reschedule Request UI */}
+            {meeting.reschedule_requested && meeting.reschedule_new_date && (
+              <Card className="border-amber-500/20 bg-amber-500/5 mt-3">
+                <CardContent className="p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/20">
+                      Reschedule Requested
+                    </Badge>
+                    {meeting.reschedule_requested_at && (
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(meeting.reschedule_requested_at), "MMM dd 'at' HH:mm")}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Current:</span>
+                      <span className="font-medium">{format(new Date(meeting.meeting_date), "MMM dd, yyyy")} at {meeting.meeting_time}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Requested:</span>
+                      <span className="font-medium text-amber-700">{format(new Date(meeting.reschedule_new_date), "MMM dd, yyyy")} at {meeting.reschedule_new_time}</span>
+                    </div>
+                    {meeting.reschedule_reason && (
+                      <div className="pt-1">
+                        <span className="text-muted-foreground">Reason:</span>
+                        <p className="text-sm italic mt-1">{meeting.reschedule_reason}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase
+                            .from('creator_meetings')
+                            .update({
+                              meeting_date: meeting.reschedule_new_date,
+                              meeting_time: meeting.reschedule_new_time,
+                              reschedule_requested: false,
+                              reschedule_reason: null,
+                              reschedule_new_date: null,
+                              reschedule_new_time: null,
+                              reschedule_requested_at: null,
+                            })
+                            .eq('id', meeting.id);
+
+                          if (error) throw error;
+                          toast.success("Meeting rescheduled successfully");
+                          fetchMeetings();
+                        } catch (error) {
+                          console.error('Error approving reschedule:', error);
+                          toast.error("Failed to approve reschedule");
+                        }
+                      }}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase
+                            .from('creator_meetings')
+                            .update({
+                              reschedule_requested: false,
+                              reschedule_reason: null,
+                              reschedule_new_date: null,
+                              reschedule_new_time: null,
+                              reschedule_requested_at: null,
+                            })
+                            .eq('id', meeting.id);
+
+                          if (error) throw error;
+                          toast.success("Reschedule request declined");
+                          fetchMeetings();
+                        } catch (error) {
+                          console.error('Error declining reschedule:', error);
+                          toast.error("Failed to decline reschedule");
+                        }
+                      }}
+                    >
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Decline
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             <div className="flex gap-2 pt-2">
@@ -286,7 +385,7 @@ export const AdminMeetings = () => {
 
   // Calculate stats
   const stats = {
-    needsAction: filteredMeetings.filter(m => m.status === 'confirmed').length,
+    needsAction: filteredMeetings.filter(m => m.status === 'confirmed' || m.reschedule_requested).length,
     pending: filteredMeetings.filter(m => m.status === 'pending' || m.status === 'not_booked').length,
     completedThisMonth: filteredMeetings.filter(m => {
       if (m.status !== 'completed') return false;
@@ -298,7 +397,7 @@ export const AdminMeetings = () => {
 
   const upcomingMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
   const pastMeetings = filteredMeetings.filter(m => ['completed', 'cancelled'].includes(m.status));
-  const needsActionMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
+  const needsActionMeetings = filteredMeetings.filter(m => m.status === 'confirmed' || m.reschedule_requested);
   
   const totalPagesUpcoming = Math.ceil(upcomingMeetings.length / itemsPerPage);
   const totalPagesPast = Math.ceil(pastMeetings.length / itemsPerPage);
@@ -324,30 +423,30 @@ export const AdminMeetings = () => {
           <UserCheck className="h-5 w-5" />
           Meeting Status Summary
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-blue-500/10 flex items-center justify-center">
               <span className="text-lg font-bold text-blue-500">{stats.needsAction}</span>
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Needs Action</p>
-              <p className="text-xs text-muted-foreground">Confirmed - Ready to Complete</p>
+              <p className="text-xs text-muted-foreground truncate">Confirmed - Ready to Complete</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 rounded-full bg-yellow-500/10 flex items-center justify-center">
+            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-yellow-500/10 flex items-center justify-center">
               <span className="text-lg font-bold text-yellow-500">{stats.pending}</span>
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Pending</p>
-              <p className="text-xs text-muted-foreground">Awaiting Creator Booking</p>
+              <p className="text-xs text-muted-foreground truncate">Awaiting Creator Booking</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
+            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-green-500/10 flex items-center justify-center">
               <span className="text-lg font-bold text-green-500">{stats.completedThisMonth}</span>
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">Completed</p>
               <p className="text-xs text-muted-foreground">This Month</p>
             </div>
@@ -366,19 +465,19 @@ export const AdminMeetings = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="needs_action" className="relative">
-            Needs Action
+        <TabsList className="grid w-full grid-cols-3 h-auto">
+          <TabsTrigger value="needs_action" className="relative flex-col sm:flex-row gap-1 sm:gap-2 py-2">
+            <span>Needs Action</span>
             {stats.needsAction > 0 && (
-              <Badge variant="destructive" className="ml-2 h-5 px-1.5 text-xs">
+              <Badge variant="destructive" className="h-5 px-1.5 text-xs">
                 {stats.needsAction}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="upcoming">
+          <TabsTrigger value="upcoming" className="py-2">
             Upcoming ({upcomingMeetings.length})
           </TabsTrigger>
-          <TabsTrigger value="past">
+          <TabsTrigger value="past" className="py-2">
             Past ({pastMeetings.length})
           </TabsTrigger>
         </TabsList>
