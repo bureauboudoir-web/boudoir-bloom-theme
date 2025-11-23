@@ -13,14 +13,6 @@ import { AccessLevel } from "@/hooks/useAccessLevel";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { ProfileSummary } from "@/components/settings/ProfileSummary";
-import { EditProfileForm } from "@/components/settings/EditProfileForm";
-import { PreferencesSettings } from "@/components/settings/PreferencesSettings";
-import { SecuritySettings } from "@/components/settings/SecuritySettings";
-import { PrivacySettings } from "@/components/settings/PrivacySettings";
-import { RoleSpecificSettings } from "@/components/settings/RoleSpecificSettings";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -42,33 +34,6 @@ export const CreatorProfile = ({
   meetingCompleted,
 }: CreatorProfileProps) => {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch profile data
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!userId) return;
-      
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (!error && data) {
-        setProfile(data);
-      }
-      setLoading(false);
-    };
-
-    fetchProfile();
-  }, [userId]);
-
-  const refetchOnboarding = async () => {
-    // Trigger refetch in parent component if callback exists
-    window.location.reload();
-  };
 
   // Determine if a section should be locked
   const isSectionLocked = (sectionIndex: number) => {
@@ -131,7 +96,7 @@ export const CreatorProfile = ({
 
   const age = calculateAge(onboardingData?.personal_date_of_birth);
 
-  if (!onboardingData || loading) {
+  if (!onboardingData) {
     return <ProfileSkeleton />;
   }
 
@@ -139,8 +104,8 @@ export const CreatorProfile = ({
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold">Account & Settings</h2>
-          <p className="text-muted-foreground">Manage your profile, preferences, and security</p>
+          <h2 className="text-2xl font-bold">Creator Profile</h2>
+          <p className="text-muted-foreground">Your onboarding information</p>
         </div>
         <Badge variant={isOnboardingComplete ? "default" : "secondary"}>
           {isOnboardingComplete ? "Profile Complete" : "In Progress"}
@@ -161,29 +126,7 @@ export const CreatorProfile = ({
         currentPictureUrl={profilePictureUrl}
         userName={userName || onboardingData.personal_full_name || "User"}
       />
-      
-      <ProfileSummary profile={profile} onboardingData={onboardingData} />
-      
-      <EditProfileForm 
-        userId={userId} 
-        onboardingData={onboardingData} 
-        onUpdate={refetchOnboarding}
-      />
 
-      <PreferencesSettings />
-      
-      <SecuritySettings />
-      
-      <RoleSpecificSettings />
-      
-      <PrivacySettings />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Additional Profile Information</CardTitle>
-          <CardDescription>View your complete onboarding details</CardDescription>
-        </CardHeader>
-        <CardContent>
       {/* Profile Sections - Detailed Onboarding Data */}
       <Accordion type="multiple" defaultValue={["personal", "body"]} className="space-y-4">
         {/* Personal Information */}
@@ -987,8 +930,6 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-        </CardContent>
-      </Card>
     </div>
   );
 };
