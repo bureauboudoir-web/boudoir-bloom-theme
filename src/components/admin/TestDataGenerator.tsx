@@ -87,8 +87,18 @@ export function TestDataGenerator() {
         return;
       }
 
+      // Get current user to use as manager ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("User not found");
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('create-test-accounts', {
-        body: { action: 'create_manager_data' },
+        body: { 
+          action: 'create_for_manager',
+          managerId: user.id
+        },
         headers: {
           Authorization: `Bearer ${session.session.access_token}`,
         },
@@ -97,7 +107,7 @@ export function TestDataGenerator() {
       if (error) throw error;
 
       if (data.success) {
-        toast.success(`Created ${data.accounts.length} test creators for your dashboard`);
+        toast.success(`Created ${data.accounts.length} creators and ${data.applications} pending applications`);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -137,13 +147,16 @@ export function TestDataGenerator() {
           <p className="text-sm font-medium">📋 Manager Test Data:</p>
           <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex gap-2">
-              <span className="font-medium text-foreground">Sarah Martinez</span> - No access (needs meeting invitation)
+              <span className="font-medium text-foreground">3 Pending Applications</span> - Waiting for manager approval
             </div>
             <div className="flex gap-2">
-              <span className="font-medium text-foreground">Emma Chen</span> - Meeting only (can book meeting) + Support ticket + Commitment + Invoice + Content
+              <span className="font-medium text-foreground">Maya Stevens</span> - Just approved, no access (grant access flow)
             </div>
             <div className="flex gap-2">
-              <span className="font-medium text-foreground">Lisa Thompson</span> - Meeting scheduled (tomorrow) + Support ticket
+              <span className="font-medium text-foreground">Zoe Martinez</span> - Meeting only access, meeting in 5 days
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">Aria Williams</span> - Full access, onboarding completed
             </div>
           </div>
         </div>
