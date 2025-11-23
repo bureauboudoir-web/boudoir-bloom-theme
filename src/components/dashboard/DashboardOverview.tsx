@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ interface DashboardOverviewProps {
 }
 
 export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_access', meetingCompleted }: DashboardOverviewProps) => {
+  const navigate = useNavigate();
   const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     pendingCommitments: 0,
@@ -259,7 +261,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: ClipboardList,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
         },
         {
           title: "Content to Review",
@@ -267,7 +269,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: FileCheck,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
         },
         {
           title: "Total Creators",
@@ -275,7 +277,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
         },
         {
           title: "Open Tickets",
@@ -283,7 +285,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Mail,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
         },
       ];
     }
@@ -296,7 +298,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: CheckSquare,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
         },
         {
           title: "Scheduled Meetings",
@@ -304,7 +306,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Calendar,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
         },
         {
           title: "Assigned Creators",
@@ -312,7 +314,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
         },
         {
           title: "Content to Review",
@@ -320,7 +322,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Upload,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
         },
       ];
     }
@@ -371,25 +373,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Manage Applications",
           icon: ClipboardList,
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
           variant: "default" as const,
         },
         {
           label: "Review Content",
           icon: FileCheck,
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
           icon: Users,
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Analytics",
           icon: BarChart3,
-          action: () => window.location.href = '/admin',
+          action: () => navigate('/admin'),
           variant: "outline" as const,
         },
       ];
@@ -400,25 +402,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Review Applications",
           icon: ClipboardList,
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
           variant: "default" as const,
         },
         {
           label: "Assign Tasks",
           icon: UserPlus,
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "Schedule Shoots",
           icon: Video,
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "View Reports",
           icon: BarChart3,
-          action: () => window.location.href = '/manager',
+          action: () => navigate('/manager'),
           variant: "outline" as const,
         },
       ];
