@@ -35,6 +35,7 @@ import { useMeetingStatus } from "@/hooks/useMeetingStatus";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { NoAccessView } from "@/components/dashboard/NoAccessView";
 import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
@@ -290,6 +291,7 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center gap-2">
+              <LanguageSelector />
               <NotificationBell
                 notifications={notificationItems}
                 totalCount={totalNotifications}
