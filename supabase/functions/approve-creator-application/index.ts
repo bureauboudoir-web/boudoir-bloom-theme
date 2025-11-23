@@ -180,6 +180,20 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Access level already exists");
     }
 
+    // Update profile with assigned manager
+    const { error: profileUpdateError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        assigned_manager_id: managerId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", userId);
+
+    if (profileUpdateError) {
+      console.error("Error updating profile with manager:", profileUpdateError);
+      // Don't fail the whole operation, just log it
+    }
+
     // Create meeting record (if not already exists)
     const { data: existingMeeting } = await supabaseAdmin
       .from("creator_meetings")
