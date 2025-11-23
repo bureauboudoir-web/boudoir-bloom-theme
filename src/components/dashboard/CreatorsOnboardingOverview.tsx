@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, TrendingUp, Clock, AlertCircle } from "lucide-react";
+import { Users, TrendingUp, Clock, AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface CreatorOnboardingStatus {
   id: string;
@@ -54,6 +56,7 @@ export const CreatorsOnboardingOverview = ({ onNavigate }: CreatorsOnboardingOve
   const [creatorsNeedingHelp, setCreatorsNeedingHelp] = useState<CreatorOnboardingStatus[]>([]);
   const [stepBreakdown, setStepBreakdown] = useState<{ number: number; name: string; count: number }[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isOpen, toggle } = useCollapsibleSection('admin-onboarding-overview-collapsed', true);
 
   useEffect(() => {
     fetchOnboardingData();
@@ -167,15 +170,31 @@ export const CreatorsOnboardingOverview = ({ onNavigate }: CreatorsOnboardingOve
   }
 
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          Creators Onboarding Overview
-        </CardTitle>
-        <CardDescription>Track all creators' onboarding progress</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <Collapsible open={isOpen} onOpenChange={toggle}>
+      <Card className="border-2 border-primary/20">
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                <div>
+                  <CardTitle>Creators Onboarding Overview</CardTitle>
+                  <CardDescription className="flex items-center gap-2">
+                    Track all creators' onboarding progress
+                    {!isOpen && stats.needsAttention > 0 && (
+                      <Badge variant="destructive" className="ml-2">
+                        {stats.needsAttention} need attention
+                      </Badge>
+                    )}
+                  </CardDescription>
+                </div>
+              </div>
+              {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="space-y-6">
         {/* Aggregate stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
@@ -270,7 +289,9 @@ export const CreatorsOnboardingOverview = ({ onNavigate }: CreatorsOnboardingOve
           <Users className="w-4 h-4 mr-2" />
           View All Creators
         </Button>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 };
