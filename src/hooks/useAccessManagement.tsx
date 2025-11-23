@@ -60,6 +60,18 @@ export const useAccessManagement = () => {
 
       if (auditError) throw auditError;
 
+      // 2b. Create timeline event for access grant
+      const { error: timelineError } = await supabase
+        .from('timeline_events')
+        .insert({
+          user_id: userId,
+          stage: 'access',
+          event_type: 'granted',
+          created_at: new Date().toISOString()
+        });
+
+      if (timelineError) console.warn('Timeline event creation failed:', timelineError);
+
       // 3. Mark meeting as not required
       const { error: meetingError } = await supabase
         .from('creator_meetings')
@@ -152,6 +164,18 @@ export const useAccessManagement = () => {
         });
 
       if (auditError) throw auditError;
+
+      // 2b. Create timeline event for access grant
+      const { error: timelineError } = await supabase
+        .from('timeline_events')
+        .insert({
+          user_id: userId,
+          stage: 'access',
+          event_type: 'granted',
+          created_at: new Date().toISOString()
+        });
+
+      if (timelineError) console.warn('Timeline event creation failed:', timelineError);
 
       // 3. Mark meeting as completed
       const { error: meetingError } = await supabase
