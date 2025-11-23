@@ -25,6 +25,25 @@ export const useOnboarding = (userId: string | undefined) => {
   }, [userId]);
 
   const fetchOnboardingData = async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    // Check if user has creator role before fetching onboarding data
+    const { data: userRoles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    const hasCreatorRole = userRoles?.some(r => r.role === 'creator');
+    
+    if (!hasCreatorRole) {
+      setOnboardingData(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('onboarding_data')

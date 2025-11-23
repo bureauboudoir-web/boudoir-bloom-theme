@@ -72,6 +72,24 @@ const Dashboard = () => {
   const progress = (currentStep / visibleTotalSteps) * 100;
   const currentStepConfig = getStepConfig(currentStep);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/login");
+    }
+  }, [user, authLoading, navigate]);
+
+  // Role-based redirect - admins and managers have their own dashboards
+  useEffect(() => {
+    if (!rolesLoading && user) {
+      if (isAdmin || isSuperAdmin) {
+        navigate("/admin");
+      } else if (isManagerOnly) {
+        navigate("/manager");
+      }
+    }
+  }, [isAdmin, isSuperAdmin, isManagerOnly, rolesLoading, user, navigate]);
+
   // Security check: Ensure user has proper role assigned
   useEffect(() => {
     const checkUserRole = async () => {
