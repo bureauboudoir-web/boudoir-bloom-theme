@@ -48,7 +48,7 @@ const Dashboard = () => {
   const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
-  const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
+  const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -93,6 +93,7 @@ const Dashboard = () => {
   };
 
   const notificationItems: NotificationItem[] = [
+    ...timelineNotifications,
     ...(pendingCommitments > 0 ? [{
       id: 'commitments',
       type: 'commitment' as const,

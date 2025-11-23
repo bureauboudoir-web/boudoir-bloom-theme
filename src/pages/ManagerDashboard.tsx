@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { useAdminNotifications } from "@/hooks/useAdminNotifications";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 // Manager-appropriate components
 import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
@@ -116,10 +117,13 @@ const ManagerDashboard = () => {
               <p className="text-muted-foreground">Manage your assigned creators</p>
             </div>
           </div>
-          <NotificationBell
-            notifications={managerNotificationItems}
-            totalCount={totalNotifications}
-          />
+          <div className="flex items-center gap-2">
+            <LanguageSelector />
+            <NotificationBell
+              notifications={managerNotificationItems}
+              totalCount={totalNotifications}
+            />
+          </div>
         </div>
 
         {/* Tabs */}

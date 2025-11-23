@@ -24,6 +24,7 @@ import { EmailSettings } from "@/components/admin/EmailSettings";
 import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
 import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -140,6 +141,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <LanguageSelector />
               <NotificationBell
                 notifications={adminNotificationItems}
                 totalCount={totalNotifications}
