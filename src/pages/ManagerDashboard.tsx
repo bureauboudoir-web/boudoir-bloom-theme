@@ -4,6 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AccessManagement } from "@/components/admin/AccessManagement";
+import Settings from "@/pages/Settings";
 import { ArrowLeft } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { useAdminNotifications } from "@/hooks/useAdminNotifications";
@@ -24,7 +26,7 @@ const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "settings">("applications");
   
   const {
     newSupportTickets,
@@ -128,12 +130,13 @@ const ManagerDashboard = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10">
             <TabsTrigger value="applications">
               Applications
             </TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="access">Access</TabsTrigger>
             <TabsTrigger value="commitments" className="relative">
               Commitments
               {overdueCommitments > 0 && (
@@ -168,6 +171,7 @@ const ManagerDashboard = () => {
                 </span>
               )}
             </TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="applications" className="space-y-4">
@@ -197,6 +201,14 @@ const ManagerDashboard = () => {
 
           <TabsContent value="availability" className="space-y-4">
             <ManagerAvailabilitySettings />
+          </TabsContent>
+
+          <TabsContent value="access" className="space-y-4">
+            <AccessManagement />
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-4">
+            {user?.id && <Settings userId={user.id} />}
           </TabsContent>
 
           <TabsContent value="support" className="space-y-4">
