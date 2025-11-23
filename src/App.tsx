@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,19 +7,22 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserRoleProvider } from "@/contexts/UserRoleContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SessionTimeoutWarning } from "@/components/SessionTimeoutWarning";
-import Home from "./pages/Home";
-import Contact from "./pages/Contact";
-import Terms from "./pages/Terms";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import NotFound from "./pages/NotFound";
-import About from "./pages/About";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import CompleteSetup from "./pages/CompleteSetup";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+// Lazy load pages for better performance
+const Home = lazy(() => import("./pages/Home"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const ManagerDashboard = lazy(() => import("./pages/ManagerDashboard"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const About = lazy(() => import("./pages/About"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const CompleteSetup = lazy(() => import("./pages/CompleteSetup"));
 
 const queryClient = new QueryClient();
 
@@ -32,26 +35,32 @@ const App = () => (
         <BrowserRouter>
           <SessionTimeoutWarning />
           <UserRoleProvider>
-            <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/complete-setup" element={<CompleteSetup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/manager" element={<ManagerDashboard />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </UserRoleProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+            <Suspense fallback={
+              <div className="min-h-screen bg-background flex items-center justify-center">
+                <LoadingSpinner />
+              </div>
+            }>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/complete-setup" element={<CompleteSetup />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/manager" element={<ManagerDashboard />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </UserRoleProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
   </ErrorBoundary>
 );
 
