@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserRoleProvider } from "@/contexts/UserRoleContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SessionTimeoutWarning } from "@/components/SessionTimeoutWarning";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
@@ -28,6 +29,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SessionTimeoutWarning />
         <BrowserRouter>
           <UserRoleProvider>
             <Routes>
