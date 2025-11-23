@@ -20,7 +20,8 @@ import {
   BarChart3,
   Settings,
   UserPlus,
-  ClipboardList
+  ClipboardList,
+  User
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -48,9 +49,10 @@ interface RecentActivity {
 interface DashboardOverviewProps {
   userId: string;
   onNavigate: (tab: string) => void;
+  accessLevel?: 'no_access' | 'meeting_only' | 'full_access';
 }
 
-export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps) => {
+export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_access' }: DashboardOverviewProps) => {
   const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     pendingCommitments: 0,
@@ -488,6 +490,152 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
             </Card>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  // Limited dashboard for meeting_only access
+  if (accessLevel === 'meeting_only') {
+    return (
+      <div className="space-y-6">
+        {/* Welcome Banner */}
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="p-6">
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Calendar className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl sm:text-2xl font-serif font-bold mb-2">Welcome to Bureau Boudoir!</h2>
+                  <p className="text-muted-foreground text-sm sm:text-base">
+                    Your application has been approved. Complete your introductory meeting to unlock full access to your creator dashboard and begin your journey with us.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Creator Timeline - Phase 1 & 2 visible */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              Your Journey
+            </CardTitle>
+            <CardDescription>Track your progress through the onboarding process</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CreatorTimeline />
+          </CardContent>
+        </Card>
+
+        {/* Meeting Booking - Prominent Display */}
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Video className="w-5 h-5 text-primary" />
+              Book Your Introduction Meeting
+            </CardTitle>
+            <CardDescription>Schedule your meeting to unlock full dashboard access</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={() => onNavigate('meetings')} 
+              className="w-full h-12"
+              size="lg"
+            >
+              <Calendar className="w-5 h-5 mr-2" />
+              View Meeting Details
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* What Unlocks After Meeting */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <FileCheck className="w-5 h-5 text-primary" />
+              What Unlocks After Your Meeting
+            </CardTitle>
+            <CardDescription>Features that become available once you complete your introduction</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Complete Detailed Onboarding</p>
+                  <p className="text-xs text-muted-foreground">Share your story, boundaries, and creative vision</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <Upload className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Upload Portfolio Content</p>
+                  <p className="text-xs text-muted-foreground">Share your best work and build your content library</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Review and Sign Contract</p>
+                  <p className="text-xs text-muted-foreground">Finalize your partnership agreement</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <CheckSquare className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Set Weekly Commitments</p>
+                  <p className="text-xs text-muted-foreground">Plan your content creation schedule</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <Video className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Schedule Studio Shoots</p>
+                  <p className="text-xs text-muted-foreground">Book professional production sessions</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <DollarSign className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-sm">Access Invoicing System</p>
+                  <p className="text-xs text-muted-foreground">Track payments and financial details</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Access to Available Features */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Available Now</CardTitle>
+            <CardDescription>Features you can access before your meeting</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button
+              variant="outline"
+              className="w-full justify-start h-11"
+              onClick={() => onNavigate('onboarding')}
+            >
+              <FileText className="w-4 h-4 mr-3" />
+              <span className="flex-1 text-left">View Pre-Meeting Onboarding</span>
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start h-11"
+              onClick={() => onNavigate('account')}
+            >
+              <User className="w-4 h-4 mr-3" />
+              <span className="flex-1 text-left">Manage Your Profile</span>
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

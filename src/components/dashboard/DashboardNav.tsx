@@ -27,6 +27,7 @@ interface DashboardNavProps {
   onAdminClick: () => void;
   onManagerClick: () => void;
   onMobileMenuClose?: () => void;
+  accessLevel?: 'no_access' | 'meeting_only' | 'full_access';
 }
 
 export const DashboardNav = ({
@@ -40,6 +41,7 @@ export const DashboardNav = ({
   onAdminClick,
   onManagerClick,
   onMobileMenuClose,
+  accessLevel = 'full_access',
 }: DashboardNavProps) => {
   const { t } = useTranslation();
   
@@ -47,6 +49,9 @@ export const DashboardNav = ({
     onTabChange(tabId);
     onMobileMenuClose?.();
   };
+
+  // Tabs allowed for meeting_only access
+  const allowedTabsForMeetingOnly: TabId[] = ['overview', 'onboarding', 'meetings', 'account'];
 
   const navSections = [
     {
@@ -94,9 +99,17 @@ export const DashboardNav = ({
     }
   ];
 
+  // Filter sections based on access level
+  const filteredSections = accessLevel === 'meeting_only'
+    ? navSections.map(section => ({
+        ...section,
+        items: section.items.filter(item => allowedTabsForMeetingOnly.includes(item.id))
+      })).filter(section => section.items.length > 0)
+    : navSections;
+
   return (
     <nav className="space-y-6">
-      {navSections.map((section, idx) => (
+      {filteredSections.map((section, idx) => (
         <div key={idx} className="space-y-2">
           <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
             {section.title}
