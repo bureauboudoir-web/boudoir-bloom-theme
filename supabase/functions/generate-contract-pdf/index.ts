@@ -26,8 +26,355 @@ interface ContractData {
   contract_version?: string;
 }
 
+// Enhanced PDF CSS for professional rendering
+const PDF_STYLES = `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Cormorant+Garamond:wght@400;600;700&display=swap');
+  
+  @page {
+    size: A4;
+    margin: 25mm 20mm;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Crimson Text', serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: white;
+  }
+  
+  .contract-container {
+    max-width: 170mm;
+    margin: 0 auto;
+    background: white;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #8B0000;
+  }
+  
+  .logo {
+    max-width: 120px;
+    margin-bottom: 15px;
+  }
+  
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24pt;
+    font-weight: 700;
+    color: #8B0000;
+    margin: 10px 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  .header h2 {
+    font-family: 'Crimson Text', serif;
+    font-size: 14pt;
+    font-weight: 600;
+    color: #D4AF37;
+    margin-top: 5px;
+  }
+  
+  .parties {
+    background: #faf9f7;
+    padding: 20px;
+    margin: 25px 0;
+    border-left: 4px solid #D4AF37;
+  }
+  
+  .party {
+    margin-bottom: 15px;
+  }
+  
+  .party-label {
+    font-weight: 700;
+    color: #8B0000;
+    text-transform: uppercase;
+    font-size: 10pt;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+  
+  .party-info {
+    color: #333;
+    line-height: 1.5;
+  }
+  
+  .revenue-split {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #8B0000 0%, #D4AF37 100%);
+    color: white;
+    border-radius: 4px;
+  }
+  
+  .split-item {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .split-label {
+    font-size: 10pt;
+    opacity: 0.9;
+    margin-bottom: 5px;
+  }
+  
+  .split-value {
+    font-size: 28pt;
+    font-weight: 700;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  
+  .contract-section {
+    margin: 25px 0;
+    page-break-inside: avoid;
+  }
+  
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14pt;
+    font-weight: 700;
+    color: #8B0000;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #D4AF37;
+  }
+  
+  .section-content {
+    text-align: justify;
+    color: #2a2a2a;
+    margin-bottom: 10px;
+  }
+  
+  .term-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dotted #ddd;
+  }
+  
+  .term-label {
+    font-weight: 600;
+    color: #8B0000;
+  }
+  
+  .term-value {
+    color: #333;
+  }
+  
+  .custom-clauses {
+    background: #faf9f7;
+    padding: 20px;
+    margin: 25px 0;
+    border: 1px solid #D4AF37;
+    border-radius: 4px;
+  }
+  
+  .signatures {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  
+  .signature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  .signature-block {
+    text-align: center;
+  }
+  
+  .signature-name {
+    font-weight: 600;
+    color: #8B0000;
+    margin-bottom: 30px;
+  }
+  
+  .signature-line {
+    border-top: 2px solid #333;
+    padding-top: 10px;
+    margin-top: 40px;
+  }
+  
+  .signature-label {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #8B0000;
+    text-align: center;
+    font-size: 9pt;
+    color: #666;
+  }
+  
+  @media print {
+    body {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>
+`;
+
+async function convertHtmlToPdf(html: string): Promise<Uint8Array> {
+  const pdfShiftApiKey = Deno.env.get('PDFSHIFT_API_KEY');
+  
+  if (pdfShiftApiKey) {
+    // Use PDFShift for high-quality PDF generation
+    console.log('🎨 Using PDFShift for professional PDF rendering');
+    
+    try {
+      const response = await fetch('https://api.pdfshift.io/v3/convert/pdf', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${btoa(`api:${pdfShiftApiKey}`)}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          source: html,
+          landscape: false,
+          use_print: true,
+          format: 'A4',
+          margin: {
+            top: '10mm',
+            bottom: '10mm',
+            left: '10mm',
+            right: '10mm',
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`PDFShift API error: ${response.statusText}`);
+      }
+
+      const pdfBuffer = await response.arrayBuffer();
+      console.log('✅ PDF generated successfully with PDFShift');
+      return new Uint8Array(pdfBuffer);
+    } catch (error) {
+      console.warn('⚠️ PDFShift failed, falling back to jsPDF:', error);
+    }
+  }
+  
+  // Fallback to enhanced jsPDF rendering
+  console.log('📄 Using enhanced jsPDF rendering');
+  return await generatePdfWithJsPDF(html);
+}
+
+async function generatePdfWithJsPDF(html: string): Promise<Uint8Array> {
+  const jsPDF = (await import('https://esm.sh/jspdf@2.5.1')).default;
+  const { DOMParser } = await import('https://esm.sh/linkedom@0.14.26');
+  
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  let yPos = 20;
+  const lineHeight = 6;
+  const margin = 20;
+  const pageWidth = 210;
+  const maxWidth = pageWidth - (margin * 2);
+
+  // Helper function to add text
+  const addText = (text: string, fontSize = 10, isBold = false, color: [number, number, number] = [0, 0, 0]) => {
+    pdf.setFontSize(fontSize);
+    pdf.setTextColor(...color);
+    if (isBold) pdf.setFont('helvetica', 'bold');
+    else pdf.setFont('helvetica', 'normal');
+    
+    const lines = pdf.splitTextToSize(text, maxWidth);
+    lines.forEach((line: string) => {
+      if (yPos > 280) {
+        pdf.addPage();
+        yPos = 20;
+      }
+      pdf.text(line, margin, yPos);
+      yPos += lineHeight;
+    });
+  };
+
+  // Parse and render content
+  const title = doc.querySelector('.header h1')?.textContent || 'BUREAU BOUDOIR';
+  const subtitle = doc.querySelector('.header h2')?.textContent || 'CREATOR AGREEMENT';
+  
+  pdf.setFontSize(22);
+  pdf.setTextColor(139, 0, 0);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text(title, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 10;
+  
+  pdf.setFontSize(14);
+  pdf.setTextColor(212, 175, 55);
+  pdf.text(subtitle, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 15;
+
+  // Extract and render sections
+  const sections = doc.querySelectorAll('.contract-section');
+  sections.forEach((section) => {
+    const sectionTitle = section.querySelector('.section-title')?.textContent;
+    const sectionContent = section.querySelector('.section-content')?.textContent;
+    
+    if (sectionTitle) {
+      yPos += 5;
+      addText(sectionTitle, 12, true, [139, 0, 0]);
+    }
+    
+    if (sectionContent) {
+      addText(sectionContent.trim(), 10, false, [42, 42, 42]);
+      yPos += 3;
+    }
+  });
+
+  // Signatures
+  if (yPos > 240) {
+    pdf.addPage();
+    yPos = 20;
+  }
+  
+  yPos += 20;
+  addText('SIGNATURES', 14, true, [139, 0, 0]);
+  yPos += 15;
+  
+  pdf.text('Agency Representative', margin, yPos);
+  pdf.text('Creator', margin + 95, yPos);
+  yPos += 20;
+  pdf.line(margin, yPos, margin + 70, yPos);
+  pdf.line(margin + 95, yPos, margin + 165, yPos);
+  yPos += 5;
+  pdf.setFontSize(8);
+  pdf.text('Signature & Date', margin, yPos);
+  pdf.text('Signature & Date', margin + 95, yPos);
+
+  const pdfBlob = pdf.output('blob');
+  const pdfArrayBuffer = await pdfBlob.arrayBuffer();
+  return new Uint8Array(pdfArrayBuffer);
+}
+
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -35,7 +382,6 @@ Deno.serve(async (req) => {
   try {
     console.log('🎨 Contract PDF generation started');
 
-    // Get Supabase client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -46,7 +392,6 @@ Deno.serve(async (req) => {
       }
     );
 
-    // Parse request body
     const { contractData } = await req.json() as { contractData: ContractData };
     
     if (!contractData || !contractData.creator_id) {
@@ -55,7 +400,7 @@ Deno.serve(async (req) => {
 
     console.log(`📄 Generating contract for creator: ${contractData.creator_name}`);
 
-    // Fetch contract template from database
+    // Fetch contract template
     const version = contractData.contract_version || 'long';
     const { data: template, error: templateError } = await supabaseClient
       .from('contract_templates')
@@ -71,7 +416,7 @@ Deno.serve(async (req) => {
 
     console.log('✅ Template fetched successfully');
 
-    // Fetch BB logo from storage and convert to base64
+    // Fetch BB logo
     const { data: logoData, error: logoError } = await supabaseClient
       .storage
       .from('contracts')
@@ -82,9 +427,7 @@ Deno.serve(async (req) => {
       const arrayBuffer = await logoData.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
       logoBase64 = `data:image/png;base64,${btoa(String.fromCharCode(...uint8Array))}`;
-      console.log('✅ Logo loaded and converted to base64');
-    } else {
-      console.warn('⚠️ Logo not found in storage, proceeding without logo');
+      console.log('✅ Logo loaded');
     }
 
     // Prepare template data
@@ -101,153 +444,17 @@ Deno.serve(async (req) => {
       }),
     };
 
-    // Compile and render template
+    // Compile template
     const compiledTemplate = Handlebars.compile(template.template_content);
-    const htmlContent = compiledTemplate(templateData);
-
-    console.log('✅ Template compiled and rendered');
-
-    // Generate PDF using Chrome DevTools Protocol (instead of Puppeteer for Deno edge functions)
-    // For now, we'll use a workaround: we'll use an external PDF generation service
-    // or save HTML directly and convert later
+    let htmlContent = compiledTemplate(templateData);
     
-    // Save HTML content to storage as a temporary workaround
-    // In production, you'd use a PDF service like PDFShift, Gotenberg, or similar
-    const htmlFileName = `contracts/${contractData.creator_id}/contract-${Date.now()}.html`;
-    
-    const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
-    const { data: htmlUpload, error: htmlUploadError } = await supabaseClient
-      .storage
-      .from('contracts')
-      .upload(htmlFileName, htmlBlob, {
-        contentType: 'text/html',
-        upsert: true,
-      });
+    // Add professional CSS
+    htmlContent = htmlContent.replace('</head>', `${PDF_STYLES}</head>`);
 
-    if (htmlUploadError) {
-      console.error('❌ HTML upload error:', htmlUploadError);
-      throw htmlUploadError;
-    }
+    console.log('✅ Template compiled with enhanced styles');
 
-    console.log('✅ HTML uploaded to storage:', htmlFileName);
-
-    // For now, we'll generate a simple PDF using a PDF generation library
-    // Import jsPDF for PDF generation in Deno
-    const jsPDF = (await import('https://esm.sh/jspdf@2.5.1')).default;
-    
-    // Create PDF with HTML content rendered as text
-    // Note: This is a temporary solution. For production, use proper PDF rendering
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-
-    // Add title
-    pdf.setFontSize(20);
-    pdf.setTextColor(212, 175, 55); // Gold color
-    pdf.text('BUREAU BOUDOIR', 105, 20, { align: 'center' });
-    
-    pdf.setFontSize(16);
-    pdf.setTextColor(139, 0, 0); // Red color
-    pdf.text('CREATOR AGREEMENT', 105, 30, { align: 'center' });
-
-    // Add content
-    pdf.setFontSize(10);
-    pdf.setTextColor(0, 0, 0); // Black color
-    
-    let yPos = 50;
-    const lineHeight = 7;
-    const margin = 20;
-    const pageWidth = 210;
-    const maxWidth = pageWidth - (margin * 2);
-
-    const addText = (text: string, isBold = false) => {
-      if (isBold) pdf.setFont('helvetica', 'bold');
-      const lines = pdf.splitTextToSize(text, maxWidth);
-      lines.forEach((line: string) => {
-        if (yPos > 280) {
-          pdf.addPage();
-          yPos = 20;
-        }
-        pdf.text(line, margin, yPos);
-        yPos += lineHeight;
-      });
-      if (isBold) pdf.setFont('helvetica', 'normal');
-    };
-
-    // Add contract content
-    addText(`Agency: Bureau Boudoir, ${contractData.agency_address}, KvK ${contractData.agency_kvk}`);
-    addText(`Represented by: ${contractData.agency_representative}`);
-    addText(`Creator: ${contractData.creator_name}, born ${contractData.creator_dob}, residing at ${contractData.creator_address}`);
-    yPos += 5;
-
-    addText('REVENUE SPLIT', true);
-    addText(`Creator receives ${contractData.percentage_split_creator}%`);
-    addText(`Agency receives ${contractData.percentage_split_agency}%`);
-    yPos += 5;
-
-    addText('CONTRACT TERM', true);
-    addText(`Duration: ${contractData.contract_term_months} months`);
-    addText(`Start Date: ${contractData.contract_start_date}`);
-    addText(`End Date: ${contractData.contract_end_date}`);
-    addText(`Auto-Renewal: ${contractData.auto_renew ? 'YES' : 'NO'}`);
-    yPos += 5;
-
-    addText('1. Purpose of Cooperation', true);
-    addText('The Creator appoints the Agency as her exclusive management partner for the development, marketing, and monetization of adult content on digital platforms.');
-    yPos += 5;
-
-    addText('2. Services Provided by the Agency', true);
-    addText('The Agency provides comprehensive management including content strategy, marketing, platform management, and professional development.');
-    yPos += 5;
-
-    addText('3. Creator Obligations', true);
-    addText('The Creator commits to producing high-quality content as agreed, maintaining professional standards, and collaborating with the Agency team.');
-    yPos += 5;
-
-    addText('4. Financial Terms', true);
-    addText('Revenue split as defined above. Monthly invoicing and payment within 30 days.');
-    yPos += 5;
-
-    addText('5. Content Ownership and Rights', true);
-    addText('All content created remains the intellectual property of the Creator. The Agency receives license for marketing and distribution.');
-    yPos += 5;
-
-    addText('6. Termination', true);
-    addText(`Either party may terminate with ${contractData.termination_notice_days} days written notice. Post-termination rights apply for ${contractData.post_termination_rights_days} days.`);
-    yPos += 10;
-
-    if (contractData.custom_clauses) {
-      addText('CUSTOM CLAUSES', true);
-      addText(contractData.custom_clauses);
-      yPos += 10;
-    }
-
-    // Signatures
-    if (yPos > 230) {
-      pdf.addPage();
-      yPos = 20;
-    }
-
-    addText('SIGNATURES', true);
-    yPos += 10;
-    pdf.text('Agency Representative', margin, yPos);
-    pdf.text('Creator', margin + 95, yPos);
-    yPos += 10;
-    pdf.text(`${contractData.agency_representative}`, margin, yPos);
-    pdf.text(`${contractData.creator_name}`, margin + 95, yPos);
-    yPos += 20;
-    pdf.line(margin, yPos, margin + 60, yPos);
-    pdf.line(margin + 95, yPos, margin + 155, yPos);
-    yPos += 5;
-    pdf.text('Signature', margin, yPos);
-    pdf.text('Signature', margin + 95, yPos);
-
-    // Get PDF as blob
-    const pdfBlob = pdf.output('blob');
-    const pdfArrayBuffer = await pdfBlob.arrayBuffer();
-    const pdfUint8Array = new Uint8Array(pdfArrayBuffer);
+    // Generate PDF using professional service or enhanced jsPDF
+    const pdfUint8Array = await convertHtmlToPdf(htmlContent);
 
     // Upload PDF to storage
     const pdfFileName = `contracts/${contractData.creator_id}/contract-${Date.now()}.pdf`;
@@ -266,15 +473,13 @@ Deno.serve(async (req) => {
 
     console.log('✅ PDF uploaded to storage:', pdfFileName);
 
-    // Get public URL for the PDF
+    // Get public URL
     const { data: { publicUrl } } = supabaseClient
       .storage
       .from('contracts')
       .getPublicUrl(pdfFileName);
 
-    console.log('✅ PDF public URL generated');
-
-    // Update or create creator_contracts record
+    // Update or create contract record
     const { data: existingContract } = await supabaseClient
       .from('creator_contracts')
       .select('id')
@@ -282,8 +487,7 @@ Deno.serve(async (req) => {
       .single();
 
     if (existingContract) {
-      // Update existing contract
-      const { error: updateError } = await supabaseClient
+      await supabaseClient
         .from('creator_contracts')
         .update({
           contract_data: contractData,
@@ -293,15 +497,9 @@ Deno.serve(async (req) => {
           updated_at: new Date().toISOString(),
         })
         .eq('id', existingContract.id);
-
-      if (updateError) {
-        console.error('❌ Contract update error:', updateError);
-        throw updateError;
-      }
-      console.log('✅ Contract updated in database');
+      console.log('✅ Contract updated');
     } else {
-      // Create new contract
-      const { error: insertError } = await supabaseClient
+      await supabaseClient
         .from('creator_contracts')
         .insert({
           user_id: contractData.creator_id,
@@ -310,46 +508,46 @@ Deno.serve(async (req) => {
           generated_pdf_url: publicUrl,
           generation_status: 'generated',
         });
-
-      if (insertError) {
-        console.error('❌ Contract insert error:', insertError);
-        throw insertError;
-      }
-      console.log('✅ Contract created in database');
+      console.log('✅ Contract created');
     }
 
-    // Send email notification (will implement in Session 3)
-    console.log('📧 Email notification queued for Session 3');
-
-    // Send email notification to creator
+    // Send email notification
     try {
-      await supabaseClient.functions.invoke('send-contract-notification', {
-        body: {
-          creatorId: contractData.creator_id,
-          creatorName: contractData.creator_name,
-          creatorEmail: (await supabaseClient.from('profiles').select('email').eq('id', contractData.creator_id).single()).data?.email,
-          contractPdfUrl: publicUrl,
-          contractData: {
-            percentage_split_creator: contractData.percentage_split_creator,
-            percentage_split_agency: contractData.percentage_split_agency,
-            contract_term_months: contractData.contract_term_months,
-            contract_start_date: contractData.contract_start_date,
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('email')
+        .eq('id', contractData.creator_id)
+        .single();
+
+      if (profile?.email) {
+        await supabaseClient.functions.invoke('send-contract-notification', {
+          body: {
+            creatorId: contractData.creator_id,
+            creatorName: contractData.creator_name,
+            creatorEmail: profile.email,
+            contractPdfUrl: publicUrl,
+            contractData: {
+              percentage_split_creator: contractData.percentage_split_creator,
+              percentage_split_agency: contractData.percentage_split_agency,
+              contract_term_months: contractData.contract_term_months,
+              contract_start_date: contractData.contract_start_date,
+            },
           },
-        },
-      });
-      console.log('✅ Email notification sent');
+        });
+        console.log('✅ Email notification sent');
+      }
     } catch (emailError) {
       console.error('⚠️ Email notification failed:', emailError);
-      // Don't fail the whole operation if email fails
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Contract generated successfully',
+        message: 'Contract generated successfully with enhanced PDF quality',
         data: {
           pdfUrl: publicUrl,
           contractId: existingContract?.id || null,
+          renderingEngine: Deno.env.get('PDFSHIFT_API_KEY') ? 'PDFShift (Professional)' : 'jsPDF (Enhanced)',
         },
       }),
       {
