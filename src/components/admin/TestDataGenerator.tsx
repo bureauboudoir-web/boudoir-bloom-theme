@@ -75,25 +75,62 @@ export function TestDataGenerator() {
   };
 
   return (
-    <Card>
+    <Card className="border-2 border-primary/20">
       <CardHeader>
-        <CardTitle>Test Data Generator</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <UserPlus className="h-5 w-5" />
+          Test Data Generator
+        </CardTitle>
         <CardDescription>
-          Generate comprehensive test data for 5 creators at different journey stages
+          Generate comprehensive test data to verify all admin features
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid gap-2">
-          <p className="text-sm text-muted-foreground">
-            This will create 5 test creators:
+      <CardContent className="space-y-6">
+        <div className="rounded-lg bg-muted/50 p-4 space-y-3">
+          <p className="text-sm font-medium">📋 What will be created:</p>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">1.</span>
+              <div>
+                <span className="font-medium text-foreground">Emma Rose</span> - Application pending
+                <div className="text-xs mt-0.5">→ Shows in Applications tab</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">2.</span>
+              <div>
+                <span className="font-medium text-foreground">Sophie Laurent</span> - Approved, needs meeting
+                <div className="text-xs mt-0.5">→ Shows in Grant Access & Meetings tabs</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">3.</span>
+              <div>
+                <span className="font-medium text-foreground">Lara Amsterdam</span> - Meeting confirmed for tomorrow
+                <div className="text-xs mt-0.5">→ Shows in Grant Access & Meetings tabs</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">4.</span>
+              <div>
+                <span className="font-medium text-foreground">Nina De Wallen</span> - Meeting completed, onboarding
+                <div className="text-xs mt-0.5">→ Shows in Contracts tab (needs signature)</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">5.</span>
+              <div>
+                <span className="font-medium text-foreground">Isabella Night</span> - Complete journey
+                <div className="text-xs mt-0.5">→ Shows in Content, Shoots, Invoices tabs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+          <p className="text-xs text-amber-600 dark:text-amber-400">
+            💡 <strong>Tip:</strong> Run "Clean Up Old Data" first if you've generated test data before. Then click "Generate Test Data" to create fresh test creators.
           </p>
-          <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-            <li>Emma Rose - Application pending</li>
-            <li>Sophie Laurent - Approved, needs meeting</li>
-            <li>Lara Amsterdam - Meeting confirmed</li>
-            <li>Nina De Wallen - Meeting completed, onboarding</li>
-            <li>Isabella Night - Full journey complete</li>
-          </ul>
         </div>
         
         <div className="flex gap-2">
