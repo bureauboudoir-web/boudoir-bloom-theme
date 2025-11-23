@@ -100,10 +100,17 @@ export const AccessManagement = () => {
         return;
       }
 
-      // Fetch ALL creators - managers can see all creators
-      const profilesQuery = supabase
+      // Fetch creators based on role
+      // For managers: only fetch their assigned creators
+      // For admins: fetch all creators
+      let profilesQuery = supabase
         .from('profiles')
         .select('id, full_name, email, profile_picture_url, assigned_manager_id');
+
+      if (userIsManager && !userIsAdmin) {
+        // Managers only see their assigned creators
+        profilesQuery = profilesQuery.eq('assigned_manager_id', user.id);
+      }
 
       const { data: profilesData, error: profilesError } = await profilesQuery;
       if (profilesError) throw profilesError;

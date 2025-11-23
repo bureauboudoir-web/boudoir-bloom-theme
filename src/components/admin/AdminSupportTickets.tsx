@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Send, Check, Search } from "lucide-react";
+import { MessageSquare, Send, Check, Search, Clock, UserCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -250,44 +250,61 @@ const AdminSupportTickets = () => {
           </p>
         ) : (
           <>
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {paginatedTickets.map((ticket) => (
-              <div
+              <Card
                 key={ticket.id}
-                className="border border-border rounded-lg p-4 space-y-3 hover:border-primary/40 transition-colors"
+                className="p-6 hover:border-primary/40 transition-colors"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-2">
+                <div className="flex items-start justify-between gap-6">
+                  <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold">{ticket.subject}</h3>
+                      <h3 className="font-semibold text-lg">{ticket.subject}</h3>
                       <Badge className={getStatusColor(ticket.status)}>
                         {ticket.status.replace("_", " ")}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-medium">
-                        {ticket.profiles?.full_name || ticket.profiles?.email}
-                      </span>
-                      {" • "}
-                      {new Date(ticket.created_at).toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      <span className="font-medium">Assigned Manager:</span> {ticket.assigned_manager_name}
-                    </p>
-                    <p className="text-sm">{ticket.message}</p>
+                    
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+                      <div className="flex items-center gap-1">
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="font-medium">
+                          {ticket.profiles?.full_name || ticket.profiles?.email}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {new Date(ticket.created_at).toLocaleString()}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <UserCheck className="h-4 w-4" />
+                        <span className="font-medium">Manager:</span> {ticket.assigned_manager_name}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-muted/30 rounded-lg p-4">
+                      <p className="text-sm leading-relaxed">{ticket.message}</p>
+                    </div>
+                    
                     {ticket.admin_response && (
-                      <div className="mt-3 pt-3 border-t border-border">
-                        <p className="text-sm font-semibold mb-1">Your Response:</p>
-                        <p className="text-sm text-muted-foreground">{ticket.admin_response}</p>
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Send className="h-4 w-4 text-primary" />
+                          <p className="text-sm font-semibold">Your Response:</p>
+                        </div>
+                        <div className="bg-primary/5 rounded-lg p-4">
+                          <p className="text-sm leading-relaxed">{ticket.admin_response}</p>
+                        </div>
                         {ticket.responded_at && (
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mt-2">
                             Sent on {new Date(ticket.responded_at).toLocaleString()}
                           </p>
                         )}
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
+                  
+                  <div className="flex flex-col gap-2 min-w-[140px]">
                     <Button
                       size="sm"
                       variant="outline"
@@ -295,24 +312,25 @@ const AdminSupportTickets = () => {
                         setSelectedTicket(ticket);
                         setResponse(ticket.admin_response || "");
                       }}
+                      className="w-full"
                     >
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      {ticket.admin_response ? "Edit Response" : "Respond"}
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      {ticket.admin_response ? "Edit" : "Respond"}
                     </Button>
                     {ticket.status !== "resolved" && (
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleMarkResolved(ticket.id)}
-                        className="text-green-500 hover:text-green-600"
+                        className="w-full text-green-600 hover:text-green-700 hover:bg-green-50"
                       >
-                        <Check className="h-4 w-4 mr-1" />
+                        <Check className="h-4 w-4 mr-2" />
                         Resolve
                       </Button>
                     )}
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
             </div>
             {totalPages > 1 && (
