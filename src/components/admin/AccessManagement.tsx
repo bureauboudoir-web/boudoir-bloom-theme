@@ -100,15 +100,10 @@ export const AccessManagement = () => {
         return;
       }
 
-      // Fetch all creators first
-      let profilesQuery = supabase
+      // Fetch ALL creators - managers can see all creators
+      const profilesQuery = supabase
         .from('profiles')
         .select('id, full_name, email, profile_picture_url, assigned_manager_id');
-
-      // Filter by assigned manager if user is a manager (not admin)
-      if (userIsManager && !userIsAdmin) {
-        profilesQuery = profilesQuery.eq('assigned_manager_id', user.id);
-      }
 
       const { data: profilesData, error: profilesError } = await profilesQuery;
       if (profilesError) throw profilesError;

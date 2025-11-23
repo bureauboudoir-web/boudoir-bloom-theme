@@ -97,17 +97,11 @@ export const AdminMeetings = () => {
 
     setLoading(true);
     try {
-      // First fetch meetings
-      let query = supabase
+      // Fetch ALL meetings - managers can see all meetings
+      const query = supabase
         .from('creator_meetings')
         .select('*')
         .order('meeting_date', { ascending: true });
-
-      // Admins and super_admins see all meetings
-      // Managers see only their assigned meetings
-      if (!isSuperAdmin && !isAdmin) {
-        query = query.eq('assigned_manager_id', user.id);
-      }
 
       const { data: meetingsData, error: meetingsError } = await query;
       if (meetingsError) throw meetingsError;
