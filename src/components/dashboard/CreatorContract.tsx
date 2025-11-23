@@ -54,9 +54,13 @@ export const CreatorContract = () => {
 
   const downloadContract = async (url: string, filename: string) => {
     try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/object/public/contracts/');
+      const filePath = pathParts[1];
+      
       const { data, error } = await supabase.storage
         .from('contracts')
-        .download(url.replace(`${supabase.storage.from('contracts').getPublicUrl('').data.publicUrl}/`, ''));
+        .download(filePath);
 
       if (error) throw error;
 
