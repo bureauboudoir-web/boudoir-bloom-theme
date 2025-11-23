@@ -11,7 +11,7 @@ import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
-import { RoleBadge } from "@/components/RoleBadge";
+import { AccessLevelBadge } from "./AccessLevelBadge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -238,43 +238,22 @@ export const AccessManagement = () => {
     setFilteredCreators(filtered);
   };
 
-  const getAccessBadge = (level: string) => {
-    if (level === 'full_access') {
-      return (
-        <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-          <ShieldCheck className="w-3 h-3 mr-1" />
-          Full Access
-        </Badge>
-      );
-    }
-    if (level === 'meeting_only') {
-      return (
-        <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-          <AlertCircle className="w-3 h-3 mr-1" />
-          Meeting Only
-        </Badge>
-      );
-    }
-    return (
-      <Badge variant="secondary" className="bg-red-500/10 text-red-500 border-red-500/20">
-        <XCircle className="w-3 h-3 mr-1" />
-        No Access
-      </Badge>
-    );
-  };
-
-  const getMeetingStatusBadge = (status: string | null) => {
+  const getMeetingStatusBadge = (status: string | null, meetingDate: string | null) => {
+    const dateStr = meetingDate ? format(new Date(meetingDate), 'MMM dd') : '';
+    
     if (!status || status === 'not_booked') {
-      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Not Booked</Badge>;
+      return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Meet Your Rep - Not Booked</Badge>;
     }
     if (status === 'confirmed') {
-      return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">Confirmed</Badge>;
+      return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+        Meet Your Rep - Scheduled {dateStr && `(${dateStr})`}
+      </Badge>;
     }
     if (status === 'completed') {
-      return <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">Completed</Badge>;
+      return <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">Meet Your Rep - Completed ✓</Badge>;
     }
     if (status === 'not_required') {
-      return <Badge variant="outline" className="bg-muted-foreground/10 text-muted-foreground">Not Required</Badge>;
+      return <Badge variant="outline" className="bg-muted-foreground/10 text-muted-foreground">Meeting Skipped</Badge>;
     }
     return <Badge variant="outline">{status}</Badge>;
   };
@@ -342,6 +321,20 @@ export const AccessManagement = () => {
           <CardDescription>
             Manage creator access levels and grant permissions
           </CardDescription>
+          
+          {/* Access Journey Info Card */}
+          <div className="mt-4 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+            <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 text-blue-500" />
+              Creator Access Journey
+            </h4>
+            <ol className="text-xs text-muted-foreground space-y-1 ml-6 list-decimal">
+              <li><strong>Awaiting Meeting Invitation:</strong> Just signed up, needs meeting access granted</li>
+              <li><strong>Can Book Meet Your Rep:</strong> Invited to book initial meeting with their rep</li>
+              <li><strong>Meeting Scheduled:</strong> Confirmed meeting date, waiting for completion</li>
+              <li><strong>Full Dashboard Access:</strong> Meeting completed or early access granted</li>
+            </ol>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Filters */}
@@ -368,14 +361,14 @@ export const AccessManagement = () => {
                 size="sm"
                 onClick={() => setFilterStatus("no_access")}
               >
-                No Access ({creators.filter(c => c.access_level === 'no_access').length})
+                Awaiting Invitation ({creators.filter(c => c.access_level === 'no_access').length})
               </Button>
               <Button
                 variant={filterStatus === "meeting_only" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFilterStatus("meeting_only")}
               >
-                Meeting Only ({creators.filter(c => c.access_level === 'meeting_only').length})
+                Can Book Meeting ({creators.filter(c => c.access_level === 'meeting_only').length})
               </Button>
               <Button
                 variant={filterStatus === "full_access" ? "default" : "outline"}
@@ -402,8 +395,8 @@ export const AccessManagement = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <p className="font-medium">{creator.full_name || 'No name'}</p>
-                      {getAccessBadge(creator.access_level)}
-                      {creator.meeting_status && getMeetingStatusBadge(creator.meeting_status)}
+                      <AccessLevelBadge accessLevel={creator.access_level} />
+                      {creator.meeting_status && getMeetingStatusBadge(creator.meeting_status, creator.meeting_date)}
                       {creator.grant_method && getMethodBadge(creator.grant_method)}
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">{creator.email}</p>
@@ -415,14 +408,7 @@ export const AccessManagement = () => {
                       {creator.granted_by_name && (
                         <div className="flex items-center gap-1">
                           <Shield className="h-3 w-3" />
-                          <span>Granted by: {creator.granted_by_name}</span>
-                          {creator.granted_by_role && (
-                            <RoleBadge
-                              isSuperAdmin={creator.granted_by_role === 'super_admin'}
-                              isAdmin={creator.granted_by_role === 'admin'}
-                              isManager={creator.granted_by_role === 'manager'}
-                            />
-                          )}
+                          <span>Access granted by: {creator.granted_by_name}</span>
                         </div>
                       )}
                       {creator.granted_at && (
@@ -447,7 +433,20 @@ export const AccessManagement = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    {creator.access_level === 'meeting_only' && (
+                    {creator.access_level === 'no_access' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedCreator(creator);
+                          setShowGrantDialog(true);
+                        }}
+                        disabled={actionLoading}
+                      >
+                        📧 Send Meeting Invitation
+                      </Button>
+                    )}
+                    {creator.access_level === 'meeting_only' && creator.meeting_status === 'completed' && (
                       <Button
                         size="sm"
                         onClick={() => {
@@ -456,7 +455,20 @@ export const AccessManagement = () => {
                         }}
                         disabled={actionLoading}
                       >
-                        Grant Full Access
+                        ✅ Grant Dashboard Access
+                      </Button>
+                    )}
+                    {creator.access_level === 'meeting_only' && creator.meeting_status !== 'completed' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedCreator(creator);
+                          setShowGrantDialog(true);
+                        }}
+                        disabled={actionLoading}
+                      >
+                        ⚡ Skip Meeting & Grant Access
                       </Button>
                     )}
                     {creator.access_level === 'full_access' && (
@@ -469,7 +481,7 @@ export const AccessManagement = () => {
                         }}
                         disabled={actionLoading}
                       >
-                        Revoke Access
+                        🔒 Revoke to Meeting Only
                       </Button>
                     )}
                   </div>
@@ -503,10 +515,10 @@ export const AccessManagement = () => {
           <AlertDialog open={showRevokeDialog} onOpenChange={setShowRevokeDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Revoke Access</AlertDialogTitle>
+                <AlertDialogTitle>Revoke Dashboard Access?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to revoke full access for {selectedCreator.full_name || selectedCreator.email}? 
-                  They will be downgraded to "Meeting Only" access level.
+                  This will downgrade {selectedCreator.full_name || selectedCreator.email} from "Full Dashboard Access" to "Meeting Only" access. 
+                  They will lose access to all creator features except meeting booking.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

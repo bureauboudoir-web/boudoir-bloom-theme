@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
 
 interface GrantAccessDialogProps {
@@ -44,21 +45,31 @@ export const GrantAccessDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Grant Early Access?</DialogTitle>
+          <DialogTitle>Grant Dashboard Access to {creatorName}?</DialogTitle>
           <DialogDescription>
-            You're about to grant full dashboard access without completing their meeting.
+            This will upgrade their access from "Meeting Only" to "Full Dashboard Access", allowing them to use all creator features.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
             <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
-            <div className="space-y-1 flex-1">
-              <p className="text-sm font-medium">Creator Details</p>
-              <p className="text-sm text-muted-foreground">
-                <strong>{creatorName}</strong>
-              </p>
-              <p className="text-sm text-muted-foreground">{creatorEmail}</p>
+            <div className="space-y-2 flex-1">
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Creator</p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>{creatorName}</strong> ({creatorEmail})
+                </p>
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                  Current: Meeting Only
+                </Badge>
+                <span className="text-muted-foreground">→</span>
+                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                  New: Full Dashboard Access
+                </Badge>
+              </div>
             </div>
           </div>
 
