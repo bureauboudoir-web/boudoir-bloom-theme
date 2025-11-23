@@ -255,7 +255,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Pending Applications",
           value: stats.pendingCommitments,
-          icon: <ClipboardList className="w-5 h-5" />,
+          icon: ClipboardList,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
           action: () => window.location.href = '/admin',
@@ -263,7 +263,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Content to Review",
           value: stats.upcomingMeetings,
-          icon: <FileCheck className="w-5 h-5" />,
+          icon: FileCheck,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
           action: () => window.location.href = '/admin',
@@ -271,7 +271,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Total Creators",
           value: stats.pendingInvoices,
-          icon: <Users className="w-5 h-5" />,
+          icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
           action: () => window.location.href = '/admin',
@@ -279,7 +279,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Open Tickets",
           value: stats.totalUploads,
-          icon: <Mail className="w-5 h-5" />,
+          icon: Mail,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
           action: () => window.location.href = '/admin',
@@ -292,7 +292,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Pending Tasks",
           value: stats.pendingCommitments,
-          icon: <CheckSquare className="w-5 h-5" />,
+          icon: CheckSquare,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
           action: () => window.location.href = '/manager',
@@ -300,7 +300,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Scheduled Meetings",
           value: stats.upcomingMeetings,
-          icon: <Calendar className="w-5 h-5" />,
+          icon: Calendar,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
           action: () => window.location.href = '/manager',
@@ -308,7 +308,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Assigned Creators",
           value: stats.pendingInvoices,
-          icon: <Users className="w-5 h-5" />,
+          icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
           action: () => window.location.href = '/manager',
@@ -316,7 +316,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           title: "Content to Review",
           value: stats.totalUploads,
-          icon: <Upload className="w-5 h-5" />,
+          icon: Upload,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
           action: () => window.location.href = '/manager',
@@ -329,7 +329,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       {
         title: "Pending Commitments",
         value: stats.pendingCommitments,
-        icon: <CheckSquare className="w-5 h-5" />,
+        icon: CheckSquare,
         color: "text-amber-500",
         bgColor: "bg-amber-500/10",
         action: () => onNavigate('commitments'),
@@ -337,7 +337,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       {
         title: "Upcoming Meetings",
         value: stats.upcomingMeetings,
-        icon: <Calendar className="w-5 h-5" />,
+        icon: Calendar,
         color: "text-blue-500",
         bgColor: "bg-blue-500/10",
         action: () => onNavigate('meetings'),
@@ -345,7 +345,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       {
         title: "Pending Invoices",
         value: stats.pendingInvoices,
-        icon: <DollarSign className="w-5 h-5" />,
+        icon: DollarSign,
         color: "text-green-500",
         bgColor: "bg-green-500/10",
         action: () => onNavigate('invoices'),
@@ -353,7 +353,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       {
         title: "Recent Uploads",
         value: stats.totalUploads,
-        icon: <Upload className="w-5 h-5" />,
+        icon: Upload,
         color: "text-purple-500",
         bgColor: "bg-purple-500/10",
         action: () => onNavigate('upload'),
@@ -369,25 +369,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       return [
         {
           label: "Manage Applications",
-          icon: <ClipboardList className="w-4 h-4" />,
+          icon: ClipboardList,
           action: () => window.location.href = '/admin',
           variant: "default" as const,
         },
         {
           label: "Review Content",
-          icon: <FileCheck className="w-4 h-4" />,
+          icon: FileCheck,
           action: () => window.location.href = '/admin',
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
-          icon: <Users className="w-4 h-4" />,
+          icon: Users,
           action: () => window.location.href = '/admin',
           variant: "secondary" as const,
         },
         {
           label: "Analytics",
-          icon: <BarChart3 className="w-4 h-4" />,
+          icon: BarChart3,
           action: () => window.location.href = '/admin',
           variant: "outline" as const,
         },
@@ -398,25 +398,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       return [
         {
           label: "Review Applications",
-          icon: <ClipboardList className="w-4 h-4" />,
+          icon: ClipboardList,
           action: () => window.location.href = '/manager',
           variant: "default" as const,
         },
         {
           label: "Assign Tasks",
-          icon: <UserPlus className="w-4 h-4" />,
+          icon: UserPlus,
           action: () => window.location.href = '/manager',
           variant: "secondary" as const,
         },
         {
           label: "Schedule Shoots",
-          icon: <Video className="w-4 h-4" />,
+          icon: Video,
           action: () => window.location.href = '/manager',
           variant: "secondary" as const,
         },
         {
           label: "View Reports",
-          icon: <BarChart3 className="w-4 h-4" />,
+          icon: BarChart3,
           action: () => window.location.href = '/manager',
           variant: "outline" as const,
         },
@@ -427,25 +427,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
     return [
       {
         label: "Upload Content",
-        icon: <Upload className="w-4 h-4" />,
+        icon: Upload,
         action: () => onNavigate('upload'),
         variant: "default" as const,
       },
       {
         label: "Commitments",
-        icon: <CheckSquare className="w-4 h-4" />,
+        icon: CheckSquare,
         action: () => onNavigate('commitments'),
         variant: "secondary" as const,
       },
       {
         label: "Book Meeting",
-        icon: <Video className="w-4 h-4" />,
+        icon: Video,
         action: () => onNavigate('meetings'),
         variant: "secondary" as const,
       },
       {
         label: "Support",
-        icon: <Mail className="w-4 h-4" />,
+        icon: Mail,
         action: () => onNavigate('support'),
         variant: "outline" as const,
       },
