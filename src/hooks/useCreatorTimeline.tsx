@@ -25,7 +25,7 @@ export const useCreatorTimeline = () => {
           .from("creator_applications")
           .select("*")
           .eq("email", session.user.email)
-          .single(),
+          .maybeSingle(),
         supabase
           .from("creator_meetings")
           .select("*")
@@ -35,7 +35,7 @@ export const useCreatorTimeline = () => {
           .from("onboarding_data")
           .select("*")
           .eq("user_id", session.user.id)
-          .single(),
+          .maybeSingle(),
         supabase
           .from("creator_contracts")
           .select("*")
@@ -45,7 +45,7 @@ export const useCreatorTimeline = () => {
           .from("creator_access_levels")
           .select("*")
           .eq("user_id", session.user.id)
-          .single(),
+          .maybeSingle(),
       ]);
 
       const application = applicationRes.data;

@@ -501,7 +501,7 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
       </div>
 
       {/* Creator Timeline - Only show for creators */}
-      {isCreator && !isAdmin && !isSuperAdmin && !isManager && (
+      {isCreator && (
         <CreatorTimeline />
       )}
 
