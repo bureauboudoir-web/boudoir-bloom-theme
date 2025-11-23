@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
 import { CreatorTimeline } from "./CreatorTimeline";
 import { DashboardOverviewAccordion } from "./DashboardOverviewAccordion";
+import { CreatorsOnboardingOverview } from "./CreatorsOnboardingOverview";
 
 interface DashboardStats {
   pendingCommitments: number;
@@ -683,8 +684,8 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         </Alert>
       )}
 
-      {/* Creator Timeline - Collapsible in Accordion */}
-      {isCreator && (
+      {/* Creator Timeline - Only for pure creators (not admins/managers) */}
+      {isCreator && !isAdmin && !isSuperAdmin && !isManager && (
         <Card className="border-2 border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -697,6 +698,11 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
             <CreatorTimeline />
           </CardContent>
         </Card>
+      )}
+
+      {/* Creators Onboarding Overview - For admins/managers only */}
+      {(isAdmin || isSuperAdmin || isManager) && (
+        <CreatorsOnboardingOverview onNavigate={onNavigate} />
       )}
 
       {/* Accordion Sections */}

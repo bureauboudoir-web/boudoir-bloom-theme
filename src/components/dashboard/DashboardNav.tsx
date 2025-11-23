@@ -25,6 +25,8 @@ interface DashboardNavProps {
   isAdmin: boolean;
   isSuperAdmin: boolean;
   isManagerOnly: boolean;
+  isCreator: boolean;
+  isManager: boolean;
   onAdminClick: () => void;
   onManagerClick: () => void;
   onMobileMenuClose?: () => void;
@@ -39,6 +41,8 @@ export const DashboardNav = ({
   isAdmin,
   isSuperAdmin,
   isManagerOnly,
+  isCreator,
+  isManager,
   onAdminClick,
   onManagerClick,
   onMobileMenuClose,
@@ -64,7 +68,10 @@ export const DashboardNav = ({
     {
       title: t('dashboard.sections.profileSetup'),
       items: [
-        { id: "onboarding" as TabId, label: t('dashboard.nav.onboarding'), icon: <FileText className="w-4 h-4" /> },
+        // Only show onboarding for pure creators (not admins/managers)
+        ...(isCreator && !isAdmin && !isSuperAdmin && !isManager ? [
+          { id: "onboarding" as TabId, label: t('dashboard.nav.onboarding'), icon: <FileText className="w-4 h-4" /> }
+        ] : []),
         { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> },
         { id: "settings" as TabId, label: t('dashboard.nav.settings'), icon: <Settings className="w-4 h-4" /> },
         { id: "meetings" as TabId, label: t('dashboard.nav.meetings'), icon: <Calendar className="w-4 h-4" /> },

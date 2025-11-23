@@ -15,14 +15,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+export interface NotificationAction {
+  label: string;
+  icon?: React.ReactNode;
+  variant?: "default" | "secondary" | "destructive" | "outline";
+  onClick: () => void;
+}
+
 export interface NotificationItem {
   id: string;
-  type: "commitment" | "invoice" | "support" | "review" | "overdue" | "meeting" | "timeline";
+  type: "commitment" | "invoice" | "support" | "review" | "overdue" | "meeting" | "timeline" | "access_request";
   title: string;
   description: string;
   count?: number;
   color: "red" | "yellow" | "blue" | "green";
   action: () => void;
+  actions?: NotificationAction[];
 }
 
 interface NotificationBellProps {
@@ -124,6 +132,24 @@ export const NotificationBell = ({
                           <p className="text-xs opacity-90 line-clamp-2">
                             {notification.description}
                           </p>
+                          
+                          {/* Action buttons */}
+                          {notification.actions && notification.actions.length > 0 && (
+                            <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
+                              {notification.actions.map((action, idx) => (
+                                <Button
+                                  key={idx}
+                                  size="sm"
+                                  variant={action.variant || "secondary"}
+                                  onClick={action.onClick}
+                                  className="h-7 text-xs"
+                                >
+                                  {action.icon}
+                                  {action.label}
+                                </Button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                         {notification.count && (
                           <Badge
