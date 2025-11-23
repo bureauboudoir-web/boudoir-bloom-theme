@@ -122,6 +122,33 @@ export type Database = {
           },
         ]
       }
+      contract_templates: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          template_content: string
+          updated_at: string | null
+          version: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          template_content: string
+          updated_at?: string | null
+          version: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          template_content?: string
+          updated_at?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
       creator_access_levels: {
         Row: {
           access_level: string | null
@@ -205,37 +232,61 @@ export type Database = {
       }
       creator_contracts: {
         Row: {
+          contract_data: Json | null
           contract_signed: boolean | null
           contract_template_url: string | null
+          contract_version: string | null
           created_at: string | null
+          digital_signature_agency: string | null
+          digital_signature_creator: string | null
+          generated_pdf_url: string | null
+          generation_status: string | null
           id: string
+          signature_date: string | null
           signed_at: string | null
           signed_contract_url: string | null
           template_uploaded_at: string | null
+          template_version: string | null
           updated_at: string | null
           uploaded_by: string | null
           user_id: string
         }
         Insert: {
+          contract_data?: Json | null
           contract_signed?: boolean | null
           contract_template_url?: string | null
+          contract_version?: string | null
           created_at?: string | null
+          digital_signature_agency?: string | null
+          digital_signature_creator?: string | null
+          generated_pdf_url?: string | null
+          generation_status?: string | null
           id?: string
+          signature_date?: string | null
           signed_at?: string | null
           signed_contract_url?: string | null
           template_uploaded_at?: string | null
+          template_version?: string | null
           updated_at?: string | null
           uploaded_by?: string | null
           user_id: string
         }
         Update: {
+          contract_data?: Json | null
           contract_signed?: boolean | null
           contract_template_url?: string | null
+          contract_version?: string | null
           created_at?: string | null
+          digital_signature_agency?: string | null
+          digital_signature_creator?: string | null
+          generated_pdf_url?: string | null
+          generation_status?: string | null
           id?: string
+          signature_date?: string | null
           signed_at?: string | null
           signed_contract_url?: string | null
           template_uploaded_at?: string | null
+          template_version?: string | null
           updated_at?: string | null
           uploaded_by?: string | null
           user_id?: string
