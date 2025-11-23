@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
+import { CreatorTimeline } from "./CreatorTimeline";
 
 interface DashboardStats {
   pendingCommitments: number;
@@ -498,6 +499,11 @@ export const DashboardOverview = ({ userId, onNavigate }: DashboardOverviewProps
         <h2 className="text-2xl sm:text-3xl font-serif font-bold">Welcome Back!</h2>
         <p className="text-muted-foreground">Here's what's happening with your creator journey</p>
       </div>
+
+      {/* Creator Timeline - Only show for creators */}
+      {isCreator && !isAdmin && !isSuperAdmin && !isManager && (
+        <CreatorTimeline />
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
