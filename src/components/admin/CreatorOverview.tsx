@@ -100,6 +100,8 @@ export const CreatorOverview = () => {
             .from('creator_meetings')
             .select('status, meeting_date')
             .eq('user_id', profile.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
             .maybeSingle()
         ]);
 
