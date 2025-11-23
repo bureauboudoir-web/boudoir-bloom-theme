@@ -50,7 +50,7 @@ export const AccessManagement = () => {
   const [selectedCreator, setSelectedCreator] = useState<CreatorWithAccess | null>(null);
   const [showGrantDialog, setShowGrantDialog] = useState(false);
   const [showRevokeDialog, setShowRevokeDialog] = useState(false);
-  const { grantEarlyAccess, revokeAccess, loading: actionLoading } = useAccessManagement();
+  const { grantEarlyAccess, revokeAccess, sendMeetingInvitation, loading: actionLoading } = useAccessManagement();
   const { isAdmin, isSuperAdmin } = useUserRole();
 
   useEffect(() => {
@@ -282,6 +282,18 @@ export const AccessManagement = () => {
     }
   };
 
+  const handleSendInvitation = async (creator: CreatorWithAccess) => {
+    const success = await sendMeetingInvitation(
+      creator.id,
+      creator.full_name || creator.email,
+      creator.email
+    );
+    
+    if (success) {
+      fetchCreatorsWithAccess();
+    }
+  };
+
   const handleRevokeAccess = async () => {
     if (!selectedCreator) return;
     
@@ -437,10 +449,7 @@ export const AccessManagement = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => {
-                          setSelectedCreator(creator);
-                          setShowGrantDialog(true);
-                        }}
+                        onClick={() => handleSendInvitation(creator)}
                         disabled={actionLoading}
                       >
                         📧 Send Meeting Invitation
