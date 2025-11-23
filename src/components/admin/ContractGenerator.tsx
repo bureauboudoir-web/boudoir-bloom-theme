@@ -46,6 +46,7 @@ interface ContractData {
   auto_renew: boolean;
   termination_notice_days: number;
   post_termination_rights_days: number;
+  contract_version?: string;
 }
 
 interface ContractGeneratorProps {
@@ -74,6 +75,7 @@ export const ContractGenerator = ({ open, onOpenChange, creatorId }: ContractGen
     auto_renew: true,
     termination_notice_days: 30,
     post_termination_rights_days: 90,
+    contract_version: "long",
   });
 
   // Fetch creators for selection
@@ -225,6 +227,28 @@ export const ContractGenerator = ({ open, onOpenChange, creatorId }: ContractGen
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="contract_version">Contract Version *</Label>
+                  <Select
+                    value={contractData.contract_version}
+                    onValueChange={(value) =>
+                      setContractData({ ...contractData, contract_version: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select version" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="short">Short (1-2 pages)</SelectItem>
+                      <SelectItem value="medium">Medium (3-4 pages)</SelectItem>
+                      <SelectItem value="long">Long/Comprehensive (5+ pages)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Short for simple agreements, Long for complete legal documentation
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
