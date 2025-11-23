@@ -29,6 +29,7 @@ interface SupportTicket {
   admin_response: string | null;
   responded_at: string | null;
   created_at: string;
+  assigned_manager_name?: string;
   profiles?: {
     email: string;
     full_name: string | null;
@@ -66,50 +67,40 @@ const AdminSupportTickets = () => {
 
   const fetchTickets = async () => {
     try {
-      let creatorIds: string[] = [];
-
-      // If manager (not admin/super_admin), filter by assigned creators
-      if (!isSuperAdmin && !isAdmin && user) {
-        const { data: assignedMeetings } = await supabase
-          .from('creator_meetings')
-          .select('user_id')
-          .eq('assigned_manager_id', user.id);
-
-        creatorIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
-
-        if (creatorIds.length === 0) {
-          setTickets([]);
-          setLoading(false);
-          return;
-        }
-      }
-
-      let query = supabase
+      // Fetch ALL support tickets - managers can see all tickets
+      const query = supabase
         .from("support_tickets")
         .select("*")
         .order("created_at", { ascending: false });
-
-      // Apply filter for managers
-      if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
-        query = query.in('user_id', creatorIds);
-      }
 
       const { data, error } = await query;
 
       if (error) throw error;
 
-      // Fetch profile information separately for each ticket
+      // Fetch profile AND assigned manager information for each ticket
       const ticketsWithProfiles = await Promise.all(
         (data || []).map(async (ticket) => {
           const { data: profile } = await supabase
             .from("profiles")
-            .select("email, full_name")
+            .select("email, full_name, assigned_manager_id")
             .eq("id", ticket.user_id)
             .single();
+
+          // Fetch assigned manager name
+          let managerName = null;
+          if (profile?.assigned_manager_id) {
+            const { data: manager } = await supabase
+              .from("profiles")
+              .select("full_name, email")
+              .eq("id", profile.assigned_manager_id)
+              .single();
+            managerName = manager?.full_name || manager?.email || "Unassigned";
+          }
 
           return {
             ...ticket,
             profiles: profile || { email: "Unknown", full_name: null },
+            assigned_manager_name: managerName || "Unassigned",
           };
         })
       );
@@ -279,6 +270,9 @@ const AdminSupportTickets = () => {
                       </span>
                       {" • "}
                       {new Date(ticket.created_at).toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium">Assigned Manager:</span> {ticket.assigned_manager_name}
                     </p>
                     <p className="text-sm">{ticket.message}</p>
                     {ticket.admin_response && (
