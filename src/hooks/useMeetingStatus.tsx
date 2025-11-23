@@ -10,10 +10,13 @@ export const useMeetingStatus = () => {
     queryFn: async () => {
       if (!session?.user?.id) return null;
 
+      // Get the most recent meeting (handles multiple meetings correctly)
       const { data: meeting } = await supabase
         .from("creator_meetings")
         .select("*")
         .eq("user_id", session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       return {
