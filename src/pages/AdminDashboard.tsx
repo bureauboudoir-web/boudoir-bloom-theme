@@ -180,7 +180,15 @@ const AdminDashboard = () => {
               </Button>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary shrink-0" />
-                <h1 className="font-serif text-lg sm:text-2xl font-bold">Admin Dashboard</h1>
+                <div className="flex flex-col">
+                  <h1 className="font-serif text-lg sm:text-2xl font-bold">Admin Dashboard</h1>
+                  {isSuperAdmin && (
+                    <span className="text-xs text-primary font-semibold">Super Admin</span>
+                  )}
+                  {isAdmin && !isSuperAdmin && (
+                    <span className="text-xs text-muted-foreground font-semibold">Admin</span>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
