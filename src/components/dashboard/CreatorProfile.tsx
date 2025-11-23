@@ -3,14 +3,24 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock, Lock } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock, Lock, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 import { AccessLevel } from "@/hooks/useAccessLevel";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { ProfileSummary } from "@/components/settings/ProfileSummary";
+import { EditProfileForm } from "@/components/settings/EditProfileForm";
+import { PreferencesSettings } from "@/components/settings/PreferencesSettings";
+import { SecuritySettings } from "@/components/settings/SecuritySettings";
+import { PrivacySettings } from "@/components/settings/PrivacySettings";
+import { RoleSpecificSettings } from "@/components/settings/RoleSpecificSettings";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -31,6 +41,35 @@ export const CreatorProfile = ({
   accessLevel,
   meetingCompleted,
 }: CreatorProfileProps) => {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch profile data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (!error && data) {
+        setProfile(data);
+      }
+      setLoading(false);
+    };
+
+    fetchProfile();
+  }, [userId]);
+
+  const refetchOnboarding = async () => {
+    // Trigger refetch in parent component if callback exists
+    window.location.reload();
+  };
+
   // Determine if a section should be locked
   const isSectionLocked = (sectionIndex: number) => {
     // Sections 1-2 are always unlocked
@@ -45,6 +84,7 @@ export const CreatorProfile = ({
     return false;
   };
   const isCompleted = onboardingData?.is_completed || false;
+  const isOnboardingComplete = isCompleted;
   const completedSteps = onboardingData?.completed_steps?.length || 0;
   const totalSteps = 9;
   const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
@@ -91,309 +131,60 @@ export const CreatorProfile = ({
 
   const age = calculateAge(onboardingData?.personal_date_of_birth);
 
-  if (!onboardingData) {
+  if (!onboardingData || loading) {
     return <ProfileSkeleton />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Profile Header */}
-      <Card className="overflow-hidden">
-        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background h-32"></div>
-        <CardContent className="pt-0 -mt-16">
-          <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-            {/* Profile Picture & Progress */}
-            <div className="flex flex-col items-center gap-4 w-full md:w-auto">
-              <ProfilePictureUpload
-                userId={userId}
-                currentPictureUrl={profilePictureUrl}
-                userName={userName || onboardingData.personal_full_name || "User"}
-              />
-              
-              {/* Onboarding Progress */}
-              <div className="w-full max-w-[150px] flex flex-col items-center gap-2">
-                {completionPercentage === 100 ? (
-                  <Badge variant="default" className="bg-green-600 hover:bg-green-700 w-full justify-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
-                    Profile Complete
-                  </Badge>
-                ) : (
-                  <>
-                    <Progress value={completionPercentage} className="h-2" />
-                    <span className="text-xs text-muted-foreground">
-                      Profile {completionPercentage}% Complete
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-2xl font-bold">Account & Settings</h2>
+          <p className="text-muted-foreground">Manage your profile, preferences, and security</p>
+        </div>
+        <Badge variant={isOnboardingComplete ? "default" : "secondary"}>
+          {isOnboardingComplete ? "Profile Complete" : "In Progress"}
+        </Badge>
+      </div>
 
-            {/* Main Info */}
-            <div className="flex-1 text-center md:text-left space-y-3 mt-4">
-              {/* Name and Age */}
-              <div>
-                {!onboardingData.personal_full_name || onboardingData.personal_full_name.trim().length < 2 ? (
-                  <div 
-                    onClick={() => onNavigateToOnboarding?.(1)}
-                    className="flex items-center gap-2 text-muted-foreground cursor-pointer hover:text-foreground transition-colors justify-center md:justify-start"
-                  >
-                    <User className="h-5 w-5" />
-                    <span className="italic text-2xl">Add your name</span>
-                  </div>
-                ) : (
-                  <h1 className="text-2xl font-bold flex items-center gap-2 justify-center md:justify-start">
-                    {onboardingData.personal_full_name}
-                    {age && (
-                      <span className="text-xl text-muted-foreground font-normal">({age})</span>
-                    )}
-                  </h1>
-                )}
-                {onboardingData.persona_stage_name && (
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    "{onboardingData.persona_stage_name}"
-                  </p>
-                )}
-              </div>
+      {!isOnboardingComplete && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Complete your onboarding to unlock all profile sections.
+          </AlertDescription>
+        </Alert>
+      )}
 
-              {/* Location */}
-              {onboardingData.personal_location && onboardingData.personal_location.length > 1 ? (
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground justify-center md:justify-start">
-                  <MapPin className="h-4 w-4" />
-                  <span>{onboardingData.personal_location}</span>
-                </div>
-              ) : (
-                <div 
-                  onClick={() => onNavigateToOnboarding?.(1)}
-                  className="flex items-center gap-1.5 text-sm text-muted-foreground justify-center md:justify-start cursor-pointer hover:text-foreground transition-colors"
-                >
-                  <MapPin className="h-4 w-4 opacity-50" />
-                  <span className="italic">Add location</span>
-                </div>
-              )}
+      <ProfilePictureUpload 
+        userId={userId}
+        currentPictureUrl={profilePictureUrl}
+        userName={userName || onboardingData.personal_full_name || "User"}
+      />
+      
+      <ProfileSummary profile={profile} onboardingData={onboardingData} />
+      
+      <EditProfileForm 
+        userId={userId} 
+        onboardingData={onboardingData} 
+        onUpdate={refetchOnboarding}
+      />
 
-              {/* OnlyFans Link - Prominent */}
-              <div>
-                {onboardingData.fan_platform_onlyfans ? (
-                  <a 
-                    href={onboardingData.fan_platform_onlyfans} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    <Button className="bg-blue-500 hover:bg-blue-600 text-white gap-2">
-                      <LinkIcon className="h-4 w-4" />
-                      OnlyFans Profile
-                    </Button>
-                  </a>
-                ) : (
-                  <Button 
-                    onClick={() => onNavigateToOnboarding?.(7)}
-                    variant="outline" 
-                    className="gap-2 text-muted-foreground border-dashed hover:text-foreground hover:border-solid transition-all"
-                  >
-                    <LinkIcon className="h-4 w-4" />
-                    Add Fans Link
-                  </Button>
-                )}
-              </div>
+      <PreferencesSettings />
+      
+      <SecuritySettings />
+      
+      <RoleSpecificSettings />
+      
+      <PrivacySettings />
 
-              {/* Social Links - Icon Only */}
-              <TooltipProvider>
-                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  {onboardingData.social_instagram ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.social_instagram} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                        >
-                          <Instagram className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>Instagram</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <Instagram className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add Instagram</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.social_twitter ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.social_twitter} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition-colors"
-                        >
-                          <Twitter className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>Twitter</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <Twitter className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add Twitter</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.social_tiktok ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.social_tiktok} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition-colors"
-                        >
-                          <Video className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>TikTok</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <Video className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add TikTok</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.social_youtube ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.social_youtube} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors"
-                        >
-                          <Youtube className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>YouTube</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <Youtube className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add YouTube</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.social_telegram ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.social_telegram} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors"
-                        >
-                          <Send className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>Telegram</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <Send className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add Telegram</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.fan_platform_fansly ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.fan_platform_fansly} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-purple-600 text-white flex items-center justify-center hover:bg-purple-700 transition-colors"
-                        >
-                          <LinkIcon className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>Fansly</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div 
-                          onClick={() => onNavigateToOnboarding?.(7)}
-                          className="h-9 w-9 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/30 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 hover:text-muted-foreground/50 transition-all"
-                        >
-                          <LinkIcon className="h-4 w-4" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>Add Fansly</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {onboardingData.fan_platform_other && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a 
-                          href={onboardingData.fan_platform_other} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
-                        >
-                          <LinkIcon className="h-4 w-4" />
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent>Other Platform</TooltipContent>
-                    </Tooltip>
-                  )}
-                </div>
-              </TooltipProvider>
-
-              {/* Status Badges */}
-              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                {onboardingData.body_type && (
-                  <Badge variant="outline">{onboardingData.body_type}</Badge>
-                )}
-                {onboardingData.personal_nationality && (
-                  <Badge variant="outline">{onboardingData.personal_nationality}</Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Profile Sections */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Additional Profile Information</CardTitle>
+          <CardDescription>View your complete onboarding details</CardDescription>
+        </CardHeader>
+        <CardContent>
+      {/* Profile Sections - Detailed Onboarding Data */}
       <Accordion type="multiple" defaultValue={["personal", "body"]} className="space-y-4">
         {/* Personal Information */}
         <AccordionItem value="personal" className="border rounded-lg px-4">
@@ -1196,6 +987,8 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+        </CardContent>
+      </Card>
     </div>
   );
 };
