@@ -46,13 +46,13 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
     fetchData();
   }, [userId]);
 
-  // Set default tab based on role
+  // Set default tab based on role hierarchy
   useEffect(() => {
     if (!roleLoading) {
-      if (isCreator) {
-        setActiveTab("profile");
-      } else if (isManager || isAdmin || isSuperAdmin) {
+      if (isSuperAdmin || isAdmin || isManager) {
         setActiveTab("security");
+      } else if (isCreator) {
+        setActiveTab("profile");
       }
     }
   }, [isCreator, isManager, isAdmin, isSuperAdmin, roleLoading]);
@@ -75,7 +75,7 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
           <h1 className="text-3xl font-serif font-bold mb-2">Settings</h1>
           <p className="text-muted-foreground">Manage your account preferences and security</p>
         </div>
-        {isCreator && (
+        {!isSuperAdmin && !isAdmin && !isManager && isCreator && (
           <Button variant="outline" onClick={() => onNavigate?.('account')}>
             View Full Profile <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -83,8 +83,44 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Creator Tabs */}
-        {isCreator && (
+        {/* Super Admin or Admin Tabs - Highest Priority */}
+        {(isSuperAdmin || isAdmin) && (
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="flex items-center gap-2">
+              <SettingsIcon className="h-4 w-4" />
+              Preferences
+            </TabsTrigger>
+            <TabsTrigger value="system" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              System
+            </TabsTrigger>
+          </TabsList>
+        )}
+
+        {/* Manager Tabs - Second Priority */}
+        {!isSuperAdmin && !isAdmin && isManager && (
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="flex items-center gap-2">
+              <SettingsIcon className="h-4 w-4" />
+              Preferences
+            </TabsTrigger>
+            <TabsTrigger value="availability" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Availability
+            </TabsTrigger>
+          </TabsList>
+        )}
+
+        {/* Creator Tabs - Lowest Priority */}
+        {!isSuperAdmin && !isAdmin && !isManager && isCreator && (
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
@@ -105,44 +141,42 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
           </TabsList>
         )}
 
-        {/* Manager Tabs */}
-        {isManager && !isAdmin && !isSuperAdmin && (
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Security
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex items-center gap-2">
-              <SettingsIcon className="h-4 w-4" />
-              Preferences
-            </TabsTrigger>
-            <TabsTrigger value="availability" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Availability
-            </TabsTrigger>
-          </TabsList>
+        {/* Admin/Super Admin Content - Highest Priority */}
+        {(isSuperAdmin || isAdmin) && (
+          <>
+            <TabsContent value="security" className="space-y-4 mt-6">
+              <SecuritySettings />
+            </TabsContent>
+
+            <TabsContent value="preferences" className="space-y-4 mt-6">
+              <PreferencesSettings />
+            </TabsContent>
+
+            <TabsContent value="system" className="space-y-4 mt-6">
+              <AdminSettingsForm />
+            </TabsContent>
+          </>
         )}
 
-        {/* Admin/Super Admin Tabs */}
-        {(isAdmin || isSuperAdmin) && (
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Security
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex items-center gap-2">
-              <SettingsIcon className="h-4 w-4" />
-              Preferences
-            </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              System
-            </TabsTrigger>
-          </TabsList>
+        {/* Manager Content - Second Priority */}
+        {!isSuperAdmin && !isAdmin && isManager && (
+          <>
+            <TabsContent value="security" className="space-y-4 mt-6">
+              <SecuritySettings />
+            </TabsContent>
+
+            <TabsContent value="preferences" className="space-y-4 mt-6">
+              <ManagerSettingsForm />
+            </TabsContent>
+
+            <TabsContent value="availability" className="space-y-4 mt-6">
+              <ManagerAvailabilitySettings />
+            </TabsContent>
+          </>
         )}
 
-        {/* Creator Content */}
-        {isCreator && (
+        {/* Creator Content - Lowest Priority */}
+        {!isSuperAdmin && !isAdmin && !isManager && isCreator && (
           <>
             <TabsContent value="profile" className="space-y-4 mt-6">
               <EditProfileForm userId={userId} onboardingData={onboardingData} onUpdate={fetchData} />
@@ -159,40 +193,6 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
 
             <TabsContent value="privacy" className="space-y-4 mt-6">
               <PrivacySettings />
-            </TabsContent>
-          </>
-        )}
-
-        {/* Manager Content */}
-        {isManager && !isAdmin && !isSuperAdmin && (
-          <>
-            <TabsContent value="security" className="space-y-4 mt-6">
-              <SecuritySettings />
-            </TabsContent>
-
-            <TabsContent value="preferences" className="space-y-4 mt-6">
-              <ManagerSettingsForm />
-            </TabsContent>
-
-            <TabsContent value="availability" className="space-y-4 mt-6">
-              <ManagerAvailabilitySettings />
-            </TabsContent>
-          </>
-        )}
-
-        {/* Admin/Super Admin Content */}
-        {(isAdmin || isSuperAdmin) && (
-          <>
-            <TabsContent value="security" className="space-y-4 mt-6">
-              <SecuritySettings />
-            </TabsContent>
-
-            <TabsContent value="preferences" className="space-y-4 mt-6">
-              <PreferencesSettings />
-            </TabsContent>
-
-            <TabsContent value="system" className="space-y-4 mt-6">
-              <AdminSettingsForm />
             </TabsContent>
           </>
         )}
