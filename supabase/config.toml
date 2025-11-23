@@ -53,3 +53,6 @@ verify_jwt = false  # Public function for automated testing
 
 [functions.generate-contract-pdf]
 verify_jwt = true  # Requires admin/manager authentication
+
+[functions.send-contract-notification]
+verify_jwt = true  # Requires authentication

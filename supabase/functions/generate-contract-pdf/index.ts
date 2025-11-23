@@ -321,6 +321,28 @@ Deno.serve(async (req) => {
     // Send email notification (will implement in Session 3)
     console.log('📧 Email notification queued for Session 3');
 
+    // Send email notification to creator
+    try {
+      await supabaseClient.functions.invoke('send-contract-notification', {
+        body: {
+          creatorId: contractData.creator_id,
+          creatorName: contractData.creator_name,
+          creatorEmail: (await supabaseClient.from('profiles').select('email').eq('id', contractData.creator_id).single()).data?.email,
+          contractPdfUrl: publicUrl,
+          contractData: {
+            percentage_split_creator: contractData.percentage_split_creator,
+            percentage_split_agency: contractData.percentage_split_agency,
+            contract_term_months: contractData.contract_term_months,
+            contract_start_date: contractData.contract_start_date,
+          },
+        },
+      });
+      console.log('✅ Email notification sent');
+    } catch (emailError) {
+      console.error('⚠️ Email notification failed:', emailError);
+      // Don't fail the whole operation if email fails
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
