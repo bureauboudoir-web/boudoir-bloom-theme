@@ -5,6 +5,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccessManagement } from "@/components/admin/AccessManagement";
+import { EmailPreview } from "@/components/admin/EmailPreview";
 import Settings from "@/pages/Settings";
 import { ArrowLeft, LogOut } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -29,7 +30,7 @@ const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "settings">("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings">("applications");
   const [showWelcome, setShowWelcome] = useState(false);
   
   const {
@@ -183,7 +184,7 @@ const ManagerDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11">
             <TabsTrigger value="applications">
               Applications
             </TabsTrigger>
@@ -223,6 +224,7 @@ const ManagerDashboard = () => {
                 </span>
               )}
             </TabsTrigger>
+            <TabsTrigger value="email-preview">Email Preview</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -260,6 +262,10 @@ const ManagerDashboard = () => {
 
           <TabsContent value="access" className="space-y-4">
             <AccessManagement />
+          </TabsContent>
+
+          <TabsContent value="email-preview" className="space-y-4">
+            <EmailPreview />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-4">

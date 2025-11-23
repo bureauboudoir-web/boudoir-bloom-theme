@@ -24,6 +24,7 @@ import { EmailSettings } from "@/components/admin/EmailSettings";
 import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
 import { AccessManagement } from "@/components/admin/AccessManagement";
 import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
+import { EmailPreview } from "@/components/admin/EmailPreview";
 import Settings from "@/pages/Settings";
 import { ArrowLeft, Shield, Wrench, LogOut } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
@@ -45,7 +46,7 @@ const AdminDashboard = () => {
     upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "email-preview" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
   const [creatingTestAccounts, setCreatingTestAccounts] = useState(false);
   const [testAccountsCreated, setTestAccountsCreated] = useState<any[]>([]);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -357,6 +358,9 @@ const AdminDashboard = () => {
                   {/* Visual separator */}
                   <div className="w-px h-8 bg-border self-center mx-1" />
                   
+                  <TabsTrigger value="email-preview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Email Preview
+                  </TabsTrigger>
                   <TabsTrigger value="settings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Settings
                   </TabsTrigger>
@@ -453,6 +457,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="access-audit" className="mt-0">
               <AccessAuditLog />
+            </TabsContent>
+
+            <TabsContent value="email-preview" className="mt-0">
+              <EmailPreview />
             </TabsContent>
 
             <TabsContent value="settings" className="mt-0">
