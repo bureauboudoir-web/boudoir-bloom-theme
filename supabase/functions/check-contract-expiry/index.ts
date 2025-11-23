@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
         user_id,
         contract_signed,
         contract_data,
-        profiles!inner(email, full_name)
+        profiles!creator_contracts_user_id_fkey(email, full_name)
       `)
       .eq('contract_signed', true)
       .not('contract_data', 'is', null);
