@@ -25,12 +25,13 @@ import { PendingActivationsWidget } from "@/components/admin/PendingActivationsW
 import { ManagerWelcome } from "@/components/admin/ManagerWelcome";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverview";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings">("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings">("applications");
   const [showWelcome, setShowWelcome] = useState(false);
   
   const {
@@ -184,11 +185,12 @@ const ManagerDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12">
             <TabsTrigger value="applications">
               Applications
             </TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="workload">Workload</TabsTrigger>
             <TabsTrigger value="access">Access</TabsTrigger>
             <TabsTrigger value="commitments" className="relative">
               Commitments
@@ -238,6 +240,10 @@ const ManagerDashboard = () => {
               userId={user.id} 
               onNavigate={(tab) => setActiveTab(tab as any)}
             />
+          </TabsContent>
+
+          <TabsContent value="workload" className="space-y-4">
+            <ManagerWorkloadOverview />
           </TabsContent>
 
           <TabsContent value="commitments" className="space-y-4">
