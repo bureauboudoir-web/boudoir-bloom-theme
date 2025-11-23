@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import StreetLampIcon from "@/components/StreetLampIcon";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Navigation = () => {
+  const { t } = useTranslation();
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
@@ -19,11 +22,12 @@ const Navigation = () => {
         </Link>
         
         <div className="flex items-center gap-2 md:gap-4">
+          <LanguageSelector />
           <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-4 md:px-6 w-auto inline-flex text-xs md:text-sm">
-            <Link to="/signup">Become a Creator</Link>
+            <Link to="/signup">{t('nav.signup')}</Link>
           </Button>
           <Link to="/login" className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-            Login
+            {t('nav.login')}
           </Link>
         </div>
       </div>
