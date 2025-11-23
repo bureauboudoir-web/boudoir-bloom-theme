@@ -214,9 +214,82 @@ export const useAccessManagement = () => {
     }
   };
 
+  const revokeAccess = async (
+    userId: string,
+    creatorName: string,
+    reason?: string
+  ): Promise<boolean> => {
+    setLoading(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("You must be logged in");
+        return false;
+      }
+
+      // Get current access level for audit
+      const { data: currentAccess } = await supabase
+        .from('creator_access_levels')
+        .select('access_level')
+        .eq('user_id', userId)
+        .single();
+
+      // Downgrade to meeting_only
+      const { error: updateError } = await supabase
+        .from('creator_access_levels')
+        .update({
+          access_level: 'meeting_only',
+          granted_by: user.id,
+          granted_at: new Date().toISOString(),
+          grant_method: 'manual_revoke'
+        })
+        .eq('user_id', userId);
+
+      if (updateError) throw updateError;
+
+      // Add audit log entry
+      const { error: auditError } = await supabase
+        .from('access_level_audit_log')
+        .insert({
+          user_id: userId,
+          from_level: currentAccess?.access_level || 'full_access',
+          to_level: 'meeting_only',
+          granted_by: user.id,
+          reason: reason || 'Access revoked by admin/manager',
+          method: 'manual_revoke'
+        });
+
+      if (auditError) throw auditError;
+
+      // Create timeline event
+      const { error: timelineError } = await supabase
+        .from('timeline_events')
+        .insert({
+          user_id: userId,
+          stage: 'access',
+          event_type: 'revoked',
+          created_at: new Date().toISOString()
+        });
+
+      if (timelineError) console.warn('Timeline event creation failed:', timelineError);
+
+      toast.success(`Access revoked for ${creatorName}`);
+      return true;
+
+    } catch (error) {
+      console.error('Error revoking access:', error);
+      toast.error('Failed to revoke access. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     grantEarlyAccess,
     grantAccessAfterMeeting,
+    revokeAccess,
     loading
   };
 };

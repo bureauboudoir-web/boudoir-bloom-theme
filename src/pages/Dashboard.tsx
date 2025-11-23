@@ -60,6 +60,7 @@ import { RoleManagement } from "@/components/admin/RoleManagement";
 import { PermissionsManager } from "@/components/admin/PermissionsManager";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
 import { AccessManagement } from "@/components/admin/AccessManagement";
+import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 
 const Dashboard = () => {
@@ -544,11 +545,11 @@ const Dashboard = () => {
                       <TabsTrigger value="support">Support</TabsTrigger>
                       <TabsTrigger value="invoices">Invoices</TabsTrigger>
                       <TabsTrigger value="contracts">Contracts</TabsTrigger>
+                      <TabsTrigger value="access">Access</TabsTrigger>
                       {isSuperAdmin && (
                         <>
                           <TabsTrigger value="roles">Roles</TabsTrigger>
                           <TabsTrigger value="permissions">Permissions</TabsTrigger>
-                          <TabsTrigger value="access">Access</TabsTrigger>
                         </>
                       )}
                     </TabsList>
@@ -593,6 +594,23 @@ const Dashboard = () => {
                       <AdminContracts />
                     </TabsContent>
 
+                    <TabsContent value="access">
+                      <Tabs defaultValue="manage" className="space-y-4">
+                        <TabsList>
+                          <TabsTrigger value="manage">Manage Access</TabsTrigger>
+                          <TabsTrigger value="audit">Audit Log</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="manage">
+                          <AccessManagement />
+                        </TabsContent>
+                        
+                        <TabsContent value="audit">
+                          <AccessAuditLog />
+                        </TabsContent>
+                      </Tabs>
+                    </TabsContent>
+
                     {isSuperAdmin && (
                       <>
                         <TabsContent value="roles">
@@ -601,10 +619,6 @@ const Dashboard = () => {
 
                         <TabsContent value="permissions">
                           <PermissionsManager />
-                        </TabsContent>
-
-                        <TabsContent value="access">
-                          <AccessManagement />
                         </TabsContent>
                       </>
                     )}
@@ -631,6 +645,7 @@ const Dashboard = () => {
                       <TabsTrigger value="commitments">Commitments</TabsTrigger>
                       <TabsTrigger value="shoots">Shoots</TabsTrigger>
                       <TabsTrigger value="meetings">Meetings</TabsTrigger>
+                      <TabsTrigger value="access">Access</TabsTrigger>
                       <TabsTrigger value="availability">Availability</TabsTrigger>
                       <TabsTrigger value="support">Support</TabsTrigger>
                     </TabsList>
@@ -658,6 +673,23 @@ const Dashboard = () => {
 
                     <TabsContent value="meetings">
                       <AdminMeetings />
+                    </TabsContent>
+
+                    <TabsContent value="access">
+                      <Tabs defaultValue="manage" className="space-y-4">
+                        <TabsList>
+                          <TabsTrigger value="manage">Manage Access</TabsTrigger>
+                          <TabsTrigger value="audit">Audit Log</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="manage">
+                          <AccessManagement />
+                        </TabsContent>
+                        
+                        <TabsContent value="audit">
+                          <AccessAuditLog />
+                        </TabsContent>
+                      </Tabs>
                     </TabsContent>
 
                     <TabsContent value="availability">

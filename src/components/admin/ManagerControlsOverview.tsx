@@ -15,7 +15,8 @@ import {
   Video,
   Volume2,
   VolumeX,
-  History
+  History,
+  Shield
 } from "lucide-react";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
@@ -51,6 +52,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
   const [assignedCreators, setAssignedCreators] = useState<AssignedCreator[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<UpcomingMeeting[]>([]);
   const [pendingTasks, setPendingTasks] = useState(0);
+  const [creatorsNeedingAccess, setCreatorsNeedingAccess] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
   const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
@@ -175,6 +177,13 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         .eq('is_completed', false)
         .lt('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
+      // Get creators needing access (meeting_only status)
+      const { count: needingAccessCount } = await supabase
+        .from('creator_access_levels')
+        .select('*', { count: 'exact', head: true })
+        .in('user_id', creatorIds)
+        .eq('access_level', 'meeting_only');
+
       setAssignedCreators(
         creators?.map(c => ({
           id: c.id,
@@ -199,6 +208,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       );
 
       setPendingTasks(stuckCount || 0);
+      setCreatorsNeedingAccess(needingAccessCount || 0);
     } catch (error) {
       console.error('Error fetching manager data:', error);
     } finally {
@@ -412,7 +422,23 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
+        <Button
+          variant="outline"
+          className={`h-20 text-left justify-start ${creatorsNeedingAccess > 0 ? 'border-2 border-primary/50' : ''}`}
+          onClick={() => onNavigate("manager-access")}
+        >
+          <div className="flex items-center gap-3">
+            <Shield className="w-8 h-8 text-primary" />
+            <div>
+              <p className="font-semibold">Grant Access</p>
+              <p className="text-xs text-muted-foreground">
+                {creatorsNeedingAccess} waiting for approval
+              </p>
+            </div>
+          </div>
+        </Button>
+
         <Button
           variant="outline"
           className="h-20 text-left justify-start"
