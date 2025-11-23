@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccessManagement } from "@/components/admin/AccessManagement";
 import Settings from "@/pages/Settings";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { useAdminNotifications } from "@/hooks/useAdminNotifications";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -23,10 +23,11 @@ import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 import { ManagerWelcome } from "@/components/admin/ManagerWelcome";
 import { supabase } from "@/integrations/supabase/client";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
   const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "settings">("applications");
   const [showWelcome, setShowWelcome] = useState(false);
@@ -168,6 +169,15 @@ const ManagerDashboard = () => {
               notifications={managerNotificationItems}
               totalCount={totalNotifications}
             />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => signOut()}
+              className="gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
           </div>
         </div>
 
@@ -222,7 +232,10 @@ const ManagerDashboard = () => {
 
           <TabsContent value="overview" className="space-y-4">
             <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
-            <CreatorOverview />
+            <DashboardOverview 
+              userId={user.id} 
+              onNavigate={(tab) => setActiveTab(tab as any)}
+            />
           </TabsContent>
 
           <TabsContent value="commitments" className="space-y-4">

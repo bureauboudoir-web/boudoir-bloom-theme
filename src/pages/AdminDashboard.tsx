@@ -25,16 +25,17 @@ import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
 import { AccessManagement } from "@/components/admin/AccessManagement";
 import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import Settings from "@/pages/Settings";
-import { ArrowLeft, Shield, Wrench } from "lucide-react";
+import { ArrowLeft, Shield, Wrench, LogOut } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminWelcome } from "@/components/admin/AdminWelcome";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { isAdmin, isSuperAdmin, isManager, loading: roleLoading } = useUserRole();
   const { 
     newSupportTickets, 
@@ -237,6 +238,15 @@ const AdminDashboard = () => {
                 notifications={adminNotificationItems}
                 totalCount={totalNotifications}
               />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
               <Button 
                 variant="outline" 
                 onClick={() => navigate("/dashboard")}
@@ -286,6 +296,9 @@ const AdminDashboard = () => {
                   </TabsTrigger>
                   <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Overview
+                  </TabsTrigger>
+                  <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Creators
                   </TabsTrigger>
                   <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Commitments
@@ -372,6 +385,13 @@ const AdminDashboard = () => {
             </TabsContent>
 
             <TabsContent value="overview" className="mt-0">
+              <DashboardOverview 
+                userId={user.id} 
+                onNavigate={(tab) => setActiveTab(tab as any)}
+              />
+            </TabsContent>
+
+            <TabsContent value="creators" className="mt-0">
               <CreatorOverview />
             </TabsContent>
 
