@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Eraser, Pen } from "lucide-react";
+import { Eraser, Pen, Undo2, Redo2 } from "lucide-react";
 
 interface ContractSignatureProps {
   open: boolean;
@@ -37,12 +37,18 @@ export const ContractSignature = ({
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [penSize, setPenSize] = useState(2);
+  const [penColor, setPenColor] = useState("#000000");
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyStep, setHistoryStep] = useState(-1);
 
   useEffect(() => {
     if (!open) {
       // Reset state when dialog closes
       clearSignature();
       setAgreedToTerms(false);
+      setHistory([]);
+      setHistoryStep(-1);
     }
   }, [open]);
 
@@ -59,8 +65,8 @@ export const ContractSignature = ({
     canvas.height = rect.height;
 
     // Set drawing style
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
   }, [open]);
@@ -95,12 +101,17 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
     ctx.lineTo(x, y);
     ctx.stroke();
   };
 
   const stopDrawing = () => {
-    setIsDrawing(false);
+    if (isDrawing) {
+      setIsDrawing(false);
+      saveToHistory();
+    }
   };
 
   // Touch events for mobile
@@ -117,6 +128,8 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
     ctx.beginPath();
     ctx.moveTo(x, y);
     setIsDrawing(true);
@@ -138,8 +151,67 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
     ctx.lineTo(x, y);
     ctx.stroke();
+  };
+
+  const saveToHistory = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dataUrl = canvas.toDataURL();
+    const newHistory = history.slice(0, historyStep + 1);
+    newHistory.push(dataUrl);
+    setHistory(newHistory);
+    setHistoryStep(newHistory.length - 1);
+  };
+
+  const undo = () => {
+    if (historyStep <= 0) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const newStep = historyStep - 1;
+    setHistoryStep(newStep);
+
+    if (newStep === -1) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setHasSignature(false);
+    } else {
+      const img = new Image();
+      img.src = history[newStep];
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+    }
+  };
+
+  const redo = () => {
+    if (historyStep >= history.length - 1) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const newStep = historyStep + 1;
+    setHistoryStep(newStep);
+
+    const img = new Image();
+    img.src = history[newStep];
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      setHasSignature(true);
+    };
   };
 
   const clearSignature = () => {
@@ -151,6 +223,8 @@ export const ContractSignature = ({
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     setHasSignature(false);
+    setHistory([]);
+    setHistoryStep(-1);
   };
 
   const handleSubmit = async () => {
@@ -230,16 +304,78 @@ export const ContractSignature = ({
               <Pen className="inline h-4 w-4 mr-2" />
               Your Signature
             </Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={clearSignature}
-              disabled={!hasSignature}
-            >
-              <Eraser className="h-4 w-4 mr-2" />
-              Clear
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={undo}
+                disabled={historyStep <= -1}
+                title="Undo"
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={redo}
+                disabled={historyStep >= history.length - 1}
+                title="Redo"
+              >
+                <Redo2 className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={clearSignature}
+                disabled={!hasSignature}
+              >
+                <Eraser className="h-4 w-4 mr-2" />
+                Clear
+              </Button>
+            </div>
+          </div>
+
+          {/* Pen Controls */}
+          <div className="flex items-center gap-6 p-3 rounded-lg bg-muted/30 border border-border">
+            <div className="flex items-center gap-3">
+              <Label className="text-sm font-medium text-foreground">Pen Size:</Label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 5].map((size) => (
+                  <Button
+                    key={size}
+                    type="button"
+                    variant={penSize === size ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setPenSize(size)}
+                    className="w-10 h-10 p-0"
+                  >
+                    <div
+                      className="rounded-full bg-current"
+                      style={{ width: `${size * 2}px`, height: `${size * 2}px` }}
+                    />
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Label className="text-sm font-medium text-foreground">Color:</Label>
+              <div className="flex gap-2">
+                {["#000000", "#1a56db", "#c81e1e", "#0e9f6e"].map((color) => (
+                  <Button
+                    key={color}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPenColor(color)}
+                    className={`w-10 h-10 p-0 ${penColor === color ? "ring-2 ring-primary ring-offset-2" : ""}`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
           <Card className="border-2 border-dashed border-rose-gold/30">
