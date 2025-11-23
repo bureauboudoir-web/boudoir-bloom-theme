@@ -21,7 +21,11 @@ export const useAccessLevel = () => {
   }, [user, isAdmin, isManager, isSuperAdmin]);
 
   const fetchAccessLevel = async () => {
-    if (!user) return;
+    if (!user) {
+      setAccessLevel('no_access');
+      setLoading(false);
+      return;
+    }
 
     try {
       // Wait for roles to finish loading before making decisions
@@ -43,11 +47,15 @@ export const useAccessLevel = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (error) throw error;
-
-      setAccessLevel((data?.access_level as AccessLevel) || 'no_access');
+      if (error) {
+        console.error("Error fetching access level:", error);
+        // On error, default to no access for security
+        setAccessLevel('no_access');
+      } else {
+        setAccessLevel((data?.access_level as AccessLevel) || 'no_access');
+      }
     } catch (error) {
-      console.error("Error fetching access level:", error);
+      console.error("Unexpected error fetching access level:", error);
       setAccessLevel('no_access');
     } finally {
       setLoading(false);
