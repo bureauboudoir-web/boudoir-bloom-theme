@@ -201,46 +201,48 @@ export const AdminMeetings = () => {
     };
     
     return (
-    <Card className="border-border">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <div className="flex-shrink-0 mx-auto sm:mx-0">
+    <Card className="border-border hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start gap-6">
+          {/* Profile Picture */}
+          <div className="flex-shrink-0">
             {meeting.profiles.profile_picture_url ? (
               <img
                 src={meeting.profiles.profile_picture_url}
                 alt={meeting.profiles.full_name}
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-16 h-16 rounded-full object-cover ring-2 ring-border"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-lg font-semibold text-primary">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border">
+                <span className="text-xl font-semibold text-primary">
                   {meeting.profiles.full_name?.charAt(0) || '?'}
                 </span>
               </div>
             )}
           </div>
 
-          <div className="flex-1 space-y-3 w-full">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <div className="w-full sm:w-auto">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-semibold text-lg text-foreground">{meeting.profiles.full_name}</h3>
+          <div className="flex-1 min-w-0 space-y-4">
+            {/* Header Row */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-semibold text-xl text-foreground">{meeting.profiles.full_name}</h3>
                   {isNew && (
-                    <span className="px-2 py-0.5 text-xs font-semibold bg-primary text-primary-foreground rounded">
+                    <Badge variant="secondary" className="bg-primary text-primary-foreground">
                       NEW
-                    </span>
+                    </Badge>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground truncate">{meeting.profiles.email}</p>
+                <p className="text-sm text-muted-foreground mb-2">{meeting.profiles.email}</p>
                 {(isSuperAdmin || isAdmin) && meeting.manager && (
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                    <User className="h-3 w-3" />
-                    Assigned to: {meeting.manager.full_name}
-                  </p>
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <UserCheck className="h-4 w-4" />
+                    <span>Assigned to: <span className="font-medium">{meeting.manager.full_name}</span></span>
+                  </div>
                 )}
               </div>
-              <div className="flex flex-col items-start sm:items-end gap-1">
-                <Badge className={getStatusColor(meeting.status)}>
+              <div className="flex flex-col items-end gap-2">
+                <Badge className={`${getStatusColor(meeting.status)} px-3 py-1`}>
                   {meeting.status}
                 </Badge>
                 {meeting.created_at && (
@@ -251,50 +253,75 @@ export const AdminMeetings = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Calendar className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">{meeting.meeting_date ? format(new Date(meeting.meeting_date), "PPP") : "Not set"}</span>
+            {/* Meeting Details Grid */}
+            <div className="grid grid-cols-2 gap-4 py-3 border-y border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground mb-0.5">Date</p>
+                  <p className="text-sm font-medium">
+                    {meeting.meeting_date ? format(new Date(meeting.meeting_date), "MMM dd, yyyy") : "Not set"}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-4 w-4 flex-shrink-0" />
-                <span>{meeting.meeting_time || "Not set"} ({meeting.duration_minutes}min)</span>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Clock className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground mb-0.5">Time</p>
+                  <p className="text-sm font-medium">
+                    {meeting.meeting_time || "Not set"} · {meeting.duration_minutes}min
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Meeting Type and Location/Link */}
-            <div className="space-y-2 text-sm">
+            {/* Meeting Type */}
+            <div className="flex items-center gap-3">
               {meeting.meeting_type === 'online' ? (
-                <div className="flex items-start gap-2 text-muted-foreground">
-                  <Video className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <span className="block">Online Meeting</span>
+                <>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Video className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium mb-1">Online Meeting</p>
                     {meeting.meeting_link && (
-                      <a href={meeting.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">
-                        {meeting.meeting_link}
+                      <a 
+                        href={meeting.meeting_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-sm text-primary hover:underline truncate block"
+                      >
+                        Join Meeting
                       </a>
                     )}
                   </div>
-                </div>
+                </>
               ) : (
-                <div className="flex items-start gap-2 text-muted-foreground">
-                  <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <span className="block">In-Person</span>
+                <>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium mb-1">In-Person Meeting</p>
                     {meeting.meeting_location && (
-                      <span className="text-foreground">{meeting.meeting_location}</span>
+                      <p className="text-sm text-muted-foreground">{meeting.meeting_location}</p>
                     )}
                   </div>
-                </div>
+                </>
               )}
             </div>
 
             {/* Reschedule Request UI */}
             {meeting.reschedule_requested && meeting.reschedule_new_date && (
-              <Card className="border-amber-500/20 bg-amber-500/5 mt-3">
-                <CardContent className="p-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/20">
+              <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/30 font-medium">
                       Reschedule Requested
                     </Badge>
                     {meeting.reschedule_requested_at && (
@@ -303,23 +330,23 @@ export const AdminMeetings = () => {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm space-y-1">
+                  <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Current:</span>
+                      <span className="text-muted-foreground font-medium min-w-[80px]">Current:</span>
                       <span className="font-medium">{format(new Date(meeting.meeting_date), "MMM dd, yyyy")} at {meeting.meeting_time}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Requested:</span>
+                      <span className="text-muted-foreground font-medium min-w-[80px]">Requested:</span>
                       <span className="font-medium text-amber-700">{format(new Date(meeting.reschedule_new_date), "MMM dd, yyyy")} at {meeting.reschedule_new_time}</span>
                     </div>
                     {meeting.reschedule_reason && (
-                      <div className="pt-1">
-                        <span className="text-muted-foreground">Reason:</span>
-                        <p className="text-sm italic mt-1">{meeting.reschedule_reason}</p>
+                      <div className="pt-2 border-t border-amber-500/20">
+                        <span className="text-muted-foreground font-medium">Reason:</span>
+                        <p className="text-sm mt-1 italic text-muted-foreground">{meeting.reschedule_reason}</p>
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2 pt-1">
                     <Button
                       size="sm"
                       onClick={async () => {
@@ -347,7 +374,7 @@ export const AdminMeetings = () => {
                       }}
                       className="bg-green-600 hover:bg-green-700"
                     >
-                      <CheckCircle className="h-4 w-4 mr-1" />
+                      <CheckCircle className="h-4 w-4 mr-1.5" />
                       Approve
                     </Button>
                     <Button
@@ -375,7 +402,7 @@ export const AdminMeetings = () => {
                         }
                       }}
                     >
-                      <XCircle className="h-4 w-4 mr-1" />
+                      <XCircle className="h-4 w-4 mr-1.5" />
                       Decline
                     </Button>
                   </div>
@@ -383,21 +410,22 @@ export const AdminMeetings = () => {
               </Card>
             )}
 
-            <div className="flex gap-2 pt-2">
-              {meeting.status === 'confirmed' && (
+            {/* Action Buttons */}
+            {meeting.status === 'confirmed' && (
+              <div className="flex gap-2 pt-2">
                 <Button
-                  size="sm"
+                  size="default"
                   onClick={() => {
                     setSelectedMeeting(meeting);
                     setActionDialog('complete');
                   }}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  <CheckCircle className="h-4 w-4 mr-1" />
+                  <CheckCircle className="h-4 w-4 mr-2" />
                   Mark as Complete
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
