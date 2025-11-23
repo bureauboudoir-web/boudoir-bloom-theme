@@ -305,23 +305,43 @@ const AdminDashboard = () => {
                   <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Creators
                   </TabsTrigger>
-                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
                     Commitments
+                    {overdueCommitments > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-bold">
+                        {overdueCommitments}
+                      </span>
+                    )}
                   </TabsTrigger>
                   <TabsTrigger value="shoots" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Shoots
                   </TabsTrigger>
-                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
                     Review
+                    {pendingReviews > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                        {pendingReviews}
+                      </span>
+                    )}
                   </TabsTrigger>
-                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
                     Invoices
+                    {pendingInvoiceConfirmations > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">
+                        {pendingInvoiceConfirmations}
+                      </span>
+                    )}
                   </TabsTrigger>
                   <TabsTrigger value="contracts" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Contracts
                   </TabsTrigger>
-                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
                     Support
+                    {newSupportTickets > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">
+                        {newSupportTickets}
+                      </span>
+                    )}
                   </TabsTrigger>
                   <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Email Logs
@@ -346,8 +366,13 @@ const AdminDashboard = () => {
                   {/* Visual separator */}
                   <div className="w-px h-8 bg-border self-center mx-1" />
                   
-                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
                     Meetings
+                    {upcomingMeetings > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                        {upcomingMeetings}
+                      </span>
+                    )}
                   </TabsTrigger>
                   <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Availability
