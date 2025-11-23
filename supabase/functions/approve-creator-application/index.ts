@@ -176,6 +176,23 @@ const handler = async (req: Request): Promise<Response> => {
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+
+      // Create audit log entry for initial access grant
+      const { error: auditError } = await supabaseAdmin
+        .from("access_level_audit_log")
+        .insert({
+          user_id: userId,
+          from_level: "no_access",
+          to_level: "meeting_only",
+          granted_by: managerId,
+          reason: "Application approved - initial meeting_only access granted",
+          method: "application_approval"
+        });
+
+      if (auditError) {
+        console.error("Error creating audit log entry:", auditError);
+        // Don't fail the whole operation, just log it
+      }
     } else {
       console.log("Access level already exists");
     }
