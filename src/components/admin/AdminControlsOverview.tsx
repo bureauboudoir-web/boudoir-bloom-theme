@@ -41,6 +41,46 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
 
   useEffect(() => {
     fetchAdminStats();
+
+    // Subscribe to realtime updates
+    const applicationsChannel = supabase
+      .channel('admin-applications-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_applications' }, () => {
+        console.log('Applications changed, refreshing stats');
+        fetchAdminStats();
+      })
+      .subscribe();
+
+    const accessChannel = supabase
+      .channel('admin-access-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_access_levels' }, () => {
+        console.log('Access levels changed, refreshing stats');
+        fetchAdminStats();
+      })
+      .subscribe();
+
+    const contentChannel = supabase
+      .channel('admin-content-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'content_uploads' }, () => {
+        console.log('Content uploads changed, refreshing stats');
+        fetchAdminStats();
+      })
+      .subscribe();
+
+    const ticketsChannel = supabase
+      .channel('admin-tickets-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'support_tickets' }, () => {
+        console.log('Support tickets changed, refreshing stats');
+        fetchAdminStats();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(applicationsChannel);
+      supabase.removeChannel(accessChannel);
+      supabase.removeChannel(contentChannel);
+      supabase.removeChannel(ticketsChannel);
+    };
   }, []);
 
   const fetchAdminStats = async () => {
