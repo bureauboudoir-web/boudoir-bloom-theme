@@ -148,63 +148,38 @@ const Home = () => {
             Our Creator Services
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left: Main Content */}
             <div className="space-y-8">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                We provide comprehensive end-to-end support for creators, handling every aspect of your digital presence 
-                so you can focus on what you do best.
+              <p className="text-xl text-muted-foreground leading-relaxed font-light">
+                End-to-end creator management. From strategy to execution.
               </p>
               
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">Strategic Brand Development</h4>
-                    <p className="text-sm text-muted-foreground">
-                      We craft your unique persona, define boundaries, and position you strategically in the market for maximum appeal and authenticity.
-                    </p>
-                  </div>
+              <div className="space-y-5">
+                <div className="flex gap-3 items-start">
+                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <p className="text-base text-foreground">Brand strategy & persona development</p>
                 </div>
                 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">Professional Content Production</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Studio-quality shoots with expert lighting, styling, and direction. High-end visual content that sets you apart from amateur creators.
-                    </p>
-                  </div>
+                <div className="flex gap-3 items-start">
+                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <p className="text-base text-foreground">Studio shoots & content production</p>
                 </div>
                 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">Data-Driven Marketing</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Proven content strategies, audience building techniques, and social media optimization backed by analytics and performance tracking.
-                    </p>
-                  </div>
+                <div className="flex gap-3 items-start">
+                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <p className="text-base text-foreground">Marketing & audience growth</p>
                 </div>
                 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1">
-                    <CheckCircle className="w-5 h-5 text-[#d1ae94]" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">Round-the-Clock Support</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Dedicated team access 24/7, real-time analytics, strategic guidance, and continuous optimization of your creator business.
-                    </p>
-                  </div>
+                <div className="flex gap-3 items-start">
+                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <p className="text-base text-foreground">24/7 dedicated support team</p>
                 </div>
               </div>
+              
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] mt-4">
+                <Link to="/signup">Start Your Journey</Link>
+              </Button>
             </div>
             
             {/* Right: Service Cards */}
