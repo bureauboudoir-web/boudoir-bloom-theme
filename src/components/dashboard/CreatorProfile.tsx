@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock } from "lucide-react";
+import { User, Heart, Shield, DollarSign, Theater, MessageSquare, Camera, MapPin, Mail, Phone, Calendar, Briefcase, Instagram, Twitter, Video, Youtube, Link as LinkIcon, Send, CheckCircle2, Lightbulb, Clock, Lock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
+import { AccessLevel } from "@/hooks/useAccessLevel";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -15,6 +18,8 @@ interface CreatorProfileProps {
   userName?: string;
   profilePictureUrl?: string | null;
   onNavigateToOnboarding?: (step: number) => void;
+  accessLevel?: AccessLevel;
+  meetingCompleted?: boolean;
 }
 
 export const CreatorProfile = ({
@@ -23,7 +28,22 @@ export const CreatorProfile = ({
   userName,
   profilePictureUrl,
   onNavigateToOnboarding,
+  accessLevel,
+  meetingCompleted,
 }: CreatorProfileProps) => {
+  // Determine if a section should be locked
+  const isSectionLocked = (sectionIndex: number) => {
+    // Sections 1-2 are always unlocked
+    if (sectionIndex <= 2) return false;
+    
+    // If user has full access or meeting completed, unlock all
+    if (accessLevel === 'full_access' || meetingCompleted) return false;
+    
+    // If meeting_only access and sections 3+, lock them
+    if (accessLevel === 'meeting_only' && sectionIndex > 2) return true;
+    
+    return false;
+  };
   const isCompleted = onboardingData?.is_completed || false;
   const completedSteps = onboardingData?.completed_steps?.length || 0;
   const totalSteps = 9;
@@ -472,11 +492,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Amsterdam Story */}
-        <AccordionItem value="backstory" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              <span className="font-semibold">My Amsterdam Story</span>
+        <AccordionItem value="backstory" className="border rounded-lg px-4" disabled={isSectionLocked(3)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(3) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(3)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-primary" />
+                <span className="font-semibold">My Amsterdam Story</span>
+              </div>
+              {isSectionLocked(3) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-4">
@@ -652,11 +694,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Boundaries & Comfort Levels */}
-        <AccordionItem value="boundaries" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Boundaries & Comfort Levels</span>
+        <AccordionItem value="boundaries" className="border rounded-lg px-4" disabled={isSectionLocked(4)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(4) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(4)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-primary" />
+                <span className="font-semibold">Boundaries & Comfort Levels</span>
+              </div>
+              {isSectionLocked(4) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
@@ -732,11 +796,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Pricing Structure */}
-        <AccordionItem value="pricing" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Pricing Structure</span>
+        <AccordionItem value="pricing" className="border rounded-lg px-4" disabled={isSectionLocked(5)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(5) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(5)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-primary" />
+                <span className="font-semibold">Pricing Structure</span>
+              </div>
+              {isSectionLocked(5) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
@@ -770,11 +856,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Persona & Character */}
-        <AccordionItem value="persona" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Theater className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Persona & Character</span>
+        <AccordionItem value="persona" className="border rounded-lg px-4" disabled={isSectionLocked(6)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(6) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(6)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Theater className="h-5 w-5 text-primary" />
+                <span className="font-semibold">Persona & Character</span>
+              </div>
+              {isSectionLocked(6) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
@@ -877,11 +985,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Scripts & Messaging */}
-        <AccordionItem value="scripts" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Scripts & Messaging</span>
+        <AccordionItem value="scripts" className="border rounded-lg px-4" disabled={isSectionLocked(7)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(7) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(7)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-primary" />
+                <span className="font-semibold">Scripts & Messaging</span>
+              </div>
+              {isSectionLocked(7) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
@@ -952,11 +1082,33 @@ export const CreatorProfile = ({
         </AccordionItem>
 
         {/* Content Production */}
-        <AccordionItem value="content" className="border rounded-lg px-4">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Camera className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Content Production</span>
+        <AccordionItem value="content" className="border rounded-lg px-4" disabled={isSectionLocked(8)}>
+          <AccordionTrigger 
+            className={cn(
+              "hover:no-underline",
+              isSectionLocked(8) && "cursor-not-allowed opacity-60"
+            )}
+            onClick={(e) => {
+              if (isSectionLocked(8)) {
+                e.preventDefault();
+                toast.info("Complete your meeting to unlock this section", {
+                  description: "Book and complete your introduction meeting to access all profile sections",
+                  action: {
+                    label: "View Meetings",
+                    onClick: () => window.location.hash = "#meetings"
+                  }
+                });
+              }
+            }}
+          >
+            <div className="flex items-center gap-2 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Camera className="h-5 w-5 text-primary" />
+                <span className="font-semibold">Content Production</span>
+              </div>
+              {isSectionLocked(8) && (
+                <Lock className="h-4 w-4 text-muted-foreground ml-auto" />
+              )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-4 space-y-3">
