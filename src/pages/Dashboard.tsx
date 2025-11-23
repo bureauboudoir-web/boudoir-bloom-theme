@@ -30,7 +30,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useAccessLevel } from "@/hooks/useAccessLevel";
+import { useAccessLevel, AccessLevel } from "@/hooks/useAccessLevel";
 import { useMeetingStatus } from "@/hooks/useMeetingStatus";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
@@ -166,9 +166,7 @@ const Dashboard = () => {
     return <NoAccessView />;
   }
 
-  if (accessLevel === 'meeting_only') {
-    return <MeetingBookingView />;
-  }
+  // meeting_only users stay in dashboard with limited access
 
   if (onboardingLoading) {
     return (
@@ -282,6 +280,7 @@ const Dashboard = () => {
                       onAdminClick={() => navigate("/admin")}
                       onManagerClick={() => navigate("/manager")}
                       onMobileMenuClose={() => setMobileMenuOpen(false)}
+                      accessLevel={accessLevel}
                     />
                   </div>
                 </SheetContent>
@@ -324,6 +323,7 @@ const Dashboard = () => {
               isManagerOnly={isManagerOnly}
               onAdminClick={() => navigate("/admin")}
               onManagerClick={() => navigate("/manager")}
+              accessLevel={accessLevel}
             />
           </Card>
 
@@ -333,6 +333,7 @@ const Dashboard = () => {
               <DashboardOverview 
                 userId={user.id}
                 onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
+                accessLevel={accessLevel}
               />
             )}
 
@@ -381,7 +382,7 @@ const Dashboard = () => {
               />
             )}
             
-            {activeTab === "upload" && user && (
+            {activeTab === "upload" && user && accessLevel === 'full_access' && (
               <div className="space-y-4 sm:space-y-6">
                 <ContentUpload 
                   userId={user.id} 
@@ -394,23 +395,23 @@ const Dashboard = () => {
               </div>
             )}
             
-            {activeTab === "support" && user && (
+            {activeTab === "support" && user && accessLevel === 'full_access' && (
               <ContactSupport userId={user.id} userName={user.email || "User"} />
             )}
 
-            {activeTab === "commitments" && user && (
+            {activeTab === "commitments" && user && accessLevel === 'full_access' && (
               <WeeklyCommitments userId={user.id} />
             )}
 
-            {activeTab === "shoots" && user && (
+            {activeTab === "shoots" && user && accessLevel === 'full_access' && (
               <StudioShoots userId={user.id} />
             )}
 
-            {activeTab === "invoices" && user && (
+            {activeTab === "invoices" && user && accessLevel === 'full_access' && (
               <InvoiceStatus />
             )}
 
-            {activeTab === "contract" && user && (
+            {activeTab === "contract" && user && accessLevel === 'full_access' && (
               <CreatorContract />
             )}
 
@@ -418,7 +419,7 @@ const Dashboard = () => {
               <MeetingBookingView mode="management" />
             )}
 
-            {activeTab === "library" && user && (
+            {activeTab === "library" && user && accessLevel === 'full_access' && (
               <ContentLibrary userId={user.id} />
             )}
           </div>
