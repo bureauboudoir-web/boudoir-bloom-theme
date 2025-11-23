@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Plus, Search, AlertCircle, CheckCircle, Clock, TrendingUp, ChevronDown } from "lucide-react";
+import { CreatorSelector } from "./CreatorSelector";
 import { toast } from "@/hooks/use-toast";
 import { ContentTypeIcon, contentTypeLabels, type ContentTypeCategory } from "@/components/ContentTypeIcon";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,6 +25,7 @@ interface Creator {
   id: string;
   email: string;
   full_name: string | null;
+  profile_picture_url: string | null;
 }
 
 interface Commitment {
@@ -110,7 +112,7 @@ export const AdminCommitments = () => {
 
       let query = supabase
         .from('profiles')
-        .select('id, email, full_name')
+        .select('id, email, full_name, profile_picture_url')
         .order('email');
 
       if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
@@ -412,18 +414,12 @@ export const AdminCommitments = () => {
             <div className="space-y-4">
               <div>
                 <Label>Select Creator</Label>
-                <Select value={selectedCreator} onValueChange={setSelectedCreator}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a creator..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredCreators.map((creator) => (
-                      <SelectItem key={creator.id} value={creator.id}>
-                        {creator.full_name || creator.email}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <CreatorSelector
+                  creators={filteredCreators}
+                  value={selectedCreator}
+                  onChange={(value) => setSelectedCreator(value as string)}
+                  placeholder="Search and select creator..."
+                />
               </div>
 
               {selectedCreator && (

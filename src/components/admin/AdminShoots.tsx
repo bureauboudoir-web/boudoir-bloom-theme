@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Plus, Calendar, Users, Video, Camera, Search, Clock, Trash2 } from "lucide-react";
+import { CreatorSelector, CreatorSelectorMultiple } from "./CreatorSelector";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -23,6 +24,7 @@ interface Creator {
   id: string;
   email: string;
   full_name: string | null;
+  profile_picture_url: string | null;
 }
 
 interface Shoot {
@@ -122,7 +124,7 @@ export const AdminShoots = () => {
 
       let query = supabase
         .from('profiles')
-        .select('id, email, full_name')
+        .select('id, email, full_name, profile_picture_url')
         .order('email');
 
       if (!isSuperAdmin && !isAdmin && creatorIds.length > 0) {
@@ -469,18 +471,12 @@ export const AdminShoots = () => {
               {newShoot.shoot_type === 'solo' && (
                 <div>
                   <Label>Select Creator</Label>
-                  <Select value={selectedCreator} onValueChange={setSelectedCreator}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a creator..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {creators.map((creator) => (
-                        <SelectItem key={creator.id} value={creator.id}>
-                          {creator.full_name || creator.email}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CreatorSelector
+                    creators={creators}
+                    value={selectedCreator}
+                    onChange={(value) => setSelectedCreator(value as string)}
+                    placeholder="Search and select creator..."
+                  />
                 </div>
               )}
 
@@ -488,26 +484,12 @@ export const AdminShoots = () => {
               {newShoot.shoot_type !== 'solo' && (
                 <div className="space-y-2">
                   <Label>Select Creators (Multiple)</Label>
-                  <div className="max-h-48 overflow-y-auto border rounded-md p-3 space-y-2">
-                    {creators.map((creator) => (
-                      <div key={creator.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`creator-${creator.id}`}
-                          checked={selectedCreators.includes(creator.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedCreators([...selectedCreators, creator.id]);
-                            } else {
-                              setSelectedCreators(selectedCreators.filter(id => id !== creator.id));
-                            }
-                          }}
-                        />
-                        <Label htmlFor={`creator-${creator.id}`} className="cursor-pointer font-normal">
-                          {creator.full_name || creator.email}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+                  <CreatorSelectorMultiple
+                    creators={creators}
+                    value={selectedCreators}
+                    onChange={(value) => setSelectedCreators(value as string[])}
+                    placeholder="Search and select creators..."
+                  />
                   <p className="text-xs text-muted-foreground">
                     Selected: {selectedCreators.length} creator(s)
                   </p>
