@@ -42,9 +42,12 @@ interface AssignedCreator {
 interface UpcomingMeeting {
   id: string;
   creator_name: string;
+  creator_email: string;
   meeting_date: string;
   meeting_time: string;
   meeting_type: string;
+  meeting_notes: string;
+  meeting_location: string;
   status: string;
 }
 
@@ -151,8 +154,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         .eq('assigned_manager_id', managerId)
         .order('full_name');
 
-      // Fetch upcoming meetings for assigned creators
-      const creatorIds = creators?.map(c => c.id) || [];
+      // Fetch upcoming meetings directly assigned to this manager
       const { data: meetings } = await supabase
         .from('creator_meetings')
         .select(`
@@ -160,14 +162,36 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
           meeting_date,
           meeting_time,
           meeting_type,
+          meeting_notes,
+          meeting_location,
           status,
-          user_id,
-          profiles (full_name)
+          user_id
         `)
-        .in('user_id', creatorIds)
+        .eq('assigned_manager_id', managerId)
         .gte('meeting_date', new Date().toISOString().split('T')[0])
+        .in('status', ['pending', 'confirmed'])
         .order('meeting_date')
-        .limit(5);
+        .order('meeting_time');
+
+      // Get creator info for each meeting
+      const meetingsWithCreators = await Promise.all(
+        (meetings || []).map(async (meeting) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('id', meeting.user_id)
+            .single();
+
+          return {
+            ...meeting,
+            creator_name: profile?.full_name || profile?.email || 'Unknown',
+            creator_email: profile?.email || '',
+          };
+        })
+      );
+
+      // Get creator IDs for other queries
+      const creatorIds = creators?.map(c => c.id) || [];
 
       // Count pending tasks (creators stuck in onboarding)
       const { count: stuckCount } = await supabase
@@ -196,16 +220,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         })) || []
       );
 
-      setUpcomingMeetings(
-        meetings?.map(m => ({
-          id: m.id,
-          creator_name: m.profiles?.full_name || 'Unknown',
-          meeting_date: m.meeting_date || '',
-          meeting_time: m.meeting_time || '',
-          meeting_type: m.meeting_type || 'general',
-          status: m.status || 'scheduled',
-        })) || []
-      );
+      setUpcomingMeetings(meetingsWithCreators || []);
 
       setPendingTasks(stuckCount || 0);
       setCreatorsNeedingAccess(needingAccessCount || 0);
@@ -342,25 +357,70 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
               No upcoming meetings scheduled
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {upcomingMeetings.map((meeting) => (
-                <div
+                <Card
                   key={meeting.id}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                  className="p-4 hover:border-primary/40 transition-colors cursor-pointer"
+                  onClick={() => onNavigate("meetings")}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-primary" />
+                  <div className="space-y-3">
+                    {/* WHO - Creator Info */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Users className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-base">{meeting.creator_name}</p>
+                          <p className="text-xs text-muted-foreground">{meeting.creator_email}</p>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={meeting.status === 'confirmed' ? 'default' : 'outline'}
+                        className={meeting.status === 'confirmed' ? 'bg-green-500' : ''}
+                      >
+                        {meeting.status}
+                      </Badge>
                     </div>
-                    <div>
-                      <p className="font-medium">{meeting.creator_name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {getMeetingDateLabel(meeting.meeting_date)} at {meeting.meeting_time}
-                      </p>
+
+                    {/* WHEN - Date & Time */}
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Calendar className="w-4 h-4" />
+                        <span className="font-medium">
+                          {getMeetingDateLabel(meeting.meeting_date)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span className="font-medium">{meeting.meeting_time}</span>
+                      </div>
+                      {meeting.meeting_location && (
+                        <Badge variant="outline" className="text-xs">
+                          {meeting.meeting_location}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* WHAT - Purpose/Notes */}
+                    {meeting.meeting_notes && (
+                      <div className="bg-muted/30 rounded-md p-3">
+                        <p className="text-sm leading-relaxed text-foreground/90">
+                          {meeting.meeting_notes}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Meeting Type Tag */}
+                    <div className="flex items-center gap-2">
+                      <Video className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground capitalize">
+                        {meeting.meeting_type} meeting
+                      </span>
                     </div>
                   </div>
-                  <Badge variant="outline">{meeting.meeting_type}</Badge>
-                </div>
+                </Card>
               ))}
             </div>
           )}
