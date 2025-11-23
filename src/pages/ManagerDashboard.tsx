@@ -79,6 +79,20 @@ const ManagerDashboard = () => {
     }] : []),
   ];
 
+  const handleDismissWelcome = async () => {
+    if (!user?.id) return;
+    
+    await supabase
+      .from('admin_settings')
+      .upsert({
+        setting_key: `manager_welcome_dismissed_${user.id}`,
+        setting_value: true,
+        updated_by: user.id,
+      });
+    
+    setShowWelcome(false);
+  };
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
@@ -97,14 +111,7 @@ const ManagerDashboard = () => {
     }
   }, [isManagerOnly, isAdmin, isSuperAdmin, roleLoading, navigate]);
 
-  if (authLoading || roleLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
+  // Check if this is first time login
   useEffect(() => {
     const checkFirstLogin = async () => {
       if (!user?.id) return;
@@ -125,19 +132,13 @@ const ManagerDashboard = () => {
     }
   }, [user, isManagerOnly]);
 
-  const handleDismissWelcome = async () => {
-    if (!user?.id) return;
-    
-    await supabase
-      .from('admin_settings')
-      .upsert({
-        setting_key: `manager_welcome_dismissed_${user.id}`,
-        setting_value: true,
-        updated_by: user.id,
-      });
-    
-    setShowWelcome(false);
-  };
+  if (authLoading || roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

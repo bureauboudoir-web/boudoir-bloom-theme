@@ -88,6 +88,20 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDismissWelcome = async () => {
+    if (!user?.id) return;
+    
+    await supabase
+      .from('admin_settings')
+      .upsert({
+        setting_key: `admin_welcome_dismissed_${user.id}`,
+        setting_value: true,
+        updated_by: user.id,
+      });
+    
+    setShowWelcome(false);
+  };
+
   const adminNotificationItems: NotificationItem[] = [
     ...(upcomingMeetings > 0 ? [{
       id: 'upcoming-meetings',
@@ -153,21 +167,7 @@ const AdminDashboard = () => {
     }
   }, [user, authLoading, navigate]);
 
-  if (authLoading || roleLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-4">Loading admin dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin && !isSuperAdmin) {
-    return null;
-  }
-
+  // Check if this is first time login
   useEffect(() => {
     const checkFirstLogin = async () => {
       if (!user?.id) return;
@@ -188,19 +188,20 @@ const AdminDashboard = () => {
     }
   }, [user, isAdmin, isSuperAdmin]);
 
-  const handleDismissWelcome = async () => {
-    if (!user?.id) return;
-    
-    await supabase
-      .from('admin_settings')
-      .upsert({
-        setting_key: `admin_welcome_dismissed_${user.id}`,
-        setting_value: true,
-        updated_by: user.id,
-      });
-    
-    setShowWelcome(false);
-  };
+  if (authLoading || roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground mt-4">Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin && !isSuperAdmin) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
