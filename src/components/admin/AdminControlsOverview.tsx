@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -11,9 +13,12 @@ import {
   Users, 
   FileText,
   TrendingUp,
-  Clock
+  Clock,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { CreatorsOnboardingOverview } from "@/components/dashboard/CreatorsOnboardingOverview";
+import { useSoundNotification } from "@/hooks/useSoundNotification";
 
 interface AdminControlsOverviewProps {
   onNavigate: (tab: string) => void;
@@ -38,6 +43,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
     openSupportTickets: 0,
   });
   const [loading, setLoading] = useState(true);
+  const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
 
   useEffect(() => {
     fetchAdminStats();
@@ -45,32 +51,48 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
     // Subscribe to realtime updates
     const applicationsChannel = supabase
       .channel('admin-applications-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_applications' }, () => {
-        console.log('Applications changed, refreshing stats');
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_applications' }, (payload) => {
+        console.log('New application received:', payload);
+        playNotificationSound();
+        fetchAdminStats();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_applications' }, () => {
         fetchAdminStats();
       })
       .subscribe();
 
     const accessChannel = supabase
       .channel('admin-access-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_access_levels' }, () => {
-        console.log('Access levels changed, refreshing stats');
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'creator_access_levels' }, (payload) => {
+        console.log('New access request:', payload);
+        playNotificationSound();
+        fetchAdminStats();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'creator_access_levels' }, () => {
         fetchAdminStats();
       })
       .subscribe();
 
     const contentChannel = supabase
       .channel('admin-content-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'content_uploads' }, () => {
-        console.log('Content uploads changed, refreshing stats');
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'content_uploads' }, (payload) => {
+        console.log('New content uploaded:', payload);
+        playNotificationSound();
+        fetchAdminStats();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'content_uploads' }, () => {
         fetchAdminStats();
       })
       .subscribe();
 
     const ticketsChannel = supabase
       .channel('admin-tickets-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'support_tickets' }, () => {
-        console.log('Support tickets changed, refreshing stats');
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_tickets' }, (payload) => {
+        console.log('New support ticket:', payload);
+        playNotificationSound();
+        fetchAdminStats();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'support_tickets' }, () => {
         fetchAdminStats();
       })
       .subscribe();
@@ -81,7 +103,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       supabase.removeChannel(contentChannel);
       supabase.removeChannel(ticketsChannel);
     };
-  }, []);
+  }, [playNotificationSound]);
 
   const fetchAdminStats = async () => {
     try {
@@ -197,6 +219,29 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
 
   return (
     <div className="space-y-6">
+      {/* Sound Notification Toggle */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isSoundEnabled ? (
+                <Volume2 className="w-4 h-4 text-primary" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-muted-foreground" />
+              )}
+              <Label htmlFor="sound-notifications" className="cursor-pointer">
+                Sound notifications for new tasks
+              </Label>
+            </div>
+            <Switch
+              id="sound-notifications"
+              checked={isSoundEnabled}
+              onCheckedChange={toggleSound}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {quickActions.map((action) => (
