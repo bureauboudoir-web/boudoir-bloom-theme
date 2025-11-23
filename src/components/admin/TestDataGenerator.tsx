@@ -10,6 +10,7 @@ import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 export function TestDataGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCleaning, setIsCleaning] = useState(false);
+  const [isGeneratingManagerData, setIsGeneratingManagerData] = useState(false);
   const { isOpen, toggle } = useCollapsibleSection('admin-test-generator-collapsed', false);
 
   const cleanupTestData = async () => {
@@ -77,6 +78,40 @@ export function TestDataGenerator() {
     }
   };
 
+  const generateManagerTestData = async () => {
+    setIsGeneratingManagerData(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        toast.error("Not authenticated");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-test-accounts', {
+        body: { action: 'create_manager_data' },
+        headers: {
+          Authorization: `Bearer ${session.session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success(`Created ${data.accounts.length} test creators for your dashboard`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        throw new Error(data.error || 'Failed to generate manager test data');
+      }
+    } catch (error: any) {
+      console.error('Manager data generation error:', error);
+      toast.error(error.message || 'Failed to generate manager test data');
+    } finally {
+      setIsGeneratingManagerData(false);
+    }
+  };
+
   return (
     <Collapsible open={isOpen} onOpenChange={toggle}>
       <Card className="border-2 border-primary/20">
@@ -99,7 +134,22 @@ export function TestDataGenerator() {
         <CollapsibleContent>
           <CardContent className="space-y-6">
         <div className="rounded-lg bg-muted/50 p-4 space-y-3">
-          <p className="text-sm font-medium">📋 What will be created:</p>
+          <p className="text-sm font-medium">📋 Manager Test Data:</p>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">Sarah Martinez</span> - No access (needs meeting invitation)
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">Emma Chen</span> - Meeting only (can book meeting) + Support ticket + Commitment + Invoice + Content
+            </div>
+            <div className="flex gap-2">
+              <span className="font-medium text-foreground">Lisa Thompson</span> - Meeting scheduled (tomorrow) + Support ticket
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-muted/50 p-4 space-y-3">
+          <p className="text-sm font-medium">📋 Admin Test Data (Full Journey):</p>
           <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex gap-2">
               <span className="font-medium text-foreground">1.</span>
@@ -141,14 +191,34 @@ export function TestDataGenerator() {
 
         <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
           <p className="text-xs text-amber-600 dark:text-amber-400">
-            💡 <strong>Tip:</strong> Run "Clean Up Old Data" first if you've generated test data before. Then click "Generate Test Data" to create fresh test creators.
+            💡 <strong>Tip:</strong> Use "Manager Test Data" for quick dashboard testing, or "Generate Test Data" for complete creator journey examples.
           </p>
         </div>
         
         <div className="flex gap-2">
           <Button
+            onClick={generateManagerTestData}
+            disabled={isGeneratingManagerData || isGenerating || isCleaning}
+            className="flex-1"
+          >
+            {isGeneratingManagerData ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Manager Test Data
+              </>
+            )}
+          </Button>
+        </div>
+
+        <div className="flex gap-2 pt-2 border-t">
+          <Button
             onClick={cleanupTestData}
-            disabled={isCleaning || isGenerating}
+            disabled={isCleaning || isGenerating || isGeneratingManagerData}
             variant="outline"
             className="flex-1"
           >
@@ -167,7 +237,8 @@ export function TestDataGenerator() {
           
           <Button
             onClick={generateTestData}
-            disabled={isGenerating || isCleaning}
+            disabled={isGenerating || isCleaning || isGeneratingManagerData}
+            variant="outline"
             className="flex-1"
           >
             {isGenerating ? (
