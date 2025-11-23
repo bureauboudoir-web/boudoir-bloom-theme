@@ -444,16 +444,32 @@ export const AccessManagement = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {creator.access_level === 'no_access' && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleSendInvitation(creator)}
-                        disabled={actionLoading}
-                      >
-                        📧 Send Meeting Invitation
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => handleSendInvitation(creator)}
+                          disabled={actionLoading}
+                          className="flex-1 sm:flex-none"
+                        >
+                          📧 Send Meeting Invitation
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedCreator(creator);
+                            setShowGrantDialog(true);
+                          }}
+                          disabled={actionLoading}
+                          className="flex-1 sm:flex-none"
+                        >
+                          <ShieldCheck className="h-4 w-4 mr-1" />
+                          Grant Early Access
+                        </Button>
+                      </>
                     )}
                     {creator.access_level === 'meeting_only' && creator.meeting_status === 'completed' && (
                       <Button

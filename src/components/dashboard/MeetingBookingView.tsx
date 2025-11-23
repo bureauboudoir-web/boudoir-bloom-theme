@@ -132,11 +132,40 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
     setLoadingSlots(true);
 
-    if (!managerInfo || !meetingData?.assigned_manager_id) {
-      console.log("No manager info or assigned manager ID, exiting early");
+    // Check if we have meeting data with assigned manager
+    if (!meetingData?.assigned_manager_id) {
+      console.log("No assigned manager ID yet, exiting early");
       setAvailableSlots([]);
       setLoadingSlots(false);
       return;
+    }
+
+    // If manager info is not loaded yet, fetch it
+    if (!managerInfo) {
+      console.log("Manager info not loaded, fetching...");
+      try {
+        const { data: managerData, error } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .eq('id', meetingData.assigned_manager_id)
+          .single();
+        
+        if (error) throw error;
+        
+        if (managerData) {
+          setManagerInfo(managerData);
+        } else {
+          console.error("Manager profile not found");
+          setAvailableSlots([]);
+          setLoadingSlots(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching manager info:", error);
+        setAvailableSlots([]);
+        setLoadingSlots(false);
+        return;
+      }
     }
     try {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');

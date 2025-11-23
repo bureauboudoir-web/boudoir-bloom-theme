@@ -307,6 +307,12 @@ export const useAccessManagement = () => {
         .eq('user_id', userId)
         .maybeSingle();
 
+      // Only proceed if user has no_access
+      if (currentAccess && currentAccess.access_level !== 'no_access') {
+        toast.error(`${creatorName} already has ${currentAccess.access_level} access`);
+        return false;
+      }
+
       // Upgrade to meeting_only access (NOT full_access)
       const { error: updateError } = await supabase
         .from('creator_access_levels')
@@ -320,6 +326,36 @@ export const useAccessManagement = () => {
 
       if (updateError) throw updateError;
 
+      // Check if meeting record exists
+      const { data: existingMeeting } = await supabase
+        .from('creator_meetings')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // Create or update meeting record
+      if (existingMeeting) {
+        const { error: meetingError } = await supabase
+          .from('creator_meetings')
+          .update({
+            status: 'not_booked',
+            assigned_manager_id: user.id,
+          })
+          .eq('id', existingMeeting.id);
+
+        if (meetingError) throw meetingError;
+      } else {
+        const { error: meetingError } = await supabase
+          .from('creator_meetings')
+          .insert({
+            user_id: userId,
+            status: 'not_booked',
+            assigned_manager_id: user.id,
+          });
+
+        if (meetingError) throw meetingError;
+      }
+
       // Add audit log entry
       const { error: auditError } = await supabase
         .from('access_level_audit_log')
@@ -332,7 +368,7 @@ export const useAccessManagement = () => {
           method: 'meeting_invitation_sent'
         });
 
-      if (auditError) throw auditError;
+      if (auditError) console.error("Audit log error:", auditError);
 
       // Send meeting invitation email
       try {
@@ -345,6 +381,7 @@ export const useAccessManagement = () => {
         });
       } catch (emailError) {
         console.warn('Email notification failed:', emailError);
+        // Don't fail the whole operation if email fails
       }
 
       toast.success(`Meeting invitation sent to ${creatorName}`);
