@@ -33,6 +33,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminWelcome } from "@/components/admin/AdminWelcome";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverview";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
     upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "email-preview" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "email-preview" | "tests" | "dev-tools" | "access" | "access-audit" | "settings">("overview");
   const [creatingTestAccounts, setCreatingTestAccounts] = useState(false);
   const [testAccountsCreated, setTestAccountsCreated] = useState<any[]>([]);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -298,6 +299,9 @@ const AdminDashboard = () => {
                   <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Overview
                   </TabsTrigger>
+                  <TabsTrigger value="workload" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                    Workload
+                  </TabsTrigger>
                   <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Creators
                   </TabsTrigger>
@@ -393,6 +397,10 @@ const AdminDashboard = () => {
                 userId={user.id} 
                 onNavigate={(tab) => setActiveTab(tab as any)}
               />
+            </TabsContent>
+
+            <TabsContent value="workload" className="mt-0">
+              <ManagerWorkloadOverview />
             </TabsContent>
 
             <TabsContent value="creators" className="mt-0">
