@@ -373,25 +373,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Manage Applications",
           icon: ClipboardList,
-          action: () => onNavigate ? onNavigate('applications') : navigate('/admin'),
+          action: () => navigate('/admin'),
           variant: "default" as const,
         },
         {
           label: "Review Content",
           icon: FileCheck,
-          action: () => onNavigate ? onNavigate('review') : navigate('/admin'),
+          action: () => navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
           icon: Users,
-          action: () => onNavigate ? onNavigate('roles') : navigate('/admin'),
+          action: () => navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Analytics",
           icon: BarChart3,
-          action: () => onNavigate ? onNavigate('overview') : navigate('/admin'),
+          action: () => navigate('/admin'),
           variant: "outline" as const,
         },
       ];
@@ -402,25 +402,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Review Applications",
           icon: ClipboardList,
-          action: () => onNavigate ? onNavigate('applications') : navigate('/manager'),
+          action: () => navigate('/manager'),
           variant: "default" as const,
         },
         {
           label: "Assign Tasks",
           icon: UserPlus,
-          action: () => onNavigate ? onNavigate('commitments') : navigate('/manager'),
+          action: () => navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "Schedule Shoots",
           icon: Video,
-          action: () => onNavigate ? onNavigate('shoots') : navigate('/manager'),
+          action: () => navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "View Reports",
           icon: BarChart3,
-          action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
+          action: () => navigate('/manager'),
           variant: "outline" as const,
         },
       ];
