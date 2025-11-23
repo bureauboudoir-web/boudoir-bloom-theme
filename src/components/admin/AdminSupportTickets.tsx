@@ -210,7 +210,19 @@ const AdminSupportTickets = () => {
   if (loading) {
     return (
       <Card className="p-6 bg-card border-primary/20">
-        <p className="text-muted-foreground">Loading support tickets...</p>
+        <div className="space-y-4">
+          <div className="h-8 bg-muted animate-pulse rounded" />
+          <div className="h-12 bg-muted animate-pulse rounded" />
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border border-border rounded-lg p-4 space-y-3">
+                <div className="h-6 bg-muted animate-pulse rounded w-3/4" />
+                <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
+                <div className="h-20 bg-muted animate-pulse rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
       </Card>
     );
   }

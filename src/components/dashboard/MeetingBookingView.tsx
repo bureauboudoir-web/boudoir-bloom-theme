@@ -74,10 +74,13 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     if (!user) return;
 
     try {
+      // Get the most recent meeting (handles multiple meetings correctly)
       const { data, error } = await supabase
         .from('creator_meetings')
         .select('*')
         .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       if (error) throw error;
