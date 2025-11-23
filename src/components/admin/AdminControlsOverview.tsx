@@ -179,11 +179,12 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
         .select('id')
         .eq('status', 'open');
 
-      // Upcoming meetings (confirmed or not_booked)
+      // Upcoming meetings (confirmed with valid dates only)
       const { data: meetings } = await supabase
         .from('creator_meetings')
         .select('id')
-        .in('status', ['confirmed', 'not_booked'])
+        .eq('status', 'confirmed')
+        .not('meeting_date', 'is', null)
         .gte('meeting_date', new Date().toISOString());
 
       setStats({

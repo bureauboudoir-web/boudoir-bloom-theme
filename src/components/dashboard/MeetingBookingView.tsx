@@ -44,6 +44,24 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     if (user) {
       fetchMeetingData();
     }
+
+    // Subscribe to realtime updates for user's meetings
+    const meetingsChannel = supabase
+      .channel(`user-meeting-${user?.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'creator_meetings',
+        filter: `user_id=eq.${user?.id}`
+      }, (payload) => {
+        console.log('Your meeting changed:', payload);
+        fetchMeetingData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(meetingsChannel);
+    };
   }, [user]);
 
   useEffect(() => {
