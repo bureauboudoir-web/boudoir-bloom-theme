@@ -78,7 +78,10 @@ export const useOnboarding = (userId: string | undefined) => {
       }
     } catch (error: any) {
       console.error('Error fetching onboarding data:', error);
-      toast.error('Failed to load onboarding data');
+      // Only show error toast if user has creator role
+      if (hasCreatorRole) {
+        toast.error('Failed to load onboarding data');
+      }
     } finally {
       setLoading(false);
     }

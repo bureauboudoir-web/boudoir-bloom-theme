@@ -197,7 +197,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       icon: UserPlus,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
-      action: () => onNavigate("admin-applications"),
+      action: () => onNavigate("applications"),
       urgent: stats.pendingApplications > 0,
     },
     {
@@ -206,7 +206,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       icon: Shield,
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10",
-      action: () => onNavigate("admin-access"),
+      action: () => onNavigate("access"),
       urgent: stats.pendingAccessRequests > 0,
     },
     {
@@ -215,7 +215,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       icon: FileCheck,
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
-      action: () => onNavigate("admin-review"),
+      action: () => onNavigate("review"),
       urgent: stats.contentToReview > 0,
     },
     {
@@ -224,7 +224,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       icon: AlertCircle,
       color: "text-red-500",
       bgColor: "bg-red-500/10",
-      action: () => onNavigate("admin-support"),
+      action: () => onNavigate("support"),
       urgent: stats.openSupportTickets > 0,
     },
   ];
