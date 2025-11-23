@@ -50,3 +50,6 @@ verify_jwt = false  # Public function for password setup flow
 
 [functions.test-manager-flow]
 verify_jwt = false  # Public function for automated testing
+
+[functions.generate-contract-pdf]
+verify_jwt = true  # Requires admin/manager authentication
