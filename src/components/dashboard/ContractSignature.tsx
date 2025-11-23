@@ -53,11 +53,10 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size
+    // Set canvas size to match display size
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
     // Set drawing style
     ctx.strokeStyle = "#000000";
