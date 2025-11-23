@@ -19,6 +19,7 @@ export type Database = {
           created_at: string | null
           from_level: string
           granted_by: string | null
+          granted_by_role: Database["public"]["Enums"]["app_role"] | null
           id: string
           method: string | null
           reason: string | null
@@ -29,6 +30,7 @@ export type Database = {
           created_at?: string | null
           from_level: string
           granted_by?: string | null
+          granted_by_role?: Database["public"]["Enums"]["app_role"] | null
           id?: string
           method?: string | null
           reason?: string | null
@@ -39,6 +41,7 @@ export type Database = {
           created_at?: string | null
           from_level?: string
           granted_by?: string | null
+          granted_by_role?: Database["public"]["Enums"]["app_role"] | null
           id?: string
           method?: string | null
           reason?: string | null
