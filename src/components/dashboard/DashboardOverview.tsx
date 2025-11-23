@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/hooks/useUserRole";
 import { CreatorTimeline } from "./CreatorTimeline";
+import { DashboardOverviewAccordion } from "./DashboardOverviewAccordion";
 
 interface DashboardStats {
   pendingCommitments: number;
@@ -641,6 +642,29 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
     );
   }
 
+  // Prepare data for accordion component
+  const formattedStats = statCards.map(card => ({
+    title: card.title,
+    value: card.value,
+    icon: card.icon,
+    trend: undefined
+  }));
+
+  const formattedActions = quickActions.map(action => ({
+    label: action.label,
+    icon: action.icon,
+    onClick: action.action,
+    variant: action.variant
+  }));
+
+  const formattedActivity = recentActivity.map(activity => ({
+    id: activity.id,
+    type: activity.type,
+    message: `${activity.title} - ${activity.description}`,
+    time: format(new Date(activity.timestamp), 'MMM d, h:mm a'),
+    status: activity.status
+  }));
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -649,35 +673,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         <p className="text-muted-foreground">Here's what's happening with your creator journey</p>
       </div>
 
-      {/* Creator Timeline - Only show for creators */}
-      {isCreator && (
-        <CreatorTimeline />
-      )}
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {statCards.map((stat, idx) => (
-          <Card 
-            key={idx}
-            className="cursor-pointer transition-all hover:shadow-md hover:border-primary/30"
-            onClick={stat.action}
-          >
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">{stat.title}</p>
-                  <p className="text-2xl sm:text-3xl font-bold">{stat.value}</p>
-                </div>
-                <div className={cn("p-2 sm:p-3 rounded-lg", stat.bgColor)}>
-                  <div className={stat.color}>{stat.icon}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Alerts */}
+      {/* Alerts - Always Visible */}
       {stats.pendingCommitments > 0 && (
         <Alert className="border-amber-500/50 bg-amber-500/10">
           <AlertCircle className="h-4 w-4 text-amber-500" />
@@ -687,101 +683,30 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Quick Actions */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              Quick Actions
-            </CardTitle>
-            <CardDescription className="text-xs">Common tasks at your fingertips</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {quickActions.map((action, idx) => (
-              <Button
-                key={idx}
-                variant={action.variant}
-                className="w-full justify-start h-11"
-                onClick={action.action}
-              >
-                {action.icon}
-                <span className="ml-2">{action.label}</span>
-                <ArrowRight className="w-4 h-4 ml-auto" />
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Recent Activity */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              Recent Activity
-            </CardTitle>
-            <CardDescription className="text-xs">Your latest updates and actions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {recentActivity.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="text-sm">No recent activity yet</p>
-                <p className="text-xs mt-1">Start by uploading content or checking your commitments</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {recentActivity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/30 transition-colors"
-                  >
-                    <div className="p-2 rounded-lg bg-muted shrink-0">
-                      {getActivityIcon(activity.type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium truncate">{activity.title}</p>
-                          <p className="text-xs text-muted-foreground truncate">{activity.description}</p>
-                        </div>
-                        {getStatusBadge(activity.status)}
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {format(new Date(activity.timestamp), 'MMM d, h:mm a')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Progress Card */}
-      {stats.weeklyProgress > 0 && (
-        <Card>
+      {/* Creator Timeline - Collapsible in Accordion */}
+      {isCreator && (
+        <Card className="border-2 border-primary/20">
           <CardHeader>
-            <CardTitle className="text-lg">Progress</CardTitle>
-            <CardDescription>Your commitment completion rate this week</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Your Journey
+            </CardTitle>
+            <CardDescription>Track your onboarding progress</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Completion Rate</span>
-                <span className="font-bold">{stats.weeklyProgress}%</span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-primary transition-all duration-500"
-                  style={{ width: `${stats.weeklyProgress}%` }}
-                />
-              </div>
-            </div>
+            <CreatorTimeline />
           </CardContent>
         </Card>
       )}
+
+      {/* Accordion Sections */}
+      <DashboardOverviewAccordion
+        stats={formattedStats}
+        quickActions={formattedActions}
+        recentActivity={formattedActivity}
+        onNavigate={onNavigate}
+        completionPercentage={stats.weeklyProgress}
+      />
     </div>
   );
 };
