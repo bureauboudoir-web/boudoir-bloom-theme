@@ -148,52 +148,61 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     };
 
-    const emailResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify(emailData),
-    });
+    const logEmailAttempt = async (status: 'sent' | 'failed', error?: string) => {
+      await supabase.from('email_logs').insert({
+        email_type: 'shoot_invitation',
+        recipient_email: creatorEmail,
+        recipient_name: creatorName,
+        status,
+        user_id: userId,
+        sent_at: status === 'sent' ? new Date().toISOString() : null,
+        failed_at: status === 'failed' ? new Date().toISOString() : null,
+        error_message: error,
+        retry_count: 0,
+        max_retries: 3,
+      });
+    };
 
-    if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error("Email send failed:", errorText);
-      throw new Error(`Failed to send email: ${errorText}`);
+    try {
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!emailResponse.ok) {
+        const errorText = await emailResponse.text();
+        console.error("Email send failed:", errorText);
+        await logEmailAttempt('failed', `Failed to send email: ${errorText}`);
+        throw new Error(`Failed to send email: ${errorText}`);
+      }
+
+      console.log("Email sent successfully");
+      await logEmailAttempt('sent');
+
+      // Update notified_at timestamp
+      const { error: updateError } = await supabase
+        .from("shoot_participants")
+        .update({ notified_at: new Date().toISOString() })
+        .eq("shoot_id", shootId)
+        .eq("user_id", userId);
+
+      if (updateError) {
+        console.error("Failed to update notified_at:", updateError);
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    } catch (emailError: any) {
+      console.error("Error sending shoot invitation email:", emailError);
+      await logEmailAttempt('failed', emailError.message);
+      throw emailError;
     }
-
-    console.log("Email sent successfully");
-
-    // Update notified_at timestamp
-    const { error: updateError } = await supabase
-      .from("shoot_participants")
-      .update({ notified_at: new Date().toISOString() })
-      .eq("shoot_id", shootId)
-      .eq("user_id", userId);
-
-    if (updateError) {
-      console.error("Failed to update notified_at:", updateError);
-    }
-
-    // Log the email
-    const { error: logError } = await supabase.from("email_logs").insert({
-      email_type: "shoot_invitation",
-      recipient_email: creatorEmail,
-      recipient_name: creatorName,
-      status: "sent",
-      user_id: userId,
-      sent_at: new Date().toISOString(),
-    });
-
-    if (logError) {
-      console.error("Failed to log email:", logError);
-    }
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
   } catch (error: any) {
     console.error("Error sending shoot invitation:", error);
     return new Response(JSON.stringify({ error: error.message }), {
