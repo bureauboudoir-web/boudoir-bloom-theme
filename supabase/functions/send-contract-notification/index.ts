@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.83.0';
+import { checkRateLimit, getClientIdentifier } from "../_shared/rateLimiter.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
@@ -24,6 +25,15 @@ Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Rate limiting: 20 requests per minute
+  const identifier = getClientIdentifier(req);
+  if (checkRateLimit({ maxRequests: 20, windowMs: 60000, identifier })) {
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please try again later." }),
+      { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
   }
 
   try {
