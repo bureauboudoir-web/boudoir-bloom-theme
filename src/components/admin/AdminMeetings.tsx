@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck } from "lucide-react";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAccessManagement } from "@/hooks/useAccessManagement";
 
 import { AssistedOnboarding } from "./AssistedOnboarding";
 import { PaginationControls } from "./shared/PaginationControls";
@@ -45,6 +46,7 @@ interface Meeting {
 export const AdminMeetings = () => {
   const { user } = useAuth();
   const { isSuperAdmin, isAdmin } = useUserRole();
+  const { grantAccessAfterMeeting } = useAccessManagement();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,6 +54,7 @@ export const AdminMeetings = () => {
   const [actionDialog, setActionDialog] = useState<'complete' | 'assist' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [activeTab, setActiveTab] = useState("upcoming");
 
   const filteredMeetings = meetings.filter(meeting => {
     if (!searchQuery) return true;
@@ -112,53 +115,19 @@ export const AdminMeetings = () => {
   };
 
   const handleCompleteMeeting = async () => {
-    if (!selectedMeeting) return;
+    if (!selectedMeeting || !selectedMeeting.profiles) return;
 
-    try {
-      // Update meeting status
-      const { error: meetingError } = await supabase
-        .from('creator_meetings')
-        .update({
-          status: 'completed',
-          completed_at: new Date().toISOString(),
-          meeting_notes: meetingNotes,
-        })
-        .eq('id', selectedMeeting.id);
+    const success = await grantAccessAfterMeeting(
+      selectedMeeting.user_id,
+      selectedMeeting.profiles.full_name,
+      selectedMeeting.id
+    );
 
-      if (meetingError) throw meetingError;
-
-      // Upgrade creator access to full_access
-      const { error: accessError } = await supabase
-        .from('creator_access_levels')
-        .update({ access_level: 'full_access' })
-        .eq('user_id', selectedMeeting.user_id);
-
-      if (accessError) throw accessError;
-
-      // Send access granted email
-      if (selectedMeeting.profiles) {
-        try {
-          await supabase.functions.invoke('send-access-granted', {
-            body: {
-              creatorEmail: selectedMeeting.profiles.email,
-              creatorName: selectedMeeting.profiles.full_name,
-              dashboardUrl: `${window.location.origin}/dashboard`,
-            }
-          });
-        } catch (emailError) {
-          console.error("Error sending access granted email:", emailError);
-          // Don't fail the whole operation if email fails
-        }
-      }
-
-      toast.success("Meeting completed! Creator access upgraded.");
+    if (success) {
       setActionDialog(null);
       setSelectedMeeting(null);
       setMeetingNotes("");
       fetchMeetings();
-    } catch (error) {
-      console.error("Error completing meeting:", error);
-      toast.error("Failed to complete meeting");
     }
   };
 
@@ -315,8 +284,21 @@ export const AdminMeetings = () => {
   );
 };
 
+  // Calculate stats
+  const stats = {
+    needsAction: filteredMeetings.filter(m => m.status === 'confirmed').length,
+    pending: filteredMeetings.filter(m => m.status === 'pending' || m.status === 'not_booked').length,
+    completedThisMonth: filteredMeetings.filter(m => {
+      if (m.status !== 'completed') return false;
+      const now = new Date();
+      const meetingDate = new Date(m.meeting_date);
+      return meetingDate.getMonth() === now.getMonth() && meetingDate.getFullYear() === now.getFullYear();
+    }).length
+  };
+
   const upcomingMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
   const pastMeetings = filteredMeetings.filter(m => ['completed', 'cancelled'].includes(m.status));
+  const needsActionMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
   
   const totalPagesUpcoming = Math.ceil(upcomingMeetings.length / itemsPerPage);
   const totalPagesPast = Math.ceil(pastMeetings.length / itemsPerPage);
@@ -336,6 +318,43 @@ export const AdminMeetings = () => {
 
   return (
     <div className="space-y-6">
+      {/* Stats Summary */}
+      <Card className="p-6 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <UserCheck className="h-5 w-5" />
+          Meeting Status Summary
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+              <span className="text-lg font-bold text-blue-500">{stats.needsAction}</span>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Needs Action</p>
+              <p className="text-xs text-muted-foreground">Confirmed - Ready to Complete</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-yellow-500/10 flex items-center justify-center">
+              <span className="text-lg font-bold text-yellow-500">{stats.pending}</span>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Pending</p>
+              <p className="text-xs text-muted-foreground">Awaiting Creator Booking</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
+              <span className="text-lg font-bold text-green-500">{stats.completedThisMonth}</span>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Completed</p>
+              <p className="text-xs text-muted-foreground">This Month</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <div className="relative">
         <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
         <Input
@@ -346,8 +365,16 @@ export const AdminMeetings = () => {
         />
       </div>
 
-      <Tabs defaultValue="upcoming" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="needs_action" className="relative">
+            Needs Action
+            {stats.needsAction > 0 && (
+              <Badge variant="destructive" className="ml-2 h-5 px-1.5 text-xs">
+                {stats.needsAction}
+              </Badge>
+            )}
+          </TabsTrigger>
           <TabsTrigger value="upcoming">
             Upcoming ({upcomingMeetings.length})
           </TabsTrigger>
@@ -355,6 +382,22 @@ export const AdminMeetings = () => {
             Past ({pastMeetings.length})
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="needs_action" className="space-y-4 mt-6">
+          {needsActionMeetings.length === 0 ? (
+            <Card className="border-border">
+              <CardContent className="p-8 text-center">
+                <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
+                <p className="text-lg font-medium mb-1">All caught up!</p>
+                <p className="text-sm text-muted-foreground">No meetings need completion at this time</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {needsActionMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
+            </>
+          )}
+        </TabsContent>
 
         <TabsContent value="upcoming" className="space-y-4 mt-6">
           {paginatedUpcoming.length === 0 ? (

@@ -11,6 +11,7 @@ interface AccessGrantedRequest {
   creatorEmail: string;
   creatorName: string;
   dashboardUrl: string;
+  earlyAccess?: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -22,7 +23,8 @@ const handler = async (req: Request): Promise<Response> => {
     const { 
       creatorEmail, 
       creatorName, 
-      dashboardUrl 
+      dashboardUrl,
+      earlyAccess 
     }: AccessGrantedRequest = await req.json();
 
     console.log("Sending access granted email to:", creatorEmail);
@@ -33,7 +35,10 @@ const handler = async (req: Request): Promise<Response> => {
         
         <p>Hi ${creatorName},</p>
         
-        <p>Congratulations! Your introduction meeting has been completed and you now have <strong>full access</strong> to your creator dashboard.</p>
+        ${earlyAccess 
+          ? `<p>Great news! You've been granted <strong>early access</strong> to your creator dashboard. You can now access all features without completing your introduction meeting.</p>`
+          : `<p>Congratulations! Your introduction meeting has been completed and you now have <strong>full access</strong> to your creator dashboard.</p>`
+        }
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="margin-top: 0; color: #333;">What's Next?</h2>
@@ -74,7 +79,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Bureau Boudoir <onboarding@resend.dev>",
         to: [creatorEmail],
-        subject: "Full Access Granted - Welcome to Bureau Boudoir!",
+        subject: earlyAccess ? "🎉 Early Access Granted - Welcome to Bureau Boudoir!" : "🎉 Full Access Granted - Welcome to Bureau Boudoir!",
         html: emailHtml,
       }),
     });

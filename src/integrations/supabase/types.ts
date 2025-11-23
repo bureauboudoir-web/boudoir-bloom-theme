@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_level_audit_log: {
+        Row: {
+          created_at: string | null
+          from_level: string
+          granted_by: string | null
+          id: string
+          method: string | null
+          reason: string | null
+          to_level: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          from_level: string
+          granted_by?: string | null
+          id?: string
+          method?: string | null
+          reason?: string | null
+          to_level: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          from_level?: string
+          granted_by?: string | null
+          id?: string
+          method?: string | null
+          reason?: string | null
+          to_level?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           created_at: string
@@ -153,6 +186,7 @@ export type Database = {
         Row: {
           access_level: string | null
           created_at: string | null
+          grant_method: string | null
           granted_at: string | null
           granted_by: string | null
           id: string
@@ -162,6 +196,7 @@ export type Database = {
         Insert: {
           access_level?: string | null
           created_at?: string | null
+          grant_method?: string | null
           granted_at?: string | null
           granted_by?: string | null
           id?: string
@@ -171,6 +206,7 @@ export type Database = {
         Update: {
           access_level?: string | null
           created_at?: string | null
+          grant_method?: string | null
           granted_at?: string | null
           granted_by?: string | null
           id?: string

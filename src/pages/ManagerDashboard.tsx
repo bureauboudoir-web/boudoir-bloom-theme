@@ -18,6 +18,7 @@ import { ContentReview } from "@/components/admin/ContentReview";
 import { AdminMeetings } from "@/components/admin/AdminMeetings";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
+import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
@@ -174,6 +175,7 @@ const ManagerDashboard = () => {
           </TabsContent>
 
           <TabsContent value="overview" className="space-y-4">
+            <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
             <CreatorOverview />
           </TabsContent>
 
