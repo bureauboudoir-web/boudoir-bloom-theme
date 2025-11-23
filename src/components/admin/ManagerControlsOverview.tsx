@@ -387,7 +387,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
                 <div
                   key={creator.id}
                   className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                  onClick={() => onNavigate("manager-creators")}
+                  onClick={() => onNavigate("creators")}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
@@ -426,7 +426,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         <Button
           variant="outline"
           className={`h-20 text-left justify-start ${creatorsNeedingAccess > 0 ? 'border-2 border-primary/50' : ''}`}
-          onClick={() => onNavigate("manager-access")}
+          onClick={() => onNavigate("access")}
         >
           <div className="flex items-center gap-3">
             <Shield className="w-8 h-8 text-primary" />
@@ -442,7 +442,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         <Button
           variant="outline"
           className="h-20 text-left justify-start"
-          onClick={() => onNavigate("manager-availability")}
+          onClick={() => onNavigate("availability")}
         >
           <div className="flex items-center gap-3">
             <Clock className="w-8 h-8 text-primary" />
@@ -456,7 +456,7 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         <Button
           variant="outline"
           className="h-20 text-left justify-start"
-          onClick={() => onNavigate("manager-support")}
+          onClick={() => onNavigate("support")}
         >
           <div className="flex items-center gap-3">
             <AlertCircle className="w-8 h-8 text-primary" />
