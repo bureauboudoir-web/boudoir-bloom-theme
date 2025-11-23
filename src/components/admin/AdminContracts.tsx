@@ -5,12 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Download, CheckCircle2, XCircle, FileText, Plus } from "lucide-react";
+import { Upload, Download, CheckCircle2, XCircle, FileText, Plus, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ContractGenerator } from "./ContractGenerator";
 import { SignedContractsView } from "./SignedContractsView";
+import { ContractAmendmentDialog } from "./ContractAmendmentDialog";
+import { ContractExpiryNotifier } from "./ContractExpiryNotifier";
 
 interface Creator {
   id: string;
@@ -44,6 +46,8 @@ export const AdminContracts = () => {
   const [loading, setLoading] = useState(true);
   const [showContractGenerator, setShowContractGenerator] = useState(false);
   const [selectedCreatorForGeneration, setSelectedCreatorForGeneration] = useState<string>();
+  const [showAmendmentDialog, setShowAmendmentDialog] = useState(false);
+  const [selectedContractForAmendment, setSelectedContractForAmendment] = useState<Contract | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -218,6 +222,8 @@ export const AdminContracts = () => {
 
   return (
     <div className="space-y-6">
+      <ContractExpiryNotifier />
+      
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -371,13 +377,29 @@ export const AdminContracts = () => {
                           Generate
                         </Button>
                         {contract?.generated_pdf_url && (
-                          <Button
-                            onClick={() => window.open(contract.generated_pdf_url!, '_blank')}
-                            variant="outline"
-                            size="sm"
-                          >
-                            <Download className="h-4 w-4" />
-                          </Button>
+                          <>
+                            <Button
+                              onClick={() => window.open(contract.generated_pdf_url!, '_blank')}
+                              variant="outline"
+                              size="sm"
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            {contract.contract_signed && (
+                              <Button
+                                onClick={() => {
+                                  setSelectedContractForAmendment(contract);
+                                  setShowAmendmentDialog(true);
+                                }}
+                                variant="outline"
+                                size="sm"
+                                className="text-amber-600 border-amber-600 hover:bg-amber-50"
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Amend
+                              </Button>
+                            )}
+                          </>
                         )}
                         {contract?.contract_template_url && (
                           <Button
@@ -516,6 +538,21 @@ export const AdminContracts = () => {
         }}
         creatorId={selectedCreatorForGeneration}
       />
+
+      {selectedContractForAmendment && (
+        <ContractAmendmentDialog
+          open={showAmendmentDialog}
+          onOpenChange={(open) => {
+            setShowAmendmentDialog(open);
+            if (!open) {
+              setSelectedContractForAmendment(null);
+              fetchContracts(); // Refresh contracts after amendment
+            }
+          }}
+          contractId={selectedContractForAmendment.id}
+          currentData={selectedContractForAmendment.contract_data}
+        />
+      )}
     </div>
   );
 };
