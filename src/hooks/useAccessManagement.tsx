@@ -286,10 +286,84 @@ export const useAccessManagement = () => {
     }
   };
 
+  const sendMeetingInvitation = async (
+    userId: string,
+    creatorName: string,
+    creatorEmail: string
+  ): Promise<boolean> => {
+    setLoading(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("You must be logged in");
+        return false;
+      }
+
+      // Get current access level for audit
+      const { data: currentAccess } = await supabase
+        .from('creator_access_levels')
+        .select('access_level')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // Upgrade to meeting_only access (NOT full_access)
+      const { error: updateError } = await supabase
+        .from('creator_access_levels')
+        .upsert({
+          user_id: userId,
+          access_level: 'meeting_only',
+          granted_by: user.id,
+          granted_at: new Date().toISOString(),
+          grant_method: 'meeting_invitation_sent'
+        });
+
+      if (updateError) throw updateError;
+
+      // Add audit log entry
+      const { error: auditError } = await supabase
+        .from('access_level_audit_log')
+        .insert({
+          user_id: userId,
+          from_level: currentAccess?.access_level || 'no_access',
+          to_level: 'meeting_only',
+          granted_by: user.id,
+          reason: 'Meeting invitation sent - can now book introduction meeting',
+          method: 'meeting_invitation_sent'
+        });
+
+      if (auditError) throw auditError;
+
+      // Send meeting invitation email
+      try {
+        await supabase.functions.invoke('send-meeting-invitation', {
+          body: {
+            creatorEmail: creatorEmail,
+            creatorName: creatorName,
+            meetingBookingUrl: `${window.location.origin}/dashboard`
+          }
+        });
+      } catch (emailError) {
+        console.warn('Email notification failed:', emailError);
+      }
+
+      toast.success(`Meeting invitation sent to ${creatorName}`);
+      return true;
+
+    } catch (error) {
+      console.error('Error sending meeting invitation:', error);
+      toast.error('Failed to send invitation. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     grantEarlyAccess,
     grantAccessAfterMeeting,
     revokeAccess,
+    sendMeetingInvitation,
     loading
   };
 };
