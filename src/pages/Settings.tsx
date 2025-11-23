@@ -8,6 +8,7 @@ import { PrivacySettings } from "@/components/settings/PrivacySettings";
 import { ManagerSettingsForm } from "@/components/settings/ManagerSettingsForm";
 import { AdminSettingsForm } from "@/components/settings/AdminSettingsForm";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
+import { CreatorAccountsManager } from "@/components/admin/CreatorAccountsManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, User, Shield, Settings as SettingsIcon, FileKey, Database, Calendar } from "lucide-react";
@@ -154,6 +155,7 @@ export const Settings = ({ userId, onNavigate }: SettingsProps) => {
 
             <TabsContent value="system" className="space-y-4 mt-6">
               <AdminSettingsForm />
+              <CreatorAccountsManager />
             </TabsContent>
           </>
         )}

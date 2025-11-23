@@ -12,6 +12,7 @@ export const AdminSettingsForm = () => {
   const [passwordResetHours, setPasswordResetHours] = useState("72");
   const [autoApproveApplications, setAutoApproveApplications] = useState(false);
   const [requireMeetings, setRequireMeetings] = useState(true);
+  const [enableGoogleDrive, setEnableGoogleDrive] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -24,7 +25,7 @@ export const AdminSettingsForm = () => {
       const { data } = await supabase
         .from('admin_settings')
         .select('*')
-        .in('setting_key', ['password_reset_expiration_hours', 'auto_approve_applications', 'require_meetings']);
+        .in('setting_key', ['password_reset_expiration_hours', 'auto_approve_applications', 'require_meetings', 'enable_google_drive_sync']);
 
       if (data) {
         data.forEach(setting => {
@@ -34,6 +35,8 @@ export const AdminSettingsForm = () => {
             setAutoApproveApplications(Boolean(setting.setting_value));
           } else if (setting.setting_key === 'require_meetings') {
             setRequireMeetings(Boolean(setting.setting_value));
+          } else if (setting.setting_key === 'enable_google_drive_sync') {
+            setEnableGoogleDrive(Boolean(setting.setting_value));
           }
         });
       }
@@ -59,6 +62,10 @@ export const AdminSettingsForm = () => {
         {
           setting_key: 'require_meetings',
           setting_value: requireMeetings
+        },
+        {
+          setting_key: 'enable_google_drive_sync',
+          setting_value: enableGoogleDrive
         }
       ];
 
@@ -145,6 +152,19 @@ export const AdminSettingsForm = () => {
             <Switch
               checked={requireMeetings}
               onCheckedChange={setRequireMeetings}
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t">
+            <div className="space-y-0.5">
+              <Label>Enable Google Drive Sync</Label>
+              <p className="text-sm text-muted-foreground">
+                Sync creator files to Google Drive (requires credentials)
+              </p>
+            </div>
+            <Switch
+              checked={enableGoogleDrive}
+              onCheckedChange={setEnableGoogleDrive}
             />
           </div>
 
