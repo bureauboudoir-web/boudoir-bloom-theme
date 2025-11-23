@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { expect, afterEach, vi } from 'vitest'
+import { expect, afterEach, beforeEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
 // Cleanup after each test
@@ -44,3 +44,29 @@ vi.mock('react-i18next', () => ({
   }),
   Trans: ({ children }: { children: React.ReactNode }) => children,
 }))
+
+// Mock Supabase functions for edge function testing
+global.mockSupabaseFunctions = {
+  'generate-contract-pdf': vi.fn(),
+  'send-contract-notification': vi.fn(),
+  'regenerate-signed-contract': vi.fn(),
+  'create-test-accounts': vi.fn(),
+};
+
+// Mock canvas for signature tests
+beforeEach(() => {
+  HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    stroke: vi.fn(),
+    clearRect: vi.fn(),
+    fillStyle: '',
+    strokeStyle: '',
+    lineWidth: 2,
+  })) as any;
+  
+  HTMLCanvasElement.prototype.toDataURL = vi.fn(() => 
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+  );
+});
