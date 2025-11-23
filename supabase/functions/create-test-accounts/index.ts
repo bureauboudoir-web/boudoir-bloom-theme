@@ -33,7 +33,7 @@ serve(async (req) => {
 
     const adminId = user.id;
 
-    const { action } = await req.json();
+    const { action, managerId } = await req.json();
 
     if (action === 'cleanup') {
       console.log('🧹 Cleaning up test accounts...');
@@ -46,7 +46,13 @@ serve(async (req) => {
         'test-creator-isabella@bureauboudoir.com',
         'sarah.test@bureauboudoir.com',
         'emma.test@bureauboudoir.com',
-        'lisa.test@bureauboudoir.com'
+        'lisa.test@bureauboudoir.com',
+        'maya.creator@test.com',
+        'zoe.creator@test.com',
+        'aria.creator@test.com',
+        'sarah.parker@test.com',
+        'emma.johnson@test.com',
+        'lisa.anderson@test.com'
       ];
 
       const { data: profiles } = await supabase
@@ -180,6 +186,75 @@ serve(async (req) => {
           success: true,
           accounts: createdAccounts,
           message: `Created ${createdAccounts.length} manager test creators`,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
+    // Create test data for specific manager
+    if (action === 'create_for_manager' && managerId) {
+      console.log(`🔧 Creating test data for manager: ${managerId}`);
+      const createdAccounts = [];
+
+      // First, create pending applications
+      const applications = [
+        { name: 'Sarah Parker', email: 'sarah.parker@test.com', phone: '+31612345001', experience_level: 'growing' },
+        { name: 'Emma Johnson', email: 'emma.johnson@test.com', phone: '+31612345002', experience_level: 'starter' },
+        { name: 'Lisa Anderson', email: 'lisa.anderson@test.com', phone: '+31612345003', experience_level: 'growing' }
+      ];
+
+      for (const app of applications) {
+        await supabase.from('creator_applications').insert(app);
+      }
+
+      // Create Maya - no access (just approved)
+      const maya = await createCreator({
+        email: 'maya.creator@test.com',
+        full_name: 'Maya Stevens',
+        personal_full_name: 'Maya Stevens',
+        date_of_birth: '1997-03-20',
+        stage_name: 'Maya',
+        adminId: managerId,
+        supabase,
+        stage: 'approved_no_access',
+      });
+      if (maya) createdAccounts.push(maya);
+
+      // Create Zoe - meeting only (with scheduled meeting)
+      const zoe = await createCreator({
+        email: 'zoe.creator@test.com',
+        full_name: 'Zoe Martinez',
+        personal_full_name: 'Zoe Martinez',
+        date_of_birth: '1996-08-15',
+        stage_name: 'Zoe',
+        adminId: managerId,
+        supabase,
+        stage: 'meeting_only',
+      });
+      if (zoe) createdAccounts.push(zoe);
+
+      // Create Aria - full access (completed everything)
+      const aria = await createCreator({
+        email: 'aria.creator@test.com',
+        full_name: 'Aria Williams',
+        personal_full_name: 'Aria Williams',
+        date_of_birth: '1998-11-10',
+        stage_name: 'Aria Rose',
+        adminId: managerId,
+        supabase,
+        stage: 'full_access',
+      });
+      if (aria) createdAccounts.push(aria);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          accounts: createdAccounts,
+          applications: applications.length,
+          message: `Created ${createdAccounts.length} creators and ${applications.length} pending applications for manager`,
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -355,10 +430,10 @@ async function createCreator({
         email,
         name: full_name,
         phone: '+31612345678',
-        experience_level: stage === 'application' ? 'beginner' : 'intermediate',
+        experience_level: stage === 'application' ? 'starter' : 'growing',
         status: stage === 'application' ? 'pending' : 'approved',
         reviewed_by: stage === 'application' ? null : adminId,
-        reviewed_at: stage === 'application' ? null : daysAgo(stage === 'needs_meeting' ? 2 : 5),
+        reviewed_at: stage === 'application' ? null : daysAgo(stage === 'needs_meeting' || stage === 'meeting_only' ? 2 : 5),
         created_at: daysAgo(stage === 'application' ? 0 : 7),
       })
       .select()
@@ -394,7 +469,13 @@ async function createCreator({
     if (stage === 'application') {
       completedSteps = [];
       accessLevel = 'no_access';
+    } else if (stage === 'approved_no_access') {
+      completedSteps = [];
+      accessLevel = 'no_access';
     } else if (stage === 'needs_meeting') {
+      completedSteps = [1, 2, 3];
+      accessLevel = 'meeting_only';
+    } else if (stage === 'meeting_only') {
       completedSteps = [1, 2, 3];
       accessLevel = 'meeting_only';
     } else if (stage === 'meeting_confirmed') {
@@ -402,6 +483,10 @@ async function createCreator({
       accessLevel = 'meeting_only';
     } else if (stage === 'onboarding') {
       completedSteps = [1, 2, 3, 4, 5, 6, 7, 8];
+      accessLevel = 'full_access';
+    } else if (stage === 'full_access') {
+      completedSteps = [1, 2, 3, 4, 5, 6, 7, 8];
+      isCompleted = true;
       accessLevel = 'full_access';
     } else if (stage === 'complete') {
       completedSteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -437,9 +522,10 @@ async function createCreator({
       });
 
     // Create meeting if needed
-    if (stage === 'needs_meeting' || stage === 'meeting_confirmed' || stage === 'onboarding' || stage === 'complete') {
+    if (stage === 'needs_meeting' || stage === 'meeting_only' || stage === 'meeting_confirmed' || stage === 'onboarding' || stage === 'full_access' || stage === 'complete') {
       const meetingStatus = 
         stage === 'needs_meeting' ? 'not_booked' :
+        stage === 'meeting_only' ? 'confirmed' :
         stage === 'meeting_confirmed' ? 'confirmed' :
         'completed';
 
@@ -450,28 +536,29 @@ async function createCreator({
           application_id: application?.id,
           assigned_manager_id: adminId,
           status: meetingStatus,
-          meeting_date: stage === 'meeting_confirmed' ? daysFromNow(1) : 
-                        stage === 'onboarding' || stage === 'complete' ? daysAgo(1) : null,
+          meeting_date: stage === 'meeting_only' ? daysFromNow(5) :
+                        stage === 'meeting_confirmed' ? daysFromNow(1) : 
+                        stage === 'onboarding' || stage === 'full_access' || stage === 'complete' ? daysAgo(10) : null,
           meeting_time: '14:00:00',
           meeting_type: 'initial',
           meeting_location: 'Office Amsterdam',
           meeting_link: 'https://meet.google.com/test',
           duration_minutes: 60,
-          completed_at: meetingStatus === 'completed' ? daysAgo(1) : null,
+          completed_at: meetingStatus === 'completed' ? daysAgo(10) : null,
         });
     }
 
-    // Create contract if in onboarding or complete stage
-    if (stage === 'onboarding' || stage === 'complete') {
+    // Create contract if in onboarding, full_access or complete stage
+    if (stage === 'onboarding' || stage === 'full_access' || stage === 'complete') {
       await supabase
         .from('creator_contracts')
         .insert({
           user_id: userId,
-          contract_signed: stage === 'complete',
+          contract_signed: stage === 'full_access' || stage === 'complete',
           generation_status: 'completed',
           generated_pdf_url: `https://example.com/contracts/${userId}.pdf`,
-          signed_at: stage === 'complete' ? daysAgo(3) : null,
-          digital_signature_creator: stage === 'complete' ? stage_name : null,
+          signed_at: (stage === 'full_access' || stage === 'complete') ? daysAgo(3) : null,
+          digital_signature_creator: (stage === 'full_access' || stage === 'complete') ? stage_name : null,
           contract_data: {
             creator_name: personal_full_name,
             creator_dob: date_of_birth,
