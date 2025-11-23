@@ -46,7 +46,7 @@ export const AccessManagement = () => {
   const [filteredCreators, setFilteredCreators] = useState<CreatorWithAccess[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "no_access" | "meeting_only" | "full_access">("meeting_only");
+  const [filterStatus, setFilterStatus] = useState<"all" | "no_access" | "meeting_only" | "full_access">("all");
   const [selectedCreator, setSelectedCreator] = useState<CreatorWithAccess | null>(null);
   const [showGrantDialog, setShowGrantDialog] = useState(false);
   const [showRevokeDialog, setShowRevokeDialog] = useState(false);
@@ -469,9 +469,13 @@ export const AccessManagement = () => {
               </Card>
             ))}
 
-            {filteredCreators.length === 0 && (
+            {filteredCreators.length === 0 && !loading && (
               <div className="text-center py-8 text-muted-foreground">
-                {searchQuery ? "No creators match your search" : "No creators found"}
+                {searchQuery 
+                  ? "No creators match your search" 
+                  : creators.length > 0 
+                    ? `No creators with ${filterStatus.replace('_', ' ')} status` 
+                    : "No creators found in the system"}
               </div>
             )}
           </div>
