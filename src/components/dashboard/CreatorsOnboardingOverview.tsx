@@ -34,14 +34,14 @@ interface CreatorsOnboardingOverviewProps {
 
 const onboardingSteps = [
   { number: 1, name: "Personal Info" },
-  { number: 2, name: "Body Details" },
-  { number: 3, name: "Persona" },
-  { number: 4, name: "Backstory" },
-  { number: 5, name: "Content Preferences" },
-  { number: 6, name: "Pricing" },
-  { number: 7, name: "Scripts" },
-  { number: 8, name: "Boundaries" },
-  { number: 9, name: "Social Links" },
+  { number: 2, name: "Persona" },
+  { number: 3, name: "Social Links" },
+  { number: 4, name: "Body Details" },
+  { number: 5, name: "Boundaries" },
+  { number: 6, name: "Backstory" },
+  { number: 7, name: "Content Preferences" },
+  { number: 8, name: "Pricing" },
+  { number: 9, name: "Scripts" },
   { number: 10, name: "Commitments" },
 ];
 

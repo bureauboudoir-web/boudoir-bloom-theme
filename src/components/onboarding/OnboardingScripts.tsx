@@ -41,7 +41,7 @@ const OnboardingScripts = ({ onNext, onBack, onboardingData, onComplete }: Onboa
       scripts_renewal: formData.renewal
     };
 
-    const result = await onComplete(8, stepData);
+    const result = await onComplete(9, stepData);
     if (!result.error) {
       toast.success("Scripts saved!");
       onNext();
