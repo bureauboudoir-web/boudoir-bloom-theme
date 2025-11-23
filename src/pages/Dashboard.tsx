@@ -15,6 +15,7 @@ import OnboardingScripts from "@/components/onboarding/OnboardingScripts";
 import OnboardingContent from "@/components/onboarding/OnboardingContent";
 import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
 import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
+import { OnboardingStageGate } from "@/components/onboarding/OnboardingStageGate";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
 import { CreatorInvoices } from "@/components/dashboard/CreatorInvoices";
@@ -30,6 +31,7 @@ import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAccessLevel } from "@/hooks/useAccessLevel";
+import { useMeetingStatus } from "@/hooks/useMeetingStatus";
 import ContactSupport from "@/components/dashboard/ContactSupport";
 import { Badge } from "@/components/ui/badge";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
@@ -38,6 +40,7 @@ import { NoAccessView } from "@/components/dashboard/NoAccessView";
 import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
 import { ContentLibrary } from "@/components/dashboard/ContentLibrary";
 import { toast } from "sonner";
+import { isPostMeetingStep, getStepConfig, getLastPreMeetingStep } from "@/config/onboardingSteps";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -46,6 +49,7 @@ const Dashboard = () => {
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
   const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, totalNotifications } = useNotifications(user?.id);
+  const { data: meetingStatus } = useMeetingStatus();
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
@@ -53,6 +57,7 @@ const Dashboard = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const totalSteps = 10;
   const progress = (currentStep / totalSteps) * 100;
+  const currentStepConfig = getStepConfig(currentStep);
 
   // Security check: Ensure user has proper role assigned
   useEffect(() => {
@@ -188,29 +193,60 @@ const Dashboard = () => {
       onComplete: handleStepComplete
     };
 
-    switch (currentStep) {
-      case 1:
-        return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
-      case 2:
-        return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
-      case 3:
-        return <OnboardingBackstory {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
-      case 4:
-        return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
-      case 5:
-        return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
-      case 6:
-        return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
-      case 7:
-        return <OnboardingSocials {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
-      case 8:
-        return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(9)} onBack={() => setCurrentStep(7)} />;
-      case 9:
-        return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(10)} onBack={() => setCurrentStep(8)} />;
-      case 10:
-        return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(9)} />;
-      default:
-        return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
+    // Check if current step is post-meeting and meeting isn't completed
+    const isStepLocked = isPostMeetingStep(currentStep) && !meetingStatus?.meetingCompleted;
+
+    const stepContent = () => {
+      switch (currentStep) {
+        case 1:
+          return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
+        case 2:
+          return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
+        case 3:
+          return <OnboardingSocials {...commonProps} onNext={() => {
+            // If meeting not completed, stop at step 3
+            if (!meetingStatus?.meetingCompleted) {
+              toast.info("Complete your meeting to continue with the detailed questionnaire");
+              setActiveTab("meetings");
+            } else {
+              setCurrentStep(4);
+            }
+          }} onBack={() => setCurrentStep(2)} />;
+        case 4:
+          return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
+        case 5:
+          return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
+        case 6:
+          return <OnboardingBackstory {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
+        case 7:
+          return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
+        case 8:
+          return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(9)} onBack={() => setCurrentStep(7)} />;
+        case 9:
+          return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(10)} onBack={() => setCurrentStep(8)} />;
+        case 10:
+          return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(9)} />;
+        default:
+          return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
+      }
+    };
+
+    // Wrap in appropriate stage gate
+    if (currentStep <= 3) {
+      return (
+        <OnboardingStageGate stage="pre-meeting">
+          {stepContent()}
+        </OnboardingStageGate>
+      );
+    } else {
+      return (
+        <OnboardingStageGate 
+          stage="post-meeting"
+          onNavigateToMeetings={() => setActiveTab("meetings")}
+        >
+          {stepContent()}
+        </OnboardingStageGate>
+      );
     }
   };
 
@@ -300,11 +336,29 @@ const Dashboard = () => {
             {activeTab === "onboarding" && (
               <div>
                 <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">
-                  <h2 className="font-serif text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Complete Your Onboarding</h2>
-                  <p className="text-sm text-muted-foreground mb-3 sm:mb-4">
-                    Step {currentStep} of {totalSteps}
-                  </p>
-                  <Progress value={progress} className="mb-2" />
+                  <div className="space-y-4">
+                    <div>
+                      <h2 className="font-serif text-xl sm:text-2xl font-bold mb-1">Complete Your Onboarding</h2>
+                      {currentStepConfig && (
+                        <p className="text-sm text-muted-foreground">
+                          {currentStepConfig.label} - {currentStepConfig.description}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-muted-foreground">
+                          Step {currentStep} of {totalSteps}
+                        </p>
+                        {currentStepConfig && (
+                          <Badge variant={currentStepConfig.stage === "pre-meeting" ? "default" : "secondary"} className="text-xs">
+                            {currentStepConfig.stage === "pre-meeting" ? "Pre-Meeting" : "Post-Meeting"}
+                          </Badge>
+                        )}
+                      </div>
+                      <Progress value={progress} />
+                    </div>
+                  </div>
                 </Card>
                 
                 {renderOnboardingStep()}
