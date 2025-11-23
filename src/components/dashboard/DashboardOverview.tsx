@@ -114,52 +114,40 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
 
         setRecentActivity(activities);
       } else if (isManager) {
-        // Manager stats: assigned creators' data
-        const { data: assignedCreators } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('assigned_manager_id', userId);
+        // Manager stats: ALL creators' data (managers see everything)
+        const [contentData, commitmentsData, meetingsData, ticketsData, creatorsData] = await Promise.all([
+          supabase.from('content_uploads').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
+          supabase.from('weekly_commitments').select('*', { count: 'exact', head: true }).eq('is_completed', false),
+          supabase.from('creator_meetings').select('*', { count: 'exact', head: true }).in('status', ['pending', 'confirmed']).gte('meeting_date', new Date().toISOString().split('T')[0]),
+          supabase.from('support_tickets').select('*', { count: 'exact', head: true }).in('status', ['open', 'in_progress']),
+          supabase.from('profiles').select('id, assigned_manager_id').eq('assigned_manager_id', userId)
+        ]);
 
-        const creatorIds = assignedCreators?.map(c => c.id) || [];
+        setStats({
+          pendingCommitments: commitmentsData.count || 0,
+          upcomingMeetings: meetingsData.count || 0,
+          pendingInvoices: creatorsData.data?.length || 0,
+          totalUploads: contentData.count || 0,
+          weeklyProgress: 0,
+        });
 
-        if (creatorIds.length > 0) {
-          const [contentData, commitmentsData, meetingsData, ticketsData] = await Promise.all([
-            supabase.from('content_uploads').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('status', 'pending_review'),
-            supabase.from('weekly_commitments').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('is_completed', false),
-            supabase.from('creator_meetings').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).in('status', ['pending', 'confirmed']),
-            supabase.from('support_tickets').select('*', { count: 'exact', head: true }).in('user_id', creatorIds).eq('status', 'open')
-          ]);
+        // Fetch recent activity from ALL creators
+        const { data: recentContent } = await supabase
+          .from('content_uploads')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(8);
 
-          setStats({
-            pendingCommitments: commitmentsData.count || 0,
-            upcomingMeetings: meetingsData.count || 0,
-            pendingInvoices: creatorIds.length,
-            totalUploads: contentData.count || 0,
-            weeklyProgress: 0,
-          });
+        const activities: RecentActivity[] = recentContent?.map(upload => ({
+          id: upload.id,
+          type: 'upload',
+          title: 'Creator Content',
+          description: upload.file_name,
+          timestamp: upload.created_at || '',
+          status: upload.status || 'pending_review',
+        })) || [];
 
-          // Fetch recent manager activity
-          const { data: recentContent } = await supabase
-            .from('content_uploads')
-            .select('*')
-            .in('user_id', creatorIds)
-            .order('created_at', { ascending: false })
-            .limit(8);
-
-          const activities: RecentActivity[] = recentContent?.map(upload => ({
-            id: upload.id,
-            type: 'upload',
-            title: 'Creator Content',
-            description: upload.file_name,
-            timestamp: upload.created_at || '',
-            status: upload.status || 'pending_review',
-          })) || [];
-
-          setRecentActivity(activities);
-        } else {
-          setStats({ pendingCommitments: 0, upcomingMeetings: 0, pendingInvoices: 0, totalUploads: 0, weeklyProgress: 0 });
-          setRecentActivity([]);
-        }
+        setRecentActivity(activities);
       } else {
         // Creator stats: their own data
         const [
