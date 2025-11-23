@@ -29,8 +29,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <SessionTimeoutWarning />
         <BrowserRouter>
+          <SessionTimeoutWarning />
           <UserRoleProvider>
             <Routes>
             <Route path="/" element={<Home />} />
