@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar as CalendarIcon, Clock, Video, MapPin, User, LogOut } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Video, MapPin, User, LogOut, RefreshCw, X } from "lucide-react";
 import { format, addMinutes, parseISO, startOfDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { MeetingRescheduleDialog } from "./MeetingRescheduleDialog";
 
 interface ManagerInfo {
   full_name: string;
@@ -37,6 +38,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
   const [meetingData, setMeetingData] = useState<any>(null);
   const [managerInfo, setManagerInfo] = useState<ManagerInfo | null>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -341,6 +343,45 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
                     <span>{meetingData.meeting_location}</span>
                   </div>
                 )}
+
+                {/* Reschedule/Cancel Actions - Only show for confirmed meetings */}
+                {meetingData.status === 'confirmed' && !meetingData.reschedule_requested && (
+                  <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 sm:flex-none"
+                      onClick={() => setShowRescheduleDialog(true)}
+                    >
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Request Reschedule
+                    </Button>
+                  </div>
+                )}
+
+                {/* Show reschedule pending status */}
+                {meetingData.reschedule_requested && (
+                  <Card className="border-amber-500/20 bg-amber-500/5">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/20">
+                          Reschedule Requested
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        You requested to reschedule to {format(new Date(meetingData.reschedule_new_date), 'MMM dd, yyyy')} at {meetingData.reschedule_new_time}
+                      </p>
+                      {meetingData.reschedule_reason && (
+                        <p className="text-sm text-muted-foreground italic">
+                          Reason: {meetingData.reschedule_reason}
+                        </p>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        Waiting for manager approval...
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
               </CardContent>
             </Card>
           ) : (
@@ -363,6 +404,20 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
             </Card>
           )}
         </CardContent>
+
+        {/* Reschedule Dialog */}
+        {meetingData && managerInfo && (
+          <MeetingRescheduleDialog
+            open={showRescheduleDialog}
+            onOpenChange={setShowRescheduleDialog}
+            meetingId={meetingData.id}
+            currentDate={meetingData.meeting_date}
+            currentTime={meetingData.meeting_time}
+            onSuccess={fetchMeetingData}
+            availableSlots={availableSlots}
+            managerId={managerInfo.email}
+          />
+        )}
       </Card>
     );
   }
@@ -479,15 +534,18 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
                   {date && availableSlots.length > 0 && (
                     <div>
-                      <Label className="text-base mb-3 block">Select Time</Label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <Label className="text-base mb-3 block flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        Select Time
+                      </Label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                         {availableSlots.map((slot) => (
                           <Button
                             key={slot.time}
                             variant={selectedTime === slot.time ? "default" : "outline"}
                             onClick={() => setSelectedTime(slot.time)}
                             className={cn(
-                              "justify-center",
+                              "justify-center h-12 sm:h-10 text-base sm:text-sm",
                               selectedTime === slot.time && "bg-primary text-primary-foreground"
                             )}
                           >

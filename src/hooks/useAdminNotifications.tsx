@@ -189,12 +189,28 @@ export const useAdminNotifications = () => {
       )
       .subscribe();
 
+    const accessLevelsChannel = supabase
+      .channel('admin_access_levels_notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'creator_access_levels',
+        },
+        () => {
+          fetchAdminNotifications();
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(ticketsChannel);
       supabase.removeChannel(reviewsChannel);
       supabase.removeChannel(invoicesChannel);
       supabase.removeChannel(commitmentsChannel);
       supabase.removeChannel(meetingsChannel);
+      supabase.removeChannel(accessLevelsChannel);
     };
   }, [isSuperAdmin, isAdmin, isManager]);
 

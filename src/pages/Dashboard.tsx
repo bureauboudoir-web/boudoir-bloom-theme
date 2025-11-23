@@ -201,17 +201,17 @@ const Dashboard = () => {
         case 1:
           return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
         case 2:
-          return <OnboardingPersona {...commonProps} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
-        case 3:
-          return <OnboardingSocials {...commonProps} onNext={() => {
-            // If meeting not completed, stop at step 3
+          return <OnboardingPersona {...commonProps} onNext={() => {
+            // Check if meeting completed before proceeding to step 3
             if (!meetingStatus?.meetingCompleted) {
-              toast.info("Complete your meeting to continue with the detailed questionnaire");
+              toast.info("Please complete your meeting first to continue with the rest of the onboarding process");
               setActiveTab("meetings");
             } else {
-              setCurrentStep(4);
+              setCurrentStep(3);
             }
-          }} onBack={() => setCurrentStep(2)} />;
+          }} onBack={() => setCurrentStep(1)} />;
+        case 3:
+          return <OnboardingSocials {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
         case 4:
           return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
         case 5:
@@ -232,7 +232,7 @@ const Dashboard = () => {
     };
 
     // Wrap in appropriate stage gate
-    if (currentStep <= 3) {
+    if (currentStep <= 2) {
       return (
         <OnboardingStageGate stage="pre-meeting">
           {stepContent()}

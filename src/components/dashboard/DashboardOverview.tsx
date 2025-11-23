@@ -497,7 +497,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
   // Limited dashboard for meeting_only access
   if (accessLevel === 'meeting_only') {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Welcome Banner */}
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="p-6">
