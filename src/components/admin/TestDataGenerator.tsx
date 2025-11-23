@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Trash2, UserPlus } from "lucide-react";
+import { Loader2, Trash2, UserPlus, ChevronDown, ChevronUp } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 export function TestDataGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCleaning, setIsCleaning] = useState(false);
+  const { isOpen, toggle } = useCollapsibleSection('admin-test-generator-collapsed', false);
 
   const cleanupTestData = async () => {
     setIsCleaning(true);
@@ -75,17 +78,26 @@ export function TestDataGenerator() {
   };
 
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <UserPlus className="h-5 w-5" />
-          Test Data Generator
-        </CardTitle>
-        <CardDescription>
-          Generate comprehensive test data to verify all admin features
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <Collapsible open={isOpen} onOpenChange={toggle}>
+      <Card className="border-2 border-primary/20">
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" />
+                <div>
+                  <CardTitle>Test Data Generator</CardTitle>
+                  <CardDescription>
+                    Generate comprehensive test data to verify all admin features
+                  </CardDescription>
+                </div>
+              </div>
+              {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="space-y-6">
         <div className="rounded-lg bg-muted/50 p-4 space-y-3">
           <p className="text-sm font-medium">📋 What will be created:</p>
           <div className="space-y-2 text-sm text-muted-foreground">
@@ -171,7 +183,9 @@ export function TestDataGenerator() {
             )}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 }

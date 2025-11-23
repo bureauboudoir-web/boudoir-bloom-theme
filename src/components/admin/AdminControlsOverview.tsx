@@ -17,8 +17,11 @@ import {
   Volume2,
   VolumeX,
   History,
-  Calendar
+  Calendar,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreatorsOnboardingOverview } from "@/components/dashboard/CreatorsOnboardingOverview";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useNotificationHistory } from "@/hooks/useNotificationHistory";
@@ -26,6 +29,7 @@ import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { TestDataGenerator } from "./TestDataGenerator";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface AdminControlsOverviewProps {
   onNavigate: (tab: string) => void;
@@ -56,6 +60,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
   const [showHistory, setShowHistory] = useState(false);
   const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
   const { logNotification, unreadCount } = useNotificationHistory(user?.id);
+  const { isOpen: isSystemHealthOpen, toggle: toggleSystemHealth } = useCollapsibleSection('admin-system-health-collapsed', true);
 
   useEffect(() => {
     fetchAdminStats();
@@ -382,29 +387,38 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       </div>
 
       {/* System Metrics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            System Health
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            {systemMetrics.map((metric) => (
-              <div key={metric.label} className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <metric.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{metric.value}</p>
-                  <p className="text-sm text-muted-foreground">{metric.label}</p>
-                </div>
+      <Collapsible open={isSystemHealthOpen} onOpenChange={toggleSystemHealth}>
+        <Card>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  System Health
+                </CardTitle>
+                {isSystemHealthOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                {systemMetrics.map((metric) => (
+                  <div key={metric.label} className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <metric.icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{metric.value}</p>
+                      <p className="text-sm text-muted-foreground">{metric.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       {/* Test Data Generator */}
       <TestDataGenerator />
