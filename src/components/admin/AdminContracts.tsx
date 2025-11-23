@@ -13,6 +13,7 @@ import { ContractGenerator } from "./ContractGenerator";
 import { SignedContractsView } from "./SignedContractsView";
 import { ContractAmendmentDialog } from "./ContractAmendmentDialog";
 import { ContractExpiryNotifier } from "./ContractExpiryNotifier";
+import { PdfRenderingSettings } from "./PdfRenderingSettings";
 
 interface Creator {
   id: string;
@@ -291,6 +292,11 @@ export const AdminContracts = () => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <ContractExpiryNotifier />
+        <PdfRenderingSettings />
+      </div>
 
       <Card>
         <CardHeader>
