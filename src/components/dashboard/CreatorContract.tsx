@@ -128,10 +128,24 @@ export const CreatorContract = () => {
           digital_signature_creator: signatureData,
           contract_signed: true,
           signed_at: new Date().toISOString(),
+          signature_date: new Date().toISOString(),
         })
         .eq('user_id', user.id);
 
       if (error) throw error;
+
+      // Regenerate signed contract with signature overlay
+      try {
+        const { error: regenerateError } = await supabase.functions.invoke('regenerate-signed-contract', {
+          body: { contractId: contract.id },
+        });
+
+        if (regenerateError) {
+          console.error('Failed to regenerate signed contract:', regenerateError);
+        }
+      } catch (regenerateErr) {
+        console.error('Error calling regenerate function:', regenerateErr);
+      }
 
       toast.success('Contract signed successfully!');
       fetchContract();

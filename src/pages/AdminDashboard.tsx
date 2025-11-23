@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAdminNotifications } from "@/hooks/useAdminNotifications";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminCommitments } from "@/components/admin/AdminCommitments";
 import { AdminShoots } from "@/components/admin/AdminShoots";
@@ -22,9 +22,11 @@ import { AdminContracts } from "@/components/admin/AdminContracts";
 import { EmailLogsView } from "@/components/admin/EmailLogsView";
 import { EmailSettings } from "@/components/admin/EmailSettings";
 import { TestManagerFlow } from "@/components/admin/TestManagerFlow";
-import { ArrowLeft, Shield, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { ArrowLeft, Shield, Wrench } from "lucide-react";
 import { NotificationBell, NotificationItem } from "@/components/NotificationBell";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -38,7 +40,48 @@ const AdminDashboard = () => {
     upcomingMeetings,
     totalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests">("overview");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "commitments" | "shoots" | "review" | "invoices" | "contracts" | "support" | "roles" | "audit" | "permissions" | "meetings" | "availability" | "emails" | "email-settings" | "tests" | "dev-tools">("overview");
+  const [creatingTestAccounts, setCreatingTestAccounts] = useState(false);
+  const [testAccountsCreated, setTestAccountsCreated] = useState<any[]>([]);
+
+  const handleCreateTestAccounts = async () => {
+    setCreatingTestAccounts(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-test-accounts', {
+        body: { action: 'create' },
+      });
+
+      if (error) throw error;
+
+      setTestAccountsCreated(data.accounts || []);
+      toast.success(data.message || 'Test accounts created successfully');
+    } catch (error) {
+      console.error('Error creating test accounts:', error);
+      toast.error('Failed to create test accounts');
+    } finally {
+      setCreatingTestAccounts(false);
+    }
+  };
+
+  const handleCleanupTestAccounts = async () => {
+    if (!confirm('Are you sure you want to delete all test accounts? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-test-accounts', {
+        body: { action: 'cleanup' },
+      });
+
+      if (error) throw error;
+
+      setTestAccountsCreated([]);
+      toast.success(data.message || 'Test accounts deleted successfully');
+    } catch (error) {
+      console.error('Error cleaning up test accounts:', error);
+      toast.error('Failed to delete test accounts');
+    }
+  };
 
   const adminNotificationItems: NotificationItem[] = [
     ...(upcomingMeetings > 0 ? [{
@@ -240,6 +283,15 @@ const AdminDashboard = () => {
                   <TabsTrigger value="tests" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
                     Tests
                   </TabsTrigger>
+                  
+                  {isSuperAdmin && (
+                    <>
+                      <div className="w-px h-8 bg-border self-center mx-1" />
+                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                        Dev Tools
+                      </TabsTrigger>
+                    </>
+                  )}
                 </TabsList>
               </div>
             </div>
@@ -307,6 +359,73 @@ const AdminDashboard = () => {
             <TabsContent value="tests" className="mt-0">
               <TestManagerFlow />
             </TabsContent>
+
+            {isSuperAdmin && (
+              <TabsContent value="dev-tools" className="mt-0">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Wrench className="h-5 w-5 text-primary" />
+                      <CardTitle>Developer Tools</CardTitle>
+                    </div>
+                    <CardDescription>
+                      Tools for testing and development (Super Admin only)
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold">Test Accounts</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Create pre-configured test accounts for testing
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={handleCreateTestAccounts}
+                            disabled={creatingTestAccounts}
+                            variant="default"
+                          >
+                            {creatingTestAccounts ? 'Creating...' : 'Generate Test Accounts'}
+                          </Button>
+                          <Button
+                            onClick={handleCleanupTestAccounts}
+                            variant="destructive"
+                          >
+                            Cleanup Test Accounts
+                          </Button>
+                        </div>
+                      </div>
+
+                      {testAccountsCreated.length > 0 && (
+                        <Card className="bg-muted/50">
+                          <CardContent className="pt-6">
+                            <h4 className="font-semibold mb-4">Test Accounts Created:</h4>
+                            <div className="space-y-3">
+                              {testAccountsCreated.map((account) => (
+                                <div key={account.email} className="flex items-center justify-between p-3 bg-background rounded-lg">
+                                  <div>
+                                    <p className="font-medium">{account.full_name}</p>
+                                    <p className="text-sm text-muted-foreground">{account.email}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                      Roles: {account.roles.join(', ')}
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-sm font-mono">{account.password}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
           </Tabs>
         </Card>
       </main>

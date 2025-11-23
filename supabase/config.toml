@@ -56,3 +56,9 @@ verify_jwt = true  # Requires admin/manager authentication
 
 [functions.send-contract-notification]
 verify_jwt = true  # Requires authentication
+
+[functions.regenerate-signed-contract]
+verify_jwt = true  # Requires authentication
+
+[functions.create-test-accounts]
+verify_jwt = true  # Requires admin authentication
