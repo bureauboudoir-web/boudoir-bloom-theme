@@ -100,106 +100,114 @@ export const AccessManagement = () => {
         return;
       }
 
-      // Fetch all creators with access levels
-      let query = supabase
-        .from('creator_access_levels')
-        .select(`
-          user_id,
-          access_level,
-          granted_at,
-          granted_by,
-          grant_method,
-          profiles!inner (
-            id,
-            full_name,
-            email,
-            profile_picture_url,
-            assigned_manager_id
-          )
-        `)
-        .order('granted_at', { ascending: false });
+      // Fetch all creators first
+      let profilesQuery = supabase
+        .from('profiles')
+        .select('id, full_name, email, profile_picture_url, assigned_manager_id');
 
-      const { data: accessData, error: accessError } = await query;
-      if (accessError) throw accessError;
+      // Filter by assigned manager if user is a manager (not admin)
+      if (userIsManager && !userIsAdmin) {
+        profilesQuery = profilesQuery.eq('assigned_manager_id', user.id);
+      }
 
-      if (!accessData || accessData.length === 0) {
+      const { data: profilesData, error: profilesError } = await profilesQuery;
+      if (profilesError) throw profilesError;
+
+      if (!profilesData || profilesData.length === 0) {
         setCreators([]);
         setLoading(false);
         return;
       }
 
-      // Get meeting data
-      const userIds = accessData.map(d => d.user_id);
-      let meetingQuery = supabase
-        .from('creator_meetings')
-        .select('*')
-        .in('user_id', userIds);
+      // Get creator role users only
+      const { data: creatorRoles } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'creator')
+        .in('user_id', profilesData.map(p => p.id));
 
-      // Filter by assigned manager if user is a manager (not admin)
-      if (userIsManager && !userIsAdmin) {
-        meetingQuery = meetingQuery.eq('assigned_manager_id', user.id);
+      const creatorIds = new Set(creatorRoles?.map(r => r.user_id) || []);
+      const creatorsOnly = profilesData.filter(p => creatorIds.has(p.id));
+
+      if (creatorsOnly.length === 0) {
+        setCreators([]);
+        setLoading(false);
+        return;
       }
 
-      const { data: meetings } = await meetingQuery;
+      // Get access levels (LEFT JOIN behavior)
+      const { data: accessLevels } = await supabase
+        .from('creator_access_levels')
+        .select('*')
+        .in('user_id', creatorsOnly.map(c => c.id));
+
+      const accessLevelMap = new Map(accessLevels?.map(a => [a.user_id, a]) || []);
+
+      // Get meeting data
+      const { data: meetings } = await supabase
+        .from('creator_meetings')
+        .select('*')
+        .in('user_id', creatorsOnly.map(c => c.id));
+
+      const meetingMap = new Map(meetings?.map(m => [m.user_id, m]) || []);
 
       // Get granter info (name + role)
-      const granterIds = [...new Set(accessData.map(d => d.granted_by).filter(Boolean))] as string[];
-      const { data: granters } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', granterIds);
+      const granterIds = [...new Set(accessLevels?.map(a => a.granted_by).filter(Boolean) || [])] as string[];
+      let granterMap = new Map();
+      let granterRoleMap = new Map();
 
-      const granterMap = new Map(granters?.map(g => [g.id, g.full_name]) || []);
+      if (granterIds.length > 0) {
+        const { data: granters } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', granterIds);
 
-      // Get granter roles
-      const { data: granterRoles } = await supabase
-        .from('user_roles')
-        .select('user_id, role')
-        .in('user_id', granterIds);
+        granterMap = new Map(granters?.map(g => [g.id, g.full_name]) || []);
 
-      const granterRoleMap = new Map(granterRoles?.map(gr => [gr.user_id, gr.role]) || []);
+        const { data: granterRoles } = await supabase
+          .from('user_roles')
+          .select('user_id, role')
+          .in('user_id', granterIds);
+
+        granterRoleMap = new Map(granterRoles?.map(gr => [gr.user_id, gr.role]) || []);
+      }
 
       // Get manager names
-      const managerIds = [...new Set(accessData.map(d => (d.profiles as any).assigned_manager_id).filter(Boolean))];
-      const { data: managers } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', managerIds);
+      const managerIds = [...new Set(creatorsOnly.map(p => p.assigned_manager_id).filter(Boolean))];
+      let managerMap = new Map();
 
-      const managerMap = new Map(managers?.map(m => [m.id, m.full_name]) || []);
+      if (managerIds.length > 0) {
+        const { data: managers } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', managerIds);
+
+        managerMap = new Map(managers?.map(m => [m.id, m.full_name]) || []);
+      }
 
       // Combine data
-      const creatorsData: CreatorWithAccess[] = accessData
-        .map(access => {
-          const profile = access.profiles as any;
-          const meeting = meetings?.find(m => m.user_id === access.user_id);
-          
-          // Filter for managers - only show their assigned creators
-          if (userIsManager && !userIsAdmin) {
-            if (profile.assigned_manager_id !== user.id) {
-              return null;
-            }
-          }
+      const creatorsData: CreatorWithAccess[] = creatorsOnly.map(profile => {
+        const accessLevel = accessLevelMap.get(profile.id);
+        const meeting = meetingMap.get(profile.id);
 
-          return {
-            id: access.user_id,
-            full_name: profile.full_name,
-            email: profile.email,
-            profile_picture_url: profile.profile_picture_url,
-            access_level: access.access_level,
-            granted_at: access.granted_at,
-            granted_by: access.granted_by,
-            granted_by_name: access.granted_by ? granterMap.get(access.granted_by) || null : null,
-            granted_by_role: access.granted_by ? granterRoleMap.get(access.granted_by) || null : null,
-            grant_method: access.grant_method,
-            meeting_status: meeting?.status || null,
-            meeting_date: meeting?.meeting_date || null,
-            meeting_time: meeting?.meeting_time || null,
-            completed_at: meeting?.completed_at || null,
-            assigned_manager_name: managerMap.get(profile.assigned_manager_id) || null,
-          };
-        })
-        .filter(Boolean) as CreatorWithAccess[];
+        return {
+          id: profile.id,
+          full_name: profile.full_name,
+          email: profile.email,
+          profile_picture_url: profile.profile_picture_url,
+          access_level: accessLevel?.access_level || 'no_access',
+          granted_at: accessLevel?.granted_at || null,
+          granted_by: accessLevel?.granted_by || null,
+          granted_by_name: accessLevel?.granted_by ? granterMap.get(accessLevel.granted_by) || null : null,
+          granted_by_role: accessLevel?.granted_by ? granterRoleMap.get(accessLevel.granted_by) || null : null,
+          grant_method: accessLevel?.grant_method || null,
+          meeting_status: meeting?.status || null,
+          meeting_date: meeting?.meeting_date || null,
+          meeting_time: meeting?.meeting_time || null,
+          completed_at: meeting?.completed_at || null,
+          assigned_manager_name: profile.assigned_manager_id ? managerMap.get(profile.assigned_manager_id) || null : null,
+        };
+      });
 
       setCreators(creatorsData);
     } catch (error) {
