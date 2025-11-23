@@ -76,7 +76,7 @@ export const OnboardingSocials = ({ onComplete, onboardingData, onNext, onBack }
   const otherPreview = useUrlPreview(otherUrl);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    await onComplete(7, data);
+    await onComplete(3, data);
     if (onNext) onNext();
   };
 

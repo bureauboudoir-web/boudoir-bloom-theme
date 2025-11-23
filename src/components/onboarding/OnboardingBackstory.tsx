@@ -186,7 +186,7 @@ const OnboardingBackstory = ({
       backstory_becoming: becoming,
     };
 
-    const result = await onComplete(3, stepData);
+    const result = await onComplete(6, stepData);
     if (result.error) {
       toast.error("Failed to save backstory data");
     } else {

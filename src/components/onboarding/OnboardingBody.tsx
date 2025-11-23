@@ -71,7 +71,7 @@ const OnboardingBody = ({
       body_distinctive_features: values.distinctiveFeatures,
     };
 
-    const result = await onComplete(2, stepData);
+    const result = await onComplete(4, stepData);
     if (!result.error) {
       toast.success("Physical attributes saved!");
       onNext();
