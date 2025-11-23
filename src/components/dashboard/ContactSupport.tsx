@@ -39,6 +39,7 @@ type SupportFormValues = z.infer<typeof supportFormSchema>;
 
 const SUBJECT_OPTIONS = [
   "Problem Report",
+  "Website Bug",
   "Shoot Cancellation",
   "Schedule Change",
   "Payment Question",

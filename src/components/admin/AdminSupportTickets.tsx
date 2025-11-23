@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, Send, Check, Search, Clock, UserCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,8 +48,18 @@ const AdminSupportTickets = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [activeTab, setActiveTab] = useState<"new" | "in_progress" | "resolved">("new");
 
   const filteredTickets = tickets.filter(ticket => {
+    // Filter by tab status
+    const statusMatch = 
+      activeTab === "new" ? ticket.status === "open" :
+      activeTab === "in_progress" ? ticket.status === "in_progress" :
+      ticket.status === "resolved";
+    
+    if (!statusMatch) return false;
+
+    // Filter by search query
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
@@ -218,6 +229,10 @@ const AdminSupportTickets = () => {
     );
   }
 
+  const newTicketsCount = tickets.filter(t => t.status === "open").length;
+  const inProgressCount = tickets.filter(t => t.status === "in_progress").length;
+  const resolvedCount = tickets.filter(t => t.status === "resolved").length;
+
   return (
     <>
       <Card className="p-6 bg-card border-primary/20">
@@ -229,9 +244,6 @@ const AdminSupportTickets = () => {
                 Manage creator support requests
               </p>
             </div>
-            <Badge variant="outline" className="text-lg px-3 py-1">
-              {filteredTickets.filter((t) => t.status !== "resolved").length} Open
-            </Badge>
           </div>
           <div className="relative">
             <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
@@ -243,6 +255,39 @@ const AdminSupportTickets = () => {
             />
           </div>
         </div>
+
+        <Tabs value={activeTab} onValueChange={(v) => {
+          setActiveTab(v as "new" | "in_progress" | "resolved");
+          setCurrentPage(1);
+        }} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="new" className="relative">
+              New
+              {newTicketsCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1.5">
+                  {newTicketsCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="in_progress" className="relative">
+              In Progress
+              {inProgressCount > 0 && (
+                <Badge variant="secondary" className="ml-2 h-5 min-w-5 px-1.5">
+                  {inProgressCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="resolved" className="relative">
+              Resolved
+              {resolvedCount > 0 && (
+                <Badge variant="outline" className="ml-2 h-5 min-w-5 px-1.5">
+                  {resolvedCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab} className="mt-0">
 
         {paginatedTickets.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">
@@ -348,6 +393,8 @@ const AdminSupportTickets = () => {
             )}
           </>
         )}
+          </TabsContent>
+        </Tabs>
       </Card>
 
       <Dialog open={!!selectedTicket} onOpenChange={() => setSelectedTicket(null)}>
