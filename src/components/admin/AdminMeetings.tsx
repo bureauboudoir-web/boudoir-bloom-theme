@@ -77,6 +77,19 @@ export const AdminMeetings = () => {
     if (user) {
       fetchMeetings();
     }
+
+    // Subscribe to realtime updates for meetings
+    const meetingsChannel = supabase
+      .channel('admin-meetings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_meetings' }, (payload) => {
+        console.log('Meeting changed:', payload);
+        fetchMeetings();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(meetingsChannel);
+    };
   }, [user]);
 
   const fetchMeetings = async () => {
