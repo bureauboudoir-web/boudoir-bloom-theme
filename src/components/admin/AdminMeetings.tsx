@@ -97,21 +97,10 @@ export const AdminMeetings = () => {
 
     setLoading(true);
     try {
+      // First fetch meetings
       let query = supabase
         .from('creator_meetings')
-        .select(`
-          *,
-          profiles!user_id (
-            full_name,
-            email,
-            profile_picture_url
-          ),
-          manager:assigned_manager_id (
-            id,
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .order('meeting_date', { ascending: true });
 
       // Admins and super_admins see all meetings
@@ -120,10 +109,32 @@ export const AdminMeetings = () => {
         query = query.eq('assigned_manager_id', user.id);
       }
 
-      const { data, error } = await query;
+      const { data: meetingsData, error: meetingsError } = await query;
+      if (meetingsError) throw meetingsError;
 
-      if (error) throw error;
-      setMeetings((data || []) as any);
+      // Fetch all user profiles separately
+      const userIds = meetingsData?.map(m => m.user_id).filter(Boolean) || [];
+      const managerIds = meetingsData?.map(m => m.assigned_manager_id).filter(Boolean) || [];
+      const allIds = [...new Set([...userIds, ...managerIds])];
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, profile_picture_url')
+        .in('id', allIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create a map for easy lookup
+      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+
+      // Merge the data
+      const enrichedMeetings = meetingsData?.map(meeting => ({
+        ...meeting,
+        profiles: profilesMap.get(meeting.user_id),
+        manager: meeting.assigned_manager_id ? profilesMap.get(meeting.assigned_manager_id) : null
+      })) || [];
+
+      setMeetings(enrichedMeetings as any);
     } catch (error) {
       console.error("Error fetching meetings:", error);
       toast.error("Failed to load meetings");
@@ -408,9 +419,26 @@ export const AdminMeetings = () => {
     }).length
   };
 
-  const upcomingMeetings = filteredMeetings.filter(m => m.status === 'confirmed');
-  const pastMeetings = filteredMeetings.filter(m => ['completed', 'cancelled'].includes(m.status));
-  const needsActionMeetings = filteredMeetings.filter(m => m.status === 'confirmed' || m.reschedule_requested);
+  // Filter meetings by date and status
+  const now = new Date();
+  const upcomingMeetings = filteredMeetings.filter(m => {
+    if (m.status !== 'confirmed' || !m.meeting_date) return false;
+    return new Date(m.meeting_date) >= now;
+  });
+  const pastMeetings = filteredMeetings.filter(m => {
+    if (m.status === 'completed' || m.status === 'cancelled') return true;
+    if (m.status === 'confirmed' && m.meeting_date) {
+      return new Date(m.meeting_date) < now;
+    }
+    return false;
+  });
+  const needsActionMeetings = filteredMeetings.filter(m => {
+    if (m.reschedule_requested) return true;
+    if (m.status === 'confirmed' && m.meeting_date) {
+      return new Date(m.meeting_date) >= now;
+    }
+    return false;
+  });
   
   const totalPagesUpcoming = Math.ceil(upcomingMeetings.length / itemsPerPage);
   const totalPagesPast = Math.ceil(pastMeetings.length / itemsPerPage);
