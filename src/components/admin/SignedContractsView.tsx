@@ -35,6 +35,52 @@ export const SignedContractsView = ({ contracts, creators }: SignedContractsView
   const [sortBy, setSortBy] = useState<"date" | "name" | "term">("date");
   const [regenerating, setRegenerating] = useState<string | null>(null);
 
+  const exportToCSV = () => {
+    const csvHeaders = [
+      'Creator Name',
+      'Creator Email',
+      'Signed Date',
+      'Contract Version',
+      'Revenue Split Creator',
+      'Revenue Split Agency',
+      'Contract Term (months)',
+      'Start Date',
+      'End Date',
+      'Contract ID'
+    ];
+
+    const csvRows = sortedContracts.map(item => {
+      const contractData = item.contract_data || {};
+      return [
+        item.creator?.full_name || 'N/A',
+        item.creator?.email || 'N/A',
+        item.signed_at ? new Date(item.signed_at).toLocaleDateString() : 'N/A',
+        item.contract_version || 'N/A',
+        contractData.percentage_split_creator || 'N/A',
+        contractData.percentage_split_agency || 'N/A',
+        contractData.contract_term_months || 'N/A',
+        contractData.contract_start_date || 'N/A',
+        contractData.contract_end_date || 'N/A',
+        item.id
+      ];
+    });
+
+    const csv = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `signed-contracts-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast.success(`Exported ${sortedContracts.length} contracts to CSV`);
+  };
+
   const signedContracts = Object.entries(contracts)
     .filter(([_, contract]) => contract.contract_signed)
     .map(([userId, contract]) => ({
@@ -97,7 +143,7 @@ export const SignedContractsView = ({ contracts, creators }: SignedContractsView
 
   return (
     <div className="space-y-6">
-      {/* Search and Sort Controls */}
+      {/* Search, Sort and Export Controls */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -118,6 +164,10 @@ export const SignedContractsView = ({ contracts, creators }: SignedContractsView
             <SelectItem value="term">Contract Term</SelectItem>
           </SelectContent>
         </Select>
+        <Button onClick={exportToCSV} variant="outline" className="w-full sm:w-auto">
+          <Download className="h-4 w-4 mr-2" />
+          Export CSV ({sortedContracts.length})
+        </Button>
       </div>
 
       {/* Contract Grid */}
