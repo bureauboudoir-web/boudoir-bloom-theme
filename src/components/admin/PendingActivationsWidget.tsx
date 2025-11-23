@@ -49,25 +49,16 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       if (!isAdmin && !isManager) return;
 
       // Build query
-      let query = supabase
+      let accessQuery = supabase
         .from('creator_access_levels')
-        .select(`
-          user_id,
-          access_level,
-          profiles!inner (
-            id,
-            full_name,
-            email,
-            profile_picture_url
-          )
-        `)
+        .select('user_id, access_level')
         .eq('access_level', 'meeting_only');
 
-      const { data: accessData, error: accessError } = await query;
+      const { data: accessData, error: accessError } = await accessQuery;
 
       if (accessError) throw accessError;
 
-      // Get meeting data for these users
+      // Get user IDs from access data
       const userIds = accessData?.map(d => d.user_id) || [];
       
       if (userIds.length === 0) {
@@ -75,10 +66,34 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         return;
       }
 
+      // Get profile data for these users
+      let profileQuery = supabase
+        .from('profiles')
+        .select('id, full_name, email, profile_picture_url, assigned_manager_id')
+        .in('id', userIds);
+
+      // Filter by assigned manager if user is a manager
+      if (isManager && !isAdmin) {
+        profileQuery = profileQuery.eq('assigned_manager_id', user.id);
+      }
+
+      const { data: profiles, error: profileError } = await profileQuery;
+
+      if (profileError) throw profileError;
+
+      // Get filtered user IDs based on profiles
+      const filteredUserIds = profiles?.map(p => p.id) || [];
+
+      if (filteredUserIds.length === 0) {
+        setPendingCreators([]);
+        return;
+      }
+
+      // Get meeting data for these users
       let meetingQuery = supabase
         .from('creator_meetings')
         .select('*')
-        .in('user_id', userIds);
+        .in('user_id', filteredUserIds);
 
       // Filter by assigned manager if user is a manager
       if (isManager && !isAdmin) {
@@ -90,23 +105,27 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       if (meetingError) throw meetingError;
 
       // Combine data
-      const creators: PendingCreator[] = accessData
-        .map(access => {
-          const profile = access.profiles as any;
-          const meeting = meetings?.find(m => m.user_id === access.user_id);
+      const creators: PendingCreator[] = filteredUserIds
+        .map(userId => {
+          const profile = profiles?.find(p => p.id === userId);
+          const access = accessData?.find(a => a.user_id === userId);
+          const meeting = meetings?.find(m => m.user_id === userId);
+          
+          if (!profile) return null;
           
           return {
-            id: access.user_id,
+            id: userId,
             full_name: profile.full_name,
             email: profile.email,
             profile_picture_url: profile.profile_picture_url,
-            access_level: access.access_level,
+            access_level: access?.access_level || 'meeting_only',
             meeting_date: meeting?.meeting_date || null,
             meeting_time: meeting?.meeting_time || null,
             meeting_status: meeting?.status || null,
             completed_at: meeting?.completed_at || null,
           };
         })
+        .filter((c): c is PendingCreator => c !== null)
         .sort((a, b) => {
           // Sort: confirmed first, then by date
           if (a.meeting_status === 'confirmed' && b.meeting_status !== 'confirmed') return -1;
