@@ -10,11 +10,12 @@ import {
   CheckSquare, 
   Shield, 
   DollarSign,
-  FolderOpen
+  FolderOpen,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -51,7 +52,7 @@ export const DashboardNav = ({
   };
 
   // Tabs allowed for meeting_only access
-  const allowedTabsForMeetingOnly: TabId[] = ['overview', 'onboarding', 'meetings', 'account'];
+  const allowedTabsForMeetingOnly: TabId[] = ['overview', 'onboarding', 'meetings', 'account', 'settings'];
 
   const navSections = [
     {
@@ -65,6 +66,7 @@ export const DashboardNav = ({
       items: [
         { id: "onboarding" as TabId, label: t('dashboard.nav.onboarding'), icon: <FileText className="w-4 h-4" /> },
         { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> },
+        { id: "settings" as TabId, label: t('dashboard.nav.settings'), icon: <Settings className="w-4 h-4" /> },
         { id: "meetings" as TabId, label: t('dashboard.nav.meetings'), icon: <Calendar className="w-4 h-4" /> },
         { id: "upload" as TabId, label: t('dashboard.nav.upload'), icon: <Upload className="w-4 h-4" /> },
         { id: "library" as TabId, label: t('dashboard.nav.library'), icon: <FolderOpen className="w-4 h-4" /> },

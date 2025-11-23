@@ -24,6 +24,7 @@ import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { CreatorContract } from "@/components/dashboard/CreatorContract";
+import { Settings } from "@/pages/Settings";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,7 +53,7 @@ const Dashboard = () => {
   const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -446,6 +447,10 @@ const Dashboard = () => {
                 accessLevel={accessLevel}
                 meetingCompleted={meetingStatus?.meetingCompleted}
               />
+            )}
+
+            {activeTab === "settings" && user && (
+              <Settings userId={user.id} />
             )}
             
             {activeTab === "upload" && user && accessLevel === 'full_access' && (
