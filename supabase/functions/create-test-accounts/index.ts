@@ -43,7 +43,10 @@ serve(async (req) => {
         'test-creator-sophie@bureauboudoir.com',
         'test-creator-lara@bureauboudoir.com',
         'test-creator-nina@bureauboudoir.com',
-        'test-creator-isabella@bureauboudoir.com'
+        'test-creator-isabella@bureauboudoir.com',
+        'sarah.test@bureauboudoir.com',
+        'emma.test@bureauboudoir.com',
+        'lisa.test@bureauboudoir.com'
       ];
 
       const { data: profiles } = await supabase
@@ -65,6 +68,118 @@ serve(async (req) => {
         JSON.stringify({
           success: true,
           message: `Deleted ${profiles?.length || 0} test accounts`,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
+    if (action === 'create_manager_data') {
+      console.log('🔧 Creating manager-specific test data...');
+      const createdAccounts = [];
+
+      // SARAH: No access, needs invitation
+      const sarah = await createCreator({
+        email: 'sarah.test@bureauboudoir.com',
+        full_name: 'Sarah Martinez',
+        personal_full_name: 'Sarah Martinez',
+        date_of_birth: '1996-04-18',
+        stage_name: 'Sarah Martinez',
+        adminId,
+        supabase,
+        stage: 'application',
+      });
+      if (sarah) createdAccounts.push(sarah);
+
+      // EMMA: Meeting only, can book
+      const emma = await createCreator({
+        email: 'emma.test@bureauboudoir.com',
+        full_name: 'Emma Chen',
+        personal_full_name: 'Emma Chen',
+        date_of_birth: '1995-08-22',
+        stage_name: 'Emma Chen',
+        adminId,
+        supabase,
+        stage: 'needs_meeting',
+      });
+      if (emma) createdAccounts.push(emma);
+
+      // LISA: Meeting scheduled
+      const lisa = await createCreator({
+        email: 'lisa.test@bureauboudoir.com',
+        full_name: 'Lisa Thompson',
+        personal_full_name: 'Lisa Thompson',
+        date_of_birth: '1997-02-14',
+        stage_name: 'Lisa Thompson',
+        adminId,
+        supabase,
+        stage: 'meeting_confirmed',
+      });
+      if (lisa) createdAccounts.push(lisa);
+
+      // Add additional data for these creators
+      if (emma && emma.userId) {
+        // Support ticket for Emma
+        await supabase.from('support_tickets').insert({
+          user_id: emma.userId,
+          subject: 'Content upload guidelines clarification',
+          message: 'Hi, I have a few questions about the photo set requirements. Should each set have a specific theme? And what\'s the minimum number of photos per set?',
+          status: 'open',
+          created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        });
+
+        // Weekly commitment for Emma
+        await supabase.from('weekly_commitments').insert({
+          user_id: emma.userId,
+          content_type: 'photo_sets',
+          description: '1 intro photo set: First shoot with window light',
+          status: 'pending',
+          created_at: new Date(Date.now() - 86400000).toISOString(),
+        });
+
+        // Invoice for Emma
+        await supabase.from('invoices').insert({
+          user_id: emma.userId,
+          invoice_number: `INV-2025-0017`,
+          amount: 650.00,
+          currency: 'EUR',
+          status: 'pending',
+          description: 'Initial content batch - Welcome package',
+          invoice_date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+          due_date: new Date(Date.now() + 2419200000).toISOString(), // 28 days from now
+          created_by_user_id: adminId,
+        });
+
+        // Content upload for Emma
+        await supabase.from('content_uploads').insert({
+          user_id: emma.userId,
+          file_name: 'intro_shoot_001.jpg',
+          file_url: 'https://placeholder.com/emma1.jpg',
+          content_type: 'image',
+          status: 'pending_review',
+          description: 'First photo set - Natural window light',
+          created_at: new Date(Date.now() - 10800000).toISOString(), // 3 hours ago
+        });
+      }
+
+      if (lisa && lisa.userId) {
+        // Support ticket for Lisa
+        await supabase.from('support_tickets').insert({
+          user_id: lisa.userId,
+          subject: 'Equipment recommendations',
+          message: 'What camera and lighting equipment do you recommend for home shoots? I\'m looking to upgrade my setup.',
+          status: 'open',
+          created_at: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+        });
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          accounts: createdAccounts,
+          message: `Created ${createdAccounts.length} manager test creators`,
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -467,6 +582,7 @@ async function createCreator({
       full_name,
       stage,
       password: TEST_PASSWORD,
+      userId,
     };
   } catch (error) {
     console.error(`Error creating ${email}:`, error);
