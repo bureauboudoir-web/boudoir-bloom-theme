@@ -27,6 +27,8 @@ import { CreatorContract } from "@/components/dashboard/CreatorContract";
 import { Settings } from "@/pages/Settings";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { AdminControlsOverview } from "@/components/admin/AdminControlsOverview";
+import { ManagerControlsOverview } from "@/components/admin/ManagerControlsOverview";
 import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -552,7 +554,7 @@ const Dashboard = () => {
                     </TabsList>
 
                     <TabsContent value="overview">
-                      <DashboardOverview userId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                      <AdminControlsOverview onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
                     </TabsContent>
 
                     <TabsContent value="applications">
@@ -635,7 +637,7 @@ const Dashboard = () => {
 
                     <TabsContent value="overview" className="space-y-4">
                       <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
-                      <DashboardOverview userId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                      <ManagerControlsOverview managerId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
                     </TabsContent>
 
                     <TabsContent value="applications">
