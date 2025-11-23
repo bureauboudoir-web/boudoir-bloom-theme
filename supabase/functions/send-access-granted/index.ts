@@ -1,7 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import { checkRateLimit, getClientIdentifier } from "../_shared/rateLimiter.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,6 +42,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    
     const { 
       creatorEmail, 
       creatorName, 
@@ -47,6 +52,18 @@ const handler = async (req: Request): Promise<Response> => {
     }: AccessGrantedRequest = await req.json();
 
     console.log("Sending access granted email to:", creatorEmail);
+
+    const logEmail = async (status: 'sent' | 'failed', error?: string) => {
+      await supabase.from('email_logs').insert({
+        email_type: 'access_granted',
+        recipient_email: creatorEmail,
+        recipient_name: creatorName,
+        status,
+        error_message: error,
+        sent_at: status === 'sent' ? new Date().toISOString() : null,
+        failed_at: status === 'failed' ? new Date().toISOString() : null,
+      });
+    };
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -106,11 +123,13 @@ const handler = async (req: Request): Promise<Response> => {
     if (!res.ok) {
       const error = await res.text();
       console.error("Resend API error:", error);
+      await logEmail('failed', `Resend API error: ${error}`);
       throw new Error(`Resend API error: ${error}`);
     }
 
     const data = await res.json();
     console.log("Access granted email sent successfully:", data);
+    await logEmail('sent');
 
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,

@@ -1,7 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import { checkRateLimit, getClientIdentifier } from "../_shared/rateLimiter.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -45,6 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const requestData = await req.json();
     
     // Validate input
@@ -60,6 +64,18 @@ const handler = async (req: Request): Promise<Response> => {
     const { name, email }: ApplicationReceivedRequest = requestData;
     console.log(`Sending application received email to ${email}`);
 
+    const logEmail = async (status: 'sent' | 'failed', errorMsg?: string) => {
+      await supabase.from('email_logs').insert({
+        email_type: 'application_received',
+        recipient_email: email,
+        recipient_name: name,
+        status,
+        error_message: errorMsg,
+        sent_at: status === 'sent' ? new Date().toISOString() : null,
+        failed_at: status === 'failed' ? new Date().toISOString() : null,
+      });
+    };
+
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -73,48 +89,22 @@ const handler = async (req: Request): Promise<Response> => {
         html: `
           <!DOCTYPE html>
           <html>
-            <head>
-              <style>
-                body { font-family: Georgia, serif; background: #000; color: #fff; margin: 0; padding: 0; }
-                .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
-                .header { text-align: center; margin-bottom: 40px; }
-                .logo { font-size: 32px; font-weight: bold; letter-spacing: 0.02em; margin-bottom: 20px; }
-                .bureau { color: hsl(0 100% 27%); text-shadow: 0 0 20px hsl(0 100% 27% / 0.4); }
-                .boudoir { color: #d1ae94; text-shadow: 0 0 20px rgba(209, 174, 148, 0.4); }
-                .content { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(209, 174, 148, 0.2); border-radius: 8px; padding: 30px; }
-                h1 { color: #d1ae94; font-size: 24px; margin-top: 0; }
-                p { line-height: 1.6; color: rgba(255, 255, 255, 0.9); }
-                .footer { text-align: center; margin-top: 40px; color: rgba(255, 255, 255, 0.6); font-size: 14px; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <div class="logo">
-                    <span class="bureau">Bureau</span> <span class="boudoir">Boudoir</span>
-                  </div>
-                </div>
-                <div class="content">
-                  <h1>Thank You for Applying</h1>
-                  <p>Dear ${name},</p>
-                  <p>Thank you for applying to become a Bureau Boudoir Creator.</p>
-                  <p>We've received your application and our team will review it shortly. A member of our team will be in touch with you soon.</p>
-                  <p>We're excited about the possibility of working together to create exceptional content.</p>
-                  <p>Best regards,<br>The Bureau Boudoir Team</p>
-                </div>
-                <div class="footer">
-                  <p>Bureau Boudoir • Amsterdam, Netherlands</p>
-                  <p>X: @bureauboudoir • TikTok: @bureauboudoir</p>
-                </div>
-              </div>
-            </body>
+...
           </html>
         `,
       }),
     });
 
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error("Email send failed:", errorText);
+      await logEmail('failed', `Resend API error: ${errorText}`);
+      throw new Error(`Failed to send email: ${errorText}`);
+    }
+
     const emailData = await emailResponse.json();
     console.log("Application received email sent successfully:", emailData);
+    await logEmail('sent');
 
     return new Response(JSON.stringify(emailData), {
       status: 200,

@@ -36,11 +36,15 @@ export const useContractGeneration = () => {
 
       if (error) {
         console.error("Contract generation error:", error);
-        throw error;
+        const errorMessage = error.message || "Failed to generate contract. Please try again.";
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
       }
 
       if (!data.success) {
-        throw new Error(data.error || "Failed to generate contract");
+        const errorMessage = data.error || "Failed to generate contract";
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
       }
 
       console.log("✅ Contract generated successfully:", data.data);
@@ -49,8 +53,14 @@ export const useContractGeneration = () => {
       return data.data;
     } catch (error) {
       console.error("Error in contract generation:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to generate contract";
-      toast.error(errorMessage);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "An unexpected error occurred while generating the contract";
+      
+      // Don't show toast again if already shown
+      if (!error.message?.includes("Failed to generate contract")) {
+        toast.error(errorMessage);
+      }
       throw error;
     } finally {
       setIsGenerating(false);

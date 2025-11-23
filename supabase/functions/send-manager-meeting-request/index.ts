@@ -1,7 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import { checkRateLimit, getClientIdentifier } from "../_shared/rateLimiter.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,6 +37,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    
     const { 
       managerEmail,
       managerName,
@@ -44,6 +49,18 @@ const handler = async (req: Request): Promise<Response> => {
       meetingType,
       dashboardUrl
     }: ManagerNotificationRequest = await req.json();
+
+    const logEmail = async (status: 'sent' | 'failed', error?: string) => {
+      await supabase.from('email_logs').insert({
+        email_type: 'manager_meeting_request',
+        recipient_email: managerEmail,
+        recipient_name: managerName,
+        status,
+        error_message: error,
+        sent_at: status === 'sent' ? new Date().toISOString() : null,
+        failed_at: status === 'failed' ? new Date().toISOString() : null,
+      });
+    };
 
     // TEMPORARY: For testing, send to creator's email instead of manager's
     // Remove this after verifying your domain at https://resend.com/domains
@@ -117,11 +134,13 @@ const handler = async (req: Request): Promise<Response> => {
     if (!res.ok) {
       const error = await res.text();
       console.error("Resend API error:", error);
+      await logEmail('failed', `Resend API error: ${error}`);
       throw new Error(`Resend API error: ${error}`);
     }
 
     const data = await res.json();
     console.log("Manager notification email sent successfully:", data);
+    await logEmail('sent');
 
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
