@@ -21,6 +21,8 @@ import { AdminMeetings } from "@/components/admin/AdminMeetings";
 import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
 import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
+import { ManagerWelcome } from "@/components/admin/ManagerWelcome";
+import { supabase } from "@/integrations/supabase/client";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
@@ -102,9 +104,50 @@ const ManagerDashboard = () => {
     );
   }
 
+  // Check if this is first time login
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const checkFirstLogin = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('admin_settings')
+        .select('setting_value')
+        .eq('setting_key', `manager_welcome_dismissed_${user.id}`)
+        .single();
+
+      if (!data) {
+        setShowWelcome(true);
+      }
+    };
+    
+    if (user && isManagerOnly) {
+      checkFirstLogin();
+    }
+  }, [user, isManagerOnly]);
+
+  const handleDismissWelcome = async () => {
+    if (!user?.id) return;
+    
+    await supabase
+      .from('admin_settings')
+      .upsert({
+        setting_key: `manager_welcome_dismissed_${user.id}`,
+        setting_value: true,
+        updated_by: user.id,
+      });
+    
+    setShowWelcome(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-8">
+        {showWelcome && user?.id && (
+          <ManagerWelcome userId={user.id} onDismiss={handleDismissWelcome} />
+        )}
+        
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

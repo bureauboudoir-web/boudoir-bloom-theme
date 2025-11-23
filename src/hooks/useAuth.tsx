@@ -70,7 +70,15 @@ export const useAuth = () => {
         };
       }
       
-      navigate("/dashboard");
+      // Role-based redirect - prioritize highest permission level
+      const roles = userRoles.map(r => r.role);
+      if (roles.includes('super_admin') || roles.includes('admin')) {
+        navigate("/admin");
+      } else if (roles.includes('manager') && !roles.includes('creator')) {
+        navigate("/manager");
+      } else {
+        navigate("/dashboard");
+      }
     }
     
     return { data, error };

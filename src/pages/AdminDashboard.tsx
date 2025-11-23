@@ -30,6 +30,7 @@ import { NotificationBell, NotificationItem } from "@/components/NotificationBel
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AdminWelcome } from "@/components/admin/AdminWelcome";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -166,6 +167,43 @@ const AdminDashboard = () => {
     return null;
   }
 
+  // Check if this is first time login
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const checkFirstLogin = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('admin_settings')
+        .select('setting_value')
+        .eq('setting_key', `admin_welcome_dismissed_${user.id}`)
+        .single();
+
+      if (!data) {
+        setShowWelcome(true);
+      }
+    };
+    
+    if (user && (isAdmin || isSuperAdmin)) {
+      checkFirstLogin();
+    }
+  }, [user, isAdmin, isSuperAdmin]);
+
+  const handleDismissWelcome = async () => {
+    if (!user?.id) return;
+    
+    await supabase
+      .from('admin_settings')
+      .upsert({
+        setting_key: `admin_welcome_dismissed_${user.id}`,
+        setting_value: true,
+        updated_by: user.id,
+      });
+    
+    setShowWelcome(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -222,6 +260,16 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {showWelcome && user?.id && (
+          <div className="mb-6">
+            <AdminWelcome 
+              userId={user.id} 
+              onDismiss={handleDismissWelcome}
+              isSuperAdmin={isSuperAdmin}
+            />
+          </div>
+        )}
+        
         <Card className="p-3 sm:p-6 bg-card border-primary/20">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
             {/* Scrollable tabs container with fade indicators */}
