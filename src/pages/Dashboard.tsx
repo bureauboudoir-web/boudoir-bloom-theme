@@ -44,6 +44,21 @@ import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
 import { ContentLibrary } from "@/components/dashboard/ContentLibrary";
 import { toast } from "sonner";
 import { isPostMeetingStep, getStepConfig, getLastPreMeetingStep } from "@/config/onboardingSteps";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
+import { CreatorOverview } from "@/components/admin/CreatorOverview";
+import { AdminCommitments } from "@/components/admin/AdminCommitments";
+import { AdminShoots } from "@/components/admin/AdminShoots";
+import { ContentReview } from "@/components/admin/ContentReview";
+import { AdminMeetings } from "@/components/admin/AdminMeetings";
+import AdminSupportTickets from "@/components/admin/AdminSupportTickets";
+import { AdminInvoices } from "@/components/admin/AdminInvoices";
+import { AdminContracts } from "@/components/admin/AdminContracts";
+import { RoleManagement } from "@/components/admin/RoleManagement";
+import { PermissionsManager } from "@/components/admin/PermissionsManager";
+import { ManagerAvailabilitySettings } from "@/components/admin/ManagerAvailabilitySettings";
+import { AccessManagement } from "@/components/admin/AccessManagement";
+import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -53,7 +68,7 @@ const Dashboard = () => {
   const { isAdmin, isSuperAdmin, isManagerOnly, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager">("overview");
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
@@ -78,17 +93,6 @@ const Dashboard = () => {
       navigate("/login");
     }
   }, [user, authLoading, navigate]);
-
-  // Role-based redirect - admins and managers have their own dashboards
-  useEffect(() => {
-    if (!rolesLoading && user) {
-      if (isAdmin || isSuperAdmin) {
-        navigate("/admin");
-      } else if (isManagerOnly) {
-        navigate("/manager");
-      }
-    }
-  }, [isAdmin, isSuperAdmin, isManagerOnly, rolesLoading, user, navigate]);
 
   // Security check: Ensure user has proper role assigned
   useEffect(() => {
@@ -307,8 +311,8 @@ const Dashboard = () => {
                       isAdmin={isAdmin}
                       isSuperAdmin={isSuperAdmin}
                       isManagerOnly={isManagerOnly}
-                      onAdminClick={() => navigate("/admin")}
-                      onManagerClick={() => navigate("/manager")}
+                      onAdminClick={() => setActiveTab("admin")}
+                      onManagerClick={() => setActiveTab("manager")}
                       onMobileMenuClose={() => setMobileMenuOpen(false)}
                       accessLevel={accessLevel}
                     />
@@ -351,8 +355,8 @@ const Dashboard = () => {
               isAdmin={isAdmin}
               isSuperAdmin={isSuperAdmin}
               isManagerOnly={isManagerOnly}
-              onAdminClick={() => navigate("/admin")}
-              onManagerClick={() => navigate("/manager")}
+              onAdminClick={() => setActiveTab("admin")}
+              onManagerClick={() => setActiveTab("manager")}
               accessLevel={accessLevel}
             />
           </Card>
@@ -510,6 +514,156 @@ const Dashboard = () => {
 
             {activeTab === "library" && user && accessLevel === 'full_access' && (
               <ContentLibrary userId={user.id} />
+            )}
+
+            {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
+              <div className="space-y-6">
+                <Card className="p-6 bg-card border-primary/20">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold font-serif">Admin Controls</h2>
+                      <p className="text-muted-foreground mt-1">Manage applications, creators, and system settings</p>
+                    </div>
+                  </div>
+
+                  <Tabs defaultValue="overview" className="space-y-6">
+                    <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
+                      <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="applications">Applications</TabsTrigger>
+                      <TabsTrigger value="creators">Creators</TabsTrigger>
+                      <TabsTrigger value="commitments">Commitments</TabsTrigger>
+                      <TabsTrigger value="shoots">Shoots</TabsTrigger>
+                      <TabsTrigger value="review">Review</TabsTrigger>
+                      <TabsTrigger value="meetings">Meetings</TabsTrigger>
+                      <TabsTrigger value="support">Support</TabsTrigger>
+                      <TabsTrigger value="invoices">Invoices</TabsTrigger>
+                      <TabsTrigger value="contracts">Contracts</TabsTrigger>
+                      {isSuperAdmin && (
+                        <>
+                          <TabsTrigger value="roles">Roles</TabsTrigger>
+                          <TabsTrigger value="permissions">Permissions</TabsTrigger>
+                          <TabsTrigger value="access">Access</TabsTrigger>
+                        </>
+                      )}
+                    </TabsList>
+
+                    <TabsContent value="overview">
+                      <DashboardOverview userId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                    </TabsContent>
+
+                    <TabsContent value="applications">
+                      <ApplicationsManagement />
+                    </TabsContent>
+
+                    <TabsContent value="creators">
+                      <CreatorOverview />
+                    </TabsContent>
+
+                    <TabsContent value="commitments">
+                      <AdminCommitments />
+                    </TabsContent>
+
+                    <TabsContent value="shoots">
+                      <AdminShoots />
+                    </TabsContent>
+
+                    <TabsContent value="review">
+                      <ContentReview />
+                    </TabsContent>
+
+                    <TabsContent value="meetings">
+                      <AdminMeetings />
+                    </TabsContent>
+
+                    <TabsContent value="support">
+                      <AdminSupportTickets />
+                    </TabsContent>
+
+                    <TabsContent value="invoices">
+                      <AdminInvoices />
+                    </TabsContent>
+
+                    <TabsContent value="contracts">
+                      <AdminContracts />
+                    </TabsContent>
+
+                    {isSuperAdmin && (
+                      <>
+                        <TabsContent value="roles">
+                          <RoleManagement />
+                        </TabsContent>
+
+                        <TabsContent value="permissions">
+                          <PermissionsManager />
+                        </TabsContent>
+
+                        <TabsContent value="access">
+                          <AccessManagement />
+                        </TabsContent>
+                      </>
+                    )}
+                  </Tabs>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === "manager" && isManagerOnly && (
+              <div className="space-y-6">
+                <Card className="p-6 bg-card border-primary/20">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold font-serif">Manager Controls</h2>
+                      <p className="text-muted-foreground mt-1">Manage your assigned creators and meetings</p>
+                    </div>
+                  </div>
+
+                  <Tabs defaultValue="overview" className="space-y-6">
+                    <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
+                      <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="applications">Applications</TabsTrigger>
+                      <TabsTrigger value="creators">Creators</TabsTrigger>
+                      <TabsTrigger value="commitments">Commitments</TabsTrigger>
+                      <TabsTrigger value="shoots">Shoots</TabsTrigger>
+                      <TabsTrigger value="meetings">Meetings</TabsTrigger>
+                      <TabsTrigger value="availability">Availability</TabsTrigger>
+                      <TabsTrigger value="support">Support</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="overview" className="space-y-4">
+                      <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
+                      <DashboardOverview userId={user.id} onNavigate={(tab) => setActiveTab(tab as typeof activeTab)} />
+                    </TabsContent>
+
+                    <TabsContent value="applications">
+                      <ApplicationsManagement />
+                    </TabsContent>
+
+                    <TabsContent value="creators">
+                      <CreatorOverview />
+                    </TabsContent>
+
+                    <TabsContent value="commitments">
+                      <AdminCommitments />
+                    </TabsContent>
+
+                    <TabsContent value="shoots">
+                      <AdminShoots />
+                    </TabsContent>
+
+                    <TabsContent value="meetings">
+                      <AdminMeetings />
+                    </TabsContent>
+
+                    <TabsContent value="availability">
+                      <ManagerAvailabilitySettings />
+                    </TabsContent>
+
+                    <TabsContent value="support">
+                      <AdminSupportTickets />
+                    </TabsContent>
+                  </Tabs>
+                </Card>
+              </div>
             )}
           </div>
         </div>

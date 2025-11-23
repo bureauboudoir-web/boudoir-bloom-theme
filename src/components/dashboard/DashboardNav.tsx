@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -109,6 +109,23 @@ export const DashboardNav = ({
       })).filter(section => section.items.length > 0)
     : navSections;
 
+  // Add management section for admin/manager users
+  const managementSection = (isAdmin || isSuperAdmin || isManagerOnly) ? {
+    title: t('dashboard.sections.management'),
+    items: [
+      ...(isAdmin || isSuperAdmin ? [{ 
+        id: "admin" as TabId, 
+        label: t('dashboard.nav.adminControls'), 
+        icon: <Shield className="w-4 h-4" /> 
+      }] : []),
+      ...(isManagerOnly ? [{ 
+        id: "manager" as TabId, 
+        label: t('dashboard.nav.managerControls'), 
+        icon: <Shield className="w-4 h-4" /> 
+      }] : []),
+    ]
+  } : null;
+
   return (
     <nav className="space-y-6">
       {filteredSections.map((section, idx) => (
@@ -140,35 +157,28 @@ export const DashboardNav = ({
         </div>
       ))}
 
-      {/* Admin/Manager Dashboard - Special Treatment */}
-      {(isAdmin || isSuperAdmin || isManagerOnly) && (
+      {/* Management Section */}
+      {managementSection && (
         <div className="pt-4 border-t border-border space-y-2">
-          {(isAdmin || isSuperAdmin) && (
-            <Button
-              variant="outline"
-              className="w-full justify-start h-11 px-3 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all"
-              onClick={() => {
-                onAdminClick();
-                onMobileMenuClose?.();
-              }}
-            >
-              <Shield className="w-4 h-4 mr-3 text-primary" />
-              <span className="text-sm font-medium">{t('dashboard.nav.adminDashboard')}</span>
-            </Button>
-          )}
-          {isManagerOnly && (
-            <Button
-              variant="outline"
-              className="w-full justify-start h-11 px-3 border-primary/40 hover:bg-primary/10 hover:border-primary transition-all"
-              onClick={() => {
-                onManagerClick();
-                onMobileMenuClose?.();
-              }}
-            >
-              <Shield className="w-4 h-4 mr-3 text-primary" />
-              <span className="text-sm font-medium">{t('dashboard.nav.managerDashboard')}</span>
-            </Button>
-          )}
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
+            {managementSection.title}
+          </h3>
+          <div className="space-y-1">
+            {managementSection.items.map((item) => (
+              <Button
+                key={item.id}
+                variant={activeTab === item.id ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start h-11 px-3 transition-all",
+                  activeTab === item.id && "bg-primary text-primary-foreground shadow-sm"
+                )}
+                onClick={() => handleTabClick(item.id)}
+              >
+                <span className="mr-3">{item.icon}</span>
+                <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
+              </Button>
+            ))}
+          </div>
         </div>
       )}
     </nav>
