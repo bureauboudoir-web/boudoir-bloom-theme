@@ -215,6 +215,72 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_accounts: {
+        Row: {
+          account_name: string | null
+          category: string
+          created_at: string | null
+          created_by: string | null
+          email: string | null
+          gdrive_folder_id: string | null
+          id: string
+          last_verified_at: string | null
+          notes: string | null
+          password_encrypted: string | null
+          phone: string | null
+          platform_name: string
+          profile_url: string | null
+          purpose: string | null
+          recovery_info: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          account_name?: string | null
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          gdrive_folder_id?: string | null
+          id?: string
+          last_verified_at?: string | null
+          notes?: string | null
+          password_encrypted?: string | null
+          phone?: string | null
+          platform_name: string
+          profile_url?: string | null
+          purpose?: string | null
+          recovery_info?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          account_name?: string | null
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          gdrive_folder_id?: string | null
+          id?: string
+          last_verified_at?: string | null
+          notes?: string | null
+          password_encrypted?: string | null
+          phone?: string | null
+          platform_name?: string
+          profile_url?: string | null
+          purpose?: string | null
+          recovery_info?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       creator_applications: {
         Row: {
           admin_notes: string | null
@@ -343,6 +409,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      creator_gdrive_folders: {
+        Row: {
+          accounts_folder_id: string | null
+          content_folder_id: string | null
+          contracts_folder_id: string | null
+          created_at: string | null
+          id: string
+          invoices_folder_id: string | null
+          last_sync_at: string | null
+          meeting_notes_folder_id: string | null
+          profile_docs_folder_id: string | null
+          root_folder_id: string
+          root_folder_url: string
+          sync_status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          accounts_folder_id?: string | null
+          content_folder_id?: string | null
+          contracts_folder_id?: string | null
+          created_at?: string | null
+          id?: string
+          invoices_folder_id?: string | null
+          last_sync_at?: string | null
+          meeting_notes_folder_id?: string | null
+          profile_docs_folder_id?: string | null
+          root_folder_id: string
+          root_folder_url: string
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          accounts_folder_id?: string | null
+          content_folder_id?: string | null
+          contracts_folder_id?: string | null
+          created_at?: string | null
+          id?: string
+          invoices_folder_id?: string | null
+          last_sync_at?: string | null
+          meeting_notes_folder_id?: string | null
+          profile_docs_folder_id?: string | null
+          root_folder_id?: string
+          root_folder_url?: string
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       creator_meetings: {
         Row: {
@@ -507,6 +624,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      gdrive_file_syncs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          file_type: string | null
+          gdrive_file_id: string
+          gdrive_file_url: string | null
+          gdrive_folder_id: string
+          id: string
+          last_synced_at: string | null
+          source_bucket: string
+          source_file_name: string
+          source_path: string
+          sync_status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          file_type?: string | null
+          gdrive_file_id: string
+          gdrive_file_url?: string | null
+          gdrive_folder_id: string
+          id?: string
+          last_synced_at?: string | null
+          source_bucket: string
+          source_file_name: string
+          source_path: string
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          file_type?: string | null
+          gdrive_file_id?: string
+          gdrive_file_url?: string | null
+          gdrive_folder_id?: string
+          id?: string
+          last_synced_at?: string | null
+          source_bucket?: string
+          source_file_name?: string
+          source_path?: string
+          sync_status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       google_drive_connections: {
         Row: {
