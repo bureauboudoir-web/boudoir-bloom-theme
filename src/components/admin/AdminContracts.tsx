@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Download, CheckCircle2, XCircle, FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ContractGenerator } from "./ContractGenerator";
+import { SignedContractsView } from "./SignedContractsView";
 
 interface Creator {
   id: string;
@@ -28,6 +30,8 @@ interface Contract {
   generation_status: string | null;
   contract_data: any;
   contract_version: string | null;
+  digital_signature_creator: string | null;
+  created_at: string | null;
 }
 
 export const AdminContracts = () => {
@@ -208,6 +212,10 @@ export const AdminContracts = () => {
     return <div className="flex items-center justify-center p-8">Loading...</div>;
   }
 
+  const signedCount = Object.values(contracts).filter(c => c.contract_signed).length;
+  const unsignedCount = Object.values(contracts).filter(c => c.generation_status === 'generated' && !c.contract_signed).length;
+  const pendingCount = creators.filter(c => !contracts[c.id] || contracts[c.id]?.generation_status === 'pending').length;
+
   return (
     <div className="space-y-6">
       <Card>
@@ -286,7 +294,16 @@ export const AdminContracts = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Tabs defaultValue="all">
+            <TabsList className="mb-4">
+              <TabsTrigger value="all">All ({creators.length})</TabsTrigger>
+              <TabsTrigger value="signed">Signed ({signedCount})</TabsTrigger>
+              <TabsTrigger value="unsigned">Unsigned ({unsignedCount})</TabsTrigger>
+              <TabsTrigger value="pending">Pending ({pendingCount})</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="all">
+              <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Creator</TableHead>
@@ -388,6 +405,103 @@ export const AdminContracts = () => {
               })}
             </TableBody>
           </Table>
+            </TabsContent>
+
+            <TabsContent value="signed">
+              <SignedContractsView contracts={contracts} creators={creators} />
+            </TabsContent>
+
+            <TabsContent value="unsigned">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Creator</TableHead>
+                    <TableHead>Generated Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {creators
+                    .filter(creator => {
+                      const contract = contracts[creator.id];
+                      return contract?.generation_status === 'generated' && !contract?.contract_signed;
+                    })
+                    .map((creator) => {
+                      const contract = contracts[creator.id];
+                      return (
+                        <TableRow key={creator.id}>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{creator.full_name}</div>
+                              <div className="text-sm text-muted-foreground">{creator.email}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {contract?.created_at ? new Date(contract.created_at).toLocaleDateString() : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() => window.open(contract?.generated_pdf_url!, '_blank')}
+                              variant="outline"
+                              size="sm"
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="pending">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Creator</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {creators
+                    .filter(creator => {
+                      const contract = contracts[creator.id];
+                      return !contract || contract?.generation_status === 'pending';
+                    })
+                    .map((creator) => (
+                      <TableRow key={creator.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{creator.full_name}</div>
+                            <div className="text-sm text-muted-foreground">{creator.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm text-muted-foreground">Not generated</span>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              setSelectedCreatorForGeneration(creator.id);
+                              setShowContractGenerator(true);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="text-rose-gold border-rose-gold hover:bg-rose-gold/10"
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Generate
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
