@@ -261,7 +261,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: ClipboardList,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('applications') : navigate('/admin'),
         },
         {
           title: "Content to Review",
@@ -269,7 +269,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: FileCheck,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('review') : navigate('/admin'),
         },
         {
           title: "Total Creators",
@@ -277,7 +277,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('creators') : navigate('/admin'),
         },
         {
           title: "Open Tickets",
@@ -285,7 +285,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Mail,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('support') : navigate('/admin'),
         },
       ];
     }
@@ -298,7 +298,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: CheckSquare,
           color: "text-amber-500",
           bgColor: "bg-amber-500/10",
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('commitments') : navigate('/manager'),
         },
         {
           title: "Scheduled Meetings",
@@ -306,7 +306,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Calendar,
           color: "text-blue-500",
           bgColor: "bg-blue-500/10",
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('meetings') : navigate('/manager'),
         },
         {
           title: "Assigned Creators",
@@ -314,7 +314,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Users,
           color: "text-green-500",
           bgColor: "bg-green-500/10",
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
         },
         {
           title: "Content to Review",
@@ -322,7 +322,7 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
           icon: Upload,
           color: "text-purple-500",
           bgColor: "bg-purple-500/10",
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('review') : navigate('/manager'),
         },
       ];
     }
@@ -373,25 +373,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Manage Applications",
           icon: ClipboardList,
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('applications') : navigate('/admin'),
           variant: "default" as const,
         },
         {
           label: "Review Content",
           icon: FileCheck,
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('review') : navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Manage Users",
           icon: Users,
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('roles') : navigate('/admin'),
           variant: "secondary" as const,
         },
         {
           label: "Analytics",
           icon: BarChart3,
-          action: () => navigate('/admin'),
+          action: () => onNavigate ? onNavigate('overview') : navigate('/admin'),
           variant: "outline" as const,
         },
       ];
@@ -402,25 +402,25 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
         {
           label: "Review Applications",
           icon: ClipboardList,
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('applications') : navigate('/manager'),
           variant: "default" as const,
         },
         {
           label: "Assign Tasks",
           icon: UserPlus,
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('commitments') : navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "Schedule Shoots",
           icon: Video,
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('shoots') : navigate('/manager'),
           variant: "secondary" as const,
         },
         {
           label: "View Reports",
           icon: BarChart3,
-          action: () => navigate('/manager'),
+          action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
           variant: "outline" as const,
         },
       ];
