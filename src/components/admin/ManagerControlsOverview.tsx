@@ -22,6 +22,7 @@ import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useNotificationHistory } from "@/hooks/useNotificationHistory";
 import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
+import { TestDataGenerator } from "./TestDataGenerator";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ManagerControlsOverviewProps {
@@ -302,6 +303,9 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
           <NotificationHistoryPanel userId={managerId} onClose={() => setShowHistory(false)} />
         </DialogContent>
       </Dialog>
+
+      {/* Test Data Generator */}
+      <TestDataGenerator />
 
       {/* Quick Stats */}
       <div className="grid gap-4 md:grid-cols-3">
