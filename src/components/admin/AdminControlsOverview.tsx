@@ -149,7 +149,7 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       const { data: accessRequests } = await supabase
         .from('creator_access_levels')
         .select('id')
-        .or('access_level.eq.none,access_level.eq.meeting_only');
+        .or('access_level.eq.no_access,access_level.eq.meeting_only');
 
       // Content to review
       const { data: contentReview } = await supabase
