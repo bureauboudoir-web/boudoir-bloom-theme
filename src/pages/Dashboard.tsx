@@ -68,6 +68,7 @@ import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
 import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
 import { ProductionReadinessCheck } from "@/components/admin/ProductionReadinessCheck";
 import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerFlow";
+import { ComprehensiveProductionTest } from "@/components/admin/ComprehensiveProductionTest";
 import { useTranslation } from "react-i18next";
 import { Wrench, ArrowRight } from "lucide-react";
 
@@ -714,6 +715,7 @@ const Dashboard = () => {
                                     Full Admin Dashboard
                                   </Button>
                                 </div>
+                                <ComprehensiveProductionTest />
                                 <ProductionReadinessCheck />
                                 <EnhancedTestManagerFlow />
                                 <TestDataGenerator />
