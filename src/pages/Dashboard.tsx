@@ -344,6 +344,7 @@ const Dashboard = () => {
                       onTabChange={setActiveTab}
                       pendingCommitments={pendingCommitments}
                       newInvoices={newInvoices}
+                      upcomingShoots={0}
                       isAdmin={isAdmin}
                       isSuperAdmin={isSuperAdmin}
                       isManagerOnly={isManagerOnly}
@@ -408,6 +409,7 @@ const Dashboard = () => {
                 onTabChange={setActiveTab}
                 pendingCommitments={pendingCommitments}
                 newInvoices={newInvoices}
+                upcomingShoots={0}
                 isAdmin={isAdmin}
                 isSuperAdmin={isSuperAdmin}
                 isManagerOnly={isManagerOnly}
