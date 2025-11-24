@@ -26,12 +26,13 @@ import { ManagerWelcome } from "@/components/admin/ManagerWelcome";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverview";
+import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings">("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings" | "notifications">("applications");
   const [showWelcome, setShowWelcome] = useState(false);
   
   const {
@@ -185,12 +186,20 @@ const ManagerDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-13">
             <TabsTrigger value="applications">
               Applications
             </TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="workload">Workload</TabsTrigger>
+            <TabsTrigger value="notifications" className="relative">
+              Notifications
+              {totalNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
+                  {totalNotifications}
+                </span>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="access">Access</TabsTrigger>
             <TabsTrigger value="commitments" className="relative">
               Commitments
@@ -244,6 +253,10 @@ const ManagerDashboard = () => {
 
           <TabsContent value="workload" className="space-y-4">
             <ManagerWorkloadOverview />
+          </TabsContent>
+
+          <TabsContent value="notifications" className="space-y-4">
+            {user?.id && <ManagerNotifications userId={user.id} />}
           </TabsContent>
 
           <TabsContent value="commitments" className="space-y-4">
