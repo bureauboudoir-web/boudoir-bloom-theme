@@ -137,11 +137,18 @@ export const AdminMeetings = () => {
     return matchesSearch && matchesStatus && matchesType && matchesManager && matchesDateRange;
   });
 
-  const hasActiveFilters = statusFilter !== "all" || meetingTypeFilter !== "all" || 
-    managerFilter !== "all" || dateFromFilter !== "" || dateToFilter !== "";
+  const hasActiveFilters = statusFilter !== "all" || 
+    purposeFilter !== "all" || 
+    priorityFilter !== "all" || 
+    meetingTypeFilter !== "all" || 
+    managerFilter !== "all" || 
+    dateFromFilter !== "" || 
+    dateToFilter !== "";
 
   const clearFilters = () => {
     setStatusFilter("all");
+    setPurposeFilter("all");
+    setPriorityFilter("all");
     setMeetingTypeFilter("all");
     setManagerFilter("all");
     setDateFromFilter("");
@@ -522,7 +529,14 @@ export const AdminMeetings = () => {
                 Filters
                 {hasActiveFilters && (
                   <Badge variant="secondary" className="ml-1 h-5 px-1.5">
-                    {[statusFilter !== "all", meetingTypeFilter !== "all", managerFilter !== "all", dateFromFilter || dateToFilter].filter(Boolean).length}
+                    {[
+                      statusFilter !== "all", 
+                      purposeFilter !== "all",
+                      priorityFilter !== "all",
+                      meetingTypeFilter !== "all", 
+                      managerFilter !== "all", 
+                      dateFromFilter || dateToFilter
+                    ].filter(Boolean).length}
                   </Badge>
                 )}
               </Button>
@@ -589,18 +603,6 @@ export const AdminMeetings = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                      <SelectTrigger className="h-9">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                        <SelectItem value="confirmed">Confirmed</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
                   <div className="space-y-2">
                     <Label className="text-xs">Meeting Type</Label>
@@ -661,6 +663,18 @@ export const AdminMeetings = () => {
                 <Badge variant="secondary" className="gap-1">
                   Status: {statusFilter}
                   <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter("all")} />
+                </Badge>
+              )}
+              {purposeFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Purpose: {purposeFilter.replace('_', ' ')}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setPurposeFilter("all")} />
+                </Badge>
+              )}
+              {priorityFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Priority: {priorityFilter}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setPriorityFilter("all")} />
                 </Badge>
               )}
               {meetingTypeFilter !== "all" && (
