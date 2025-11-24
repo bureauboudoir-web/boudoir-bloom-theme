@@ -32,7 +32,18 @@ serve(async (req) => {
     }
 
     const adminId = user.id;
-    console.log('🔧 Creating pending activation test creators...');
+    console.log('🔧 Creating pending activation test creators for user:', adminId);
+    
+    // Check if user is admin or manager
+    const { data: userRoles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', adminId);
+    
+    const isAdmin = userRoles?.some(r => r.role === 'admin' || r.role === 'super_admin');
+    const isManager = userRoles?.some(r => r.role === 'manager');
+    
+    console.log('User roles:', { isAdmin, isManager, roles: userRoles });
 
     const daysAgo = (days: number) => {
       const date = new Date();
@@ -205,11 +216,18 @@ serve(async (req) => {
     });
     if (hannah) createdAccounts.push(hannah);
 
+    console.log('✅ Successfully created test creators:', createdAccounts.map(a => ({
+      email: a.email,
+      stage: a.stage,
+      userId: a.userId
+    })));
+
     return new Response(
       JSON.stringify({
         success: true,
         accounts: createdAccounts,
-        message: `Created ${createdAccounts.length} pending activation test creators`,
+        assignedTo: adminId,
+        message: `Created ${createdAccounts.length} pending activation test creators assigned to you`,
         stages: {
           no_invitation: 2,
           invitation_sent: 2,
@@ -271,13 +289,20 @@ async function createPendingCreator({
     const userId = authData.user.id;
 
     // Update profile
-    await supabase
+    const { error: profileError } = await supabase
       .from('profiles')
       .update({ 
         full_name,
         assigned_manager_id: adminId 
       })
       .eq('id', userId);
+
+    if (profileError) {
+      console.error(`Failed to update profile for ${email}:`, profileError);
+      throw profileError;
+    }
+
+    console.log(`✓ Assigned ${email} to manager ${adminId}`);
 
     // Assign creator role
     await supabase
@@ -337,7 +362,7 @@ async function createPendingCreator({
         : daysAgo(meetingCompletedDaysAgo);
     }
 
-    await supabase
+    const { error: meetingError } = await supabase
       .from('creator_meetings')
       .insert({
         user_id: userId,
@@ -348,7 +373,16 @@ async function createPendingCreator({
         completed_at: completedAt,
         meeting_type: 'introduction',
         meeting_link: 'https://meet.google.com/test-link',
+        meeting_location: 'Google Meet',
+        meeting_notes: `Test meeting for ${stage} stage`,
       });
+
+    if (meetingError) {
+      console.error(`Failed to create meeting for ${email}:`, meetingError);
+      throw meetingError;
+    }
+
+    console.log(`✓ Created meeting for ${email} (status: ${meetingStatus}, date: ${meetingDate})`);
 
     console.log(`✅ Created ${full_name} (${stage})`);
 

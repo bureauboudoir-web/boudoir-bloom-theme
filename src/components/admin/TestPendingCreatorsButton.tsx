@@ -15,9 +15,14 @@ export const TestPendingCreatorsButton = () => {
       if (error) throw error;
 
       if (data.success) {
-        toast.success(`Created ${data.accounts.length} test creators`, {
+        console.log('Test creators created:', data);
+        toast.success(`Created ${data.accounts.length} test creators assigned to you`, {
           description: `No Invite: ${data.stages.no_invitation}, Invited: ${data.stages.invitation_sent}, Scheduled: ${data.stages.meeting_booked}, Completed: ${data.stages.meeting_completed}`,
+          duration: 5000,
         });
+        
+        // Force page refresh to see new data
+        setTimeout(() => window.location.reload(), 1500);
       } else {
         throw new Error(data.error || 'Failed to create test data');
       }
