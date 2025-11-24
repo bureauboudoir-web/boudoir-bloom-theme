@@ -72,7 +72,10 @@ export const DashboardNav = ({
         ...(isCreator && !isAdmin && !isSuperAdmin && !isManager ? [
           { id: "onboarding" as TabId, label: t('dashboard.nav.onboarding'), icon: <FileText className="w-4 h-4" /> }
         ] : []),
-        { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> },
+        // Only show Creator Profile for users who have the creator role
+        ...(isCreator ? [
+          { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> }
+        ] : []),
         { id: "settings" as TabId, label: t('dashboard.nav.settings'), icon: <Settings className="w-4 h-4" /> },
         { id: "meetings" as TabId, label: t('dashboard.nav.meetings'), icon: <Calendar className="w-4 h-4" /> },
         { id: "upload" as TabId, label: t('dashboard.nav.upload'), icon: <Upload className="w-4 h-4" /> },
