@@ -11,6 +11,7 @@ import { GrantAccessDialog } from "./GrantAccessDialog";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { TestPendingCreatorsButton } from "./TestPendingCreatorsButton";
 import { format } from "date-fns";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   CreatorStage, 
   EmailStatus, 
@@ -436,94 +437,96 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
             </TabsList>
           </Tabs>
 
-          <div className="space-y-2">
-            {filteredCreators.map((creator) => {
-              const stageInfo = getStageInfo(creator.stage);
-              const isExpanded = expandedCreators.has(creator.id);
-              
-              return (
-                <Collapsible key={creator.id} open={isExpanded} onOpenChange={() => toggleCreator(creator.id)}>
-                  <Card className="overflow-hidden transition-all hover:shadow-sm">
-                    <CollapsibleTrigger className="w-full">
-                      <div className="p-3 flex items-center gap-3 hover:bg-accent/5 transition-colors">
-                        <Avatar className="h-10 w-10 flex-shrink-0">
-                          <AvatarImage src={creator.profile_picture_url || undefined} />
-                          <AvatarFallback className="text-sm">
-                            {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        
-                        <div className="flex-1 min-w-0 text-left">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium truncate text-sm">{creator.full_name || 'No name'}</p>
-                            <Badge variant="outline" className={`${stageInfo.color} text-xs px-1.5 py-0`}>
-                              {stageInfo.label}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-muted-foreground truncate">{creator.email}</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {!isExpanded && creator.stage === 'no_invitation' && (
-                            <Badge variant="secondary" className="text-xs">Action Required</Badge>
-                          )}
-                          {isExpanded ? (
-                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                      </div>
-                    </CollapsibleTrigger>
-                    
-                    <CollapsibleContent>
-                      <div className="px-3 pb-3 pt-1 space-y-3 border-t border-border/50 bg-muted/20">
-                        {/* Status Description */}
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {stageInfo.description}
-                        </p>
-                        
-                        {/* Email Status */}
-                        <div className="flex items-center gap-2 p-2 rounded-md bg-background">
-                          {getEmailIndicator(creator)}
-                        </div>
-                        
-                        {/* Meeting Details */}
-                        {creator.meeting_date && (
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="flex items-center gap-2 p-2 rounded-md bg-background">
-                              <Calendar className="h-4 w-4 text-muted-foreground" />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium">
-                                  {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
-                                </p>
-                                {creator.stage === 'meeting_booked' && (
-                                  <p className="text-xs text-primary">
-                                    {formatTimeUntil(creator.meeting_date)}
-                                  </p>
-                                )}
-                              </div>
+          <ScrollArea className="h-[400px] pr-4">
+            <div className="space-y-2">
+              {filteredCreators.map((creator) => {
+                const stageInfo = getStageInfo(creator.stage);
+                const isExpanded = expandedCreators.has(creator.id);
+                
+                return (
+                  <Collapsible key={creator.id} open={isExpanded} onOpenChange={() => toggleCreator(creator.id)}>
+                    <Card className="overflow-hidden transition-all hover:shadow-sm">
+                      <CollapsibleTrigger className="w-full">
+                        <div className="p-3 flex items-center gap-3 hover:bg-accent/5 transition-colors">
+                          <Avatar className="h-10 w-10 flex-shrink-0">
+                            <AvatarImage src={creator.profile_picture_url || undefined} />
+                            <AvatarFallback className="text-sm">
+                              {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1 min-w-0 text-left">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium truncate text-sm">{creator.full_name || 'No name'}</p>
+                              <Badge variant="outline" className={`${stageInfo.color} text-xs px-1.5 py-0`}>
+                                {stageInfo.label}
+                              </Badge>
                             </div>
-                            {creator.meeting_time && (
-                              <div className="flex items-center gap-2 p-2 rounded-md bg-background">
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                <p className="text-xs font-medium">{creator.meeting_time}</p>
-                              </div>
+                            <p className="text-xs text-muted-foreground truncate">{creator.email}</p>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {!isExpanded && creator.stage === 'no_invitation' && (
+                              <Badge variant="secondary" className="text-xs">Action Required</Badge>
+                            )}
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
                             )}
                           </div>
-                        )}
-                        
-                        {/* Action Buttons */}
-                        <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
-                          {getActionButtons(creator)}
                         </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Card>
-                </Collapsible>
-              );
-            })}
-          </div>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent>
+                        <div className="px-3 pb-3 pt-1 space-y-3 border-t border-border/50 bg-muted/20">
+                          {/* Status Description */}
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {stageInfo.description}
+                          </p>
+                          
+                          {/* Email Status */}
+                          <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                            {getEmailIndicator(creator)}
+                          </div>
+                          
+                          {/* Meeting Details */}
+                          {creator.meeting_date && (
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-medium">
+                                    {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
+                                  </p>
+                                  {creator.stage === 'meeting_booked' && (
+                                    <p className="text-xs text-primary">
+                                      {formatTimeUntil(creator.meeting_date)}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              {creator.meeting_time && (
+                                <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                                  <Clock className="h-4 w-4 text-muted-foreground" />
+                                  <p className="text-xs font-medium">{creator.meeting_time}</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* Action Buttons */}
+                          <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
+                            {getActionButtons(creator)}
+                          </div>
+                        </div>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
+                );
+              })}
+            </div>
+          </ScrollArea>
 
           {filteredCreators.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
