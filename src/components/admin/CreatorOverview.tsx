@@ -45,32 +45,14 @@ export const CreatorOverview = () => {
 
   const fetchCreatorStats = async () => {
     try {
-      let profileIds: string[] = [];
-
-      // If manager (not admin/super_admin), filter by assigned creators
-      if (!isSuperAdmin && !isAdmin && user) {
-        const { data: assignedMeetings } = await supabase
-          .from('creator_meetings')
-          .select('user_id')
-          .eq('assigned_manager_id', user.id);
-
-        profileIds = [...new Set(assignedMeetings?.map(m => m.user_id) || [])];
-
-        if (profileIds.length === 0) {
-          setCreators([]);
-          setLoading(false);
-          return;
-        }
-      }
-
       let query = supabase
         .from('profiles')
         .select('id, email, full_name, assigned_manager_id')
         .order('email');
 
-      // Apply filter for managers
-      if (!isSuperAdmin && !isAdmin && profileIds.length > 0) {
-        query = query.in('id', profileIds);
+      // If manager (not admin/super_admin), filter by assigned creators
+      if (!isSuperAdmin && !isAdmin && user) {
+        query = query.eq('assigned_manager_id', user.id);
       }
 
       const { data: profiles, error: profilesError } = await query;
