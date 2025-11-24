@@ -181,7 +181,8 @@ export const ContentReview = () => {
     }
   };
 
-  const getFileIcon = (contentType: string) => {
+  const getFileIcon = (contentType: string | null) => {
+    if (!contentType) return <FileIcon className="w-5 h-5" />;
     if (contentType.startsWith('video/')) return <Video className="w-5 h-5" />;
     if (contentType.startsWith('image/')) return <ImageIcon className="w-5 h-5" />;
     return <FileIcon className="w-5 h-5" />;
