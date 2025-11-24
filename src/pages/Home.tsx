@@ -36,14 +36,14 @@ const Home = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
             A luxury creative agency in heart of Amsterdam iconic district, guiding creators in the art of presence, identity, and digital performance.
           </p>
-          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 w-auto inline-flex">
+          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 text-base">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
       </section>
 
       {/* Section 2: Who We Are & How We Compare */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-secondary/30">
+      <section className="py-20 px-4 sm:px-6 bg-secondary/30">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-start">
             <div>
@@ -60,12 +60,12 @@ const Home = () => {
               
             </div>
             
-            <Card className="p-6 sm:p-8 md:p-10 bg-card border-primary/20 shadow-xl">
-              <h3 className="font-serif text-2xl sm:text-3xl mb-6 sm:mb-8 text-center text-[#8a0000]">Your Benefits</h3>
+            <Card className="p-8 bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl shadow-xl">
+              <h3 className="font-serif text-2xl sm:text-3xl mb-8 text-center text-rose-gold">Your Benefits</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Camera className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                    <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Professional Production</p>
@@ -73,8 +73,8 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                    <TrendingUp className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Revenue Optimization</p>
@@ -82,8 +82,8 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                    <Users className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">24/7 Support Team</p>
@@ -91,8 +91,8 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                    <MapPin className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">Amsterdam Location</p>
@@ -106,7 +106,7 @@ const Home = () => {
       </section>
 
       {/* Section 3: What We Do */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-20 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl text-center">
           <p className="text-sm text-[#d1ae94] mb-4 font-medium">What We Do</p>
           <h2 className="font-serif mb-6 sm:mb-8 text-[#d1ae94] leading-tight text-2xl sm:text-3xl md:text-4xl">
@@ -114,11 +114,11 @@ const Home = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 mt-16 text-left">
-            <Card className="p-8 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <Sparkles className="w-8 h-8 text-[#d1ae94]" />
+            <Card className="p-8 border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
+              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-rose-gold/30">
+                <Sparkles className="w-8 h-8 text-rose-gold" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-[#d1ae94]">Our Vision</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Vision</h3>
               <p className="text-muted-foreground leading-relaxed">
                 To be the premier creator agency in Europe, setting the standard for luxury adult content creation. 
                 We envision a world where creators are empowered with world-class tools, support, and opportunities 
@@ -126,11 +126,11 @@ const Home = () => {
               </p>
             </Card>
             
-            <Card className="p-8 hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <Target className="w-8 h-8 text-[#d1ae94]" />
+            <Card className="p-8 border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
+              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-rose-gold/30">
+                <Target className="w-8 h-8 text-rose-gold" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-[#d1ae94]">Our Mission</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Mission</h3>
               <p className="text-muted-foreground leading-relaxed">
                 To transform creators into successful entrepreneurs by providing end-to-end support: from professional 
                 content production in our Amsterdam studio to AI-driven marketing and personalized account management. 
@@ -142,7 +142,7 @@ const Home = () => {
       </section>
 
       {/* Section 4: Our Creator Services */}
-      <section className="py-16 sm:py-24 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-center mb-12 sm:mb-16 text-[#d1ae94]">
             Our Creator Services
@@ -157,27 +157,27 @@ const Home = () => {
               
               <div className="space-y-5">
                 <div className="flex gap-3 items-start">
-                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
                   <p className="text-base text-foreground">Brand strategy & persona development</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
-                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
                   <p className="text-base text-foreground">Studio shoots & content production</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
-                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
                   <p className="text-base text-foreground">Marketing & audience growth</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
-                  <CheckCircle className="w-5 h-5 text-[#d1ae94] flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
                   <p className="text-base text-foreground">24/7 dedicated support team</p>
                 </div>
               </div>
               
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] mt-4">
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full mt-4">
                 <Link to="/signup">Start Your Journey</Link>
               </Button>
             </div>
@@ -185,13 +185,13 @@ const Home = () => {
             {/* Right: Service Cards */}
             <div className="grid grid-cols-1 gap-4">
               {/* Planning */}
-              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                    <Lightbulb className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Lightbulb className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Planning</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Planning</h3>
                     <p className="text-sm text-muted-foreground">
                       Persona development, boundaries, brand strategy, and market positioning.
                     </p>
@@ -200,13 +200,13 @@ const Home = () => {
               </Card>
 
               {/* Production */}
-              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                    <Camera className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Production</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Production</h3>
                     <p className="text-sm text-muted-foreground">
                       Studio shoots, lighting, styling, posing, and high-end visual content.
                     </p>
@@ -215,13 +215,13 @@ const Home = () => {
               </Card>
 
               {/* Marketing */}
-              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                    <Megaphone className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Megaphone className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Marketing</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Marketing</h3>
                     <p className="text-sm text-muted-foreground">
                       Content strategy, storytelling, social hooks, and audience building.
                     </p>
@@ -230,13 +230,13 @@ const Home = () => {
               </Card>
 
               {/* Support */}
-              <Card className="bg-card border-2 border-primary/30 hover:border-primary transition-all p-5 hover:shadow-[0_0_20px_rgba(220,38,38,0.3)]">
+              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d1ae94]/20 flex items-center justify-center">
-                    <HeadphonesIcon className="w-6 h-6 text-[#d1ae94]" />
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <HeadphonesIcon className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-[#d1ae94]">Support</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Support</h3>
                     <p className="text-sm text-muted-foreground">
                       <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
                     </p>
@@ -249,17 +249,19 @@ const Home = () => {
       </section>
 
       {/* Section 5: What Makes Us Different */}
-      <section className="py-24 bg-secondary/20">
+      <section className="py-20 bg-secondary/20">
         <div className="container mx-auto px-6 max-w-6xl">
           <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
             What Makes Us Different
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all glow-gold">
+            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <Crown className="w-12 h-12 text-rose-gold" />
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Crown className="w-8 h-8 text-rose-gold" />
+                  </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
                   The Brand Umbrella
@@ -271,10 +273,12 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all glow-gold">
+            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <Camera className="w-12 h-12 text-rose-gold" />
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Camera className="w-8 h-8 text-rose-gold" />
+                  </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
                   Professional Content  
@@ -285,10 +289,12 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all glow-gold">
+            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <Gem className="w-12 h-12 text-rose-gold" />
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                    <Gem className="w-8 h-8 text-rose-gold" />
+                  </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
                   Marketing Machine
@@ -304,7 +310,7 @@ const Home = () => {
       </section>
 
       {/* Section 6: Support & Management */}
-      <section className="py-24 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-6 max-w-6xl">
           <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
             Support & Management
@@ -325,7 +331,7 @@ const Home = () => {
                 </div>
               </div>
               
-              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/30 p-8 space-y-6 rounded-t-none border-t-0">
+              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-rose-gold/30 p-8 space-y-6 rounded-t-none border-t-0">
                 <div className="text-center mb-6">
                   <h3 className="font-serif text-2xl text-[#d1ae94] mb-2">Your Creator Dashboard</h3>
                   <p className="text-sm text-muted-foreground">
@@ -337,33 +343,33 @@ const Home = () => {
                 <div className="space-y-4">
                   {/* Mock Stats Cards */}
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-[#d1ae94]">12</div>
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                      <div className="text-2xl font-bold text-rose-gold">12</div>
                       <div className="text-xs text-muted-foreground">Active Shoots</div>
                     </div>
-                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-[#d1ae94]">8</div>
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                      <div className="text-2xl font-bold text-rose-gold">8</div>
                       <div className="text-xs text-muted-foreground">Commitments</div>
                     </div>
-                    <div className="bg-background/50 rounded-lg p-3 text-center border border-primary/20">
-                      <div className="text-2xl font-bold text-[#d1ae94]">45</div>
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                      <div className="text-2xl font-bold text-rose-gold">45</div>
                       <div className="text-xs text-muted-foreground">Content Pieces</div>
                     </div>
                   </div>
                   
                   {/* Mock Upload Area */}
-                  <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-primary/30">
+                  <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-rose-gold/40">
                     <div className="flex items-center gap-3">
-                      <Upload className="w-8 h-8 text-[#d1ae94]" />
+                      <Upload className="w-8 h-8 text-rose-gold" />
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-[#d1ae94]">Content Upload</div>
+                        <div className="text-sm font-semibold text-rose-gold">Content Upload</div>
                         <div className="text-xs text-muted-foreground">Drag & drop or click to upload</div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Mock Commitment List */}
-                  <div className="bg-background/50 rounded-lg p-4 border border-primary/20 space-y-2">
+                  <div className="bg-background/50 rounded-lg p-4 border-2 border-rose-gold/30 space-y-2">
                     <div className="text-xs font-semibold text-foreground mb-2">This Week's Commitments</div>
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-primary"></div>
@@ -436,7 +442,7 @@ const Home = () => {
       <RoseJourneyTimeline />
 
       {/* Section 8: Newsletter */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-20 bg-secondary/30">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
             Join Our Newsletter
@@ -445,8 +451,8 @@ const Home = () => {
             Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border border-primary/30 focus:border-[#d1ae94] focus:outline-none focus:ring-2 focus:ring-[#d1ae94]/20 text-foreground" required />
-            <Button type="submit" size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 w-auto">
+            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border-2 border-rose-gold/30 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
+            <Button type="submit" size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8">
               Subscribe
             </Button>
           </form>
@@ -460,7 +466,7 @@ const Home = () => {
       <QAAccordion />
 
       {/* Section 10: Final CTA - Ready to Begin */}
-      <section className="py-24 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-6 text-center max-w-4xl">
           <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
             Ready to Begin Your Journey?
@@ -469,7 +475,7 @@ const Home = () => {
             Join a community of creators who've chosen clarity, artistry, and long-term growth 
             over shortcuts and noise. Let's build something extraordinary together.
           </p>
-          <Button asChild size="sm" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 w-auto inline-flex">
+          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8">
             <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
