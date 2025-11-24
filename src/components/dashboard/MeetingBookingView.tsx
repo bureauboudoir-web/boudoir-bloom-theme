@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { MeetingRescheduleDialog } from "./MeetingRescheduleDialog";
+import { MeetingBookingTabs } from "@/components/meetings/MeetingBookingTabs";
 
 interface ManagerInfo {
   full_name: string;
@@ -472,7 +473,7 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     );
   }
 
-  // Booking mode (original full-page UI)
+  // Booking mode - Use new tabbed interface
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
@@ -485,6 +486,22 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
         </div>
       </header>
       
+      <div className="container mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold mb-2">Meeting Center</h2>
+            <p className="text-muted-foreground">Schedule and manage your meetings</p>
+          </div>
+          
+          {user && <MeetingBookingTabs userId={user.id} />}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Keep the old implementation commented out for reference
+/*
       <div className="container mx-auto px-6 py-24">
         <Card className="max-w-3xl mx-auto border-border bg-secondary/20">
         <CardHeader className="text-center">
@@ -699,4 +716,4 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
     </div>
     </div>
   );
-};
+*/
