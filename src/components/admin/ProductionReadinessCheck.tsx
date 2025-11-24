@@ -5,9 +5,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, CheckCircle2, XCircle, AlertTriangle, Loader2, Database, Lock, FileText } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Shield, CheckCircle2, XCircle, AlertTriangle, Loader2, Database, Lock, FileText, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface SecurityFinding {
   id: string;
@@ -25,10 +27,12 @@ interface ChecklistItem {
 }
 
 export const ProductionReadinessCheck = () => {
+  const { isOpen, toggle } = useCollapsibleSection('production-readiness-check', false);
   const [loading, setLoading] = useState(false);
   const [securityFindings, setSecurityFindings] = useState<SecurityFinding[]>([]);
   const [databaseChecks, setDatabaseChecks] = useState<any[]>([]);
-  const [checklist, setChecklist] = useState<ChecklistItem[]>([
+  
+  const initialChecklist: ChecklistItem[] = [
     { id: '1', category: 'Security', item: 'Enable leaked password protection', status: 'pending', critical: true },
     { id: '2', category: 'Security', item: 'Run all automated tests', status: 'pending', critical: true },
     { id: '3', category: 'Security', item: 'Verify RLS policies on all tables', status: 'pending', critical: true },
@@ -49,7 +53,16 @@ export const ProductionReadinessCheck = () => {
     { id: '18', category: 'Documentation', item: 'Update README with deployment info', status: 'pending', critical: false },
     { id: '19', category: 'Legal', item: 'Review Terms of Service', status: 'pending', critical: true },
     { id: '20', category: 'Legal', item: 'Review Privacy Policy', status: 'pending', critical: true },
-  ]);
+  ];
+  
+  const [checklist, setChecklist] = useState<ChecklistItem[]>(initialChecklist);
+
+  const resetTest = () => {
+    setChecklist(initialChecklist);
+    setSecurityFindings([]);
+    setDatabaseChecks([]);
+    toast.success("Test reset - ready for new run");
+  };
 
   const runSecurityScan = async () => {
     setLoading(true);
@@ -153,18 +166,39 @@ export const ProductionReadinessCheck = () => {
   const completionRate = Math.round((totalCompleted / checklist.length) * 100);
 
   return (
-    <div className="space-y-6">
+    <Collapsible open={isOpen} onOpenChange={toggle}>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Production Readiness Check
-          </CardTitle>
-          <CardDescription>
-            Comprehensive system verification before going live
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Production Readiness Check
+              </CardTitle>
+              <CardDescription>
+                Comprehensive system verification before going live
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetTest}
+                disabled={loading}
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Run New Test
+              </Button>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CollapsibleContent>
+          <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <Card>
               <CardContent className="pt-6">
@@ -363,7 +397,8 @@ export const ProductionReadinessCheck = () => {
             </TabsContent>
           </Tabs>
         </CardContent>
+        </CollapsibleContent>
       </Card>
-    </div>
+    </Collapsible>
   );
 };
