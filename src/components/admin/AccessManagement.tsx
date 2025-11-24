@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Calendar, Clock, UserCheck, Search, ShieldCheck, AlertCircle, Shield, XCircle } from "lucide-react";
+import { Calendar, Clock, UserCheck, Search, ShieldCheck, AlertCircle, Shield, XCircle, Users } from "lucide-react";
 import { GrantAccessDialog } from "./GrantAccessDialog";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { format } from "date-fns";
@@ -211,6 +211,7 @@ export const AccessManagement = () => {
         };
       });
 
+      console.log(`[AccessManagement] Found ${creatorsData.length} creators:`, creatorsData);
       setCreators(creatorsData);
     } catch (error) {
       console.error('Error fetching creators with access:', error);
@@ -396,6 +397,21 @@ export const AccessManagement = () => {
 
           {/* Creators List */}
           <div className="space-y-3">
+            {filteredCreators.length === 0 && (
+              <Card className="p-8">
+                <div className="text-center text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg font-medium mb-2">No creators found in the system</p>
+                  <p className="text-sm">
+                    {filterStatus !== 'all' 
+                      ? `No creators with "${filterStatus}" status. Try changing the filter.`
+                      : searchQuery 
+                        ? `No creators match your search "${searchQuery}".`
+                        : 'No creators are assigned to you yet. Check back later or contact an admin.'}
+                  </p>
+                </div>
+              </Card>
+            )}
             {filteredCreators.map((creator) => (
               <Card key={creator.id} className="p-4 bg-muted/30">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
