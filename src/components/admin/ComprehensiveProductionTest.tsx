@@ -16,6 +16,9 @@ import { MobileTestingGuide } from "./MobileTestingGuide";
 import { ContractTestChecklist } from "./ContractTestChecklist";
 import { MeetingBookingChecklist } from "./MeetingBookingChecklist";
 import { LegalReviewChecklist } from "./LegalReviewChecklist";
+import { ProductionIssueResolver } from "./ProductionIssueResolver";
+import { ProductionReadinessCheck } from "./ProductionReadinessCheck";
+import { Shield, AlertTriangle } from "lucide-react";
 
 interface TestResult {
   category: string;
@@ -126,10 +129,20 @@ export const ComprehensiveProductionTest = () => {
 
       // 4. Database Integrity Checks
       try {
-        const { count: orphanedCount } = await supabase
+        // Get all user_ids from user_roles
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('user_id');
+        
+        const userIdsWithRoles = new Set(userRoles?.map(r => r.user_id) || []);
+        
+        // Get all profiles
+        const { data: allProfiles } = await supabase
           .from('profiles')
-          .select('*', { count: 'exact', head: true })
-          .not('id', 'in', `(SELECT DISTINCT user_id FROM user_roles)`);
+          .select('id');
+        
+        // Find orphaned profiles
+        const orphanedCount = allProfiles?.filter(p => !userIdsWithRoles.has(p.id)).length || 0;
 
         testResults.push({
           category: "Database",
@@ -262,14 +275,20 @@ export const ComprehensiveProductionTest = () => {
         </CardHeader>
         <CollapsibleContent>
           <CardContent className="space-y-4">
-            <Tabs defaultValue="automated" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs defaultValue="dashboard" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="automated">Automated Tests</TabsTrigger>
                 <TabsTrigger value="manual">Manual Tests</TabsTrigger>
                 <TabsTrigger value="tools">Helper Tools</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="automated" className="space-y-4">
+          <TabsContent value="dashboard" className="space-y-4">
+            <ProductionReadinessCheck />
+            <ProductionIssueResolver />
+          </TabsContent>
+
+          <TabsContent value="automated" className="space-y-4">
                 <div className="flex gap-2">
                   <Button 
                     onClick={runAllTests} 
@@ -384,24 +403,51 @@ export const ComprehensiveProductionTest = () => {
               </TabsContent>
 
               <TabsContent value="tools" className="space-y-4">
-                <Alert>
-                  <AlertDescription>
-                    Use these helper tools to verify security, email templates, and system configuration.
-                  </AlertDescription>
-                </Alert>
-
-                <RLSPoliciesChecker />
-                <EmailTemplatesTester />
+                <div id="rls-checker">
+                  <RLSPoliciesChecker />
+                </div>
+                
+                <div id="email-tester">
+                  <EmailTemplatesTester />
+                </div>
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Leaked Password Protection</CardTitle>
-                    <CardDescription>Enable in Backend → Database → Authentication</CardDescription>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Backend Settings
+                    </CardTitle>
+                    <CardDescription>
+                      Access backend configuration for critical security settings
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => window.open('https://supabase.com/dashboard/project/pohxtstwslymiqrxmlal/settings/auth', '_blank')}>
-                      Open Backend Settings
-                    </Button>
+                    <div className="space-y-4">
+                      <Alert>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription>
+                          <p className="font-medium mb-2">Critical Configuration Checklist:</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm">
+                            <li><strong>Leaked Password Protection:</strong> Navigate to Backend → Database → Authentication and enable</li>
+                            <li><strong>Email API Key:</strong> Verify RESEND_API_KEY is configured in secrets</li>
+                            <li><strong>RLS Policies:</strong> Use checker above to verify all tables have proper policies</li>
+                            <li><strong>Rate Limiting:</strong> Edge functions have rate limiting enabled by default</li>
+                          </ul>
+                        </AlertDescription>
+                      </Alert>
+                      
+                      <div className="pt-2">
+                        <Button variant="outline" className="w-full" asChild>
+                          <a href="#backend" onClick={(e) => {
+                            e.preventDefault();
+                            toast.info("Navigate to Backend in the left sidebar to access settings");
+                          }}>
+                            <Shield className="mr-2 h-4 w-4" />
+                            Open Backend Settings Guide
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>

@@ -1183,6 +1183,45 @@ export type Database = {
         }
         Relationships: []
       }
+      production_fix_history: {
+        Row: {
+          applied_at: string | null
+          applied_by: string | null
+          created_at: string | null
+          error_message: string | null
+          fix_applied: string
+          id: string
+          issue_description: string
+          issue_type: string
+          rollback_data: Json | null
+          success: boolean | null
+        }
+        Insert: {
+          applied_at?: string | null
+          applied_by?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          fix_applied: string
+          id?: string
+          issue_description: string
+          issue_type: string
+          rollback_data?: Json | null
+          success?: boolean | null
+        }
+        Update: {
+          applied_at?: string | null
+          applied_by?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          fix_applied?: string
+          id?: string
+          issue_description?: string
+          issue_type?: string
+          rollback_data?: Json | null
+          success?: boolean | null
+        }
+        Relationships: []
+      }
       production_test_status: {
         Row: {
           completed_at: string | null
