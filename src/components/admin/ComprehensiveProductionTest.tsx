@@ -18,6 +18,8 @@ import { MeetingBookingChecklist } from "./MeetingBookingChecklist";
 import { LegalReviewChecklist } from "./LegalReviewChecklist";
 import { ProductionIssueResolver } from "./ProductionIssueResolver";
 import { ProductionReadinessCheck } from "./ProductionReadinessCheck";
+import { SecurityConfigGuide } from "./SecurityConfigGuide";
+import { ManualVerificationGuide } from "./ManualVerificationGuide";
 import { Shield, AlertTriangle } from "lucide-react";
 
 interface TestResult {
@@ -286,6 +288,7 @@ export const ComprehensiveProductionTest = () => {
               <TabsContent value="dashboard" className="space-y-4">
                 <ProductionReadinessCheck />
                 <ProductionIssueResolver />
+                <SecurityConfigGuide />
               </TabsContent>
 
               <TabsContent value="automated" className="space-y-4">
@@ -389,9 +392,11 @@ export const ComprehensiveProductionTest = () => {
               </TabsContent>
 
               <TabsContent value="manual" className="space-y-4">
+                <ManualVerificationGuide />
+                
                 <Alert>
                   <AlertDescription>
-                    Complete these manual tests using the interactive checklists below. Progress is automatically saved.
+                    Additional detailed checklists for specific features:
                   </AlertDescription>
                 </Alert>
 

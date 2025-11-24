@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { QuickFixButton } from "./QuickFixButton";
 
 interface ReadinessItem {
   category: string;
@@ -201,29 +202,35 @@ export const ProductionReadinessCheck = () => {
           })}
         </div>
 
-        <div className="flex gap-2 pt-4 border-t">
-          <Button 
-            onClick={checkReadiness} 
-            disabled={loading}
-            variant="outline"
-            className="flex-1"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Refreshing...
-              </>
-            ) : (
-              "Refresh Status"
-            )}
-          </Button>
-          
-          {isProductionReady && (
-            <Button className="flex-1">
-              <Rocket className="mr-2 h-4 w-4" />
-              Deploy to Production
-            </Button>
+        <div className="space-y-2 pt-4 border-t">
+          {!isProductionReady && (
+            <QuickFixButton />
           )}
+          
+          <div className="flex gap-2">
+            <Button 
+              onClick={checkReadiness} 
+              disabled={loading}
+              variant="outline"
+              className="flex-1"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Refreshing...
+                </>
+              ) : (
+                "Refresh Status"
+              )}
+            </Button>
+            
+            {isProductionReady && (
+              <Button className="flex-1">
+                <Rocket className="mr-2 h-4 w-4" />
+                Deploy to Production
+              </Button>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
