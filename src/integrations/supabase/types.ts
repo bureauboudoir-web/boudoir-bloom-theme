@@ -484,20 +484,28 @@ export type Database = {
       }
       creator_meetings: {
         Row: {
+          action_items: Json | null
           application_id: string | null
           assigned_manager_id: string | null
           completed_at: string | null
           created_at: string | null
           duration_minutes: number | null
           id: string
+          is_recurring: boolean | null
+          meeting_agenda: string | null
           meeting_date: string | null
           meeting_link: string | null
           meeting_location: string | null
           meeting_notes: string | null
+          meeting_purpose: string | null
           meeting_time: string | null
           meeting_type: string | null
+          parent_meeting_id: string | null
+          participant_user_id: string | null
           previous_meeting_date: string | null
           previous_meeting_time: string | null
+          priority: string | null
+          recurrence_pattern: string | null
           reschedule_new_date: string | null
           reschedule_new_time: string | null
           reschedule_reason: string | null
@@ -508,20 +516,28 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          action_items?: Json | null
           application_id?: string | null
           assigned_manager_id?: string | null
           completed_at?: string | null
           created_at?: string | null
           duration_minutes?: number | null
           id?: string
+          is_recurring?: boolean | null
+          meeting_agenda?: string | null
           meeting_date?: string | null
           meeting_link?: string | null
           meeting_location?: string | null
           meeting_notes?: string | null
+          meeting_purpose?: string | null
           meeting_time?: string | null
           meeting_type?: string | null
+          parent_meeting_id?: string | null
+          participant_user_id?: string | null
           previous_meeting_date?: string | null
           previous_meeting_time?: string | null
+          priority?: string | null
+          recurrence_pattern?: string | null
           reschedule_new_date?: string | null
           reschedule_new_time?: string | null
           reschedule_reason?: string | null
@@ -532,20 +548,28 @@ export type Database = {
           user_id: string
         }
         Update: {
+          action_items?: Json | null
           application_id?: string | null
           assigned_manager_id?: string | null
           completed_at?: string | null
           created_at?: string | null
           duration_minutes?: number | null
           id?: string
+          is_recurring?: boolean | null
+          meeting_agenda?: string | null
           meeting_date?: string | null
           meeting_link?: string | null
           meeting_location?: string | null
           meeting_notes?: string | null
+          meeting_purpose?: string | null
           meeting_time?: string | null
           meeting_type?: string | null
+          parent_meeting_id?: string | null
+          participant_user_id?: string | null
           previous_meeting_date?: string | null
           previous_meeting_time?: string | null
+          priority?: string | null
+          recurrence_pattern?: string | null
           reschedule_new_date?: string | null
           reschedule_new_time?: string | null
           reschedule_reason?: string | null
@@ -561,6 +585,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "creator_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_meetings_parent_meeting_id_fkey"
+            columns: ["parent_meeting_id"]
+            isOneToOne: false
+            referencedRelation: "creator_meetings"
             referencedColumns: ["id"]
           },
           {

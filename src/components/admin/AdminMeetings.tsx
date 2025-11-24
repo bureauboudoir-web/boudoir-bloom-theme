@@ -19,6 +19,8 @@ import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { useDebounce } from "@/hooks/useDebounce";
+import { MeetingPurposeBadge } from "@/components/meetings/MeetingPurposeBadge";
+import { MeetingPriorityBadge } from "@/components/meetings/MeetingPriorityBadge";
 
 import { AssistedOnboarding } from "./AssistedOnboarding";
 import { PaginationControls } from "./shared/PaginationControls";
@@ -29,11 +31,15 @@ interface Meeting {
   meeting_date: string;
   meeting_time: string;
   meeting_type: string;
+  meeting_purpose: string | null;
+  priority: string | null;
   meeting_location: string | null;
   meeting_link: string | null;
   status: string;
   duration_minutes: number;
   meeting_notes: string | null;
+  meeting_agenda: string | null;
+  action_items: any;
   created_at: string | null;
   assigned_manager_id: string | null;
   reschedule_requested: boolean | null;
@@ -79,6 +85,8 @@ export const AdminMeetings = () => {
   
   // Advanced filters
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [purposeFilter, setPurposeFilter] = useState<string>("all");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [meetingTypeFilter, setMeetingTypeFilter] = useState<string>("all");
   const [managerFilter, setManagerFilter] = useState<string>("all");
   const [dateFromFilter, setDateFromFilter] = useState<string>("");
@@ -535,6 +543,52 @@ export const AdminMeetings = () => {
                   <div className="space-y-2">
                     <Label className="text-xs">Status</Label>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Statuses" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs">Purpose</Label>
+                    <Select value={purposeFilter} onValueChange={setPurposeFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Purposes</SelectItem>
+                      <SelectItem value="onboarding">Onboarding</SelectItem>
+                      <SelectItem value="follow_up">Follow-Up</SelectItem>
+                      <SelectItem value="feedback">Feedback</SelectItem>
+                      <SelectItem value="studio_shoot">Studio Shoot</SelectItem>
+                      <SelectItem value="manager_internal">Internal</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs">Priority</Label>
+                    <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Priorities" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Priorities</SelectItem>
+                        <SelectItem value="urgent">Urgent</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                       <SelectTrigger className="h-9">
                         <SelectValue />
                       </SelectTrigger>
