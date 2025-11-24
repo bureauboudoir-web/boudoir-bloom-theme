@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, PlayCircle, CheckCircle2, XCircle, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
+import { RLSPoliciesChecker } from "./RLSPoliciesChecker";
+import { EmailTemplatesTester } from "./EmailTemplatesTester";
+import { OnboardingFlowChecklist } from "./OnboardingFlowChecklist";
+import { MobileTestingGuide } from "./MobileTestingGuide";
+import { ContractTestChecklist } from "./ContractTestChecklist";
+import { MeetingBookingChecklist } from "./MeetingBookingChecklist";
+import { LegalReviewChecklist } from "./LegalReviewChecklist";
 
 interface TestResult {
   category: string;
@@ -18,9 +26,35 @@ interface TestResult {
 }
 
 export const ComprehensiveProductionTest = () => {
-  const { isOpen, toggle } = useCollapsibleSection('comprehensive-production-test', false);
+  const { isOpen, toggle } = useCollapsibleSection('comprehensive-production-test', true);
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<TestResult[]>([]);
+  const [persistedResults, setPersistedResults] = useState<TestResult[]>([]);
+
+  useEffect(() => {
+    loadPersistedResults();
+  }, []);
+
+  const loadPersistedResults = async () => {
+    try {
+      const { data } = await supabase
+        .from('production_test_status')
+        .select('*');
+      
+      if (data) {
+        const mapped = data.map(d => ({
+          category: d.test_category,
+          item: d.test_item,
+          status: d.status as 'pass' | 'fail' | 'pending',
+          details: d.notes || '',
+          critical: true
+        }));
+        setPersistedResults(mapped);
+      }
+    } catch (error) {
+      console.error("Failed to load persisted results:", error);
+    }
+  };
 
   const runAllTests = async () => {
     setRunning(true);
@@ -170,6 +204,7 @@ export const ComprehensiveProductionTest = () => {
       });
 
       setResults(testResults);
+      await loadPersistedResults();
       
       const passed = testResults.filter(r => r.status === 'pass').length;
       const failed = testResults.filter(r => r.status === 'fail').length;
@@ -185,7 +220,7 @@ export const ComprehensiveProductionTest = () => {
   };
 
   const exportResults = () => {
-    const resultsText = results.map(r => 
+    const resultsText = allResults.map(r => 
       `${r.category} | ${r.item} | ${r.status.toUpperCase()} | ${r.details}`
     ).join('\n');
     
@@ -199,9 +234,10 @@ export const ComprehensiveProductionTest = () => {
     toast.success("Test results exported!");
   };
 
-  const passCount = results.filter(r => r.status === 'pass').length;
-  const failCount = results.filter(r => r.status === 'fail').length;
-  const pendingCount = results.filter(r => r.status === 'pending').length;
+  const allResults = [...results, ...persistedResults.filter(p => !results.some(r => r.category === p.category && r.item === p.item))];
+  const passCount = allResults.filter(r => r.status === 'pass').length;
+  const failCount = allResults.filter(r => r.status === 'fail').length;
+  const pendingCount = allResults.filter(r => r.status === 'pending').length;
 
   return (
     <Collapsible open={isOpen} onOpenChange={toggle}>
@@ -226,39 +262,45 @@ export const ComprehensiveProductionTest = () => {
         </CardHeader>
         <CollapsibleContent>
           <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Button 
-                onClick={runAllTests} 
-                disabled={running}
-                size="lg"
-              >
-                {running ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Running Tests...
-                  </>
-                ) : (
-                  <>
-                    <PlayCircle className="mr-2 h-4 w-4" />
-                    Run All Production Tests
-                  </>
-                )}
-              </Button>
-              
-              {results.length > 0 && (
-                <Button 
-                  onClick={exportResults}
-                  variant="outline"
-                  size="lg"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Results
-                </Button>
-              )}
-            </div>
+            <Tabs defaultValue="automated" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="automated">Automated Tests</TabsTrigger>
+                <TabsTrigger value="manual">Manual Tests</TabsTrigger>
+                <TabsTrigger value="tools">Helper Tools</TabsTrigger>
+              </TabsList>
 
-            {results.length > 0 && (
-              <>
+              <TabsContent value="automated" className="space-y-4">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={runAllTests} 
+                    disabled={running}
+                    size="lg"
+                  >
+                    {running ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Running Tests...
+                      </>
+                    ) : (
+                      <>
+                        <PlayCircle className="mr-2 h-4 w-4" />
+                        Run Automated Tests
+                      </>
+                    )}
+                  </Button>
+                  
+                  {allResults.length > 0 && (
+                    <Button 
+                      onClick={exportResults}
+                      variant="outline"
+                      size="lg"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Export Results
+                    </Button>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-3 gap-4">
                   <Card>
                     <CardContent className="pt-6 text-center">
@@ -288,43 +330,82 @@ export const ComprehensiveProductionTest = () => {
                   </Alert>
                 )}
 
-                <div className="space-y-2">
-                  {results.map((result, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 rounded-lg border ${
-                        result.status === 'pass'
-                          ? 'bg-green-500/5 border-green-500/20'
-                          : result.status === 'fail'
-                          ? 'bg-red-500/5 border-red-500/20'
-                          : 'bg-yellow-500/5 border-yellow-500/20'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        {result.status === 'pass' ? (
-                          <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        ) : result.status === 'fail' ? (
-                          <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                        ) : (
-                          <Loader2 className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                        )}
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {result.category}
-                            </Badge>
-                            <span className="font-medium">{result.item}</span>
-                          </div>
-                          <div className="text-sm text-muted-foreground mt-1">
-                            {result.details}
+                {allResults.length > 0 && (
+                  <div className="space-y-2">
+                    {allResults.map((result, index) => (
+                      <div
+                        key={index}
+                        className={`p-4 rounded-lg border ${
+                          result.status === 'pass'
+                            ? 'bg-green-500/5 border-green-500/20'
+                            : result.status === 'fail'
+                            ? 'bg-red-500/5 border-red-500/20'
+                            : 'bg-yellow-500/5 border-yellow-500/20'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          {result.status === 'pass' ? (
+                            <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                          ) : result.status === 'fail' ? (
+                            <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                          ) : (
+                            <Loader2 className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                          )}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {result.category}
+                              </Badge>
+                              <span className="font-medium">{result.item}</span>
+                            </div>
+                            <div className="text-sm text-muted-foreground mt-1">
+                              {result.details}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="manual" className="space-y-4">
+                <Alert>
+                  <AlertDescription>
+                    Complete these manual tests using the interactive checklists below. Progress is automatically saved.
+                  </AlertDescription>
+                </Alert>
+
+                <OnboardingFlowChecklist />
+                <ContractTestChecklist />
+                <MeetingBookingChecklist />
+                <MobileTestingGuide />
+                <LegalReviewChecklist />
+              </TabsContent>
+
+              <TabsContent value="tools" className="space-y-4">
+                <Alert>
+                  <AlertDescription>
+                    Use these helper tools to verify security, email templates, and system configuration.
+                  </AlertDescription>
+                </Alert>
+
+                <RLSPoliciesChecker />
+                <EmailTemplatesTester />
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Leaked Password Protection</CardTitle>
+                    <CardDescription>Enable in Backend → Database → Authentication</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button onClick={() => window.open('https://supabase.com/dashboard/project/pohxtstwslymiqrxmlal/settings/auth', '_blank')}>
+                      Open Backend Settings
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </CollapsibleContent>
       </Card>
