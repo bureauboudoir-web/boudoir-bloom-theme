@@ -42,26 +42,26 @@ const qaData = [
 
 const QAAccordion = () => {
   return (
-    <div className="w-full py-24 bg-background">
+    <div className="w-full py-20 bg-background">
       <div className="container mx-auto px-6 max-w-4xl">
-        <div className="text-center mb-12">
-          <h2 className="font-serif text-5xl mb-4 text-rose-gold">Frequently Asked Questions</h2>
-          <p className="text-xl text-muted-foreground">
+        <div className="text-center mb-16">
+          <h2 className="font-serif text-4xl md:text-5xl mb-4 text-rose-gold">Frequently Asked Questions</h2>
+          <p className="text-lg text-muted-foreground">
             Everything you need to know about working with Bureau Boudoir.
           </p>
         </div>
         
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion type="single" collapsible className="space-y-6">
           {qaData.map((qa, index) => (
             <AccordionItem 
               key={index} 
               value={`item-${index}`}
-              className="border border-border rounded-lg bg-card px-6 hover:border-rose-gold/50 transition-colors"
+              className="border-2 border-rose-gold/30 rounded-xl bg-card px-8 hover:border-rose-gold transition-all hover:shadow-lg"
             >
               <AccordionTrigger className="text-left font-serif text-lg text-foreground hover:text-rose-gold hover:no-underline py-6">
                 {qa.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
+              <AccordionContent className="text-muted-foreground leading-relaxed pb-6 text-base">
                 {qa.answer}
               </AccordionContent>
             </AccordionItem>
