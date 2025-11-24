@@ -28,22 +28,22 @@
       "management": "Gestion"
     },
     "nav": {
-      "overview": "Overview",
-      "onboarding": "Onboarding",
-      "account": "Creator Profile",
-      "settings": "Settings",
-      "meetings": "My Meetings",
-      "upload": "Uploads",
-      "library": "Content Library",
-      "commitments": "Commitments",
-      "shoots": "Studio Shoots",
-      "invoices": "Invoices",
-      "contract": "Contract",
-      "support": "Contact Us",
-      "adminDashboard": "Admin Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminControls": "Contrôles Admin",
-      "managerControls": "Contrôles Manager"
+      "overview": "Tableau de Bord Créateur",
+      "onboarding": "Intégration",
+      "account": "Profil du Créateur",
+      "settings": "Paramètres",
+      "meetings": "Mes Réunions",
+      "upload": "Téléchargements",
+      "library": "Bibliothèque de Contenu",
+      "commitments": "Engagements",
+      "shoots": "Séances en Studio",
+      "invoices": "Factures",
+      "contract": "Contrat",
+      "support": "Contactez-nous",
+      "adminDashboard": "Tableau de Bord Admin",
+      "managerDashboard": "Tableau de Bord Manager",
+      "adminControls": "Tableau de Bord Admin",
+      "managerControls": "Tableau de Bord Manager"
     }
   },
   "homepage": {
