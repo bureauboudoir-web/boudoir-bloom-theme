@@ -60,11 +60,11 @@ const Home = () => {
               
             </div>
             
-            <Card className="p-8 bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl shadow-xl">
-              <h3 className="font-serif text-2xl sm:text-3xl mb-8 text-center text-rose-gold">Your Benefits</h3>
+            <Card className="p-8 bg-card border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl shadow-xl">
+              <h3 className="font-serif text-2xl sm:text-3xl mb-8 text-center text-primary">Your Benefits</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-primary/40">
                     <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
@@ -73,7 +73,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-primary/40">
                     <TrendingUp className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
@@ -82,7 +82,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-primary/40">
                     <Users className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
@@ -91,7 +91,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-rose-gold/30">
+                  <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-primary/40">
                     <MapPin className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
@@ -114,8 +114,8 @@ const Home = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 mt-16 text-left">
-            <Card className="p-8 border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
-              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-rose-gold/30">
+            <Card className="p-8 border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
+              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-primary/40">
                 <Sparkles className="w-8 h-8 text-rose-gold" />
               </div>
               <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Vision</h3>
@@ -126,8 +126,8 @@ const Home = () => {
               </p>
             </Card>
             
-            <Card className="p-8 border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
-              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-rose-gold/30">
+            <Card className="p-8 border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl hover:shadow-xl">
+              <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-primary/40">
                 <Target className="w-8 h-8 text-rose-gold" />
               </div>
               <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Mission</h3>
@@ -185,13 +185,13 @@ const Home = () => {
             {/* Right: Service Cards */}
             <div className="grid grid-cols-1 gap-4">
               {/* Planning */}
-              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
+              <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Lightbulb className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Planning</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Planning</h3>
                     <p className="text-sm text-muted-foreground">
                       Persona development, boundaries, brand strategy, and market positioning.
                     </p>
@@ -200,13 +200,13 @@ const Home = () => {
               </Card>
 
               {/* Production */}
-              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
+              <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Production</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Production</h3>
                     <p className="text-sm text-muted-foreground">
                       Studio shoots, lighting, styling, posing, and high-end visual content.
                     </p>
@@ -215,13 +215,13 @@ const Home = () => {
               </Card>
 
               {/* Marketing */}
-              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
+              <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Megaphone className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Marketing</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Marketing</h3>
                     <p className="text-sm text-muted-foreground">
                       Content strategy, storytelling, social hooks, and audience building.
                     </p>
@@ -230,13 +230,13 @@ const Home = () => {
               </Card>
 
               {/* Support */}
-              <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
+              <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all p-6 rounded-xl hover:shadow-[0_0_20px_rgba(209,174,148,0.3)]">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <HeadphonesIcon className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-rose-gold">Support</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Support</h3>
                     <p className="text-sm text-muted-foreground">
                       <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
                     </p>
@@ -256,10 +256,10 @@ const Home = () => {
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
+            <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Crown className="w-8 h-8 text-rose-gold" />
                   </div>
                 </div>
@@ -273,10 +273,10 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
+            <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Camera className="w-8 h-8 text-rose-gold" />
                   </div>
                 </div>
@@ -289,10 +289,10 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-2 border-rose-gold/30 hover:border-rose-gold transition-all rounded-xl">
+            <Card className="bg-card border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl">
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-rose-gold/30">
+                  <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center border-2 border-primary/40">
                     <Gem className="w-8 h-8 text-rose-gold" />
                   </div>
                 </div>
@@ -331,7 +331,7 @@ const Home = () => {
                 </div>
               </div>
               
-              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-rose-gold/30 p-8 space-y-6 rounded-t-none border-t-0">
+              <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/40 p-8 space-y-6 rounded-t-none border-t-0">
                 <div className="text-center mb-6">
                   <h3 className="font-serif text-2xl text-[#d1ae94] mb-2">Your Creator Dashboard</h3>
                   <p className="text-sm text-muted-foreground">
@@ -343,22 +343,22 @@ const Home = () => {
                 <div className="space-y-4">
                   {/* Mock Stats Cards */}
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">12</div>
                       <div className="text-xs text-muted-foreground">Active Shoots</div>
                     </div>
-                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">8</div>
                       <div className="text-xs text-muted-foreground">Commitments</div>
                     </div>
-                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-rose-gold/30">
+                    <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">45</div>
                       <div className="text-xs text-muted-foreground">Content Pieces</div>
                     </div>
                   </div>
                   
                   {/* Mock Upload Area */}
-                  <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-rose-gold/40">
+                  <div className="bg-background/50 rounded-lg p-4 border-2 border-dashed border-primary/40">
                     <div className="flex items-center gap-3">
                       <Upload className="w-8 h-8 text-rose-gold" />
                       <div className="flex-1">
@@ -369,7 +369,7 @@ const Home = () => {
                   </div>
                   
                   {/* Mock Commitment List */}
-                  <div className="bg-background/50 rounded-lg p-4 border-2 border-rose-gold/30 space-y-2">
+                  <div className="bg-background/50 rounded-lg p-4 border-2 border-primary/40 space-y-2">
                     <div className="text-xs font-semibold text-foreground mb-2">This Week's Commitments</div>
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-primary"></div>
@@ -451,7 +451,7 @@ const Home = () => {
             Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border-2 border-rose-gold/30 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
+            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border-2 border-primary/40 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
             <Button type="submit" size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8">
               Subscribe
             </Button>
