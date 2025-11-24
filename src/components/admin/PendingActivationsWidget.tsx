@@ -54,6 +54,8 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      console.log('🔍 [PendingActivations] Fetching for user:', user.id);
+
       // Check if user is admin or manager
       const { data: roles } = await supabase
         .from('user_roles')
@@ -62,6 +64,8 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
 
       const isAdmin = roles?.some(r => r.role === 'admin' || r.role === 'super_admin');
       const isManager = roles?.some(r => r.role === 'manager');
+
+      console.log('[PendingActivations] User roles:', { isAdmin, isManager });
 
       if (!isAdmin && !isManager) return;
 
@@ -74,8 +78,11 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       const { data: accessData, error: accessError } = await accessQuery;
       if (accessError) throw accessError;
 
+      console.log('[PendingActivations] ✓ Access levels found:', accessData?.length || 0);
+
       const userIds = accessData?.map(d => d.user_id) || [];
       if (userIds.length === 0) {
+        console.log('[PendingActivations] No users with meeting_only access');
         setPendingCreators([]);
         return;
       }
@@ -87,14 +94,18 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         .in('id', userIds);
 
       if (isManager && !isAdmin) {
+        console.log('[PendingActivations] Filtering by manager:', user.id);
         profileQuery = profileQuery.eq('assigned_manager_id', user.id);
       }
 
       const { data: profiles, error: profileError } = await profileQuery;
       if (profileError) throw profileError;
 
+      console.log('[PendingActivations] ✓ Profiles found:', profiles?.length || 0, profiles);
+
       const filteredUserIds = profiles?.map(p => p.id) || [];
       if (filteredUserIds.length === 0) {
+        console.log('[PendingActivations] No profiles after filtering');
         setPendingCreators([]);
         return;
       }
@@ -112,6 +123,8 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       const { data: meetings, error: meetingError } = await meetingQuery;
       if (meetingError) throw meetingError;
 
+      console.log('[PendingActivations] ✓ Meetings found:', meetings?.length || 0);
+
       // Get email logs for meeting invitations
       const { data: emailLogs, error: emailError } = await supabase
         .from('email_logs')
@@ -120,7 +133,11 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         .in('email_type', ['meeting_invitation', 'manager_meeting_request'])
         .order('created_at', { ascending: false });
 
-      if (emailError) console.warn('Email logs fetch failed:', emailError);
+      if (emailError) {
+        console.warn('Email logs fetch failed:', emailError);
+      } else {
+        console.log('✓ Found email logs:', emailLogs?.length || 0);
+      }
 
       // Combine data and determine stages
       const creators: PendingCreator[] = filteredUserIds
@@ -163,6 +180,16 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         .sort((a, b) => a.urgencyScore - b.urgencyScore);
 
       setPendingCreators(creators);
+      
+      console.log('✓ Pending creators loaded:', {
+        total: creators.length,
+        stages: {
+          no_invitation: creators.filter(c => c.stage === 'no_invitation').length,
+          invitation_sent: creators.filter(c => c.stage === 'invitation_sent').length,
+          meeting_booked: creators.filter(c => c.stage === 'meeting_booked').length,
+          meeting_completed: creators.filter(c => c.stage === 'meeting_completed').length,
+        }
+      });
     } catch (error) {
       console.error('Error fetching pending creators:', error);
     } finally {

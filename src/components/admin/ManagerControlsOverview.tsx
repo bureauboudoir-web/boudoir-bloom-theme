@@ -138,8 +138,10 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
 
   const fetchManagerData = async () => {
     try {
+      console.log('🔍 Fetching manager data for:', managerId);
+      
       // Fetch assigned creators
-      const { data: creators } = await supabase
+      const { data: creators, error: creatorsError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -155,8 +157,14 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         .eq('assigned_manager_id', managerId)
         .order('full_name');
 
+      if (creatorsError) {
+        console.error('Error fetching creators:', creatorsError);
+      } else {
+        console.log('✓ Found assigned creators:', creators?.length || 0, creators);
+      }
+
       // Fetch upcoming meetings directly assigned to this manager
-      const { data: meetings } = await supabase
+      const { data: meetings, error: meetingsError } = await supabase
         .from('creator_meetings')
         .select(`
           id,
@@ -173,6 +181,12 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         .in('status', ['pending', 'confirmed'])
         .order('meeting_date')
         .order('meeting_time');
+
+      if (meetingsError) {
+        console.error('Error fetching meetings:', meetingsError);
+      } else {
+        console.log('✓ Found upcoming meetings:', meetings?.length || 0, meetings);
+      }
 
       // Get creator info for each meeting
       const meetingsWithCreators = await Promise.all(
@@ -203,11 +217,17 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         .lt('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
       // Get creators needing access (meeting_only status)
-      const { count: needingAccessCount } = await supabase
+      const { count: needingAccessCount, error: accessError } = await supabase
         .from('creator_access_levels')
         .select('*', { count: 'exact', head: true })
         .in('user_id', creatorIds)
         .eq('access_level', 'meeting_only');
+
+      if (accessError) {
+        console.error('Error fetching access levels:', accessError);
+      } else {
+        console.log('✓ Creators needing access:', needingAccessCount || 0);
+      }
 
       setAssignedCreators(
         creators?.map(c => ({
@@ -222,6 +242,13 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       );
 
       setUpcomingMeetings(meetingsWithCreators || []);
+      
+      console.log('✓ Manager data loaded:', {
+        creators: creators?.length || 0,
+        meetings: meetingsWithCreators?.length || 0,
+        pendingTasks: stuckCount || 0,
+        needingAccess: needingAccessCount || 0,
+      });
 
       setPendingTasks(stuckCount || 0);
       setCreatorsNeedingAccess(needingAccessCount || 0);
