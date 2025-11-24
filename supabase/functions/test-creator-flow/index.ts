@@ -193,7 +193,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: testCreatorId,
           content_type: 'Test Photo',
           description: 'Test commitment for creator',
-          content_type_category: 'photo_sets',
+          content_type_category: 'instagram',
           status: 'pending'
         })
         .select()
