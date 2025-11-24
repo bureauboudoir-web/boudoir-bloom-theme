@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { FileText, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
 
 interface AssistedOnboardingProps {
   userId: string;
@@ -30,6 +33,38 @@ export const AssistedOnboarding = ({ userId, userName, onComplete, onCancel }: A
     backstory_notes: "",
   });
   const [saving, setSaving] = useState(false);
+  const [contractStatus, setContractStatus] = useState<{
+    exists: boolean;
+    signed: boolean;
+    generated: boolean;
+    url: string | null;
+  } | null>(null);
+  const [contractReviewed, setContractReviewed] = useState(false);
+
+  useEffect(() => {
+    fetchContractStatus();
+  }, [userId]);
+
+  const fetchContractStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('creator_contracts')
+        .select('id, contract_signed, generated_pdf_url, signed_contract_url')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      setContractStatus({
+        exists: !!data,
+        signed: data?.contract_signed || false,
+        generated: !!data?.generated_pdf_url,
+        url: data?.generated_pdf_url || null,
+      });
+    } catch (error) {
+      console.error('Error fetching contract status:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -250,6 +285,91 @@ export const AssistedOnboarding = ({ userId, userName, onComplete, onCancel }: A
               rows={4}
             />
           </div>
+        </div>
+
+        {/* Contract Review Section */}
+        <div className="space-y-4 border-t pt-4">
+          <h4 className="font-medium text-sm text-primary">Contract Review</h4>
+          
+          {contractStatus ? (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Creator Contract</p>
+                    <p className="text-xs text-muted-foreground">
+                      {contractStatus.signed ? "Signed and finalized" : contractStatus.generated ? "Ready for review" : "Not yet generated"}
+                    </p>
+                  </div>
+                </div>
+                <Badge className={
+                  contractStatus.signed 
+                    ? "bg-green-500/20 text-green-700" 
+                    : contractStatus.generated 
+                      ? "bg-blue-500/20 text-blue-700" 
+                      : "bg-yellow-500/20 text-yellow-700"
+                }>
+                  {contractStatus.signed ? "Signed" : contractStatus.generated ? "Generated" : "Pending"}
+                </Badge>
+              </div>
+
+              {contractStatus.generated && !contractStatus.signed && (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">
+                    Contract is ready for review. Make sure to discuss contract terms during the meeting.
+                    {contractStatus.url && (
+                      <Button
+                        variant="link"
+                        className="p-0 h-auto font-normal text-primary ml-1"
+                        onClick={() => window.open(contractStatus.url!, '_blank')}
+                      >
+                        View Contract <ExternalLink className="h-3 w-3 ml-1" />
+                      </Button>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {contractStatus.signed && (
+                <Alert className="border-green-500/50 bg-green-500/10">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-sm text-green-700">
+                    Contract has been signed. Creator can proceed with onboarding.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {!contractStatus.exists && (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">
+                    No contract found. Generate a contract for this creator before finalizing onboarding.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {contractStatus.generated && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="contractReviewed"
+                    checked={contractReviewed}
+                    onChange={(e) => setContractReviewed(e.target.checked)}
+                    className="rounded border-border"
+                  />
+                  <Label htmlFor="contractReviewed" className="text-sm cursor-pointer">
+                    Contract terms discussed and reviewed with creator
+                  </Label>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center p-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 pt-4 border-t">
