@@ -306,119 +306,119 @@ const AdminDashboard = () => {
               <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none hidden sm:block" />
               
               <div className="overflow-x-auto overflow-y-hidden px-3 sm:px-0 pb-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                <TabsList className="inline-flex w-auto gap-1">
-                  <TabsTrigger value="applications" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                <TabsList className="inline-flex w-auto gap-2 bg-background/60 backdrop-blur-sm p-1.5 rounded-xl border border-border/50">
+                  <TabsTrigger value="applications" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Applications
                   </TabsTrigger>
-                  <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Overview
                   </TabsTrigger>
-                  <TabsTrigger value="workload" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="workload" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Workload
                   </TabsTrigger>
-                  <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Creators
                   </TabsTrigger>
-                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
+                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
                     Commitments
                     {overdueCommitments > 0 && (
-                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-bold">
+                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
                         {overdueCommitments}
                       </span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="shoots" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="shoots" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Shoots
                   </TabsTrigger>
-                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
+                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
                     Review
                     {pendingReviews > 0 && (
-                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
                         {pendingReviews}
                       </span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
+                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
                     Invoices
                     {pendingInvoiceConfirmations > 0 && (
-                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">
+                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
                         {pendingInvoiceConfirmations}
                       </span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="contracts" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="contracts" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Contracts
                   </TabsTrigger>
-                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
+                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
                     Support
                     {newSupportTickets > 0 && (
-                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">
+                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
                         {newSupportTickets}
                       </span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Email Logs
                   </TabsTrigger>
-                  <TabsTrigger value="email-settings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="email-settings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Email Settings
                   </TabsTrigger>
                   
                   {/* Visual separator */}
-                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
                   
-                  <TabsTrigger value="roles" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="roles" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Roles
                   </TabsTrigger>
-                  <TabsTrigger value="audit" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="audit" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Audit Log
                   </TabsTrigger>
-                  <TabsTrigger value="permissions" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="permissions" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Permissions
                   </TabsTrigger>
                   
                   {/* Visual separator */}
-                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
                   
-                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm relative">
+                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
                     Meetings
                     {upcomingMeetings > 0 && (
-                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
                         {upcomingMeetings}
                       </span>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Availability
                   </TabsTrigger>
-                  <TabsTrigger value="access" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="access" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Access
                   </TabsTrigger>
-                  <TabsTrigger value="access-audit" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="access-audit" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Access Audit
                   </TabsTrigger>
                   
                   {/* Visual separator */}
-                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
                   
-                  <TabsTrigger value="email-preview" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="email-preview" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Email Preview
                   </TabsTrigger>
-                  <TabsTrigger value="settings" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="settings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Settings
                   </TabsTrigger>
                   
                   {/* Visual separator */}
-                  <div className="w-px h-8 bg-border self-center mx-1" />
+                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
                   
-                  <TabsTrigger value="tests" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                  <TabsTrigger value="tests" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
                     Tests
                   </TabsTrigger>
                   
                   {isSuperAdmin && (
                     <>
-                      <div className="w-px h-8 bg-border self-center mx-1" />
-                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm bg-primary/10 border border-primary/20">
+                      <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
+                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 bg-primary/10 border border-primary/20">
                         <Wrench className="w-4 h-4 mr-1" />
                         Dev Tools
                       </TabsTrigger>
