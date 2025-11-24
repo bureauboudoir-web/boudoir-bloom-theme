@@ -128,7 +128,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('creator_meetings')
         .insert({
           user_id: testCreatorId,
-          meeting_type: 'initial',
+          meeting_type: 'online',
           status: 'scheduled',
           meeting_date: new Date().toISOString()
         })
