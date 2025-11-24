@@ -5,7 +5,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAdminNotifications } from "@/hooks/useAdminNotifications";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { ResponsiveTabsList, ResponsiveTabsTrigger } from "@/components/ui/responsive-tabs";
 import { AdminCommitments } from "@/components/admin/AdminCommitments";
 import { AdminShoots } from "@/components/admin/AdminShoots";
 import { CreatorOverview } from "@/components/admin/CreatorOverview";
@@ -37,6 +38,8 @@ import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverv
 import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
 import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerFlow";
 import { ProductionReadinessCheck } from "@/components/admin/ProductionReadinessCheck";
+import { SPACING, TYPOGRAPHY, BADGES } from "@/lib/design-system";
+import { cn } from "@/lib/utils";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -212,9 +215,9 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+      <header className={cn("border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10", SPACING.header)}>
+        <div className={cn("container mx-auto", SPACING.container)}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <Button
                 variant="ghost"
@@ -227,7 +230,7 @@ const AdminDashboard = () => {
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary shrink-0" />
                 <div className="flex flex-col">
-                  <h1 className="font-serif text-lg sm:text-2xl font-bold">Admin Dashboard</h1>
+                  <h1 className={cn(TYPOGRAPHY.dashboardTitle, "font-serif font-bold")}>Admin Dashboard</h1>
                   {isSuperAdmin && (
                     <span className="text-xs text-primary font-semibold">Super Admin</span>
                   )}
@@ -270,23 +273,15 @@ const AdminDashboard = () => {
               >
                 Back to Dashboard
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate("/dashboard")}
-                className="sm:hidden"
-              >
-                Back
-              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <main className={cn("container mx-auto", SPACING.container, SPACING.containerY)}>
         {showWelcome && user?.id && (
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <AdminWelcome 
               userId={user.id} 
               onDismiss={handleDismissWelcome}
@@ -295,140 +290,100 @@ const AdminDashboard = () => {
           </div>
         )}
         
-        <Card className="p-3 sm:p-6 bg-card border-primary/20">
+        <Card className={cn(SPACING.card, "bg-card border-primary/20")}>
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
-            {/* Scrollable tabs container with fade indicators */}
-            <div className="relative mb-4 sm:mb-6 -mx-3 sm:mx-0">
-              {/* Left fade indicator */}
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none hidden sm:block" />
-              
-              {/* Right fade indicator */}
-              <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none hidden sm:block" />
-              
-              <div className="overflow-x-auto overflow-y-hidden px-3 sm:px-0 pb-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                <TabsList className="inline-flex w-auto gap-2 bg-background/60 backdrop-blur-sm p-1.5 rounded-xl border border-border/50">
-                  <TabsTrigger value="applications" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Applications
-                  </TabsTrigger>
-                  <TabsTrigger value="overview" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Overview
-                  </TabsTrigger>
-                  <TabsTrigger value="workload" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Workload
-                  </TabsTrigger>
-                  <TabsTrigger value="creators" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Creators
-                  </TabsTrigger>
-                  <TabsTrigger value="commitments" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
-                    Commitments
-                    {overdueCommitments > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
-                        {overdueCommitments}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="shoots" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Shoots
-                  </TabsTrigger>
-                  <TabsTrigger value="review" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
-                    Review
-                    {pendingReviews > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
-                        {pendingReviews}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="invoices" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
-                    Invoices
-                    {pendingInvoiceConfirmations > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
-                        {pendingInvoiceConfirmations}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="contracts" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Contracts
-                  </TabsTrigger>
-                  <TabsTrigger value="support" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
-                    Support
-                    {newSupportTickets > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
-                        {newSupportTickets}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="emails" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Email Logs
-                  </TabsTrigger>
-                  <TabsTrigger value="email-settings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Email Settings
-                  </TabsTrigger>
-                  
-                  {/* Visual separator */}
-                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
-                  
-                  <TabsTrigger value="roles" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Roles
-                  </TabsTrigger>
-                  <TabsTrigger value="audit" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Audit Log
-                  </TabsTrigger>
-                  <TabsTrigger value="permissions" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Permissions
-                  </TabsTrigger>
-                  
-                  {/* Visual separator */}
-                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
-                  
-                  <TabsTrigger value="meetings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 relative">
-                    Meetings
-                    {upcomingMeetings > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background">
-                        {upcomingMeetings}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="availability" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Availability
-                  </TabsTrigger>
-                  <TabsTrigger value="access" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Access
-                  </TabsTrigger>
-                  <TabsTrigger value="access-audit" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Access Audit
-                  </TabsTrigger>
-                  
-                  {/* Visual separator */}
-                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
-                  
-                  <TabsTrigger value="email-preview" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Email Preview
-                  </TabsTrigger>
-                  <TabsTrigger value="settings" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Settings
-                  </TabsTrigger>
-                  
-                  {/* Visual separator */}
-                  <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
-                  
-                  <TabsTrigger value="tests" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50">
-                    Tests
-                  </TabsTrigger>
-                  
-                  {isSuperAdmin && (
-                    <>
-                      <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent self-center mx-1.5 flex-shrink-0" />
-                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all hover:bg-muted/50 bg-primary/10 border border-primary/20">
-                        <Wrench className="w-4 h-4 mr-1" />
-                        Dev Tools
-                      </TabsTrigger>
-                    </>
-                  )}
-                </TabsList>
-              </div>
-            </div>
+            <ResponsiveTabsList>
+              <ResponsiveTabsTrigger value="applications">
+                Applications
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="overview">
+                Overview
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="workload">
+                Workload
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="creators">
+                Creators
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="commitments" className="relative">
+                Commitments
+                {overdueCommitments > 0 && (
+                  <span className={cn("absolute -top-1.5 -right-1.5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background", BADGES.notification)}>
+                    {overdueCommitments}
+                  </span>
+                )}
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="shoots">
+                Shoots
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="review" className="relative">
+                Review
+                {pendingReviews > 0 && (
+                  <span className={cn("absolute -top-1.5 -right-1.5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background", BADGES.notification)}>
+                    {pendingReviews}
+                  </span>
+                )}
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="invoices" className="relative">
+                Invoices
+                {pendingInvoiceConfirmations > 0 && (
+                  <span className={cn("absolute -top-1.5 -right-1.5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background", BADGES.notification)}>
+                    {pendingInvoiceConfirmations}
+                  </span>
+                )}
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="contracts">
+                Contracts
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="support" className="relative">
+                Support
+                {newSupportTickets > 0 && (
+                  <span className={cn("absolute -top-1.5 -right-1.5 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-semibold shadow-lg ring-2 ring-background", BADGES.notification)}>
+                    {newSupportTickets}
+                  </span>
+                )}
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="emails">
+                Email Logs
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="email-settings">
+                Email Settings
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="roles">
+                Roles
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="audit">
+                Audit Log
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="permissions">
+                Permissions
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="meetings">
+                Meetings
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="availability">
+                Availability
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="access">
+                Access
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="access-audit">
+                Access Audit
+              </ResponsiveTabsTrigger>
+              <ResponsiveTabsTrigger value="email-preview">
+                Email Preview
+              </ResponsiveTabsTrigger>
+              {isSuperAdmin && (
+                <ResponsiveTabsTrigger value="dev-tools">
+                  Dev Tools
+                </ResponsiveTabsTrigger>
+              )}
+              <ResponsiveTabsTrigger value="settings">
+                Settings
+              </ResponsiveTabsTrigger>
+            </ResponsiveTabsList>
 
-            <TabsContent value="applications" className="mt-0">
+            <TabsContent value="applications" className={cn("mt-0", SPACING.section)}>
               <ApplicationsManagement />
             </TabsContent>
 
