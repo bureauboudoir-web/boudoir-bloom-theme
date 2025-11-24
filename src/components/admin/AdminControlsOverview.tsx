@@ -61,6 +61,8 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
   const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
   const { logNotification, unreadCount } = useNotificationHistory(user?.id);
   const { isOpen: isSystemHealthOpen, toggle: toggleSystemHealth } = useCollapsibleSection('admin-system-health-collapsed', true);
+  const { isOpen: isTestDataOpen, toggle: toggleTestData } = useCollapsibleSection('admin-test-data', false);
+  const { isOpen: isOnboardingOverviewOpen, toggle: toggleOnboardingOverview } = useCollapsibleSection('admin-onboarding-overview', true);
 
   useEffect(() => {
     fetchAdminStats();
@@ -420,11 +422,54 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
         </Card>
       </Collapsible>
 
-      {/* Test Data Generator */}
-      <TestDataGenerator />
+      {/* Test Data Generator - Collapsible */}
+      <Collapsible open={isTestDataOpen} onOpenChange={toggleTestData}>
+        <Card>
+          <CollapsibleTrigger className="w-full">
+            <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <CardTitle>Test Data Generator</CardTitle>
+                {isTestDataOpen ? (
+                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                )}
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent>
+              <TestDataGenerator />
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
-      {/* Creators Onboarding Overview */}
-      <CreatorsOnboardingOverview onNavigate={onNavigate} />
+      {/* Creators Onboarding Overview - Collapsible */}
+      <Collapsible open={isOnboardingOverviewOpen} onOpenChange={toggleOnboardingOverview}>
+        <Card>
+          <CollapsibleTrigger className="w-full">
+            <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Creators Onboarding Overview
+                </CardTitle>
+                {isOnboardingOverviewOpen ? (
+                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                )}
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent>
+              <CreatorsOnboardingOverview onNavigate={onNavigate} />
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
     </div>
   );
 }
