@@ -283,12 +283,12 @@ export const ComprehensiveProductionTest = () => {
                 <TabsTrigger value="tools">Helper Tools</TabsTrigger>
               </TabsList>
 
-          <TabsContent value="dashboard" className="space-y-4">
-            <ProductionReadinessCheck />
-            <ProductionIssueResolver />
-          </TabsContent>
+              <TabsContent value="dashboard" className="space-y-4">
+                <ProductionReadinessCheck />
+                <ProductionIssueResolver />
+              </TabsContent>
 
-          <TabsContent value="automated" className="space-y-4">
+              <TabsContent value="automated" className="space-y-4">
                 <div className="flex gap-2">
                   <Button 
                     onClick={runAllTests} 
