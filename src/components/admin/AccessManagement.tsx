@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Calendar, Clock, UserCheck, Search, ShieldCheck, AlertCircle, Shield, XCircle, Users } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar, Clock, UserCheck, Search, ShieldCheck, AlertCircle, Shield, XCircle, Users, ChevronDown, ChevronUp } from "lucide-react";
 import { GrantAccessDialog } from "./GrantAccessDialog";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { format } from "date-fns";
@@ -50,8 +52,21 @@ export const AccessManagement = () => {
   const [selectedCreator, setSelectedCreator] = useState<CreatorWithAccess | null>(null);
   const [showGrantDialog, setShowGrantDialog] = useState(false);
   const [showRevokeDialog, setShowRevokeDialog] = useState(false);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const { grantEarlyAccess, revokeAccess, sendMeetingInvitation, loading: actionLoading } = useAccessManagement();
   const { isAdmin, isSuperAdmin } = useUserRole();
+
+  const toggleCard = (creatorId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(creatorId)) {
+        newSet.delete(creatorId);
+      } else {
+        newSet.add(creatorId);
+      }
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     fetchCreatorsWithAccess();
@@ -404,152 +419,187 @@ export const AccessManagement = () => {
           </div>
 
           {/* Creators List */}
-          <div className="space-y-3">
-            {filteredCreators.length === 0 && (
-              <Card className="p-8">
-                <div className="text-center text-muted-foreground">
-                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium mb-2">No creators found in the system</p>
-                  <p className="text-sm">
-                    {filterStatus !== 'all' 
-                      ? `No creators with "${filterStatus}" status. Try changing the filter.`
-                      : searchQuery 
-                        ? `No creators match your search "${searchQuery}".`
-                        : 'No creators are assigned to you yet. Check back later or contact an admin.'}
-                  </p>
-                </div>
-              </Card>
-            )}
-            {filteredCreators.map((creator) => (
-              <Card key={creator.id} className="p-4 bg-muted/30">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={creator.profile_picture_url || undefined} />
-                    <AvatarFallback>
-                      {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+          <ScrollArea className="h-[600px] pr-4">
+            <div className="space-y-2">
+              {filteredCreators.length === 0 && (
+                <Card className="p-8">
+                  <div className="text-center text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg font-medium mb-2">No creators found</p>
+                    <p className="text-sm">
+                      {filterStatus !== 'all' 
+                        ? `No creators with "${filterStatus}" status.`
+                        : searchQuery 
+                          ? `No match for "${searchQuery}".`
+                          : 'No creators assigned yet.'}
+                    </p>
+                  </div>
+                </Card>
+              )}
+              {filteredCreators.map((creator) => {
+                const isExpanded = expandedCards.has(creator.id);
+                return (
+                  <Collapsible key={creator.id} open={isExpanded} onOpenChange={() => toggleCard(creator.id)}>
+                    <Card className="overflow-hidden">
+                      <CollapsibleTrigger className="w-full">
+                        <div className="p-3 flex items-center gap-3 hover:bg-accent/50 transition-colors">
+                          <Avatar className="h-10 w-10 flex-shrink-0">
+                            <AvatarImage src={creator.profile_picture_url || undefined} />
+                            <AvatarFallback className="text-sm">
+                              {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <p className="font-medium">{creator.full_name || 'No name'}</p>
-                      <AccessLevelBadge accessLevel={creator.access_level} />
-                      {creator.meeting_status && getMeetingStatusBadge(creator.meeting_status, creator.meeting_date)}
-                      {creator.grant_method && getMethodBadge(creator.grant_method)}
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{creator.email}</p>
-                    
-                    <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                      {creator.assigned_manager_name && (
-                        <span>Manager: {creator.assigned_manager_name}</span>
-                      )}
-                      {creator.granted_by_name && (
-                        <div className="flex items-center gap-1">
-                          <Shield className="h-3 w-3" />
-                          <span>Access granted by: {creator.granted_by_name}</span>
+                          <div className="flex-1 min-w-0 text-left">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-sm truncate">{creator.full_name || 'No name'}</p>
+                              <AccessLevelBadge accessLevel={creator.access_level} />
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">{creator.email}</p>
+                          </div>
+
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            {!isExpanded && creator.access_level === 'no_access' && (
+                              <Badge variant="secondary" className="text-xs">Action Required</Badge>
+                            )}
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </div>
                         </div>
-                      )}
-                      {creator.granted_at && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(creator.granted_at), 'MMM dd, yyyy HH:mm')}
-                        </div>
-                      )}
-                      {creator.meeting_date && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          Meeting: {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
-                          {creator.meeting_time && (
-                            <>
-                              <Clock className="h-3 w-3 ml-2" />
-                              {creator.meeting_time}
-                            </>
+                      </CollapsibleTrigger>
+
+                      <CollapsibleContent>
+                        <div className="px-3 pb-3 pt-2 space-y-3 border-t">
+                          {/* Additional Badges */}
+                          {(creator.meeting_status || creator.grant_method) && (
+                            <div className="flex flex-wrap gap-2">
+                              {creator.meeting_status && getMeetingStatusBadge(creator.meeting_status, creator.meeting_date)}
+                              {creator.grant_method && getMethodBadge(creator.grant_method)}
+                            </div>
                           )}
+
+                          {/* Metadata Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            {creator.assigned_manager_name && (
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                                <Users className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">Manager: {creator.assigned_manager_name}</span>
+                              </div>
+                            )}
+                            {creator.granted_by_name && (
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                                <Shield className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">By: {creator.granted_by_name}</span>
+                              </div>
+                            )}
+                            {creator.granted_at && (
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                                <Calendar className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">{format(new Date(creator.granted_at), 'MMM dd, yyyy')}</span>
+                              </div>
+                            )}
+                            {creator.meeting_date && (
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                                <Calendar className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">
+                                  {format(new Date(creator.meeting_date), 'MMM dd')}
+                                  {creator.meeting_time && ` at ${creator.meeting_time}`}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-wrap gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
+                            {creator.access_level === 'no_access' && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => handleSendInvitation(creator)}
+                                  disabled={actionLoading}
+                                  className="flex-1"
+                                >
+                                  📧 Send Invitation
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setSelectedCreator(creator);
+                                    setShowGrantDialog(true);
+                                  }}
+                                  disabled={actionLoading}
+                                  className="flex-1"
+                                >
+                                  <ShieldCheck className="h-4 w-4 mr-1" />
+                                  Grant Access
+                                </Button>
+                              </>
+                            )}
+                            {creator.access_level === 'meeting_only' && creator.meeting_status === 'completed' && (
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedCreator(creator);
+                                  setShowGrantDialog(true);
+                                }}
+                                disabled={actionLoading}
+                                className="w-full"
+                              >
+                                ✅ Grant Full Access
+                              </Button>
+                            )}
+                            {creator.access_level === 'meeting_only' && creator.meeting_status !== 'completed' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedCreator(creator);
+                                  setShowGrantDialog(true);
+                                }}
+                                disabled={actionLoading}
+                                className="w-full"
+                              >
+                                ⚡ Skip Meeting & Grant Access
+                              </Button>
+                            )}
+                            {creator.access_level === 'full_access' && (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => {
+                                  setSelectedCreator(creator);
+                                  setShowRevokeDialog(true);
+                                }}
+                                disabled={actionLoading}
+                                className="w-full"
+                              >
+                                🔒 Revoke Access
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
+                );
+              })}
 
-                  <div className="flex flex-wrap gap-2">
-                    {creator.access_level === 'no_access' && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => handleSendInvitation(creator)}
-                          disabled={actionLoading}
-                          className="flex-1 sm:flex-none"
-                        >
-                          📧 Send Meeting Invitation
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setSelectedCreator(creator);
-                            setShowGrantDialog(true);
-                          }}
-                          disabled={actionLoading}
-                          className="flex-1 sm:flex-none"
-                        >
-                          <ShieldCheck className="h-4 w-4 mr-1" />
-                          Grant Early Access
-                        </Button>
-                      </>
-                    )}
-                    {creator.access_level === 'meeting_only' && creator.meeting_status === 'completed' && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSelectedCreator(creator);
-                          setShowGrantDialog(true);
-                        }}
-                        disabled={actionLoading}
-                      >
-                        ✅ Grant Dashboard Access
-                      </Button>
-                    )}
-                    {creator.access_level === 'meeting_only' && creator.meeting_status !== 'completed' && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedCreator(creator);
-                          setShowGrantDialog(true);
-                        }}
-                        disabled={actionLoading}
-                      >
-                        ⚡ Skip Meeting & Grant Access
-                      </Button>
-                    )}
-                    {creator.access_level === 'full_access' && (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedCreator(creator);
-                          setShowRevokeDialog(true);
-                        }}
-                        disabled={actionLoading}
-                      >
-                        🔒 Revoke to Meeting Only
-                      </Button>
-                    )}
-                  </div>
+              {filteredCreators.length === 0 && !loading && (
+                <div className="text-center py-8 text-muted-foreground text-sm">
+                  {searchQuery 
+                    ? "No creators match your search" 
+                    : creators.length > 0 
+                      ? `No creators with ${filterStatus.replace('_', ' ')} status` 
+                      : "No creators found"}
                 </div>
-              </Card>
-            ))}
-
-            {filteredCreators.length === 0 && !loading && (
-              <div className="text-center py-8 text-muted-foreground">
-                {searchQuery 
-                  ? "No creators match your search" 
-                  : creators.length > 0 
-                    ? `No creators with ${filterStatus.replace('_', ' ')} status` 
-                    : "No creators found in the system"}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </ScrollArea>
         </CardContent>
       </Card>
 
