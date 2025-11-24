@@ -681,6 +681,7 @@ const Dashboard = () => {
                           <TabsTrigger value="shoots" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Shoots</TabsTrigger>
                           <TabsTrigger value="meetings" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Meetings</TabsTrigger>
                           <TabsTrigger value="access" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Access</TabsTrigger>
+                          <TabsTrigger value="contracts" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Contracts</TabsTrigger>
                           <TabsTrigger value="availability" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Availability</TabsTrigger>
                           <TabsTrigger value="support" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Support</TabsTrigger>
                         </TabsList>
@@ -737,6 +738,10 @@ const Dashboard = () => {
                               </div>
                             </Tabs>
                           </Card>
+                        </TabsContent>
+
+                        <TabsContent value="contracts" className="mt-0">
+                          <AdminContracts />
                         </TabsContent>
 
                         <TabsContent value="availability" className="mt-0">
