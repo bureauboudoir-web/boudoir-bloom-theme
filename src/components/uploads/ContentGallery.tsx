@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Trash2, ExternalLink, Video, Image as ImageIcon, FileIcon, CheckCircle, Clock, XCircle } from "lucide-react";
+import { ContentCard } from "@/components/content/ContentCard";
+import { ContentPreviewModal } from "@/components/content/ContentPreviewModal";
 import { toast } from "@/hooks/use-toast";
-import { format } from "date-fns";
 import { GallerySkeleton } from "@/components/ui/loading-skeletons";
+import { ContentCategory } from "@/components/content/CategoryBadge";
+import { PlatformType } from "@/components/content/PlatformBadge";
+import { Package } from "lucide-react";
 
 interface ContentUpload {
   id: string;
@@ -14,9 +16,15 @@ interface ContentUpload {
   file_name: string;
   file_size: number;
   content_type: string;
+  content_category: ContentCategory;
+  platform_type: PlatformType;
+  title: string | null;
   length: string | null;
   description: string;
   marketing_notes: string | null;
+  hashtags: string[] | null;
+  usage_rights: string | null;
+  is_featured: boolean;
   uploaded_at: string;
   status: 'pending_review' | 'approved' | 'needs_revision';
   commitment_id: string | null;
@@ -31,9 +39,31 @@ interface ContentGalleryProps {
 export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) => {
   const [uploads, setUploads] = useState<ContentUpload[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewContent, setPreviewContent] = useState<ContentUpload | null>(null);
 
   useEffect(() => {
     fetchUploads();
+    
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('content_gallery_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'content_uploads',
+          filter: `user_id=eq.${userId}`
+        },
+        () => {
+          fetchUploads();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userId, refreshTrigger]);
 
   const fetchUploads = async () => {
@@ -42,7 +72,8 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
         .from('content_uploads')
         .select('*')
         .eq('user_id', userId)
-        .order('uploaded_at', { ascending: false });
+        .order('uploaded_at', { ascending: false })
+        .limit(6); // Show only recent 6 uploads
 
       if (error) throw error;
       setUploads((data || []) as ContentUpload[]);
@@ -62,18 +93,15 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
     if (!confirm('Are you sure you want to delete this upload?')) return;
 
     try {
-      // Extract file path from URL
       const urlParts = fileUrl.split('/content-uploads/');
       const filePath = urlParts[1];
 
-      // Delete from storage
       if (filePath) {
         await supabase.storage
           .from('content-uploads')
           .remove([filePath]);
       }
 
-      // Delete from database
       const { error } = await supabase
         .from('content_uploads')
         .delete()
@@ -97,47 +125,8 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
     }
   };
 
-  const getFileIcon = (contentType: string) => {
-    if (contentType.startsWith('video/')) return <Video className="w-5 h-5" />;
-    if (contentType.startsWith('image/')) return <ImageIcon className="w-5 h-5" />;
-    return <FileIcon className="w-5 h-5" />;
-  };
-
-  const getStatusBadge = (status: ContentUpload['status']) => {
-    const config = {
-      pending_review: {
-        label: 'Pending Review',
-        icon: Clock,
-        className: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
-      },
-      approved: {
-        label: 'Approved',
-        icon: CheckCircle,
-        className: 'bg-green-500/10 text-green-500 border-green-500/20'
-      },
-      needs_revision: {
-        label: 'Needs Revision',
-        icon: XCircle,
-        className: 'bg-red-500/10 text-red-500 border-red-500/20'
-      }
-    };
-
-    const { label, icon: Icon, className } = config[status];
-    
-    return (
-      <Badge variant="outline" className={className}>
-        <Icon className="w-3 h-3 mr-1" />
-        {label}
-      </Badge>
-    );
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  const handleDownload = (fileUrl: string) => {
+    window.open(fileUrl, '_blank');
   };
 
   if (loading) {
@@ -149,76 +138,88 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
   }
 
   return (
-    <Card className="p-6 bg-card border-primary/20">
-      <h3 className="font-serif text-xl font-bold mb-6">My Uploads</h3>
-
-      {uploads.length === 0 ? (
-        <p className="text-center text-muted-foreground py-8">
-          No uploads yet. Upload your first content above!
-        </p>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-4">
-          {uploads.map((upload) => (
-            <Card key={upload.id} className="p-4 bg-muted/30 border-primary/20">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="text-muted-foreground">
-                      {getFileIcon(upload.content_type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{upload.file_name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatFileSize(upload.file_size)} • {format(new Date(upload.uploaded_at), "PPP")}
-                      </p>
-                    </div>
-                  </div>
-                  {getStatusBadge(upload.status)}
-                </div>
-
-                {upload.length && (
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium">Length:</span> {upload.length}
-                  </p>
-                )}
-
-                <p className="text-sm">{upload.description}</p>
-
-                {upload.marketing_notes && (
-                  <p className="text-xs text-primary/80 bg-primary/5 p-2 rounded">
-                    <span className="font-medium">Marketing:</span> {upload.marketing_notes}
-                  </p>
-                )}
-
-                {(upload.commitment_id || upload.shoot_id) && (
-                  <p className="text-xs text-muted-foreground italic">
-                    Linked to {upload.commitment_id ? 'commitment' : 'shoot'}
-                  </p>
-                )}
-
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => window.open(upload.file_url, '_blank')}
-                  >
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    View
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDelete(upload.id, upload.file_url)}
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
+    <Card>
+      <CardHeader className="border-b border-border">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-2xl">Recent Uploads</CardTitle>
+            <CardDescription className="mt-1">
+              Your latest uploaded content ({uploads.length} item{uploads.length !== 1 ? 's' : ''})
+            </CardDescription>
+          </div>
         </div>
+      </CardHeader>
+
+      <div className="p-6">
+        {uploads.length === 0 ? (
+          <div className="text-center py-12">
+            <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              No uploads yet
+            </h3>
+            <p className="text-muted-foreground">
+              Upload your first content to get started
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {uploads.map((upload) => (
+              <ContentCard
+                key={upload.id}
+                id={upload.id}
+                title={upload.title || undefined}
+                fileName={upload.file_name}
+                fileUrl={upload.file_url}
+                contentType={upload.content_type}
+                contentCategory={upload.content_category}
+                platformType={upload.platform_type}
+                status={upload.status}
+                isFeatured={upload.is_featured}
+                description={upload.description || undefined}
+                length={upload.length || undefined}
+                fileSize={upload.file_size}
+                uploadedAt={upload.uploaded_at}
+                hashtags={upload.hashtags || undefined}
+                onView={() => setPreviewContent(upload)}
+                onDownload={() => handleDownload(upload.file_url)}
+                onDelete={() => handleDelete(upload.id, upload.file_url)}
+              />
+            ))}
+          </div>
+        )}
+
+        {uploads.length > 0 && (
+          <div className="mt-6 text-center">
+            <Button variant="outline" asChild>
+              <a href="#content-library">View All Uploads →</a>
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Preview Modal */}
+      {previewContent && (
+        <ContentPreviewModal
+          open={!!previewContent}
+          onOpenChange={(open) => !open && setPreviewContent(null)}
+          content={{
+            id: previewContent.id,
+            title: previewContent.title || undefined,
+            fileName: previewContent.file_name,
+            fileUrl: previewContent.file_url,
+            contentType: previewContent.content_type,
+            contentCategory: previewContent.content_category,
+            platformType: previewContent.platform_type,
+            status: previewContent.status,
+            isFeatured: previewContent.is_featured,
+            description: previewContent.description || undefined,
+            length: previewContent.length || undefined,
+            fileSize: previewContent.file_size,
+            uploadedAt: previewContent.uploaded_at,
+            hashtags: previewContent.hashtags || undefined,
+            usageRights: previewContent.usage_rights || undefined,
+          }}
+        />
       )}
     </Card>
   );
