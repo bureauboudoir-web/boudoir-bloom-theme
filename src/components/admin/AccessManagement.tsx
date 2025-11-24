@@ -115,7 +115,10 @@ export const AccessManagement = () => {
       const { data: profilesData, error: profilesError } = await profilesQuery;
       if (profilesError) throw profilesError;
 
+      console.log('[AccessManagement] Profiles found:', profilesData?.length);
+
       if (!profilesData || profilesData.length === 0) {
+        console.log('[AccessManagement] No profiles found for manager');
         setCreators([]);
         setLoading(false);
         return;
@@ -128,10 +131,15 @@ export const AccessManagement = () => {
         .eq('role', 'creator')
         .in('user_id', profilesData.map(p => p.id));
 
+      console.log('[AccessManagement] Creator roles found:', creatorRoles?.length);
+
       const creatorIds = new Set(creatorRoles?.map(r => r.user_id) || []);
       const creatorsOnly = profilesData.filter(p => creatorIds.has(p.id));
 
+      console.log('[AccessManagement] Creators after role filter:', creatorsOnly.length);
+
       if (creatorsOnly.length === 0) {
+        console.log('[AccessManagement] No creators with creator role found');
         setCreators([]);
         setLoading(false);
         return;
