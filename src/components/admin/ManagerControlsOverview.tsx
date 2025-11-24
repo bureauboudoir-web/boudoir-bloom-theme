@@ -1,8 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -13,17 +13,12 @@ import {
   CheckCircle,
   UserCog,
   Video,
-  Volume2,
-  VolumeX,
-  History,
   Shield
 } from "lucide-react";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useNotificationHistory } from "@/hooks/useNotificationHistory";
-import { NotificationHistoryPanel } from "./NotificationHistoryPanel";
 import { TestDataGenerator } from "./TestDataGenerator";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ManagerControlsOverviewProps {
   managerId: string;
@@ -58,9 +53,8 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
   const [pendingTasks, setPendingTasks] = useState(0);
   const [creatorsNeedingAccess, setCreatorsNeedingAccess] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showHistory, setShowHistory] = useState(false);
-  const { isSoundEnabled, toggleSound, playNotificationSound } = useSoundNotification();
-  const { logNotification, unreadCount } = useNotificationHistory(managerId);
+  const { playNotificationSound } = useSoundNotification();
+  const { logNotification } = useNotificationHistory(managerId);
 
   useEffect(() => {
     fetchManagerData();
@@ -286,51 +280,6 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
 
   return (
     <div className="space-y-6">
-      {/* Settings & History Bar */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              {isSoundEnabled ? (
-                <Volume2 className="w-4 h-4 text-primary" />
-              ) : (
-                <VolumeX className="w-4 h-4 text-muted-foreground" />
-              )}
-              <Label htmlFor="manager-sound-notifications" className="cursor-pointer">
-                Sound notifications for new tasks
-              </Label>
-              <Switch
-                id="manager-sound-notifications"
-                checked={isSoundEnabled}
-                onCheckedChange={toggleSound}
-              />
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowHistory(true)}
-              className="relative"
-            >
-              <History className="w-4 h-4 mr-2" />
-              Notification History
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1.5">
-                  {unreadCount}
-                </Badge>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Notification History Dialog */}
-      <Dialog open={showHistory} onOpenChange={setShowHistory}>
-        <DialogContent className="max-w-3xl">
-          <NotificationHistoryPanel userId={managerId} onClose={() => setShowHistory(false)} />
-        </DialogContent>
-      </Dialog>
-
       {/* Test Data Generator */}
       <TestDataGenerator />
 
