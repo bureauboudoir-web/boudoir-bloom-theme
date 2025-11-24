@@ -4,9 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, PlayCircle, CheckCircle2, XCircle, AlertCircle, Download } from "lucide-react";
+import { Loader2, PlayCircle, CheckCircle2, XCircle, AlertCircle, Download, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface TestResult {
   step: string;
@@ -54,6 +56,7 @@ const testSuites: TestSuite[] = [
 ];
 
 export const EnhancedTestManagerFlow = () => {
+  const { isOpen, toggle } = useCollapsibleSection('enhanced-test-manager-flow', false);
   const [running, setRunning] = useState(false);
   const [activeTab, setActiveTab] = useState("manager");
   const [testResults, setTestResults] = useState<Record<string, TestResponse>>({});
@@ -198,17 +201,28 @@ export const EnhancedTestManagerFlow = () => {
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <PlayCircle className="h-5 w-5" />
-          Enhanced Test Suite
-        </CardTitle>
-        <CardDescription>
-          Comprehensive automated testing for all roles and features
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Collapsible open={isOpen} onOpenChange={toggle}>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle className="flex items-center gap-2">
+                <PlayCircle className="h-5 w-5" />
+                Enhanced Test Suite
+              </CardTitle>
+              <CardDescription>
+                Comprehensive automated testing for all roles and features
+              </CardDescription>
+            </div>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent className="space-y-4">
         <div className="flex gap-2 flex-wrap">
           <Button 
             onClick={runAllTests} 
@@ -294,6 +308,8 @@ export const EnhancedTestManagerFlow = () => {
           ))}
         </Tabs>
       </CardContent>
-    </Card>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 };
