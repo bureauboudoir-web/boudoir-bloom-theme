@@ -28,22 +28,22 @@
       "management": "Управление"
     },
     "nav": {
-      "overview": "Overview",
-      "onboarding": "Onboarding",
-      "account": "Creator Profile",
-      "settings": "Settings",
-      "meetings": "My Meetings",
-      "upload": "Uploads",
-      "library": "Content Library",
-      "commitments": "Commitments",
-      "shoots": "Studio Shoots",
-      "invoices": "Invoices",
-      "contract": "Contract",
-      "support": "Contact Us",
-      "adminDashboard": "Admin Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminControls": "Админ контроль",
-      "managerControls": "Менеджер контроль"
+      "overview": "Панель Создателя",
+      "onboarding": "Регистрация",
+      "account": "Профиль Создателя",
+      "settings": "Настройки",
+      "meetings": "Мои Встречи",
+      "upload": "Загрузки",
+      "library": "Библиотека Контента",
+      "commitments": "Обязательства",
+      "shoots": "Студийные Съёмки",
+      "invoices": "Счета",
+      "contract": "Контракт",
+      "support": "Связаться с Нами",
+      "adminDashboard": "Панель Администратора",
+      "managerDashboard": "Панель Менеджера",
+      "adminControls": "Панель Администратора",
+      "managerControls": "Панель Менеджера"
     }
   },
   "homepage": {

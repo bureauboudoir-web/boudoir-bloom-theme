@@ -28,22 +28,22 @@
       "management": "Gestione"
     },
     "nav": {
-      "overview": "Overview",
-      "onboarding": "Onboarding",
-      "account": "Creator Profile",
-      "settings": "Settings",
-      "meetings": "My Meetings",
-      "upload": "Uploads",
-      "library": "Content Library",
-      "commitments": "Commitments",
-      "shoots": "Studio Shoots",
-      "invoices": "Invoices",
-      "contract": "Contract",
-      "support": "Contact Us",
-      "adminDashboard": "Admin Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminControls": "Controlli Admin",
-      "managerControls": "Controlli Manager"
+      "overview": "Dashboard Creatore",
+      "onboarding": "Inserimento",
+      "account": "Profilo Creatore",
+      "settings": "Impostazioni",
+      "meetings": "I Miei Incontri",
+      "upload": "Caricamenti",
+      "library": "Libreria Contenuti",
+      "commitments": "Impegni",
+      "shoots": "Servizi Fotografici",
+      "invoices": "Fatture",
+      "contract": "Contratto",
+      "support": "Contattaci",
+      "adminDashboard": "Dashboard Admin",
+      "managerDashboard": "Dashboard Manager",
+      "adminControls": "Dashboard Admin",
+      "managerControls": "Dashboard Manager"
     }
   },
   "homepage": {
