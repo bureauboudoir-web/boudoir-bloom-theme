@@ -36,7 +36,7 @@ const Home = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
             A luxury creative agency in heart of Amsterdam iconic district, guiding creators in the art of presence, identity, and digital performance.
           </p>
-          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8 text-base">
+          <Button asChild size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 inline-flex">
             <Link to="/signup">Become a Creator</Link>
           </Button>
         </div>
@@ -177,7 +177,7 @@ const Home = () => {
                 </div>
               </div>
               
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full mt-4">
+              <Button asChild size="default" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full mt-4 px-6 inline-flex">
                 <Link to="/signup">Start Your Journey</Link>
               </Button>
             </div>
@@ -451,8 +451,8 @@ const Home = () => {
             Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-3 rounded-full bg-background border-2 border-primary/40 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
-            <Button type="submit" size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8">
+            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-2.5 rounded-full bg-background border-2 border-primary/40 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
+            <Button type="submit" size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 sm:w-auto">
               Subscribe
             </Button>
           </form>
@@ -475,7 +475,7 @@ const Home = () => {
             Join a community of creators who've chosen clarity, artistry, and long-term growth 
             over shortcuts and noise. Let's build something extraordinary together.
           </p>
-          <Button asChild size="lg" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-8">
+          <Button asChild size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 inline-flex">
             <Link to="/signup">Apply Now</Link>
           </Button>
         </div>
