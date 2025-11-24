@@ -34,6 +34,9 @@ import { toast } from "sonner";
 import { AdminWelcome } from "@/components/admin/AdminWelcome";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverview";
+import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
+import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerFlow";
+import { ProductionReadinessCheck } from "@/components/admin/ProductionReadinessCheck";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -506,68 +509,11 @@ const AdminDashboard = () => {
 
             {isSuperAdmin && (
               <TabsContent value="dev-tools" className="mt-0">
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <Wrench className="h-5 w-5 text-primary" />
-                      <CardTitle>Developer Tools</CardTitle>
-                    </div>
-                    <CardDescription>
-                      Tools for testing and development (Super Admin only)
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold">Test Accounts</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Create pre-configured test accounts for testing
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={handleCreateTestAccounts}
-                            disabled={creatingTestAccounts}
-                            variant="default"
-                          >
-                            {creatingTestAccounts ? 'Creating...' : 'Generate Test Accounts'}
-                          </Button>
-                          <Button
-                            onClick={handleCleanupTestAccounts}
-                            variant="destructive"
-                          >
-                            Cleanup Test Accounts
-                          </Button>
-                        </div>
-                      </div>
-
-                      {testAccountsCreated.length > 0 && (
-                        <Card className="bg-muted/50">
-                          <CardContent className="pt-6">
-                            <h4 className="font-semibold mb-4">Test Accounts Created:</h4>
-                            <div className="space-y-3">
-                              {testAccountsCreated.map((account) => (
-                                <div key={account.email} className="flex items-center justify-between p-3 bg-background rounded-lg">
-                                  <div>
-                                    <p className="font-medium">{account.full_name}</p>
-                                    <p className="text-sm text-muted-foreground">{account.email}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                      Roles: {account.roles.join(', ')}
-                                    </p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-sm font-mono">{account.password}</p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="space-y-6">
+                  <ProductionReadinessCheck />
+                  <EnhancedTestManagerFlow />
+                  <TestDataGenerator />
+                </div>
               </TabsContent>
             )}
           </Tabs>
