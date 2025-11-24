@@ -8,9 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { Upload, FileText, Video, Image, Target, Palette, X } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Upload, FileText, Video, Image, Target, Palette, X, ChevronDown } from "lucide-react";
 import { ContentCategory } from "@/components/content/CategoryBadge";
 import { PlatformType } from "@/components/content/PlatformBadge";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface WeeklyCommitment {
   id: string;
@@ -56,6 +58,7 @@ export const ContentUpload = ({ userId, onUploadComplete }: ContentUploadProps) 
   const [length, setLength] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [usageRights, setUsageRights] = useState("");
+  const { isOpen, toggle } = useCollapsibleSection('upload-content-section', true);
 
   useEffect(() => {
     fetchCommitments();
@@ -228,14 +231,21 @@ export const ContentUpload = ({ userId, onUploadComplete }: ContentUploadProps) 
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Upload Content</CardTitle>
-        <CardDescription>
-          Upload videos, photos, scripts, hooks, or marketing materials
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <Collapsible open={isOpen} onOpenChange={toggle}>
+      <Card>
+        <CardHeader>
+          <CollapsibleTrigger className="flex items-center justify-between w-full hover:opacity-80 transition-opacity [&[data-state=open]>svg]:rotate-180">
+            <div className="flex flex-col items-start gap-1 text-left">
+              <CardTitle>Upload Content</CardTitle>
+              <CardDescription>
+                Upload videos, photos, scripts, hooks, or marketing materials
+              </CardDescription>
+            </div>
+            <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 shrink-0" />
+          </CollapsibleTrigger>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent className="space-y-6">
         <div>
           <Label className="mb-3 block">Content Type *</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -458,7 +468,9 @@ export const ContentUpload = ({ userId, onUploadComplete }: ContentUploadProps) 
           <Upload className="w-4 h-4 mr-2" />
           {uploading ? "Uploading..." : "Upload Content"}
         </Button>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 };

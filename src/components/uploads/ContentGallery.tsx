@@ -8,7 +8,9 @@ import { toast } from "@/hooks/use-toast";
 import { GallerySkeleton } from "@/components/ui/loading-skeletons";
 import { ContentCategory } from "@/components/content/CategoryBadge";
 import { PlatformType } from "@/components/content/PlatformBadge";
-import { Package } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Package, ChevronDown } from "lucide-react";
+import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
 
 interface ContentUpload {
   id: string;
@@ -40,6 +42,7 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
   const [uploads, setUploads] = useState<ContentUpload[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewContent, setPreviewContent] = useState<ContentUpload | null>(null);
+  const { isOpen, toggle } = useCollapsibleSection('recent-uploads-section', true);
 
   useEffect(() => {
     fetchUploads();
@@ -138,19 +141,22 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
   }
 
   return (
-    <Card>
-      <CardHeader className="border-b border-border">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl">Recent Uploads</CardTitle>
-            <CardDescription className="mt-1">
-              Your latest uploaded content ({uploads.length} item{uploads.length !== 1 ? 's' : ''})
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
+    <Collapsible open={isOpen} onOpenChange={toggle}>
+      <Card>
+        <CardHeader className="border-b border-border">
+          <CollapsibleTrigger className="flex items-center justify-between w-full hover:opacity-80 transition-opacity [&[data-state=open]>svg]:rotate-180">
+            <div className="flex flex-col items-start gap-1 text-left">
+              <CardTitle className="text-2xl">Recent Uploads</CardTitle>
+              <CardDescription>
+                Your latest uploaded content ({uploads.length} item{uploads.length !== 1 ? 's' : ''})
+              </CardDescription>
+            </div>
+            <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 shrink-0" />
+          </CollapsibleTrigger>
+        </CardHeader>
 
-      <div className="p-6">
+        <CollapsibleContent>
+          <div className="p-6">
         {uploads.length === 0 ? (
           <div className="text-center py-12">
             <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -195,7 +201,9 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
             </Button>
           </div>
         )}
-      </div>
+          </div>
+        </CollapsibleContent>
+      </Card>
 
       {/* Preview Modal */}
       {previewContent && (
@@ -221,6 +229,6 @@ export const ContentGallery = ({ userId, refreshTrigger }: ContentGalleryProps) 
           }}
         />
       )}
-    </Card>
+    </Collapsible>
   );
 };
