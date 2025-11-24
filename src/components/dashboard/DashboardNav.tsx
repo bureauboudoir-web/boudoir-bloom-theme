@@ -22,6 +22,7 @@ interface DashboardNavProps {
   onTabChange: (tab: TabId) => void;
   pendingCommitments: number;
   newInvoices: number;
+  upcomingShoots?: number;
   isAdmin: boolean;
   isSuperAdmin: boolean;
   isManagerOnly: boolean;
@@ -38,6 +39,7 @@ export const DashboardNav = ({
   onTabChange,
   pendingCommitments,
   newInvoices,
+  upcomingShoots = 0,
   isAdmin,
   isSuperAdmin,
   isManagerOnly,
@@ -94,9 +96,15 @@ export const DashboardNav = ({
           label: t('dashboard.nav.commitments'), 
           icon: <CheckSquare className="w-4 h-4" />,
           badge: pendingCommitments,
-          badgeVariant: "secondary" as const
+          badgeVariant: "destructive" as const
         },
-        { id: "shoots" as TabId, label: t('dashboard.nav.shoots'), icon: <Calendar className="w-4 h-4" /> },
+        { 
+          id: "shoots" as TabId, 
+          label: t('dashboard.nav.shoots'), 
+          icon: <Calendar className="w-4 h-4" />,
+          badge: upcomingShoots,
+          badgeVariant: "destructive" as const
+        },
         { 
           id: "invoices" as TabId, 
           label: t('dashboard.nav.invoices'), 
