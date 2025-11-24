@@ -77,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
           name: 'Test Applicant',
           email: 'test-applicant@example.com',
           phone: '+1234567890',
-          experience_level: 'beginner',
+          experience_level: 'starter',
           status: 'pending'
         })
         .select()
@@ -154,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
           created_by_user_id: testAdminId,
           content_type: 'Admin Test Content',
           description: 'Test commitment from admin',
-          content_type_category: 'video_clips',
+          content_type_category: 'instagram',
           priority: 'high',
           status: 'pending'
         })
