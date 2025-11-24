@@ -239,6 +239,17 @@ const AdminDashboard = () => {
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               <LanguageSelector />
+              {isSuperAdmin && (
+                <Button
+                  onClick={() => setActiveTab("dev-tools")}
+                  variant={activeTab === "dev-tools" ? "default" : "outline"}
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <Wrench className="w-4 h-4" />
+                  <span className="hidden lg:inline">Dev Tools</span>
+                </Button>
+              )}
               <NotificationBell
                 notifications={adminNotificationItems}
                 totalCount={totalNotifications}
@@ -407,7 +418,8 @@ const AdminDashboard = () => {
                   {isSuperAdmin && (
                     <>
                       <div className="w-px h-8 bg-border self-center mx-1" />
-                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm">
+                      <TabsTrigger value="dev-tools" className="flex-shrink-0 px-3 sm:px-4 text-xs sm:text-sm bg-primary/10 border border-primary/20">
+                        <Wrench className="w-4 h-4 mr-1" />
                         Dev Tools
                       </TabsTrigger>
                     </>
