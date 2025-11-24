@@ -66,6 +66,8 @@ import { PendingActivationsWidget } from "@/components/admin/PendingActivationsW
 import { Analytics } from "@/components/admin/Analytics";
 import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
 import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
+import { ProductionReadinessCheck } from "@/components/admin/ProductionReadinessCheck";
+import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerFlow";
 import { useTranslation } from "react-i18next";
 import { Wrench, ArrowRight } from "lucide-react";
 
@@ -712,6 +714,8 @@ const Dashboard = () => {
                                     Full Admin Dashboard
                                   </Button>
                                 </div>
+                                <ProductionReadinessCheck />
+                                <EnhancedTestManagerFlow />
                                 <TestDataGenerator />
                               </div>
                             </TabsContent>
