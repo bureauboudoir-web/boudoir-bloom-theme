@@ -58,11 +58,18 @@ export const DashboardNav = ({
   // Tabs allowed for meeting_only access
   const allowedTabsForMeetingOnly: TabId[] = ['overview', 'onboarding', 'meetings', 'account', 'settings'];
 
+  const getDashboardLabel = () => {
+    if (isAdmin || isSuperAdmin) return t('dashboard.nav.adminOverview');
+    if (isManagerOnly) return t('dashboard.nav.managerOverview');
+    if (isCreator) return t('dashboard.nav.creatorDashboard');
+    return t('dashboard.nav.overview');
+  };
+
   const navSections = [
     {
       title: t('dashboard.sections.dashboard'),
       items: [
-        { id: "overview" as TabId, label: t('dashboard.nav.overview'), icon: <CheckSquare className="w-4 h-4" /> },
+        { id: "overview" as TabId, label: getDashboardLabel(), icon: <CheckSquare className="w-4 h-4" /> },
       ]
     },
     {

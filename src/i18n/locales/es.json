@@ -28,7 +28,10 @@
       "management": "Gestión"
     },
     "nav": {
-      "overview": "Panel de Creador",
+      "overview": "Overview",
+      "creatorDashboard": "Panel de Creador",
+      "managerOverview": "Panel de Gestión",
+      "adminOverview": "Panel de Administración",
       "onboarding": "Incorporación",
       "account": "Perfil de Creador",
       "settings": "Configuración",
@@ -42,8 +45,8 @@
       "support": "Contacta con Nosotros",
       "adminDashboard": "Panel de Administración",
       "managerDashboard": "Panel de Gestión",
-      "adminControls": "Panel de Administración",
-      "managerControls": "Panel de Gestión"
+      "adminControls": "Controles de Admin",
+      "managerControls": "Controles de Manager"
     }
   },
   "homepage": {
