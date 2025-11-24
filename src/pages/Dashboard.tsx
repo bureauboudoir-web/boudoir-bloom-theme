@@ -63,6 +63,7 @@ import { AccessManagement } from "@/components/admin/AccessManagement";
 import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 import { Analytics } from "@/components/admin/Analytics";
+import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -675,6 +676,7 @@ const Dashboard = () => {
                           <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
                           <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Applications</TabsTrigger>
                           <TabsTrigger value="creators" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Creators</TabsTrigger>
+                          <TabsTrigger value="notifications" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Notifications</TabsTrigger>
                           <TabsTrigger value="commitments" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Commitments</TabsTrigger>
                           <TabsTrigger value="shoots" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Shoots</TabsTrigger>
                           <TabsTrigger value="meetings" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Meetings</TabsTrigger>
@@ -696,6 +698,10 @@ const Dashboard = () => {
 
                         <TabsContent value="creators" className="mt-0">
                           <CreatorOverview />
+                        </TabsContent>
+
+                        <TabsContent value="notifications" className="mt-0">
+                          <ManagerNotifications userId={user.id} />
                         </TabsContent>
 
                         <TabsContent value="commitments" className="mt-0">
