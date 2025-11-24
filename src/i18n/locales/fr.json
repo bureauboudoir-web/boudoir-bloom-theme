@@ -28,7 +28,10 @@
       "management": "Gestion"
     },
     "nav": {
-      "overview": "Tableau de Bord Créateur",
+      "overview": "Overview",
+      "creatorDashboard": "Tableau de Bord Créateur",
+      "managerOverview": "Tableau de Bord Manager",
+      "adminOverview": "Tableau de Bord Admin",
       "onboarding": "Intégration",
       "account": "Profil du Créateur",
       "settings": "Paramètres",
@@ -42,8 +45,8 @@
       "support": "Contactez-nous",
       "adminDashboard": "Tableau de Bord Admin",
       "managerDashboard": "Tableau de Bord Manager",
-      "adminControls": "Tableau de Bord Admin",
-      "managerControls": "Tableau de Bord Manager"
+      "adminControls": "Contrôles Admin",
+      "managerControls": "Contrôles Manager"
     }
   },
   "homepage": {

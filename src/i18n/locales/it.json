@@ -28,7 +28,10 @@
       "management": "Gestione"
     },
     "nav": {
-      "overview": "Dashboard Creatore",
+      "overview": "Overview",
+      "creatorDashboard": "Dashboard Creatore",
+      "managerOverview": "Dashboard Manager",
+      "adminOverview": "Dashboard Admin",
       "onboarding": "Inserimento",
       "account": "Profilo Creatore",
       "settings": "Impostazioni",
@@ -42,8 +45,8 @@
       "support": "Contattaci",
       "adminDashboard": "Dashboard Admin",
       "managerDashboard": "Dashboard Manager",
-      "adminControls": "Dashboard Admin",
-      "managerControls": "Dashboard Manager"
+      "adminControls": "Controlli Admin",
+      "managerControls": "Controlli Manager"
     }
   },
   "homepage": {

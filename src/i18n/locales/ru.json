@@ -28,7 +28,10 @@
       "management": "Управление"
     },
     "nav": {
-      "overview": "Панель Создателя",
+      "overview": "Overview",
+      "creatorDashboard": "Панель Создателя",
+      "managerOverview": "Панель Менеджера",
+      "adminOverview": "Панель Администратора",
       "onboarding": "Регистрация",
       "account": "Профиль Создателя",
       "settings": "Настройки",
@@ -42,8 +45,8 @@
       "support": "Связаться с Нами",
       "adminDashboard": "Панель Администратора",
       "managerDashboard": "Панель Менеджера",
-      "adminControls": "Панель Администратора",
-      "managerControls": "Панель Менеджера"
+      "adminControls": "Управление Администратора",
+      "managerControls": "Управление Менеджера"
     }
   },
   "homepage": {
