@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, UserCheck, Mail, RefreshCw, Check, Send, ExternalLink, CheckCircle2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Calendar, Clock, UserCheck, Mail, RefreshCw, Check, Send, ExternalLink, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { GrantAccessDialog } from "./GrantAccessDialog";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
 import { TestPendingCreatorsButton } from "./TestPendingCreatorsButton";
@@ -47,7 +48,20 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
   const [selectedCreator, setSelectedCreator] = useState<PendingCreator | null>(null);
   const [showGrantDialog, setShowGrantDialog] = useState(false);
   const [filterStage, setFilterStage] = useState<'all' | CreatorStage>('all');
+  const [expandedCreators, setExpandedCreators] = useState<Set<string>>(new Set());
   const { grantEarlyAccess, grantAccessAfterMeeting, sendMeetingInvitation, loading: actionLoading } = useAccessManagement();
+
+  const toggleCreator = (creatorId: string) => {
+    setExpandedCreators(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(creatorId)) {
+        newSet.delete(creatorId);
+      } else {
+        newSet.add(creatorId);
+      }
+      return newSet;
+    });
+  };
 
   const fetchPendingCreators = async () => {
     try {
@@ -256,21 +270,22 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
     switch (creator.stage) {
       case 'no_invitation':
         return (
-          <Button size="sm" onClick={() => handleSendInvitation(creator)} disabled={actionLoading}>
-            <Send className="h-4 w-4" />
-            <span className="hidden sm:inline">Send Invitation</span>
+          <Button size="sm" onClick={() => handleSendInvitation(creator)} disabled={actionLoading} className="w-full">
+            <Send className="h-4 w-4 mr-2" />
+            Send Invitation
           </Button>
         );
       
       case 'invitation_sent':
         return (
           <>
-            <Button size="sm" variant="outline" onClick={() => handleResendInvitation(creator)} disabled={actionLoading}>
-              <RefreshCw className="h-4 w-4" />
+            <Button size="sm" variant="outline" onClick={() => handleResendInvitation(creator)} disabled={actionLoading} className="flex-1">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Resend
             </Button>
-            <Button size="sm" onClick={onNavigateToMeetings}>
-              <span className="hidden sm:inline">View Details</span>
-              <ExternalLink className="h-4 w-4 sm:hidden" />
+            <Button size="sm" onClick={onNavigateToMeetings} className="flex-1">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Details
             </Button>
           </>
         );
@@ -278,13 +293,13 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       case 'meeting_booked':
         return (
           <>
-            <Button size="sm" variant="outline" onClick={onNavigateToMeetings}>
-              <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">View Meeting</span>
+            <Button size="sm" variant="outline" onClick={onNavigateToMeetings} className="flex-1">
+              <Calendar className="h-4 w-4 mr-2" />
+              View Meeting
             </Button>
-            <Button size="sm" onClick={() => handleMarkComplete(creator)} disabled={actionLoading}>
-              <Check className="h-4 w-4" />
-              <span className="hidden sm:inline">Mark Complete</span>
+            <Button size="sm" onClick={() => handleMarkComplete(creator)} disabled={actionLoading} className="flex-1">
+              <Check className="h-4 w-4 mr-2" />
+              Mark Complete
             </Button>
           </>
         );
@@ -293,15 +308,15 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
         return (
           <Button 
             size="sm" 
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 w-full"
             onClick={() => {
               setSelectedCreator(creator);
               setShowGrantDialog(true);
             }}
             disabled={actionLoading}
           >
-            <Check className="h-4 w-4" />
-            <span className="hidden sm:inline">Grant Full Access</span>
+            <Check className="h-4 w-4 mr-2" />
+            Grant Full Access
           </Button>
         );
     }
@@ -367,102 +382,145 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
 
   return (
     <>
-      <Card className="border-primary/20 bg-primary/5">
+      <Card className="border-primary/20">
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <UserCheck className="h-5 w-5 text-primary" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <UserCheck className="h-5 w-5 text-primary" />
+              </div>
               <div>
-                <CardTitle>Creators Awaiting Activation</CardTitle>
-                <CardDescription className="mt-1">
-                  Track creators through their onboarding journey and grant full dashboard access
+                <CardTitle className="text-lg">Creators Awaiting Activation</CardTitle>
+                <CardDescription className="mt-1 text-xs">
+                  {filteredCreators.length} creator{filteredCreators.length !== 1 ? 's' : ''} pending activation
                 </CardDescription>
               </div>
             </div>
-            <TestPendingCreatorsButton />
+            <div className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  if (expandedCreators.size === filteredCreators.length) {
+                    setExpandedCreators(new Set());
+                  } else {
+                    setExpandedCreators(new Set(filteredCreators.map(c => c.id)));
+                  }
+                }}
+              >
+                {expandedCreators.size === filteredCreators.length ? 'Collapse All' : 'Expand All'}
+              </Button>
+              <TestPendingCreatorsButton />
+            </div>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <Tabs value={filterStage} onValueChange={(v) => setFilterStage(v as typeof filterStage)} className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="all" className="text-xs">
-                All <Badge variant="secondary" className="ml-1">{stageCounts.all}</Badge>
+            <TabsList className="grid w-full grid-cols-5 h-auto p-1 bg-muted/50">
+              <TabsTrigger value="all" className="text-xs py-2 data-[state=active]:bg-background">
+                All <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[10px]">{stageCounts.all}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="no_invitation" className="text-xs">
-                Need Invite <Badge variant="secondary" className="ml-1">{stageCounts.no_invitation}</Badge>
+              <TabsTrigger value="no_invitation" className="text-xs py-2 data-[state=active]:bg-background">
+                Need Invite <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[10px]">{stageCounts.no_invitation}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="invitation_sent" className="text-xs">
-                Waiting <Badge variant="secondary" className="ml-1">{stageCounts.invitation_sent}</Badge>
+              <TabsTrigger value="invitation_sent" className="text-xs py-2 data-[state=active]:bg-background">
+                Waiting <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[10px]">{stageCounts.invitation_sent}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="meeting_booked" className="text-xs">
-                Scheduled <Badge variant="secondary" className="ml-1">{stageCounts.meeting_booked}</Badge>
+              <TabsTrigger value="meeting_booked" className="text-xs py-2 data-[state=active]:bg-background">
+                Scheduled <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[10px]">{stageCounts.meeting_booked}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="meeting_completed" className="text-xs">
-                Ready <Badge variant="secondary" className="ml-1">{stageCounts.meeting_completed}</Badge>
+              <TabsTrigger value="meeting_completed" className="text-xs py-2 data-[state=active]:bg-background">
+                Ready <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[10px]">{stageCounts.meeting_completed}</Badge>
               </TabsTrigger>
             </TabsList>
           </Tabs>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {filteredCreators.map((creator) => {
               const stageInfo = getStageInfo(creator.stage);
+              const isExpanded = expandedCreators.has(creator.id);
               
               return (
-                <Card key={creator.id} className="p-4 bg-background hover:bg-accent/5 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <Avatar className="h-12 w-12 flex-shrink-0 ring-2 ring-border">
-                      <AvatarImage src={creator.profile_picture_url || undefined} />
-                      <AvatarFallback className="text-sm font-semibold">
-                        {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-semibold truncate text-base">{creator.full_name || 'No name'}</p>
-                            <Badge variant="secondary" className={`${stageInfo.color} text-xs`}>
+                <Collapsible key={creator.id} open={isExpanded} onOpenChange={() => toggleCreator(creator.id)}>
+                  <Card className="overflow-hidden transition-all hover:shadow-sm">
+                    <CollapsibleTrigger className="w-full">
+                      <div className="p-3 flex items-center gap-3 hover:bg-accent/5 transition-colors">
+                        <Avatar className="h-10 w-10 flex-shrink-0">
+                          <AvatarImage src={creator.profile_picture_url || undefined} />
+                          <AvatarFallback className="text-sm">
+                            {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate text-sm">{creator.full_name || 'No name'}</p>
+                            <Badge variant="outline" className={`${stageInfo.color} text-xs px-1.5 py-0`}>
                               {stageInfo.label}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground truncate">{creator.email}</p>
+                          <p className="text-xs text-muted-foreground truncate">{creator.email}</p>
                         </div>
                         
-                        <div className="flex gap-2 flex-shrink-0">
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {!isExpanded && creator.stage === 'no_invitation' && (
+                            <Badge variant="secondary" className="text-xs">Action Required</Badge>
+                          )}
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </div>
+                      </div>
+                    </CollapsibleTrigger>
+                    
+                    <CollapsibleContent>
+                      <div className="px-3 pb-3 pt-1 space-y-3 border-t border-border/50 bg-muted/20">
+                        {/* Status Description */}
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {stageInfo.description}
+                        </p>
+                        
+                        {/* Email Status */}
+                        <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                          {getEmailIndicator(creator)}
+                        </div>
+                        
+                        {/* Meeting Details */}
+                        {creator.meeting_date && (
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-medium">
+                                  {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
+                                </p>
+                                {creator.stage === 'meeting_booked' && (
+                                  <p className="text-xs text-primary">
+                                    {formatTimeUntil(creator.meeting_date)}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            {creator.meeting_time && (
+                              <div className="flex items-center gap-2 p-2 rounded-md bg-background">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <p className="text-xs font-medium">{creator.meeting_time}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Action Buttons */}
+                        <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
                           {getActionButtons(creator)}
                         </div>
                       </div>
-                      
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 border-t border-border/50">
-                        {getEmailIndicator(creator)}
-                        
-                        {creator.meeting_date && (
-                          <>
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Calendar className="h-3.5 w-3.5" />
-                              <span className="font-medium">
-                                {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
-                                {creator.stage === 'meeting_booked' && (
-                                  <span className="text-primary ml-1">
-                                    ({formatTimeUntil(creator.meeting_date)})
-                                  </span>
-                                )}
-                              </span>
-                            </div>
-                            {creator.meeting_time && (
-                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                <Clock className="h-3.5 w-3.5" />
-                                <span className="font-medium">{creator.meeting_time}</span>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
+                    </CollapsibleContent>
+                  </Card>
+                </Collapsible>
               );
             })}
           </div>
