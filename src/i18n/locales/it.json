@@ -29,9 +29,6 @@
     },
     "nav": {
       "overview": "Overview",
-      "creatorDashboard": "Dashboard Creatore",
-      "managerOverview": "Dashboard Manager",
-      "adminOverview": "Dashboard Admin",
       "onboarding": "Inserimento",
       "account": "Profilo Creatore",
       "settings": "Impostazioni",
@@ -47,6 +44,11 @@
       "managerDashboard": "Dashboard Manager",
       "adminControls": "Controlli Admin",
       "managerControls": "Controlli Manager"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Dashboard Creatore",
+      "managerDashboard": "Dashboard Manager",
+      "adminDashboard": "Dashboard Admin"
     }
   },
   "homepage": {

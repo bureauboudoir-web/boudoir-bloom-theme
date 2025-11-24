@@ -29,9 +29,6 @@
     },
     "nav": {
       "overview": "Overview",
-      "creatorDashboard": "Панель Создателя",
-      "managerOverview": "Панель Менеджера",
-      "adminOverview": "Панель Администратора",
       "onboarding": "Регистрация",
       "account": "Профиль Создателя",
       "settings": "Настройки",
@@ -47,6 +44,11 @@
       "managerDashboard": "Панель Менеджера",
       "adminControls": "Управление Администратора",
       "managerControls": "Управление Менеджера"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Панель Создателя",
+      "managerDashboard": "Панель Менеджера",
+      "adminDashboard": "Панель Администратора"
     }
   },
   "homepage": {
