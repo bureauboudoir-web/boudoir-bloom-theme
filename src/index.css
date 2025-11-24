@@ -114,6 +114,15 @@ All colors MUST be HSL.
   .glow-gold-strong {
     box-shadow: 0 0 30px hsl(var(--rose-gold) / 0.6);
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer base {

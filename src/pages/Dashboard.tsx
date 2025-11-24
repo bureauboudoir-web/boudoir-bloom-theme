@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu, Clock, Lock as LockIcon, Lightbulb } from "lucide-react";
@@ -539,186 +539,210 @@ const Dashboard = () => {
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
               <div className="space-y-6">
-                <Card className="p-6 bg-card border-primary/20">
-                  <div className="flex items-center justify-between mb-6">
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/10 overflow-hidden">
+                  <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
                     <div>
-                      <h2 className="text-2xl font-bold font-serif">Admin Controls</h2>
-                      <p className="text-muted-foreground mt-1">Manage applications, creators, and system settings</p>
+                      <h2 className="text-3xl font-bold font-serif tracking-tight">Admin Controls</h2>
+                      <p className="text-sm text-muted-foreground mt-2">Manage applications, creators, and system settings</p>
                     </div>
-                  </div>
+                  </CardHeader>
 
-                  <Tabs value={adminSubTab} onValueChange={setAdminSubTab} className="space-y-6">
-                    <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-                      <TabsTrigger value="overview">Overview</TabsTrigger>
-                      <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                      <TabsTrigger value="applications">Applications</TabsTrigger>
-                      <TabsTrigger value="creators">Creators</TabsTrigger>
-                      <TabsTrigger value="commitments">Commitments</TabsTrigger>
-                      <TabsTrigger value="shoots">Shoots</TabsTrigger>
-                      <TabsTrigger value="review">Review</TabsTrigger>
-                      <TabsTrigger value="meetings">Meetings</TabsTrigger>
-                      <TabsTrigger value="support">Support</TabsTrigger>
-                      <TabsTrigger value="invoices">Invoices</TabsTrigger>
-                      <TabsTrigger value="contracts">Contracts</TabsTrigger>
-                      <TabsTrigger value="access">Access</TabsTrigger>
-                      {isSuperAdmin && (
-                        <>
-                          <TabsTrigger value="roles">Roles</TabsTrigger>
-                          <TabsTrigger value="permissions">Permissions</TabsTrigger>
-                        </>
-                      )}
-                    </TabsList>
-
-                    <TabsContent value="overview">
-                      <AdminControlsOverview onNavigate={(tab) => setAdminSubTab(tab)} />
-                    </TabsContent>
-
-                    <TabsContent value="analytics">
-                      <Analytics />
-                    </TabsContent>
-
-                    <TabsContent value="applications">
-                      <ApplicationsManagement />
-                    </TabsContent>
-
-                    <TabsContent value="creators">
-                      <CreatorOverview />
-                    </TabsContent>
-
-                    <TabsContent value="commitments">
-                      <AdminCommitments />
-                    </TabsContent>
-
-                    <TabsContent value="shoots">
-                      <AdminShoots />
-                    </TabsContent>
-
-                    <TabsContent value="review">
-                      <ContentReview />
-                    </TabsContent>
-
-                    <TabsContent value="meetings">
-                      <AdminMeetings />
-                    </TabsContent>
-
-                    <TabsContent value="support">
-                      <AdminSupportTickets />
-                    </TabsContent>
-
-                    <TabsContent value="invoices">
-                      <AdminInvoices />
-                    </TabsContent>
-
-                    <TabsContent value="contracts">
-                      <AdminContracts />
-                    </TabsContent>
-
-                    <TabsContent value="access">
-                      <Tabs defaultValue="manage" className="space-y-4">
-                        <TabsList>
-                          <TabsTrigger value="manage">Manage Access</TabsTrigger>
-                          <TabsTrigger value="audit">Audit Log</TabsTrigger>
+                  <CardContent className="p-0">
+                    <Tabs value={adminSubTab} onValueChange={setAdminSubTab} className="w-full">
+                      <div className="border-b border-border/50 bg-muted/30 px-6">
+                        <TabsList className="h-auto bg-transparent border-0 w-full justify-start gap-1 py-3 overflow-x-auto scrollbar-hide">
+                          <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
+                          <TabsTrigger value="analytics" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Analytics</TabsTrigger>
+                          <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Applications</TabsTrigger>
+                          <TabsTrigger value="creators" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Creators</TabsTrigger>
+                          <TabsTrigger value="commitments" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Commitments</TabsTrigger>
+                          <TabsTrigger value="shoots" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Shoots</TabsTrigger>
+                          <TabsTrigger value="review" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Review</TabsTrigger>
+                          <TabsTrigger value="meetings" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Meetings</TabsTrigger>
+                          <TabsTrigger value="support" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Support</TabsTrigger>
+                          <TabsTrigger value="invoices" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Invoices</TabsTrigger>
+                          <TabsTrigger value="contracts" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Contracts</TabsTrigger>
+                          <TabsTrigger value="access" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Access</TabsTrigger>
+                          {isSuperAdmin && (
+                            <>
+                              <TabsTrigger value="roles" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Roles</TabsTrigger>
+                              <TabsTrigger value="permissions" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Permissions</TabsTrigger>
+                            </>
+                          )}
                         </TabsList>
-                        
-                        <TabsContent value="manage">
-                          <AccessManagement />
-                        </TabsContent>
-                        
-                        <TabsContent value="audit">
-                          <AccessAuditLog />
-                        </TabsContent>
-                      </Tabs>
-                    </TabsContent>
+                      </div>
 
-                    {isSuperAdmin && (
-                      <>
-                        <TabsContent value="roles">
-                          <RoleManagement />
+                      <div className="p-6">
+                        <TabsContent value="overview" className="mt-0">
+                          <AdminControlsOverview onNavigate={(tab) => setAdminSubTab(tab)} />
                         </TabsContent>
 
-                        <TabsContent value="permissions">
-                          <PermissionsManager />
+                        <TabsContent value="analytics" className="mt-0">
+                          <Analytics />
                         </TabsContent>
-                      </>
-                    )}
-                  </Tabs>
+
+                        <TabsContent value="applications" className="mt-0">
+                          <ApplicationsManagement />
+                        </TabsContent>
+
+                        <TabsContent value="creators" className="mt-0">
+                          <CreatorOverview />
+                        </TabsContent>
+
+                        <TabsContent value="commitments" className="mt-0">
+                          <AdminCommitments />
+                        </TabsContent>
+
+                        <TabsContent value="shoots" className="mt-0">
+                          <AdminShoots />
+                        </TabsContent>
+
+                        <TabsContent value="review" className="mt-0">
+                          <ContentReview />
+                        </TabsContent>
+
+                        <TabsContent value="meetings" className="mt-0">
+                          <AdminMeetings />
+                        </TabsContent>
+
+                        <TabsContent value="support" className="mt-0">
+                          <AdminSupportTickets />
+                        </TabsContent>
+
+                        <TabsContent value="invoices" className="mt-0">
+                          <AdminInvoices />
+                        </TabsContent>
+
+                        <TabsContent value="contracts" className="mt-0">
+                          <AdminContracts />
+                        </TabsContent>
+
+                        <TabsContent value="access" className="mt-0">
+                          <Card className="border-muted/50">
+                            <Tabs defaultValue="manage" className="w-full">
+                              <div className="border-b border-border/50 px-4 pt-4">
+                                <TabsList className="h-auto bg-muted/30 p-1 rounded-lg">
+                                  <TabsTrigger value="manage" className="rounded-md">Manage Access</TabsTrigger>
+                                  <TabsTrigger value="audit" className="rounded-md">Audit Log</TabsTrigger>
+                                </TabsList>
+                              </div>
+                              
+                              <div className="p-4">
+                                <TabsContent value="manage" className="mt-0">
+                                  <AccessManagement />
+                                </TabsContent>
+                                
+                                <TabsContent value="audit" className="mt-0">
+                                  <AccessAuditLog />
+                                </TabsContent>
+                              </div>
+                            </Tabs>
+                          </Card>
+                        </TabsContent>
+
+                        {isSuperAdmin && (
+                          <>
+                            <TabsContent value="roles" className="mt-0">
+                              <RoleManagement />
+                            </TabsContent>
+
+                            <TabsContent value="permissions" className="mt-0">
+                              <PermissionsManager />
+                            </TabsContent>
+                          </>
+                        )}
+                      </div>
+                    </Tabs>
+                  </CardContent>
                 </Card>
               </div>
             )}
 
             {activeTab === "manager" && isManagerOnly && (
               <div className="space-y-6">
-                <Card className="p-6 bg-card border-primary/20">
-                  <div className="flex items-center justify-between mb-6">
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/10 overflow-hidden">
+                  <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
                     <div>
-                      <h2 className="text-2xl font-bold font-serif">Manager Controls</h2>
-                      <p className="text-muted-foreground mt-1">Manage your assigned creators and meetings</p>
+                      <h2 className="text-3xl font-bold font-serif tracking-tight">Manager Controls</h2>
+                      <p className="text-sm text-muted-foreground mt-2">Manage your assigned creators and meetings</p>
                     </div>
-                  </div>
-
-                  <Tabs value={managerSubTab} onValueChange={setManagerSubTab} className="space-y-6">
-                    <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-                      <TabsTrigger value="overview">Overview</TabsTrigger>
-                      <TabsTrigger value="applications">Applications</TabsTrigger>
-                      <TabsTrigger value="creators">Creators</TabsTrigger>
-                      <TabsTrigger value="commitments">Commitments</TabsTrigger>
-                      <TabsTrigger value="shoots">Shoots</TabsTrigger>
-                      <TabsTrigger value="meetings">Meetings</TabsTrigger>
-                      <TabsTrigger value="access">Access</TabsTrigger>
-                      <TabsTrigger value="availability">Availability</TabsTrigger>
-                      <TabsTrigger value="support">Support</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="overview" className="space-y-4">
-                      <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
-                      <ManagerControlsOverview managerId={user.id} onNavigate={(tab) => setManagerSubTab(tab)} />
-                    </TabsContent>
-
-                    <TabsContent value="applications">
-                      <ApplicationsManagement />
-                    </TabsContent>
-
-                    <TabsContent value="creators">
-                      <CreatorOverview />
-                    </TabsContent>
-
-                    <TabsContent value="commitments">
-                      <AdminCommitments />
-                    </TabsContent>
-
-                    <TabsContent value="shoots">
-                      <AdminShoots />
-                    </TabsContent>
-
-                    <TabsContent value="meetings">
-                      <AdminMeetings />
-                    </TabsContent>
-
-                    <TabsContent value="access">
-                      <Tabs defaultValue="manage" className="space-y-4">
-                        <TabsList>
-                          <TabsTrigger value="manage">Manage Access</TabsTrigger>
-                          <TabsTrigger value="audit">Audit Log</TabsTrigger>
+                  </CardHeader>
+                  
+                  <CardContent className="p-0">
+                    <Tabs value={managerSubTab} onValueChange={setManagerSubTab} className="w-full">
+                      <div className="border-b border-border/50 bg-muted/30 px-6">
+                        <TabsList className="h-auto bg-transparent border-0 w-full justify-start gap-1 py-3 overflow-x-auto scrollbar-hide">
+                          <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
+                          <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Applications</TabsTrigger>
+                          <TabsTrigger value="creators" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Creators</TabsTrigger>
+                          <TabsTrigger value="commitments" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Commitments</TabsTrigger>
+                          <TabsTrigger value="shoots" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Shoots</TabsTrigger>
+                          <TabsTrigger value="meetings" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Meetings</TabsTrigger>
+                          <TabsTrigger value="access" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Access</TabsTrigger>
+                          <TabsTrigger value="availability" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Availability</TabsTrigger>
+                          <TabsTrigger value="support" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Support</TabsTrigger>
                         </TabsList>
-                        
-                        <TabsContent value="manage">
-                          <AccessManagement />
-                        </TabsContent>
-                        
-                        <TabsContent value="audit">
-                          <AccessAuditLog />
-                        </TabsContent>
-                      </Tabs>
-                    </TabsContent>
+                      </div>
 
-                    <TabsContent value="availability">
-                      <ManagerAvailabilitySettings />
-                    </TabsContent>
+                      <div className="p-6">
+                        <TabsContent value="overview" className="mt-0 space-y-4">
+                          <PendingActivationsWidget onNavigateToMeetings={() => setActiveTab('meetings')} />
+                          <ManagerControlsOverview managerId={user.id} onNavigate={(tab) => setManagerSubTab(tab)} />
+                        </TabsContent>
 
-                    <TabsContent value="support">
-                      <AdminSupportTickets />
-                    </TabsContent>
-                  </Tabs>
+                        <TabsContent value="applications" className="mt-0">
+                          <ApplicationsManagement />
+                        </TabsContent>
+
+                        <TabsContent value="creators" className="mt-0">
+                          <CreatorOverview />
+                        </TabsContent>
+
+                        <TabsContent value="commitments" className="mt-0">
+                          <AdminCommitments />
+                        </TabsContent>
+
+                        <TabsContent value="shoots" className="mt-0">
+                          <AdminShoots />
+                        </TabsContent>
+
+                        <TabsContent value="meetings" className="mt-0">
+                          <AdminMeetings />
+                        </TabsContent>
+
+                        <TabsContent value="access" className="mt-0">
+                          <Card className="border-muted/50">
+                            <Tabs defaultValue="manage" className="w-full">
+                              <div className="border-b border-border/50 px-4 pt-4">
+                                <TabsList className="h-auto bg-muted/30 p-1 rounded-lg">
+                                  <TabsTrigger value="manage" className="rounded-md">Manage Access</TabsTrigger>
+                                  <TabsTrigger value="audit" className="rounded-md">Audit Log</TabsTrigger>
+                                </TabsList>
+                              </div>
+                              
+                              <div className="p-4">
+                                <TabsContent value="manage" className="mt-0">
+                                  <AccessManagement />
+                                </TabsContent>
+                                
+                                <TabsContent value="audit" className="mt-0">
+                                  <AccessAuditLog />
+                                </TabsContent>
+                              </div>
+                            </Tabs>
+                          </Card>
+                        </TabsContent>
+
+                        <TabsContent value="availability" className="mt-0">
+                          <ManagerAvailabilitySettings />
+                        </TabsContent>
+
+                        <TabsContent value="support" className="mt-0">
+                          <AdminSupportTickets />
+                        </TabsContent>
+                      </div>
+                    </Tabs>
+                  </CardContent>
                 </Card>
               </div>
             )}
