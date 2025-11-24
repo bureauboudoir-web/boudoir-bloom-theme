@@ -33,6 +33,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useAdminNotifications } from "@/hooks/useAdminNotifications";
 import { useAccessLevel, AccessLevel } from "@/hooks/useAccessLevel";
 import { useMeetingStatus } from "@/hooks/useMeetingStatus";
 import ContactSupport from "@/components/dashboard/ContactSupport";
@@ -64,7 +65,9 @@ import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 import { Analytics } from "@/components/admin/Analytics";
 import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
+import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
 import { useTranslation } from "react-i18next";
+import { Wrench, ArrowRight } from "lucide-react";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -75,6 +78,15 @@ const Dashboard = () => {
   const { isAdmin, isSuperAdmin, isManagerOnly, isCreator, isManager, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
+  const { 
+    newSupportTickets, 
+    pendingReviews, 
+    pendingInvoiceConfirmations, 
+    overdueCommitments, 
+    upcomingMeetings,
+    pendingActivations,
+    totalNotifications: adminTotalNotifications 
+  } = useAdminNotifications();
   const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
@@ -348,6 +360,23 @@ const Dashboard = () => {
             
             <div className="flex items-center gap-2">
               <LanguageSelector />
+              {(isAdmin || isSuperAdmin) && (
+                <Button
+                  onClick={() => navigate("/admin")}
+                  variant="default"
+                  size="sm"
+                  className="gap-2 bg-primary hover:bg-primary/90 relative"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span className="hidden sm:inline">Admin Dashboard</span>
+                  {adminTotalNotifications > 0 && (
+                    <Badge className="ml-1 h-5 min-w-[20px] px-1.5 bg-destructive text-destructive-foreground">
+                      {adminTotalNotifications}
+                    </Badge>
+                  )}
+                  <ArrowRight className="w-3 h-3 hidden lg:inline" />
+                </Button>
+              )}
               <NotificationBell
                 notifications={notificationItems}
                 totalCount={totalNotifications}
@@ -579,6 +608,10 @@ const Dashboard = () => {
                             <>
                               <TabsTrigger value="roles" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Roles</TabsTrigger>
                               <TabsTrigger value="permissions" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Permissions</TabsTrigger>
+                              <TabsTrigger value="dev-tools" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm bg-primary/10 border border-primary/20">
+                                <Wrench className="w-4 h-4 mr-1" />
+                                Dev Tools
+                              </TabsTrigger>
                             </>
                           )}
                         </TabsList>
@@ -660,6 +693,27 @@ const Dashboard = () => {
 
                             <TabsContent value="permissions" className="mt-0">
                               <PermissionsManager />
+                            </TabsContent>
+
+                            <TabsContent value="dev-tools" className="mt-0">
+                              <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <h3 className="text-lg font-semibold">Development Tools</h3>
+                                    <p className="text-sm text-muted-foreground">Test data generation and development utilities</p>
+                                  </div>
+                                  <Button
+                                    onClick={() => navigate("/admin")}
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                  >
+                                    <Shield className="w-4 h-4" />
+                                    Full Admin Dashboard
+                                  </Button>
+                                </div>
+                                <TestDataGenerator />
+                              </div>
                             </TabsContent>
                           </>
                         )}
