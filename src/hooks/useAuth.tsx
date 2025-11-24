@@ -70,15 +70,9 @@ export const useAuth = () => {
         };
       }
       
-      // Role-based redirect - prioritize highest permission level
-      const roles = userRoles.map(r => r.role);
-      if (roles.includes('super_admin') || roles.includes('admin')) {
-        navigate("/admin");
-      } else if (roles.includes('manager') && !roles.includes('creator')) {
-        navigate("/manager");
-      } else {
-        navigate("/dashboard");
-      }
+      // All users redirect to unified dashboard
+      // The dashboard has role-based tabs (admin, manager) for different user types
+      navigate("/dashboard");
     }
     
     return { data, error };
