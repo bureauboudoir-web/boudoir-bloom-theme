@@ -10,12 +10,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
+import { useDebounce } from "@/hooks/useDebounce";
 
 import { AssistedOnboarding } from "./AssistedOnboarding";
 import { PaginationControls } from "./shared/PaginationControls";
@@ -32,6 +35,7 @@ interface Meeting {
   duration_minutes: number;
   meeting_notes: string | null;
   created_at: string | null;
+  assigned_manager_id: string | null;
   reschedule_requested: boolean | null;
   reschedule_reason: string | null;
   reschedule_new_date: string | null;
@@ -56,6 +60,7 @@ export const AdminMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [actionDialog, setActionDialog] = useState<'complete' | 'assist' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,6 +68,14 @@ export const AdminMeetings = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
   const [expandedMeetings, setExpandedMeetings] = useState<Set<string>>(new Set());
   const [expandAll, setExpandAll] = useState(false);
+  
+  // Advanced filters
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [meetingTypeFilter, setMeetingTypeFilter] = useState<string>("all");
+  const [managerFilter, setManagerFilter] = useState<string>("all");
+  const [dateFromFilter, setDateFromFilter] = useState<string>("");
+  const [dateToFilter, setDateToFilter] = useState<string>("");
+  const [managers, setManagers] = useState<Array<{ id: string; name: string }>>([]);
 
   const toggleMeeting = (meetingId: string) => {
     setExpandedMeetings(prev => {
@@ -86,23 +99,47 @@ export const AdminMeetings = () => {
   };
 
   const filteredMeetings = meetings.filter(meeting => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      meeting.profiles?.full_name?.toLowerCase().includes(query) ||
-      meeting.profiles?.email.toLowerCase().includes(query) ||
-      meeting.meeting_type.toLowerCase().includes(query) ||
-      meeting.meeting_notes?.toLowerCase().includes(query)
-    );
+    const searchLower = debouncedSearch.toLowerCase();
+    const matchesSearch = 
+      meeting.profiles?.full_name?.toLowerCase().includes(searchLower) ||
+      meeting.profiles?.email.toLowerCase().includes(searchLower) ||
+      meeting.meeting_type.toLowerCase().includes(searchLower) ||
+      meeting.meeting_notes?.toLowerCase().includes(searchLower);
+
+    const matchesStatus = statusFilter === "all" || meeting.status === statusFilter;
+    const matchesType = meetingTypeFilter === "all" || meeting.meeting_type === meetingTypeFilter;
+    const matchesManager = managerFilter === "all" || meeting.assigned_manager_id === managerFilter;
+
+    let matchesDateRange = true;
+    if (dateFromFilter && meeting.meeting_date) {
+      matchesDateRange = new Date(meeting.meeting_date) >= new Date(dateFromFilter);
+    }
+    if (dateToFilter && meeting.meeting_date && matchesDateRange) {
+      matchesDateRange = new Date(meeting.meeting_date) <= new Date(dateToFilter);
+    }
+
+    return matchesSearch && matchesStatus && matchesType && matchesManager && matchesDateRange;
   });
+
+  const hasActiveFilters = statusFilter !== "all" || meetingTypeFilter !== "all" || 
+    managerFilter !== "all" || dateFromFilter !== "" || dateToFilter !== "";
+
+  const clearFilters = () => {
+    setStatusFilter("all");
+    setMeetingTypeFilter("all");
+    setManagerFilter("all");
+    setDateFromFilter("");
+    setDateToFilter("");
+  };
+
   const [meetingNotes, setMeetingNotes] = useState("");
 
   useEffect(() => {
     if (user) {
       fetchMeetings();
+      fetchManagers();
     }
 
-    // Subscribe to realtime updates for meetings
     const meetingsChannel = supabase
       .channel('admin-meetings-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'creator_meetings' }, (payload) => {
@@ -116,12 +153,34 @@ export const AdminMeetings = () => {
     };
   }, [user]);
 
+  const fetchManagers = async () => {
+    try {
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .in('role', ['admin', 'manager', 'super_admin']);
+
+      if (!roles) return;
+
+      const managerIds = roles.map(r => r.user_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', managerIds);
+
+      if (profiles) {
+        setManagers(profiles.map(p => ({ id: p.id, name: p.full_name || p.email })));
+      }
+    } catch (error) {
+      console.error('Error fetching managers:', error);
+    }
+  };
+
   const fetchMeetings = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      // Fetch ALL meetings - managers can see all meetings
       const query = supabase
         .from('creator_meetings')
         .select('*')
@@ -130,7 +189,6 @@ export const AdminMeetings = () => {
       const { data: meetingsData, error: meetingsError } = await query;
       if (meetingsError) throw meetingsError;
 
-      // Fetch all user profiles separately
       const userIds = meetingsData?.map(m => m.user_id).filter(Boolean) || [];
       const managerIds = meetingsData?.map(m => m.assigned_manager_id).filter(Boolean) || [];
       const allIds = [...new Set([...userIds, ...managerIds])];
@@ -142,10 +200,8 @@ export const AdminMeetings = () => {
 
       if (profilesError) throw profilesError;
 
-      // Create a map for easy lookup
       const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
 
-      // Merge the data
       const enrichedMeetings = meetingsData?.map(meeting => ({
         ...meeting,
         profiles: profilesMap.get(meeting.user_id),
@@ -229,7 +285,6 @@ export const AdminMeetings = () => {
           <CollapsibleTrigger className="w-full">
             <CardContent className="p-4">
               <div className="flex items-center justify-between gap-4">
-                {/* Left: Avatar + Name + Quick Info */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="flex-shrink-0">
                     {meeting.profiles.profile_picture_url ? (
@@ -269,7 +324,6 @@ export const AdminMeetings = () => {
                   </div>
                 </div>
 
-                {/* Right: Status + Time + Expand Icon */}
                 <div className="flex items-center gap-3">
                   <div className="flex flex-col items-end gap-1">
                     <Badge className={`${getStatusColor(meeting.status)} text-xs`}>
@@ -293,7 +347,6 @@ export const AdminMeetings = () => {
 
           <CollapsibleContent>
             <CardContent className="px-4 pb-4 pt-0 space-y-4 border-t">
-              {/* Email + Manager Info */}
               <div className="pt-4 space-y-2">
                 <p className="text-sm text-muted-foreground">{meeting.profiles.email}</p>
                 {(isSuperAdmin || isAdmin) && meeting.manager && (
@@ -304,7 +357,6 @@ export const AdminMeetings = () => {
                 )}
               </div>
 
-              {/* Meeting Type Details */}
               <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
                 {meeting.meeting_type === 'online' ? (
                   <>
@@ -341,117 +393,40 @@ export const AdminMeetings = () => {
                 )}
               </div>
 
-              {/* Reschedule Request UI */}
-              {meeting.reschedule_requested && meeting.reschedule_new_date && (
-                <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/30 font-medium">
-                        Reschedule Requested
-                      </Badge>
-                      {meeting.reschedule_requested_at && (
-                        <span className="text-xs text-muted-foreground">
-                          {format(new Date(meeting.reschedule_requested_at), "MMM dd 'at' HH:mm")}
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground font-medium min-w-[80px]">Current:</span>
-                        <span className="font-medium">{format(new Date(meeting.meeting_date), "MMM dd, yyyy")} at {meeting.meeting_time}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground font-medium min-w-[80px]">Requested:</span>
-                        <span className="font-medium text-amber-700">{format(new Date(meeting.reschedule_new_date), "MMM dd, yyyy")} at {meeting.reschedule_new_time}</span>
-                      </div>
-                      {meeting.reschedule_reason && (
-                        <div className="pt-2 border-t border-amber-500/20">
-                          <span className="text-muted-foreground font-medium">Reason:</span>
-                          <p className="text-sm mt-1 italic text-muted-foreground">{meeting.reschedule_reason}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 pt-1">
-                      <Button
-                        size="sm"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          try {
-                            const { error } = await supabase
-                              .from('creator_meetings')
-                              .update({
-                                meeting_date: meeting.reschedule_new_date,
-                                meeting_time: meeting.reschedule_new_time,
-                                reschedule_requested: false,
-                                reschedule_reason: null,
-                                reschedule_new_date: null,
-                                reschedule_new_time: null,
-                                reschedule_requested_at: null,
-                              })
-                              .eq('id', meeting.id);
-
-                            if (error) throw error;
-                            toast.success("Meeting rescheduled successfully");
-                            fetchMeetings();
-                          } catch (error) {
-                            console.error('Error approving reschedule:', error);
-                            toast.error("Failed to approve reschedule");
-                          }
-                        }}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        <CheckCircle className="h-4 w-4 mr-1.5" />
-                        Approve
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          try {
-                            const { error } = await supabase
-                              .from('creator_meetings')
-                              .update({
-                                reschedule_requested: false,
-                                reschedule_reason: null,
-                                reschedule_new_date: null,
-                                reschedule_new_time: null,
-                                reschedule_requested_at: null,
-                              })
-                              .eq('id', meeting.id);
-
-                            if (error) throw error;
-                            toast.success("Reschedule request declined");
-                            fetchMeetings();
-                          } catch (error) {
-                            console.error('Error declining reschedule:', error);
-                            toast.error("Failed to decline reschedule");
-                          }
-                        }}
-                      >
-                        <XCircle className="h-4 w-4 mr-1.5" />
-                        Decline
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+              {meeting.meeting_notes && (
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <p className="text-sm text-muted-foreground">{meeting.meeting_notes}</p>
+                </div>
               )}
 
-              {/* Action Buttons */}
-              {meeting.status === 'confirmed' && (
-                <Button
-                  size="default"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedMeeting(meeting);
-                    setActionDialog('complete');
-                  }}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                >
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Mark as Complete
-                </Button>
-              )}
+              <div className="flex gap-2 pt-2">
+                {meeting.status !== 'completed' && (
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedMeeting(meeting);
+                      setActionDialog('complete');
+                    }}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-1.5" />
+                    Mark Complete
+                  </Button>
+                )}
+                {meeting.status !== 'cancelled' && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCancelMeeting(meeting.id);
+                    }}
+                  >
+                    <XCircle className="h-4 w-4 mr-1.5" />
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </CollapsibleContent>
         </Card>
@@ -459,313 +434,270 @@ export const AdminMeetings = () => {
     );
   };
 
-  // Calculate stats
-  const stats = {
-    needsAction: filteredMeetings.filter(m => m.status === 'confirmed' || m.reschedule_requested).length,
-    pending: filteredMeetings.filter(m => m.status === 'pending' || m.status === 'not_booked').length,
-    completedThisMonth: filteredMeetings.filter(m => {
-      if (m.status !== 'completed') return false;
-      const now = new Date();
-      const meetingDate = new Date(m.meeting_date);
-      return meetingDate.getMonth() === now.getMonth() && meetingDate.getFullYear() === now.getFullYear();
-    }).length
-  };
-
-  // Filter meetings by date and status
-  const now = new Date();
-  const upcomingMeetings = filteredMeetings.filter(m => {
-    if (m.status !== 'confirmed' || !m.meeting_date) return false;
-    return new Date(m.meeting_date) >= now;
-  });
-  const pastMeetings = filteredMeetings.filter(m => {
-    if (m.status === 'completed' || m.status === 'cancelled') return true;
-    if (m.status === 'confirmed' && m.meeting_date) {
-      return new Date(m.meeting_date) < now;
-    }
-    return false;
-  });
-  const needsActionMeetings = filteredMeetings.filter(m => {
-    if (m.reschedule_requested) return true;
-    if (m.status === 'confirmed' && m.meeting_date) {
-      return new Date(m.meeting_date) >= now;
-    }
-    return false;
-  });
-  
-  const totalPagesUpcoming = Math.ceil(upcomingMeetings.length / itemsPerPage);
-  const totalPagesPast = Math.ceil(pastMeetings.length / itemsPerPage);
-  
-  const paginatedUpcoming = upcomingMeetings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const upcomingMeetings = filteredMeetings.filter(m => 
+    new Date(m.meeting_date) >= new Date() && m.status !== 'completed' && m.status !== 'cancelled'
   );
-  const paginatedPast = pastMeetings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  
+  const pastMeetings = filteredMeetings.filter(m =>
+    new Date(m.meeting_date) < new Date() || m.status === 'completed' || m.status === 'cancelled'
   );
 
   if (loading) {
-    return <div className="text-center py-8">Loading meetings...</div>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading meetings...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      {/* Stats Summary */}
-      <Card className="p-6 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <UserCheck className="h-5 w-5" />
-          Meeting Status Summary
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-blue-500/10 flex items-center justify-center">
-              <span className="text-lg font-bold text-blue-500">{stats.needsAction}</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">Needs Action</p>
-              <p className="text-xs text-muted-foreground truncate">Confirmed - Ready to Complete</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-yellow-500/10 flex items-center justify-center">
-              <span className="text-lg font-bold text-yellow-500">{stats.pending}</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">Pending</p>
-              <p className="text-xs text-muted-foreground truncate">Awaiting Creator Booking</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-green-500/10 flex items-center justify-center">
-              <span className="text-lg font-bold text-green-500">{stats.completedThisMonth}</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">Completed</p>
-              <p className="text-xs text-muted-foreground">This Month</p>
-            </div>
-          </div>
+      {/* Search and Filters */}
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search by creator name, email, or notes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
-      </Card>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Search meetings by creator name, email, type, or notes..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Filter className="h-4 w-4" />
+                Filters
+                {hasActiveFilters && (
+                  <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                    {[statusFilter !== "all", meetingTypeFilter !== "all", managerFilter !== "all", dateFromFilter || dateToFilter].filter(Boolean).length}
+                  </Badge>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Filter Meetings</h4>
+                  {hasActiveFilters && (
+                    <Button variant="ghost" size="sm" onClick={clearFilters}>
+                      <X className="h-4 w-4 mr-1" />
+                      Clear
+                    </Button>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs">Status</Label>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="scheduled">Scheduled</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs">Meeting Type</Label>
+                    <Select value={meetingTypeFilter} onValueChange={setMeetingTypeFilter}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="online">Online</SelectItem>
+                        <SelectItem value="in-person">In-Person</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs">Assigned Manager</Label>
+                    <Select value={managerFilter} onValueChange={setManagerFilter}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Managers</SelectItem>
+                        {managers.map(m => (
+                          <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs">Date Range</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        type="date"
+                        value={dateFromFilter}
+                        onChange={(e) => setDateFromFilter(e.target.value)}
+                        className="h-9"
+                        placeholder="From"
+                      />
+                      <Input
+                        type="date"
+                        value={dateToFilter}
+                        onChange={(e) => setDateToFilter(e.target.value)}
+                        className="h-9"
+                        placeholder="To"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {hasActiveFilters && (
+            <div className="flex flex-wrap gap-2">
+              {statusFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Status: {statusFilter}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter("all")} />
+                </Badge>
+              )}
+              {meetingTypeFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Type: {meetingTypeFilter}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setMeetingTypeFilter("all")} />
+                </Badge>
+              )}
+              {managerFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Manager: {managers.find(m => m.id === managerFilter)?.name}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setManagerFilter("all")} />
+                </Badge>
+              )}
+              {(dateFromFilter || dateToFilter) && (
+                <Badge variant="secondary" className="gap-1">
+                  Date: {dateFromFilter || '...'} - {dateToFilter || '...'}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => { setDateFromFilter(""); setDateToFilter(""); }} />
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 h-auto">
-          <TabsTrigger value="needs_action" className="relative flex-col sm:flex-row gap-1 sm:gap-2 py-2">
-            <span>Needs Action</span>
-            {stats.needsAction > 0 && (
-              <Badge variant="destructive" className="h-5 px-1.5 text-xs">
-                {stats.needsAction}
-              </Badge>
-            )}
-            <p className="text-[10px] text-muted-foreground hidden sm:block">Complete meetings to grant access</p>
-          </TabsTrigger>
-          <TabsTrigger value="upcoming" className="flex-col gap-1 py-2">
-            <span>Upcoming ({upcomingMeetings.length})</span>
-            <p className="text-[10px] text-muted-foreground hidden sm:block">Scheduled Meet Your Rep</p>
-          </TabsTrigger>
-          <TabsTrigger value="past" className="flex-col gap-1 py-2">
-            <span>Past ({pastMeetings.length})</span>
-            <p className="text-[10px] text-muted-foreground hidden sm:block">Completed & Cancelled</p>
-          </TabsTrigger>
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="upcoming">Upcoming ({upcomingMeetings.length})</TabsTrigger>
+          <TabsTrigger value="past">Past ({pastMeetings.length})</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="needs_action" className="space-y-4 mt-6">
-          {needsActionMeetings.length === 0 ? (
-            <Card className="border-border">
-              <CardContent className="p-8 text-center">
-                <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
-                <p className="text-lg font-medium mb-1">All caught up!</p>
-                <p className="text-sm text-muted-foreground">No "Meet Your Rep" meetings need completion</p>
-              </CardContent>
+        <TabsContent value="upcoming" className="space-y-4">
+          {upcomingMeetings.length === 0 ? (
+            <Card className="p-8 text-center">
+              <Calendar className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">No upcoming meetings found</p>
             </Card>
           ) : (
             <>
-              <div className="flex justify-end">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleExpandAll}
-                >
-                  {expandAll ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-2" />
-                      Collapse All
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-2" />
-                      Expand All
-                    </>
-                  )}
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  {upcomingMeetings.length} upcoming meeting{upcomingMeetings.length !== 1 ? 's' : ''}
+                </p>
+                <Button variant="ghost" size="sm" onClick={handleExpandAll}>
+                  {expandAll ? <><ChevronUp className="h-4 w-4 mr-2" />Collapse All</> : <><ChevronDown className="h-4 w-4 mr-2" />Expand All</>}
                 </Button>
               </div>
-              {needsActionMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-4">
+                  {upcomingMeetings.map((meeting) => (
+                    <MeetingCard key={meeting.id} meeting={meeting} />
+                  ))}
+                </div>
+              </ScrollArea>
             </>
           )}
         </TabsContent>
 
-        <TabsContent value="upcoming" className="space-y-4 mt-6">
-          {paginatedUpcoming.length === 0 ? (
-            <Card className="border-border">
-              <CardContent className="p-8 text-center text-muted-foreground">
-                {searchQuery ? "No meetings match your search" : "No upcoming \"Meet Your Rep\" meetings scheduled"}
-              </CardContent>
+        <TabsContent value="past" className="space-y-4">
+          {pastMeetings.length === 0 ? (
+            <Card className="p-8 text-center">
+              <Clock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">No past meetings found</p>
             </Card>
           ) : (
             <>
-              <div className="flex justify-end">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleExpandAll}
-                >
-                  {expandAll ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-2" />
-                      Collapse All
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-2" />
-                      Expand All
-                    </>
-                  )}
-                </Button>
-              </div>
-              {paginatedUpcoming.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
-              {totalPagesUpcoming > 1 && (
-                <PaginationControls
-                  currentPage={currentPage}
-                  totalPages={totalPagesUpcoming}
-                  itemsPerPage={itemsPerPage}
-                  totalItems={upcomingMeetings.length}
-                  onPageChange={setCurrentPage}
-                  onItemsPerPageChange={(items) => {
-                    setItemsPerPage(items);
-                    setCurrentPage(1);
-                  }}
-                />
-              )}
-            </>
-          )}
-        </TabsContent>
-
-        <TabsContent value="past" className="space-y-4 mt-6">
-          {paginatedPast.length === 0 ? (
-            <Card className="border-border">
-              <CardContent className="p-8 text-center text-muted-foreground">
-                {searchQuery ? "No meetings match your search" : "No past meetings"}
-              </CardContent>
-            </Card>
-          ) : (
-            <>
-              <div className="flex justify-end">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleExpandAll}
-                >
-                  {expandAll ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-2" />
-                      Collapse All
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-2" />
-                      Expand All
-                    </>
-                  )}
-                </Button>
-              </div>
-              {paginatedPast.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
-              {totalPagesPast > 1 && (
-                <PaginationControls
-                  currentPage={currentPage}
-                  totalPages={totalPagesPast}
-                  itemsPerPage={itemsPerPage}
-                  totalItems={pastMeetings.length}
-                  onPageChange={setCurrentPage}
-                  onItemsPerPageChange={(items) => {
-                    setItemsPerPage(items);
-                    setCurrentPage(1);
-                  }}
-                />
-              )}
+              <p className="text-sm text-muted-foreground mb-4">
+                {pastMeetings.length} past meeting{pastMeetings.length !== 1 ? 's' : ''}
+              </p>
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-4">
+                  {pastMeetings.map((meeting) => (
+                    <MeetingCard key={meeting.id} meeting={meeting} />
+                  ))}
+                </div>
+              </ScrollArea>
             </>
           )}
         </TabsContent>
       </Tabs>
 
-      <Dialog open={actionDialog === 'complete'} onOpenChange={() => setActionDialog(null)}>
+      {/* Dialogs */}
+      <Dialog open={actionDialog === 'complete'} onOpenChange={(open) => !open && setActionDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Mark Meeting as Complete</DialogTitle>
+            <DialogTitle>Complete Meeting</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              This will unlock full dashboard access for the creator and complete their onboarding process.
-            </p>
+            <p>Mark this meeting as complete and grant the creator full platform access?</p>
             <div>
-              <Label htmlFor="notes">Meeting Notes (Optional)</Label>
+              <Label>Meeting Notes (optional)</Label>
               <Textarea
-                id="notes"
                 value={meetingNotes}
                 onChange={(e) => setMeetingNotes(e.target.value)}
                 placeholder="Add any notes about the meeting..."
-                className="mt-2"
                 rows={4}
               />
-            </div>
-            <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
-              <UserPlus className="h-5 w-5 text-primary" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">Need to help with onboarding?</p>
-                <p className="text-xs text-muted-foreground">Assist the creator with filling in their profile information</p>
-              </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setActionDialog('assist');
-                }}
-              >
-                Help with Onboarding
-              </Button>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setActionDialog(null)}>
               Cancel
             </Button>
-            <Button onClick={handleCompleteMeeting} className="bg-green-600 hover:bg-green-700 text-white">
-              Complete & Unlock Access
+            <Button onClick={handleCompleteMeeting}>
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Complete & Grant Access
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={actionDialog === 'assist'} onOpenChange={() => setActionDialog(null)}>
+      <Dialog open={actionDialog === 'assist'} onOpenChange={(open) => !open && setActionDialog(null)}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          {selectedMeeting?.profiles && (
+          <DialogHeader>
+            <DialogTitle>Assist with Onboarding</DialogTitle>
+          </DialogHeader>
+          {selectedMeeting && (
             <AssistedOnboarding
               userId={selectedMeeting.user_id}
-              userName={selectedMeeting.profiles.full_name}
+              userName={selectedMeeting.profiles?.full_name || ''}
               onComplete={() => {
-                setActionDialog('complete');
-                toast.success("Onboarding data saved!");
+                setActionDialog(null);
+                setSelectedMeeting(null);
+                fetchMeetings();
               }}
-              onCancel={() => setActionDialog('complete')}
+              onCancel={() => {
+                setActionDialog(null);
+                setSelectedMeeting(null);
+              }}
             />
           )}
         </DialogContent>

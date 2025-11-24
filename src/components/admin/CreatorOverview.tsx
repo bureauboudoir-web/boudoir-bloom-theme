@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { Users, CheckCircle, Clock, XCircle, ChevronDown, ShieldCheck, Calendar as CalendarIcon, User as UserIcon } from "lucide-react";
+import { Users, CheckCircle, Clock, XCircle, ChevronDown, ShieldCheck, Calendar as CalendarIcon, User as UserIcon, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useDebounce } from "@/hooks/useDebounce";
 import { format } from "date-fns";
 
 interface CreatorStats {
@@ -31,6 +34,8 @@ export const CreatorOverview = () => {
   const [creators, setCreators] = useState<CreatorStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCreators, setExpandedCreators] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
 
   useEffect(() => {
     if (user) {
@@ -158,6 +163,16 @@ export const CreatorOverview = () => {
     );
   }
 
+  const filteredCreators = creators.filter(creator => {
+    if (!debouncedSearch) return true;
+    const search = debouncedSearch.toLowerCase();
+    return (
+      creator.full_name?.toLowerCase().includes(search) ||
+      creator.email.toLowerCase().includes(search) ||
+      creator.assigned_manager_name?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <Card className="p-6 bg-card border-primary/20">
       <div className="flex items-center gap-2 mb-6">
@@ -165,8 +180,20 @@ export const CreatorOverview = () => {
         <h3 className="font-serif text-xl font-bold">Creator Overview</h3>
       </div>
 
-      <div className="space-y-3">
-        {creators.map((creator) => {
+      {/* Search bar */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Search by name, email, or manager..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      <ScrollArea className="h-[700px] pr-4">
+        <div className="space-y-3">
+          {filteredCreators.map((creator) => {
           const totalPending = creator.pending_commitments + creator.pending_shoots;
           const hasPending = totalPending > 0;
           const isExpanded = expandedCreators.has(creator.id);
@@ -287,15 +314,19 @@ export const CreatorOverview = () => {
                 </CollapsibleContent>
               </Card>
             </Collapsible>
-          );
-        })}
+            );
+          })}
 
-        {creators.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">
-            {!isSuperAdmin && !isAdmin ? "No creators assigned to you yet" : "No creators found"}
-          </p>
-        )}
-      </div>
+          {filteredCreators.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">
+              {debouncedSearch 
+                ? "No creators match your search" 
+                : (!isSuperAdmin && !isAdmin ? "No creators assigned to you yet" : "No creators found")
+              }
+            </p>
+          )}
+        </div>
+      </ScrollArea>
     </Card>
   );
 };

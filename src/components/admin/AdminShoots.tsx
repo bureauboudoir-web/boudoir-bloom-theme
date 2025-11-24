@@ -17,6 +17,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
 import { PaginationControls } from "./shared/PaginationControls";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 
@@ -656,8 +657,9 @@ export const AdminShoots = () => {
             </Card>
           ) : (
             <>
-              <div className="space-y-4">
-                {paginatedUpcoming.map((shoot) => (
+              <ScrollArea className="h-[650px] pr-4">
+                <div className="space-y-4">
+                  {paginatedUpcoming.map((shoot) => (
                   <Collapsible key={shoot.id}>
                     <Card>
                       <CollapsibleTrigger className="w-full">
@@ -730,7 +732,8 @@ export const AdminShoots = () => {
                     </Card>
                   </Collapsible>
                 ))}
-              </div>
+                </div>
+              </ScrollArea>
               {totalPagesUpcoming > 1 && (
                 <PaginationControls
                   currentPage={currentPage}
