@@ -27,12 +27,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { ManagerWorkloadOverview } from "@/components/admin/ManagerWorkloadOverview";
 import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
+import { AdminContracts } from "@/components/admin/AdminContracts";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { isManagerOnly, isAdmin, isSuperAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "email-preview" | "settings" | "notifications">("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "overview" | "workload" | "commitments" | "shoots" | "review" | "meetings" | "availability" | "support" | "access" | "contracts" | "email-preview" | "settings" | "notifications">("applications");
   const [showWelcome, setShowWelcome] = useState(false);
   
   const {
@@ -186,7 +187,7 @@ const ManagerDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-13">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-14">
             <TabsTrigger value="applications">
               Applications
             </TabsTrigger>
@@ -201,6 +202,7 @@ const ManagerDashboard = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="access">Access</TabsTrigger>
+            <TabsTrigger value="contracts">Contracts</TabsTrigger>
             <TabsTrigger value="commitments" className="relative">
               Commitments
               {overdueCommitments > 0 && (
@@ -281,6 +283,10 @@ const ManagerDashboard = () => {
 
           <TabsContent value="access" className="space-y-4">
             <AccessManagement />
+          </TabsContent>
+
+          <TabsContent value="contracts" className="space-y-4">
+            <AdminContracts />
           </TabsContent>
 
           <TabsContent value="email-preview" className="space-y-4">

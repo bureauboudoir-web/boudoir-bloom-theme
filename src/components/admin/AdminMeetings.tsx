@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck, ChevronDown, ChevronUp, Filter, X, FileText, AlertCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -51,6 +51,13 @@ interface Meeting {
     full_name: string | null;
     email: string;
   } | null;
+  contract?: {
+    id: string;
+    contract_signed: boolean;
+    generated_pdf_url: string | null;
+    signed_contract_url: string | null;
+    generation_status: string;
+  } | null;
 }
 
 export const AdminMeetings = () => {
@@ -59,6 +66,7 @@ export const AdminMeetings = () => {
   const { grantAccessAfterMeeting } = useAccessManagement();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
+  const [contractsMap, setContractsMap] = useState<Map<string, any>>(new Map());
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
@@ -200,12 +208,22 @@ export const AdminMeetings = () => {
 
       if (profilesError) throw profilesError;
 
+      // Fetch contracts for all users
+      const { data: contractsData } = await supabase
+        .from('creator_contracts')
+        .select('id, user_id, contract_signed, generated_pdf_url, signed_contract_url, generation_status')
+        .in('user_id', userIds);
+
+      const contractsMapData = new Map(contractsData?.map(c => [c.user_id, c]) || []);
+      setContractsMap(contractsMapData);
+
       const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
 
       const enrichedMeetings = meetingsData?.map(meeting => ({
         ...meeting,
         profiles: profilesMap.get(meeting.user_id),
-        manager: meeting.assigned_manager_id ? profilesMap.get(meeting.assigned_manager_id) : null
+        manager: meeting.assigned_manager_id ? profilesMap.get(meeting.assigned_manager_id) : null,
+        contract: contractsMapData.get(meeting.user_id)
       })) || [];
 
       setMeetings(enrichedMeetings as any);
@@ -396,6 +414,27 @@ export const AdminMeetings = () => {
               {meeting.meeting_notes && (
                 <div className="p-3 bg-muted/30 rounded-lg">
                   <p className="text-sm text-muted-foreground">{meeting.meeting_notes}</p>
+                </div>
+              )}
+
+              {/* Contract Status Section */}
+              {meeting.contract && (
+                <div className="p-3 bg-muted/30 rounded-lg border border-border/40">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Contract Status</span>
+                    </div>
+                    <Badge className={meeting.contract.contract_signed ? "bg-green-500/20 text-green-700" : "bg-yellow-500/20 text-yellow-700"}>
+                      {meeting.contract.contract_signed ? "Signed" : meeting.contract.generated_pdf_url ? "Generated" : "Not Generated"}
+                    </Badge>
+                  </div>
+                  {!meeting.contract.contract_signed && meeting.contract.generated_pdf_url && (
+                    <div className="flex items-start gap-2 mt-2 text-sm text-muted-foreground">
+                      <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                      <span>Contract ready for review and signing during meeting</span>
+                    </div>
+                  )}
                 </div>
               )}
 
