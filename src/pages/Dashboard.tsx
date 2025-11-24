@@ -64,8 +64,10 @@ import { AccessAuditLog } from "@/components/admin/AccessAuditLog";
 import { PendingActivationsWidget } from "@/components/admin/PendingActivationsWidget";
 import { Analytics } from "@/components/admin/Analytics";
 import { ManagerNotifications } from "@/components/admin/ManagerNotifications";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
@@ -296,6 +298,13 @@ const Dashboard = () => {
     }
   };
 
+  // Get dashboard title based on role
+  const getDashboardTitle = () => {
+    if (isAdmin || isSuperAdmin) return t('dashboard.pageTitle.adminDashboard');
+    if (isManagerOnly) return t('dashboard.pageTitle.managerDashboard');
+    return t('dashboard.pageTitle.creatorDashboard');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Dashboard Header */}
@@ -334,7 +343,7 @@ const Dashboard = () => {
                 </SheetContent>
               </Sheet>
 
-              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold">Creator Dashboard</h1>
+              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold">{getDashboardTitle()}</h1>
             </div>
             
             <div className="flex items-center gap-2">

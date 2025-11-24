@@ -59,9 +59,6 @@ export const DashboardNav = ({
   const allowedTabsForMeetingOnly: TabId[] = ['overview', 'onboarding', 'meetings', 'account', 'settings'];
 
   const getDashboardLabel = () => {
-    if (isAdmin || isSuperAdmin) return t('dashboard.nav.adminOverview');
-    if (isManagerOnly) return t('dashboard.nav.managerOverview');
-    if (isCreator) return t('dashboard.nav.creatorDashboard');
     return t('dashboard.nav.overview');
   };
 

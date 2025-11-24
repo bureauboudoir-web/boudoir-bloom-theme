@@ -29,9 +29,6 @@
     },
     "nav": {
       "overview": "Overview",
-      "creatorDashboard": "Tableau de Bord Créateur",
-      "managerOverview": "Tableau de Bord Manager",
-      "adminOverview": "Tableau de Bord Admin",
       "onboarding": "Intégration",
       "account": "Profil du Créateur",
       "settings": "Paramètres",
@@ -47,6 +44,11 @@
       "managerDashboard": "Tableau de Bord Manager",
       "adminControls": "Contrôles Admin",
       "managerControls": "Contrôles Manager"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Tableau de Bord Créateur",
+      "managerDashboard": "Tableau de Bord Manager",
+      "adminDashboard": "Tableau de Bord Admin"
     }
   },
   "homepage": {

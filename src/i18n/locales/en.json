@@ -29,9 +29,6 @@
     },
     "nav": {
       "overview": "Overview",
-      "creatorDashboard": "Creator Dashboard",
-      "managerOverview": "Manager Dashboard",
-      "adminOverview": "Admin Dashboard",
       "onboarding": "Onboarding",
       "account": "Creator Profile",
       "settings": "Settings",
@@ -47,6 +44,11 @@
       "managerDashboard": "Manager Dashboard",
       "adminControls": "Admin Controls",
       "managerControls": "Manager Controls"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Creator Dashboard",
+      "managerDashboard": "Manager Dashboard",
+      "adminDashboard": "Admin Dashboard"
     }
   },
   "homepage": {
