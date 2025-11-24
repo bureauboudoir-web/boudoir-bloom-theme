@@ -59,16 +59,27 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size to match display size
+    // Set canvas size to match display size with devicePixelRatio for accuracy
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    const dpr = window.devicePixelRatio || 1;
+    
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    
+    // Scale context to match devicePixelRatio
+    ctx.scale(dpr, dpr);
 
-    // Set drawing style
+    // Set drawing style with improved smoothing
     ctx.strokeStyle = penColor;
     ctx.lineWidth = penSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    
+    // Fill white background for better visibility
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, rect.width, rect.height);
   }, [open]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -82,6 +93,10 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penSize;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.beginPath();
     ctx.moveTo(x, y);
     setIsDrawing(true);
@@ -130,6 +145,8 @@ export const ContractSignature = ({
 
     ctx.strokeStyle = penColor;
     ctx.lineWidth = penSize;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.beginPath();
     ctx.moveTo(x, y);
     setIsDrawing(true);
@@ -177,18 +194,26 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const rect = canvas.getBoundingClientRect();
     const newStep = historyStep - 1;
     setHistoryStep(newStep);
 
     if (newStep === -1) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Refill white background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, rect.width, rect.height);
       setHasSignature(false);
     } else {
       const img = new Image();
       img.src = history[newStep];
       img.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
+        // Refill white background first
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, rect.width, rect.height);
+        // Then draw the signature
+        ctx.drawImage(img, 0, 0, rect.width, rect.height);
       };
     }
   };
@@ -202,6 +227,7 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const rect = canvas.getBoundingClientRect();
     const newStep = historyStep + 1;
     setHistoryStep(newStep);
 
@@ -209,7 +235,11 @@ export const ContractSignature = ({
     img.src = history[newStep];
     img.onload = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+      // Refill white background first
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, rect.width, rect.height);
+      // Then draw the signature
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
       setHasSignature(true);
     };
   };
@@ -221,7 +251,13 @@ export const ContractSignature = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const rect = canvas.getBoundingClientRect();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Refill white background
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    
     setHasSignature(false);
     setHistory([]);
     setHistoryStep(-1);
@@ -363,15 +399,22 @@ export const ContractSignature = ({
             <div className="flex items-center gap-3">
               <Label className="text-sm font-medium text-foreground">Color:</Label>
               <div className="flex gap-2">
-                {["#000000", "#1a56db", "#c81e1e", "#0e9f6e"].map((color) => (
+                {[
+                  { color: "#000000", label: "Black" },
+                  { color: "#1a56db", label: "Blue" },
+                  { color: "#c81e1e", label: "Red" },
+                  { color: "#0e9f6e", label: "Green" },
+                  { color: "#ffffff", label: "White" }
+                ].map(({ color, label }) => (
                   <Button
                     key={color}
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => setPenColor(color)}
-                    className={`w-10 h-10 p-0 ${penColor === color ? "ring-2 ring-primary ring-offset-2" : ""}`}
+                    className={`w-10 h-10 p-0 ${penColor === color ? "ring-2 ring-primary ring-offset-2" : ""} ${color === "#ffffff" ? "border-2 border-muted-foreground/30" : ""}`}
                     style={{ backgroundColor: color }}
+                    title={label}
                   />
                 ))}
               </div>
@@ -389,7 +432,7 @@ export const ContractSignature = ({
                 onTouchStart={startDrawingTouch}
                 onTouchMove={drawTouch}
                 onTouchEnd={stopDrawing}
-                className="w-full h-48 cursor-crosshair touch-none bg-background"
+                className="w-full h-64 cursor-crosshair touch-none bg-white"
                 style={{ touchAction: "none" }}
               />
             </CardContent>
