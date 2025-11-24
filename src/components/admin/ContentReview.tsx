@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, CheckCircle, XCircle, Clock, Video, Image as ImageIcon, FileIcon, Search, Grid, List } from "lucide-react";
+import { ExternalLink, CheckCircle, XCircle, Clock, Video, Image as ImageIcon, FileIcon, Search, Grid, List, Star } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,6 +12,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StatsCard } from "./StatsCard";
 import { PaginationControls } from "./shared/PaginationControls";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ContentPreviewModal } from "@/components/content/ContentPreviewModal";
+import { PlatformBadge, PlatformType } from "@/components/content/PlatformBadge";
+import { CategoryBadge, ContentCategory } from "@/components/content/CategoryBadge";
 
 interface ContentUpload {
   id: string;
@@ -20,9 +24,15 @@ interface ContentUpload {
   file_name: string;
   file_size: number;
   content_type: string;
+  content_category: ContentCategory;
+  platform_type: PlatformType;
   length: string | null;
+  title: string | null;
   description: string;
   marketing_notes: string | null;
+  hashtags: string[] | null;
+  usage_rights: string | null;
+  is_featured: boolean;
   uploaded_at: string;
   status: 'pending_review' | 'approved' | 'needs_revision';
   profiles: {
@@ -46,12 +56,27 @@ export const ContentReview = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [selectedTab, setSelectedTab] = useState("all");
+  const [previewContent, setPreviewContent] = useState<ContentUpload | null>(null);
+  const [filterPlatform, setFilterPlatform] = useState<string>("all");
 
   useEffect(() => {
     if (user) {
       fetchUploads();
       fetchStats();
     }
+    
+    const channel = supabase
+      .channel('content_review_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'content_uploads' }, () => {
+        fetchUploads();
+        fetchStats();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [filterStatus, user]);
 
   const fetchUploads = async () => {
@@ -199,14 +224,55 @@ export const ContentReview = () => {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
+  const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('content_uploads')
+        .update({ is_featured: !currentStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Content ${!currentStatus ? 'featured' : 'unfeatured'}`
+      });
+
+      fetchUploads();
+    } catch (error) {
+      console.error('Error toggling featured:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update featured status",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredUploads = uploads.filter(upload => {
     const searchLower = searchQuery.toLowerCase();
-    return (
+    const matchesSearch = (
       upload.file_name.toLowerCase().includes(searchLower) ||
+      upload.title?.toLowerCase().includes(searchLower) ||
       upload.description.toLowerCase().includes(searchLower) ||
       upload.profiles.full_name?.toLowerCase().includes(searchLower) ||
-      upload.profiles.email.toLowerCase().includes(searchLower)
+      upload.profiles.email.toLowerCase().includes(searchLower) ||
+      upload.hashtags?.some(tag => tag.toLowerCase().includes(searchLower))
     );
+
+    const matchesPlatform = filterPlatform === 'all' || upload.platform_type === filterPlatform;
+    
+    const now = new Date();
+    const uploadDate = new Date(upload.uploaded_at);
+    const isNew = (now.getTime() - uploadDate.getTime()) < 24 * 60 * 60 * 1000;
+
+    const matchesTab = 
+      selectedTab === 'all' ||
+      (selectedTab === 'new' && isNew) ||
+      (selectedTab === 'featured' && upload.is_featured) ||
+      selectedTab === upload.status;
+
+    return matchesSearch && matchesPlatform && matchesTab;
   });
   
   const totalPages = Math.ceil(filteredUploads.length / itemsPerPage);
@@ -251,35 +317,48 @@ export const ContentReview = () => {
       </div>
 
       <Card className="p-6 bg-card border-primary/20">
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-          <h3 className="font-serif text-xl font-bold">Content Review</h3>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="icon"
-              onClick={() => setViewMode("list")}
-            >
-              <List className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
-              size="icon"
-              onClick={() => setViewMode("grid")}
-            >
-              <Grid className="w-4 h-4" />
-            </Button>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Uploads</SelectItem>
-                <SelectItem value="pending_review">Pending Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="needs_revision">Needs Revision</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <h3 className="font-serif text-xl font-bold mb-6">Content Review</h3>
+        
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="new">New (24h)</TabsTrigger>
+            <TabsTrigger value="pending_review">Pending</TabsTrigger>
+            <TabsTrigger value="approved">Approved</TabsTrigger>
+            <TabsTrigger value="needs_revision">Revision</TabsTrigger>
+            <TabsTrigger value="featured">Featured</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          <Button
+            variant={viewMode === "list" ? "default" : "outline"}
+            size="icon"
+            onClick={() => setViewMode("list")}
+          >
+            <List className="w-4 h-4" />
+          </Button>
+          <Button
+            variant={viewMode === "grid" ? "default" : "outline"}
+            size="icon"
+            onClick={() => setViewMode("grid")}
+          >
+            <Grid className="w-4 h-4" />
+          </Button>
+          <Select value={filterPlatform} onValueChange={setFilterPlatform}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="All Platforms" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Platforms</SelectItem>
+              <SelectItem value="tiktok">TikTok</SelectItem>
+              <SelectItem value="instagram">Instagram</SelectItem>
+              <SelectItem value="youtube">YouTube</SelectItem>
+              <SelectItem value="onlyfans">OnlyFans</SelectItem>
+              <SelectItem value="fansly">Fansly</SelectItem>
+              <SelectItem value="telegram">Telegram</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Search Bar */}
@@ -309,7 +388,14 @@ export const ContentReview = () => {
                         {getFileIcon(upload.content_type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{upload.file_name}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium truncate">{upload.title || upload.file_name}</p>
+                          {upload.is_featured && <Star className="w-4 h-4 text-blue-500 fill-current" />}
+                        </div>
+                        <div className="flex gap-2 mb-1">
+                          <CategoryBadge category={upload.content_category} />
+                          <PlatformBadge platform={upload.platform_type} />
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {upload.profiles.full_name || upload.profiles.email}
                         </p>
@@ -339,10 +425,18 @@ export const ContentReview = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(upload.file_url, '_blank')}
+                      onClick={() => setPreviewContent(upload)}
                     >
                       <ExternalLink className="w-3 h-3 mr-1" />
-                      View
+                      Preview
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleToggleFeatured(upload.id, upload.is_featured)}
+                    >
+                      <Star className={`w-3 h-3 mr-1 ${upload.is_featured ? 'fill-current' : ''}`} />
+                      {upload.is_featured ? 'Unfeature' : 'Feature'}
                     </Button>
                     {upload.status !== 'approved' && (
                       <Button
@@ -387,6 +481,34 @@ export const ContentReview = () => {
           </>
         )}
       </Card>
+
+      {previewContent && (
+        <ContentPreviewModal
+          open={!!previewContent}
+          onOpenChange={(open) => !open && setPreviewContent(null)}
+          content={{
+            id: previewContent.id,
+            title: previewContent.title || undefined,
+            fileName: previewContent.file_name,
+            fileUrl: previewContent.file_url,
+            contentType: previewContent.content_type,
+            contentCategory: previewContent.content_category,
+            platformType: previewContent.platform_type,
+            status: previewContent.status,
+            isFeatured: previewContent.is_featured,
+            description: previewContent.description || undefined,
+            length: previewContent.length || undefined,
+            fileSize: previewContent.file_size || undefined,
+            uploadedAt: previewContent.uploaded_at,
+            hashtags: previewContent.hashtags || undefined,
+            usageRights: previewContent.usage_rights || undefined,
+          }}
+          onApprove={() => handleStatusUpdate(previewContent.id, 'approved')}
+          onReject={() => handleStatusUpdate(previewContent.id, 'needs_revision')}
+          onToggleFeatured={() => handleToggleFeatured(previewContent.id, previewContent.is_featured)}
+          isManager={true}
+        />
+      )}
     </div>
   );
 };

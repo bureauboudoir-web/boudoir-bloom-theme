@@ -85,53 +85,71 @@ export type Database = {
       content_uploads: {
         Row: {
           commitment_id: string | null
+          content_category: string | null
           content_type: string | null
           created_at: string | null
           description: string | null
           file_name: string
           file_size: number | null
           file_url: string
+          hashtags: string[] | null
           id: string
+          is_featured: boolean | null
           length: string | null
           marketing_notes: string | null
+          platform_type: string | null
           shoot_id: string | null
           status: string | null
+          title: string | null
           updated_at: string | null
           uploaded_at: string | null
+          usage_rights: string | null
           user_id: string
         }
         Insert: {
           commitment_id?: string | null
+          content_category?: string | null
           content_type?: string | null
           created_at?: string | null
           description?: string | null
           file_name: string
           file_size?: number | null
           file_url: string
+          hashtags?: string[] | null
           id?: string
+          is_featured?: boolean | null
           length?: string | null
           marketing_notes?: string | null
+          platform_type?: string | null
           shoot_id?: string | null
           status?: string | null
+          title?: string | null
           updated_at?: string | null
           uploaded_at?: string | null
+          usage_rights?: string | null
           user_id: string
         }
         Update: {
           commitment_id?: string | null
+          content_category?: string | null
           content_type?: string | null
           created_at?: string | null
           description?: string | null
           file_name?: string
           file_size?: number | null
           file_url?: string
+          hashtags?: string[] | null
           id?: string
+          is_featured?: boolean | null
           length?: string | null
           marketing_notes?: string | null
+          platform_type?: string | null
           shoot_id?: string | null
           status?: string | null
+          title?: string | null
           updated_at?: string | null
           uploaded_at?: string | null
+          usage_rights?: string | null
           user_id?: string
         }
         Relationships: [
