@@ -576,7 +576,7 @@ const Dashboard = () => {
             )}
 
             {activeTab === "meetings" && user && (
-              <MeetingBookingView mode="management" />
+              <MeetingBookingView mode="booking" />
             )}
 
             {activeTab === "library" && user && accessLevel === 'full_access' && (
