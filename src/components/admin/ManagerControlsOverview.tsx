@@ -13,8 +13,11 @@ import {
   CheckCircle,
   UserCog,
   Video,
-  Shield
+  Shield,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import { useSoundNotification } from "@/hooks/useSoundNotification";
 import { useNotificationHistory } from "@/hooks/useNotificationHistory";
@@ -53,8 +56,31 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
   const [pendingTasks, setPendingTasks] = useState(0);
   const [creatorsNeedingAccess, setCreatorsNeedingAccess] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [expandedCreators, setExpandedCreators] = useState<Set<string>>(new Set());
+  const [expandAll, setExpandAll] = useState(false);
   const { playNotificationSound } = useSoundNotification();
   const { logNotification } = useNotificationHistory(managerId);
+
+  const toggleCreator = (creatorId: string) => {
+    setExpandedCreators(prev => {
+      const next = new Set(prev);
+      if (next.has(creatorId)) {
+        next.delete(creatorId);
+      } else {
+        next.add(creatorId);
+      }
+      return next;
+    });
+  };
+
+  const handleExpandAll = () => {
+    if (expandAll) {
+      setExpandedCreators(new Set());
+    } else {
+      setExpandedCreators(new Set(assignedCreators.map(c => c.id)));
+    }
+    setExpandAll(!expandAll);
+  };
 
   useEffect(() => {
     fetchManagerData();
@@ -410,11 +436,36 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       {/* Assigned Creators Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserCog className="w-5 h-5" />
-            Your Assigned Creators
-          </CardTitle>
-          <CardDescription>Onboarding status and recent activity</CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <UserCog className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle>Your Assigned Creators</CardTitle>
+                <CardDescription>{assignedCreators.length} creator{assignedCreators.length !== 1 ? 's' : ''}</CardDescription>
+              </div>
+            </div>
+            {assignedCreators.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleExpandAll}
+              >
+                {expandAll ? (
+                  <>
+                    <ChevronUp className="w-4 h-4 mr-2" />
+                    Collapse All
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4 mr-2" />
+                    Expand All
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {assignedCreators.length === 0 ? (
@@ -422,40 +473,95 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
               No creators assigned yet
             </p>
           ) : (
-            <div className="space-y-3">
-              {assignedCreators.map((creator) => (
-                <div
-                  key={creator.id}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                  onClick={() => onNavigate("creators")}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                      {creator.profile_picture_url ? (
-                        <img src={creator.profile_picture_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <Users className="w-5 h-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium">{creator.full_name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {creator.onboarding_status === 'completed' ? (
-                          <span className="flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3 text-green-500" />
-                            Onboarding Complete
-                          </span>
-                        ) : (
-                          `Step ${creator.current_step} of 10`
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    View
-                  </Button>
-                </div>
-              ))}
+            <div className="space-y-2">
+              {assignedCreators.map((creator) => {
+                const isExpanded = expandedCreators.has(creator.id);
+                return (
+                  <Collapsible
+                    key={creator.id}
+                    open={isExpanded}
+                    onOpenChange={() => toggleCreator(creator.id)}
+                  >
+                    <Card className="border-border/40">
+                      <CollapsibleTrigger className="w-full">
+                        <div className="flex items-center justify-between p-3 hover:bg-accent/50 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                              {creator.profile_picture_url ? (
+                                <img src={creator.profile_picture_url} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <Users className="w-5 h-5 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="text-left">
+                              <p className="font-medium">{creator.full_name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {creator.onboarding_status === 'completed' ? (
+                                  <span className="flex items-center gap-1">
+                                    <CheckCircle className="w-3 h-3 text-green-500" />
+                                    Complete
+                                  </span>
+                                ) : (
+                                  `Step ${creator.current_step}/10`
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {creator.onboarding_status === 'completed' ? (
+                              <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                                Active
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline">In Progress</Badge>
+                            )}
+                            {isExpanded ? (
+                              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </div>
+                        </div>
+                      </CollapsibleTrigger>
+                      
+                      <CollapsibleContent>
+                        <div className="px-3 pb-3 pt-0 space-y-3 border-t">
+                          <div className="grid grid-cols-2 gap-3 pt-3">
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-1">Email</p>
+                              <p className="text-sm">{creator.email}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-1">Progress</p>
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                  <div 
+                                    className="h-full bg-primary transition-all"
+                                    style={{ width: `${(creator.current_step / 10) * 100}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs font-medium">{creator.current_step}/10</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onNavigate("creators");
+                            }}
+                          >
+                            <UserCog className="w-4 h-4 mr-2" />
+                            View Details
+                          </Button>
+                        </div>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
+                );
+              })}
             </div>
           )}
         </CardContent>
