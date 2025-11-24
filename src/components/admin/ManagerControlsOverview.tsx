@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Users, 
@@ -52,7 +52,7 @@ interface UpcomingMeeting {
   status: string;
 }
 
-export function ManagerControlsOverview({ managerId, onNavigate }: ManagerControlsOverviewProps) {
+export const ManagerControlsOverview = memo(function ManagerControlsOverview({ managerId, onNavigate }: ManagerControlsOverviewProps) {
   const [assignedCreators, setAssignedCreators] = useState<AssignedCreator[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<UpcomingMeeting[]>([]);
   const [pendingTasks, setPendingTasks] = useState(0);
@@ -215,22 +215,31 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
         console.log('✓ Found upcoming meetings:', meetings?.length || 0, meetings);
       }
 
-      // Get creator info for each meeting
-      const meetingsWithCreators = await Promise.all(
-        (meetings || []).map(async (meeting) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name, email')
-            .eq('id', meeting.user_id)
-            .single();
+      // Batch fetch all unique creator profiles in one query
+      const uniqueUserIds = [...new Set(meetings?.map(m => m.user_id) || [])];
+      
+      let meetingsWithCreators: UpcomingMeeting[] = [];
+      
+      if (uniqueUserIds.length > 0) {
+        const { data: allProfiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', uniqueUserIds);
 
-          return {
-            ...meeting,
-            creator_name: profile?.full_name || profile?.email || 'Unknown',
-            creator_email: profile?.email || '',
-          };
-        })
-      );
+        // Create a Map for O(1) lookups
+        const profileMap = new Map(
+          allProfiles?.map(p => [p.id, p]) || []
+        );
+
+        // Map meetings to creators using cached profiles
+        meetingsWithCreators = meetings?.map(meeting => ({
+          ...meeting,
+          creator_name: profileMap.get(meeting.user_id)?.full_name || 
+                        profileMap.get(meeting.user_id)?.email || 
+                        'Unknown',
+          creator_email: profileMap.get(meeting.user_id)?.email || '',
+        })) || [];
+      }
 
       // Get creator IDs for other queries
       const creatorIds = creators?.map(c => c.id) || [];
@@ -672,4 +681,4 @@ export function ManagerControlsOverview({ managerId, onNavigate }: ManagerContro
       </div>
     </div>
   );
-}
+});

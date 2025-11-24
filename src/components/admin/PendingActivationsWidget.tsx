@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,7 @@ interface PendingActivationsWidgetProps {
   onNavigateToMeetings: () => void;
 }
 
-export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActivationsWidgetProps) => {
+export const PendingActivationsWidget = memo(function PendingActivationsWidget({ onNavigateToMeetings }: PendingActivationsWidgetProps) {
   const [pendingCreators, setPendingCreators] = useState<PendingCreator[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCreator, setSelectedCreator] = useState<PendingCreator | null>(null);
@@ -548,4 +548,4 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
       )}
     </>
   );
-};
+});

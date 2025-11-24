@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   UserPlus, 
@@ -45,7 +45,7 @@ interface QuickStats {
   upcomingMeetings: number;
 }
 
-export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps) {
+export const AdminControlsOverview = memo(function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps) {
   const { user } = useAuth();
   const [stats, setStats] = useState<QuickStats>({
     pendingApplications: 0,
@@ -472,4 +472,4 @@ export function AdminControlsOverview({ onNavigate }: AdminControlsOverviewProps
       </Collapsible>
     </div>
   );
-}
+});

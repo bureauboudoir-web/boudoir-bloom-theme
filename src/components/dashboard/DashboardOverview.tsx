@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,7 +56,7 @@ interface DashboardOverviewProps {
   meetingCompleted?: boolean;
 }
 
-export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_access', meetingCompleted }: DashboardOverviewProps) => {
+export const DashboardOverview = memo(function DashboardOverview({ userId, onNavigate, accessLevel = 'full_access', meetingCompleted }: DashboardOverviewProps) {
   const navigate = useNavigate();
   const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
@@ -705,4 +705,4 @@ export const DashboardOverview = ({ userId, onNavigate, accessLevel = 'full_acce
       />
     </div>
   );
-};
+});
