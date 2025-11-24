@@ -45,7 +45,7 @@ const QAAccordion = () => {
     <div className="w-full py-20 bg-background">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl mb-4 text-rose-gold">Frequently Asked Questions</h2>
+          <h2 className="font-serif text-4xl md:text-5xl mb-4 text-primary">Frequently Asked Questions</h2>
           <p className="text-lg text-muted-foreground">
             Everything you need to know about working with Bureau Boudoir.
           </p>
@@ -56,9 +56,9 @@ const QAAccordion = () => {
             <AccordionItem 
               key={index} 
               value={`item-${index}`}
-              className="border-2 border-rose-gold/30 rounded-xl bg-card px-8 hover:border-rose-gold transition-all hover:shadow-lg"
+              className="border-2 border-primary/40 rounded-xl bg-card px-8 hover:border-rose-gold transition-all hover:shadow-lg"
             >
-              <AccordionTrigger className="text-left font-serif text-lg text-foreground hover:text-rose-gold hover:no-underline py-6">
+              <AccordionTrigger className="text-left font-serif text-lg text-foreground hover:text-primary hover:no-underline py-6">
                 {qa.question}
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed pb-6 text-base">
