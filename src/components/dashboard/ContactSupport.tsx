@@ -158,10 +158,10 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
 
         <Button
           onClick={handleWhatsAppClick}
-          className="w-full mb-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-          size="lg"
+          className="mb-6 bg-green-600 hover:bg-green-700 text-white"
+          size="default"
         >
-          <MessageCircle className="mr-2 h-5 w-5" />
+          <MessageCircle className="mr-2 h-4 w-4" />
           Message on WhatsApp
         </Button>
 
@@ -219,7 +219,7 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
               )}
             />
 
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} size="default">
               <Send className="mr-2 h-4 w-4" />
               {loading ? "Sending..." : "Submit Request"}
             </Button>
