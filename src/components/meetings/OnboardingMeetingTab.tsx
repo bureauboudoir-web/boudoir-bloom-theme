@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar as CalendarIcon, Clock, Video, MapPin, User } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Video, MapPin, User, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { SPACING, ICONS } from "@/lib/design-system";
 
 interface ManagerInfo {
   full_name: string;
@@ -37,6 +39,7 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [managerInfo, setManagerInfo] = useState<ManagerInfo | null>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     if (managerId) {
@@ -201,108 +204,193 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Meet Your Representative 👋
-          </CardTitle>
-          <CardDescription>
-            Schedule your first meeting to get started
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={managerInfo.profile_picture_url} />
-              <AvatarFallback>{managerInfo.full_name?.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-semibold">{managerInfo.full_name}</p>
-              <p className="text-sm text-muted-foreground">{managerInfo.email}</p>
-            </div>
-          </div>
-
-          <div className="space-y-2 p-4 bg-muted/50 rounded-lg">
-            <p className="font-medium">⏰ Average meeting: 60 minutes</p>
-            <p className="font-medium">✅ What to expect:</p>
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
-              <li>Get to know your manager</li>
-              <li>Discuss your goals and expectations</li>
-              <li>Review contract and onboarding process</li>
-              <li>Ask any questions you have</li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <Label className="mb-2 block">Meeting Format</Label>
-              <RadioGroup value={meetingType} onValueChange={(v) => setMeetingType(v as 'online' | 'in_person')}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="online" id="online" />
-                  <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer">
-                    <Video className="h-4 w-4" />
-                    Online Meeting
-                  </Label>
+    <div className={SPACING.section}>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className={cn(ICONS.md, "text-primary")} />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Meet Your Representative 👋</CardTitle>
+                    <CardDescription>
+                      Schedule your first meeting to get started
+                    </CardDescription>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="in_person" id="in_person" />
-                  <Label htmlFor="in_person" className="flex items-center gap-2 cursor-pointer">
-                    <MapPin className="h-4 w-4" />
-                    In Person
-                  </Label>
+                <ChevronDown className={cn(
+                  ICONS.md,
+                  "transition-transform duration-200",
+                  isOpen ? "rotate-180" : ""
+                )} />
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <CardContent className={cn(SPACING.section, "pt-0")}>
+              <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg border border-border/50">
+                <Avatar className="h-14 w-14 ring-2 ring-primary/20">
+                  <AvatarImage src={managerInfo.profile_picture_url} />
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {managerInfo.full_name?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-semibold text-base">{managerInfo.full_name}</p>
+                  <p className="text-sm text-muted-foreground">{managerInfo.email}</p>
                 </div>
-              </RadioGroup>
-            </div>
+              </div>
 
-            <div>
-              <Label className="mb-2 block">Select Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-full justify-start text-left", !date && "text-muted-foreground")}>
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={date} onSelect={setDate} disabled={(date) => date < new Date()} />
-                </PopoverContent>
-              </Popover>
-            </div>
+              <div className="space-y-3 p-4 bg-muted/50 rounded-lg border border-border/50">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Clock className={ICONS.sm} />
+                  <span>Average meeting: 60 minutes</span>
+                </div>
+                <div>
+                  <p className="font-medium mb-2">✅ What to expect:</p>
+                  <ul className="space-y-2 text-sm text-muted-foreground ml-6">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">•</span>
+                      <span>Get to know your manager</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">•</span>
+                      <span>Discuss your goals and expectations</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">•</span>
+                      <span>Review contract and onboarding process</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">•</span>
+                      <span>Ask any questions you have</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
-            {date && (
-              <div>
-                <Label className="mb-2 block">Select Time</Label>
-                {loadingSlots ? (
-                  <p className="text-sm text-muted-foreground">Loading available times...</p>
-                ) : availableSlots.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No available times for this date. Please select another date.</p>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2">
-                    {availableSlots.map((slot) => (
-                      <Button
-                        key={slot.time}
-                        variant={selectedTime === slot.time ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedTime(slot.time)}
-                        disabled={!slot.available}
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Meeting Format</Label>
+                  <RadioGroup value={meetingType} onValueChange={(v) => setMeetingType(v as 'online' | 'in_person')}>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Label
+                        htmlFor="online"
+                        className={cn(
+                          "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                          meetingType === 'online'
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50 hover:bg-muted/50"
+                        )}
                       >
-                        <Clock className="h-3 w-3 mr-1" />
-                        {slot.time}
+                        <RadioGroupItem value="online" id="online" />
+                        <div className="flex items-center gap-2">
+                          <Video className={ICONS.sm} />
+                          <span className="font-medium">Online</span>
+                        </div>
+                      </Label>
+                      <Label
+                        htmlFor="in_person"
+                        className={cn(
+                          "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                          meetingType === 'in_person'
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50 hover:bg-muted/50"
+                        )}
+                      >
+                        <RadioGroupItem value="in_person" id="in_person" />
+                        <div className="flex items-center gap-2">
+                          <MapPin className={ICONS.sm} />
+                          <span className="font-medium">In Person</span>
+                        </div>
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Select Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left h-12",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP") : "Pick a date"}
                       </Button>
-                    ))}
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        disabled={(date) => date < new Date()}
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                {date && (
+                  <div className="space-y-3 animate-fade-in">
+                    <Label className="text-base font-semibold">Select Time</Label>
+                    {loadingSlots ? (
+                      <div className="flex items-center justify-center p-8 text-muted-foreground">
+                        <Clock className={cn(ICONS.md, "animate-spin mr-2")} />
+                        <span>Loading available times...</span>
+                      </div>
+                    ) : availableSlots.length === 0 ? (
+                      <div className="p-6 bg-muted/50 rounded-lg text-center text-muted-foreground">
+                        No available times for this date. Please select another date.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2">
+                        {availableSlots.map((slot) => (
+                          <Button
+                            key={slot.time}
+                            variant={selectedTime === slot.time ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedTime(slot.time)}
+                            disabled={!slot.available}
+                            className="h-10"
+                          >
+                            <Clock className="h-3 w-3 mr-1" />
+                            {slot.time}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
-          </div>
 
-          <Button onClick={handleBookMeeting} disabled={!date || !selectedTime || loading} className="w-full" size="lg">
-            {loading ? 'Booking...' : 'Book Your First Meeting →'}
-          </Button>
-        </CardContent>
-      </Card>
+              <Button
+                onClick={handleBookMeeting}
+                disabled={!date || !selectedTime || loading}
+                className="w-full h-12 text-base font-semibold"
+                size="lg"
+              >
+                {loading ? (
+                  <>
+                    <Clock className={cn(ICONS.sm, "animate-spin mr-2")} />
+                    Booking...
+                  </>
+                ) : (
+                  'Book Your First Meeting →'
+                )}
+              </Button>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
     </div>
   );
 };
