@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, CheckCircle, XCircle, Edit, UserPlus, User, Search, UserCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
@@ -60,6 +61,29 @@ export const AdminMeetings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState("upcoming");
+  const [expandedMeetings, setExpandedMeetings] = useState<Set<string>>(new Set());
+  const [expandAll, setExpandAll] = useState(false);
+
+  const toggleMeeting = (meetingId: string) => {
+    setExpandedMeetings(prev => {
+      const next = new Set(prev);
+      if (next.has(meetingId)) {
+        next.delete(meetingId);
+      } else {
+        next.add(meetingId);
+      }
+      return next;
+    });
+  };
+
+  const handleExpandAll = () => {
+    if (expandAll) {
+      setExpandedMeetings(new Set());
+    } else {
+      setExpandedMeetings(new Set(filteredMeetings.map(m => m.id)));
+    }
+    setExpandAll(!expandAll);
+  };
 
   const filteredMeetings = meetings.filter(meeting => {
     if (!searchQuery) return true;
@@ -193,41 +217,85 @@ export const AdminMeetings = () => {
       if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
       return `${Math.floor(seconds / 86400)}d ago`;
     };
+
+    const isExpanded = expandedMeetings.has(meeting.id);
     
     return (
-    <Card className="border-border hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-6">
-          {/* Profile Picture */}
-          <div className="flex-shrink-0">
-            {meeting.profiles.profile_picture_url ? (
-              <img
-                src={meeting.profiles.profile_picture_url}
-                alt={meeting.profiles.full_name}
-                className="w-16 h-16 rounded-full object-cover ring-2 ring-border"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border">
-                <span className="text-xl font-semibold text-primary">
-                  {meeting.profiles.full_name?.charAt(0) || '?'}
-                </span>
-              </div>
-            )}
-          </div>
+      <Collapsible
+        open={isExpanded}
+        onOpenChange={() => toggleMeeting(meeting.id)}
+      >
+        <Card className="border-border/40">
+          <CollapsibleTrigger className="w-full">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4">
+                {/* Left: Avatar + Name + Quick Info */}
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="flex-shrink-0">
+                    {meeting.profiles.profile_picture_url ? (
+                      <img
+                        src={meeting.profiles.profile_picture_url}
+                        alt={meeting.profiles.full_name}
+                        className="w-12 h-12 rounded-full object-cover ring-2 ring-border"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border">
+                        <span className="text-lg font-semibold text-primary">
+                          {meeting.profiles.full_name?.charAt(0) || '?'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0 text-left">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-base truncate">{meeting.profiles.full_name}</h3>
+                      {isNew && (
+                        <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs">
+                          NEW
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {meeting.meeting_date ? format(new Date(meeting.meeting_date), "MMM dd") : "Not set"}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {meeting.meeting_time || "Not set"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-          <div className="flex-1 min-w-0 space-y-4">
-            {/* Header Row */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-xl text-foreground">{meeting.profiles.full_name}</h3>
-                  {isNew && (
-                    <Badge variant="secondary" className="bg-primary text-primary-foreground">
-                      NEW
+                {/* Right: Status + Time + Expand Icon */}
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col items-end gap-1">
+                    <Badge className={`${getStatusColor(meeting.status)} text-xs`}>
+                      {meeting.status}
                     </Badge>
+                    {meeting.created_at && (
+                      <span className="text-xs text-muted-foreground">
+                        {getTimeAgo(meeting.created_at)}
+                      </span>
+                    )}
+                  </div>
+                  {isExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground mb-2">{meeting.profiles.email}</p>
+              </div>
+            </CardContent>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <CardContent className="px-4 pb-4 pt-0 space-y-4 border-t">
+              {/* Email + Manager Info */}
+              <div className="pt-4 space-y-2">
+                <p className="text-sm text-muted-foreground">{meeting.profiles.email}</p>
                 {(isSuperAdmin || isAdmin) && meeting.manager && (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <UserCheck className="h-4 w-4" />
@@ -235,197 +303,161 @@ export const AdminMeetings = () => {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <Badge className={`${getStatusColor(meeting.status)} px-3 py-1`}>
-                  {meeting.status}
-                </Badge>
-                {meeting.created_at && (
-                  <span className="text-xs text-muted-foreground">
-                    {getTimeAgo(meeting.created_at)}
-                  </span>
+
+              {/* Meeting Type Details */}
+              <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                {meeting.meeting_type === 'online' ? (
+                  <>
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Video className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium mb-1">Online Meeting ({meeting.duration_minutes}min)</p>
+                      {meeting.meeting_link && (
+                        <a 
+                          href={meeting.meeting_link} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-sm text-primary hover:underline truncate block"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Join Meeting
+                        </a>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium mb-1">In-Person Meeting ({meeting.duration_minutes}min)</p>
+                      {meeting.meeting_location && (
+                        <p className="text-sm text-muted-foreground">{meeting.meeting_location}</p>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
-            </div>
 
-            {/* Meeting Details Grid */}
-            <div className="grid grid-cols-2 gap-4 py-3 border-y border-border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Calendar className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground mb-0.5">Date</p>
-                  <p className="text-sm font-medium">
-                    {meeting.meeting_date ? format(new Date(meeting.meeting_date), "MMM dd, yyyy") : "Not set"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Clock className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground mb-0.5">Time</p>
-                  <p className="text-sm font-medium">
-                    {meeting.meeting_time || "Not set"} · {meeting.duration_minutes}min
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Meeting Type */}
-            <div className="flex items-center gap-3">
-              {meeting.meeting_type === 'online' ? (
-                <>
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Video className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium mb-1">Online Meeting</p>
-                    {meeting.meeting_link && (
-                      <a 
-                        href={meeting.meeting_link} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="text-sm text-primary hover:underline truncate block"
-                      >
-                        Join Meeting
-                      </a>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium mb-1">In-Person Meeting</p>
-                    {meeting.meeting_location && (
-                      <p className="text-sm text-muted-foreground">{meeting.meeting_location}</p>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Reschedule Request UI */}
-            {meeting.reschedule_requested && meeting.reschedule_new_date && (
-              <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/30 font-medium">
-                      Reschedule Requested
-                    </Badge>
-                    {meeting.reschedule_requested_at && (
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(meeting.reschedule_requested_at), "MMM dd 'at' HH:mm")}
-                      </span>
-                    )}
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground font-medium min-w-[80px]">Current:</span>
-                      <span className="font-medium">{format(new Date(meeting.meeting_date), "MMM dd, yyyy")} at {meeting.meeting_time}</span>
+              {/* Reschedule Request UI */}
+              {meeting.reschedule_requested && meeting.reschedule_new_date && (
+                <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/30 font-medium">
+                        Reschedule Requested
+                      </Badge>
+                      {meeting.reschedule_requested_at && (
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(meeting.reschedule_requested_at), "MMM dd 'at' HH:mm")}
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground font-medium min-w-[80px]">Requested:</span>
-                      <span className="font-medium text-amber-700">{format(new Date(meeting.reschedule_new_date), "MMM dd, yyyy")} at {meeting.reschedule_new_time}</span>
-                    </div>
-                    {meeting.reschedule_reason && (
-                      <div className="pt-2 border-t border-amber-500/20">
-                        <span className="text-muted-foreground font-medium">Reason:</span>
-                        <p className="text-sm mt-1 italic text-muted-foreground">{meeting.reschedule_reason}</p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground font-medium min-w-[80px]">Current:</span>
+                        <span className="font-medium">{format(new Date(meeting.meeting_date), "MMM dd, yyyy")} at {meeting.meeting_time}</span>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex gap-2 pt-1">
-                    <Button
-                      size="sm"
-                      onClick={async () => {
-                        try {
-                          const { error } = await supabase
-                            .from('creator_meetings')
-                            .update({
-                              meeting_date: meeting.reschedule_new_date,
-                              meeting_time: meeting.reschedule_new_time,
-                              reschedule_requested: false,
-                              reschedule_reason: null,
-                              reschedule_new_date: null,
-                              reschedule_new_time: null,
-                              reschedule_requested_at: null,
-                            })
-                            .eq('id', meeting.id);
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground font-medium min-w-[80px]">Requested:</span>
+                        <span className="font-medium text-amber-700">{format(new Date(meeting.reschedule_new_date), "MMM dd, yyyy")} at {meeting.reschedule_new_time}</span>
+                      </div>
+                      {meeting.reschedule_reason && (
+                        <div className="pt-2 border-t border-amber-500/20">
+                          <span className="text-muted-foreground font-medium">Reason:</span>
+                          <p className="text-sm mt-1 italic text-muted-foreground">{meeting.reschedule_reason}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const { error } = await supabase
+                              .from('creator_meetings')
+                              .update({
+                                meeting_date: meeting.reschedule_new_date,
+                                meeting_time: meeting.reschedule_new_time,
+                                reschedule_requested: false,
+                                reschedule_reason: null,
+                                reschedule_new_date: null,
+                                reschedule_new_time: null,
+                                reschedule_requested_at: null,
+                              })
+                              .eq('id', meeting.id);
 
-                          if (error) throw error;
-                          toast.success("Meeting rescheduled successfully");
-                          fetchMeetings();
-                        } catch (error) {
-                          console.error('Error approving reschedule:', error);
-                          toast.error("Failed to approve reschedule");
-                        }
-                      }}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1.5" />
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={async () => {
-                        try {
-                          const { error } = await supabase
-                            .from('creator_meetings')
-                            .update({
-                              reschedule_requested: false,
-                              reschedule_reason: null,
-                              reschedule_new_date: null,
-                              reschedule_new_time: null,
-                              reschedule_requested_at: null,
-                            })
-                            .eq('id', meeting.id);
+                            if (error) throw error;
+                            toast.success("Meeting rescheduled successfully");
+                            fetchMeetings();
+                          } catch (error) {
+                            console.error('Error approving reschedule:', error);
+                            toast.error("Failed to approve reschedule");
+                          }
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1.5" />
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const { error } = await supabase
+                              .from('creator_meetings')
+                              .update({
+                                reschedule_requested: false,
+                                reschedule_reason: null,
+                                reschedule_new_date: null,
+                                reschedule_new_time: null,
+                                reschedule_requested_at: null,
+                              })
+                              .eq('id', meeting.id);
 
-                          if (error) throw error;
-                          toast.success("Reschedule request declined");
-                          fetchMeetings();
-                        } catch (error) {
-                          console.error('Error declining reschedule:', error);
-                          toast.error("Failed to decline reschedule");
-                        }
-                      }}
-                    >
-                      <XCircle className="h-4 w-4 mr-1.5" />
-                      Decline
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                            if (error) throw error;
+                            toast.success("Reschedule request declined");
+                            fetchMeetings();
+                          } catch (error) {
+                            console.error('Error declining reschedule:', error);
+                            toast.error("Failed to decline reschedule");
+                          }
+                        }}
+                      >
+                        <XCircle className="h-4 w-4 mr-1.5" />
+                        Decline
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-            {/* Action Buttons */}
-            {meeting.status === 'confirmed' && (
-              <div className="flex gap-2 pt-2">
+              {/* Action Buttons */}
+              {meeting.status === 'confirmed' && (
                 <Button
                   size="default"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setSelectedMeeting(meeting);
                     setActionDialog('complete');
                   }}
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Mark as Complete
                 </Button>
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+              )}
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+    );
+  };
 
   // Calculate stats
   const stats = {
@@ -557,6 +589,25 @@ export const AdminMeetings = () => {
             </Card>
           ) : (
             <>
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleExpandAll}
+                >
+                  {expandAll ? (
+                    <>
+                      <ChevronUp className="w-4 h-4 mr-2" />
+                      Collapse All
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4 mr-2" />
+                      Expand All
+                    </>
+                  )}
+                </Button>
+              </div>
               {needsActionMeetings.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
             </>
           )}
@@ -571,6 +622,25 @@ export const AdminMeetings = () => {
             </Card>
           ) : (
             <>
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleExpandAll}
+                >
+                  {expandAll ? (
+                    <>
+                      <ChevronUp className="w-4 h-4 mr-2" />
+                      Collapse All
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4 mr-2" />
+                      Expand All
+                    </>
+                  )}
+                </Button>
+              </div>
               {paginatedUpcoming.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
               {totalPagesUpcoming > 1 && (
                 <PaginationControls
@@ -598,6 +668,25 @@ export const AdminMeetings = () => {
             </Card>
           ) : (
             <>
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleExpandAll}
+                >
+                  {expandAll ? (
+                    <>
+                      <ChevronUp className="w-4 h-4 mr-2" />
+                      Collapse All
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4 mr-2" />
+                      Expand All
+                    </>
+                  )}
+                </Button>
+              </div>
               {paginatedPast.map(meeting => <MeetingCard key={meeting.id} meeting={meeting} />)}
               {totalPagesPast > 1 && (
                 <PaginationControls
