@@ -63,5 +63,8 @@ verify_jwt = true  # Requires authentication
 [functions.create-test-accounts]
 verify_jwt = true  # Requires admin authentication
 
+[functions.create-pending-test-creators]
+verify_jwt = true  # Requires admin authentication
+
 [functions.check-contract-expiry]
 verify_jwt = false  # Scheduled function, no user auth needed

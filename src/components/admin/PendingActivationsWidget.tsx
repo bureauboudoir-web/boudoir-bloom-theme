@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, UserCheck, Mail, RefreshCw, Check, Send, ExternalLink, CheckCircle2 } from "lucide-react";
 import { GrantAccessDialog } from "./GrantAccessDialog";
 import { useAccessManagement } from "@/hooks/useAccessManagement";
+import { TestPendingCreatorsButton } from "./TestPendingCreatorsButton";
 import { format } from "date-fns";
 import { 
   CreatorStage, 
@@ -341,14 +342,17 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
     <>
       <Card className="border-primary/20 bg-primary/5">
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <UserCheck className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle>Creators Awaiting Activation</CardTitle>
-              <CardDescription className="mt-1">
-                Track creators through their onboarding journey and grant full dashboard access
-              </CardDescription>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <UserCheck className="h-5 w-5 text-primary" />
+              <div>
+                <CardTitle>Creators Awaiting Activation</CardTitle>
+                <CardDescription className="mt-1">
+                  Track creators through their onboarding journey and grant full dashboard access
+                </CardDescription>
+              </div>
             </div>
+            <TestPendingCreatorsButton />
           </div>
         </CardHeader>
 
@@ -378,51 +382,57 @@ export const PendingActivationsWidget = ({ onNavigateToMeetings }: PendingActiva
               const stageInfo = getStageInfo(creator.stage);
               
               return (
-                <Card key={creator.id} className="p-4 bg-background">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-10 w-10 flex-shrink-0">
-                        <AvatarImage src={creator.profile_picture_url || undefined} />
-                        <AvatarFallback>
-                          {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                          <p className="font-medium truncate">{creator.full_name || 'No name'}</p>
-                          <Badge variant="secondary" className={stageInfo.color}>
-                            {stageInfo.label}
-                          </Badge>
+                <Card key={creator.id} className="p-4 bg-background hover:bg-accent/5 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <Avatar className="h-12 w-12 flex-shrink-0 ring-2 ring-border">
+                      <AvatarImage src={creator.profile_picture_url || undefined} />
+                      <AvatarFallback className="text-sm font-semibold">
+                        {creator.full_name?.charAt(0) || creator.email.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="font-semibold truncate text-base">{creator.full_name || 'No name'}</p>
+                            <Badge variant="secondary" className={`${stageInfo.color} text-xs`}>
+                              {stageInfo.label}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground truncate">{creator.email}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground truncate">{creator.email}</p>
                         
-                        <div className="flex flex-wrap items-center gap-3 mt-2">
-                          {getEmailIndicator(creator)}
-                          
-                          {creator.meeting_date && (
-                            <>
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                <span>
-                                  {format(new Date(creator.meeting_date), 'MMM dd')}
-                                  {creator.stage === 'meeting_booked' && ` ${formatTimeUntil(creator.meeting_date)}`}
-                                </span>
-                              </div>
-                              {creator.meeting_time && (
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Clock className="h-3 w-3" />
-                                  <span>{creator.meeting_time}</span>
-                                </div>
-                              )}
-                            </>
-                          )}
+                        <div className="flex gap-2 flex-shrink-0">
+                          {getActionButtons(creator)}
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex gap-2 w-full sm:w-auto">
-                      {getActionButtons(creator)}
+                      
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 border-t border-border/50">
+                        {getEmailIndicator(creator)}
+                        
+                        {creator.meeting_date && (
+                          <>
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span className="font-medium">
+                                {format(new Date(creator.meeting_date), 'MMM dd, yyyy')}
+                                {creator.stage === 'meeting_booked' && (
+                                  <span className="text-primary ml-1">
+                                    ({formatTimeUntil(creator.meeting_date)})
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            {creator.meeting_time && (
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Clock className="h-3.5 w-3.5" />
+                                <span className="font-medium">{creator.meeting_time}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Card>
