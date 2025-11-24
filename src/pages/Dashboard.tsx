@@ -367,27 +367,29 @@ const Dashboard = () => {
       </header>
 
       <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
-        <div className="grid md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
           {/* Desktop Sidebar */}
-          <Card className="hidden md:block md:col-span-1 p-6 h-fit bg-card border-primary/20 sticky top-20">
-            <DashboardNav
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              pendingCommitments={pendingCommitments}
-              newInvoices={newInvoices}
-              isAdmin={isAdmin}
-              isSuperAdmin={isSuperAdmin}
-              isManagerOnly={isManagerOnly}
-              isCreator={isCreator}
-              isManager={isManager}
-              onAdminClick={() => setActiveTab("admin")}
-              onManagerClick={() => setActiveTab("manager")}
-              accessLevel={accessLevel}
-            />
-          </Card>
+          <aside className="hidden md:block md:w-64 lg:w-72 flex-shrink-0">
+            <Card className="p-6 h-fit bg-card border-primary/20 sticky top-20">
+              <DashboardNav
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                pendingCommitments={pendingCommitments}
+                newInvoices={newInvoices}
+                isAdmin={isAdmin}
+                isSuperAdmin={isSuperAdmin}
+                isManagerOnly={isManagerOnly}
+                isCreator={isCreator}
+                isManager={isManager}
+                onAdminClick={() => setActiveTab("admin")}
+                onManagerClick={() => setActiveTab("manager")}
+                accessLevel={accessLevel}
+              />
+            </Card>
+          </aside>
 
           {/* Main Content */}
-          <div className="md:col-span-3 w-full">
+          <div className="flex-1 min-w-0">{/* min-w-0 prevents overflow on mobile */}
             {activeTab === "overview" && user && (
               <DashboardOverview 
                 userId={user.id}
