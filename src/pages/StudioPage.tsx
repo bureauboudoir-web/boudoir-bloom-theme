@@ -4,7 +4,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { ArrowLeft, LogOut, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const StudioPage = () => {
@@ -24,6 +25,10 @@ const StudioPage = () => {
     }
   }, [user, isAdmin, isManager, isStudio, loading, navigate]);
 
+  if (!user || (!isAdmin && !isManager && !isStudio)) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
@@ -33,9 +38,21 @@ const StudioPage = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
+              <div className="space-y-1">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                        Dashboard
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Studio Team</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
                 <h1 className="font-serif text-2xl font-bold">Studio Dashboard</h1>
-                <p className="text-sm text-muted-foreground">Studio</p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={signOut}>
@@ -48,10 +65,15 @@ const StudioPage = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Card>
-          <CardHeader>
-            <CardTitle>Studio Dashboard</CardTitle>
+          <CardHeader className="border-b">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Camera className="w-5 h-5 text-primary" />
+              </div>
+              <CardTitle>Studio Dashboard</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <p className="text-muted-foreground">
               This area will contain studio upload area, shoot checklists, content requirements, and booking schedule.
             </p>
