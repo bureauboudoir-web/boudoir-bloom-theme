@@ -1,79 +1,186 @@
 import { useEffect, useRef } from "react";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useTeamCreators } from "@/hooks/useTeamCreators";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { RoleNavigation } from "@/components/RoleNavigation";
-import { getRoleNavigation } from "@/config/roleNavigation";
-import { CreatorSelector } from "@/components/team/CreatorSelector";
-import { MarketingOverview } from "@/components/team/marketing/MarketingOverview";
-import { HookLibrary } from "@/components/team/marketing/HookLibrary";
-import { PostIdeas } from "@/components/team/marketing/PostIdeas";
-import { ContentCalendar } from "@/components/team/marketing/ContentCalendar";
-import { TeamNotes } from "@/components/team/shared/TeamNotes";
-import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
-import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
-import ContactSupport from "@/components/dashboard/ContactSupport";
+import { marketingNavigation } from "@/config/roleNavigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUp, Eye, Heart, Share2 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function MarketingDashboard() {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
-  const { isMarketing, isAdmin, isManager, loading: rolesLoading, rolesLoaded } = useUserRole();
-  const { creators, selectedCreator, selectedCreatorId, setSelectedCreatorId, loading: creatorsLoading } = useTeamCreators('marketing');
+  const { user } = useAuth();
+  const { isMarketing, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
+    console.log('MarketingDashboard - Roles check:', { 
+      isMarketing, 
+      isAdmin, 
+      isManager, 
+      loading, 
+      rolesLoaded,
+      hasRedirected: hasRedirected.current 
+    });
+    
     if (hasRedirected.current) return;
     
-    // Wait for auth to finish loading before checking user
-    if (authLoading) return;
-    
     if (!user) {
+      console.log('MarketingDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
-    if (!rolesLoading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
+    if (!loading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
+      console.log('MarketingDashboard - No permission, redirecting to dashboard');
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isMarketing, isAdmin, isManager, authLoading, rolesLoading, rolesLoaded, navigate]);
+  }, [user, isMarketing, isAdmin, isManager, loading, rolesLoaded, navigate]);
 
-  if (authLoading || rolesLoading || !rolesLoaded) {
-    return <LoadingSpinner />;
+  if (!user || loading || !rolesLoaded) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={marketingNavigation} />} title="Marketing Dashboard">
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
+      </DashboardLayout>
+    );
   }
 
   if (!isMarketing && !isAdmin && !isManager) {
-    return <LoadingSpinner />;
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={marketingNavigation} />} title="Marketing Dashboard">
+        <LoadingSpinner size="lg" text="Access denied..." />
+      </DashboardLayout>
+    );
   }
-
-  const navigation = getRoleNavigation('marketing');
 
   return (
     <DashboardLayout
-      navigation={<RoleNavigation sections={navigation} />}
+      navigation={<RoleNavigation sections={marketingNavigation} />}
+      title="Marketing Dashboard"
     >
       <div className="space-y-6">
-        <CreatorSelector
-          creators={creators}
-          selectedCreatorId={selectedCreatorId}
-          onSelectCreator={setSelectedCreatorId}
-          loading={creatorsLoading}
-        />
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Marketing Overview</h2>
+          <p className="text-muted-foreground">
+            Growth & content performance
+          </p>
+        </div>
 
-        <Routes>
-          <Route path="/" element={<MarketingOverview creatorId={selectedCreatorId} />} />
-          <Route path="/hooks" element={<HookLibrary creatorId={selectedCreatorId} />} />
-          <Route path="/ideas" element={<PostIdeas creatorId={selectedCreatorId} />} />
-          <Route path="/calendar" element={<ContentCalendar creatorId={selectedCreatorId} />} />
-          <Route path="/notes" element={<TeamNotes creatorId={selectedCreatorId} teamType="marketing" />} />
-          <Route path="/meetings" element={<MeetingBookingView />} />
-          <Route path="/commitments" element={<WeeklyCommitments userId={user?.id || ''} />} />
-          <Route path="/contact" element={<ContactSupport userId={user?.id || ''} userName={user?.email || ''} />} />
-        </Routes>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Reach</CardTitle>
+              <Eye className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">324K</div>
+              <p className="text-xs text-muted-foreground">+12% from last week</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Engagement Rate</CardTitle>
+              <Heart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">8.4%</div>
+              <p className="text-xs text-muted-foreground">Above industry avg</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Posts This Week</CardTitle>
+              <Share2 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">47</div>
+              <p className="text-xs text-muted-foreground">3 scheduled today</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Growth Rate</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+18%</div>
+              <p className="text-xs text-muted-foreground">New followers</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Trending Hooks</CardTitle>
+              <CardDescription>Top performing content themes</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">"Amsterdam Nights" series</p>
+                    <p className="text-xs text-muted-foreground">94% engagement rate</p>
+                  </div>
+                  <div className="text-sm font-medium text-green-600">🔥</div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">"Behind the Curtain"</p>
+                    <p className="text-xs text-muted-foreground">88% engagement rate</p>
+                  </div>
+                  <div className="text-sm font-medium text-green-600">✨</div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">"Red Light Stories"</p>
+                    <p className="text-xs text-muted-foreground">82% engagement rate</p>
+                  </div>
+                  <div className="text-sm font-medium text-green-600">💎</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Content Calendar</CardTitle>
+              <CardDescription>Upcoming posts this week</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Instagram Reels - Luna</p>
+                    <p className="text-xs text-muted-foreground">Today at 7 PM</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="h-2 w-2 rounded-full bg-amber-500" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">TikTok Series - Bella</p>
+                    <p className="text-xs text-muted-foreground">Tomorrow at 2 PM</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="h-2 w-2 rounded-full bg-green-500" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Twitter Campaign - Sophie</p>
+                    <p className="text-xs text-muted-foreground">Friday at 10 AM</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

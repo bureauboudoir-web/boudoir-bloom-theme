@@ -112,23 +112,12 @@ const Dashboard = () => {
   const progress = (currentStep / visibleTotalSteps) * 100;
   const currentStepConfig = getStepConfig(currentStep);
 
-  // Redirect to role-specific dashboard
+  // Redirect to login if not authenticated
   useEffect(() => {
-    if (!authLoading && !rolesLoading && user) {
-      // Determine primary role and redirect to appropriate dashboard
-      if (isManagerOnly) {
-        navigate('/dashboard/manager', { replace: true });
-      } else if (isChatter) {
-        navigate('/dashboard/chat', { replace: true });
-      } else if (isMarketing) {
-        navigate('/dashboard/marketing', { replace: true });
-      } else if (isStudio) {
-        navigate('/dashboard/studio', { replace: true });
-      }
-    } else if (!authLoading && !user) {
+    if (!authLoading && !user) {
       navigate("/login");
     }
-  }, [user, authLoading, rolesLoading, isSuperAdmin, isAdmin, isManagerOnly, isChatter, isMarketing, isStudio, isCreator, navigate]);
+  }, [user, authLoading, navigate]);
 
   // Security check: Ensure user has proper role assigned
   useEffect(() => {
