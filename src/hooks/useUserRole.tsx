@@ -11,9 +11,17 @@ export const useUserRole = () => {
   // Creator check: has creator role
   const isCreator = context.roles.includes('creator');
   
+  // Team role checks
+  const isChatter = context.roles.includes('chatter');
+  const isMarketing = context.roles.includes('marketing');
+  const isStudio = context.roles.includes('studio');
+  
   return {
     ...context,
     isManagerOnly,
     isCreator,
+    isChatter,
+    isMarketing,
+    isStudio,
   };
 };
