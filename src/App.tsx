@@ -22,7 +22,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const CompleteSetup = lazy(() => import("./pages/CompleteSetup"));
 
 // Role-specific dashboards
-const AdminDashboard = lazy(() => import("./pages/dashboard/AdminDashboard"));
+const FullAdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const ManagerDashboard = lazy(() => import("./pages/dashboard/ManagerDashboard"));
 const CreatorDashboard = lazy(() => import("./pages/dashboard/CreatorDashboard"));
 const ChatDashboard = lazy(() => import("./pages/dashboard/ChatDashboard"));
@@ -64,7 +64,7 @@ const App = () => (
                 <Route path="/complete-setup" element={<CompleteSetup />} />
 
                 {/* Role-Based Dashboard Routes */}
-                <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
+                <Route path="/dashboard/admin/*" element={<FullAdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
@@ -73,7 +73,7 @@ const App = () => (
 
                 {/* Legacy Routes (for backward compatibility) */}
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin" element={<FullAdminDashboard />} />
                 <Route path="/manager" element={<ManagerDashboard />} />
                 <Route path="/creator/:id" element={<CreatorDetail />} />
                 <Route path="/users" element={<Users />} />

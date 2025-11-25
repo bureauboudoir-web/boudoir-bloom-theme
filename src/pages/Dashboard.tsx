@@ -116,9 +116,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!authLoading && !rolesLoading && user) {
       // Determine primary role and redirect to appropriate dashboard
-      if (isSuperAdmin || isAdmin) {
-        navigate('/admin', { replace: true });
-      } else if (isManagerOnly) {
+      if (isManagerOnly) {
         navigate('/dashboard/manager', { replace: true });
       } else if (isChatter) {
         navigate('/dashboard/chat', { replace: true });
