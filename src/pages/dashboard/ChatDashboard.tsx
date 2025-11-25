@@ -73,8 +73,8 @@ export default function ChatDashboard() {
           <Route path="/campaigns" element={<CreatorCampaigns creatorId={selectedCreatorId} />} />
           <Route path="/notes" element={<TeamNotes creatorId={selectedCreatorId} teamType="chat" />} />
           <Route path="/meetings" element={<MeetingBookingView />} />
-          <Route path="/commitments" element={<WeeklyCommitments />} />
-          <Route path="/contact" element={<ContactSupport />} />
+          <Route path="/commitments" element={<WeeklyCommitments userId={user?.id || ''} />} />
+          <Route path="/contact" element={<ContactSupport userId={user?.id || ''} userName={user?.email || ''} />} />
         </Routes>
       </div>
     </DashboardLayout>

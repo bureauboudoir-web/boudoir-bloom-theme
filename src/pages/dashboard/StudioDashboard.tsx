@@ -10,7 +10,7 @@ import { getRoleNavigation } from "@/config/roleNavigation";
 import { CreatorSelector } from "@/components/team/CreatorSelector";
 import { StudioOverview } from "@/components/team/studio/StudioOverview";
 import StudioShoots from "@/components/dashboard/StudioShoots";
-import ContentUpload from "@/components/uploads/ContentUpload";
+import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { TeamNotes } from "@/components/team/shared/TeamNotes";
 import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
@@ -65,12 +65,12 @@ export default function StudioDashboard() {
 
         <Routes>
           <Route path="/" element={<StudioOverview creatorId={selectedCreatorId} />} />
-          <Route path="/shoots" element={<StudioShoots />} />
+          <Route path="/shoots" element={<StudioShoots userId={selectedCreatorId || user?.id || ''} />} />
           <Route path="/upload" element={<ContentUpload userId={selectedCreatorId || user?.id || ''} />} />
           <Route path="/notes" element={<TeamNotes creatorId={selectedCreatorId} teamType="studio" />} />
           <Route path="/meetings" element={<MeetingBookingView />} />
-          <Route path="/commitments" element={<WeeklyCommitments />} />
-          <Route path="/contact" element={<ContactSupport />} />
+          <Route path="/commitments" element={<WeeklyCommitments userId={user?.id || ''} />} />
+          <Route path="/contact" element={<ContactSupport userId={user?.id || ''} userName={user?.email || ''} />} />
         </Routes>
       </div>
     </DashboardLayout>
