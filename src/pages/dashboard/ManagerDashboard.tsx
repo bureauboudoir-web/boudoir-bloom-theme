@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -10,21 +10,29 @@ import { UserCheck, Camera, MessageSquare, TrendingUp } from "lucide-react";
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { isManager, isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { isManager, isAdmin, isSuperAdmin, loading: rolesLoading, rolesLoaded } = useUserRole();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
+    if (hasRedirected.current) return;
+    
+    // Wait for auth to finish loading before checking user
+    if (authLoading) return;
+    
     if (!user) {
+      hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
-    if (!loading && rolesLoaded && !isManager && !isAdmin && !isSuperAdmin) {
+    if (!rolesLoading && rolesLoaded && !isManager && !isAdmin && !isSuperAdmin) {
+      hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isManager, isAdmin, isSuperAdmin, loading, rolesLoaded, navigate]);
+  }, [user, isManager, isAdmin, isSuperAdmin, authLoading, rolesLoading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={managerNavigation} />} title="Manager Dashboard">
         <div className="min-h-screen flex items-center justify-center">

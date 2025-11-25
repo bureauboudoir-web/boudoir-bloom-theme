@@ -11,12 +11,15 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, isSuperAdmin, loading: rolesLoading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
     if (hasRedirected.current) return;
+    
+    // Wait for auth to finish loading before checking user
+    if (authLoading) return;
     
     if (!user) {
       hasRedirected.current = true;
@@ -24,13 +27,13 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (!loading && rolesLoaded && !isAdmin && !isSuperAdmin) {
+    if (!rolesLoading && rolesLoaded && !isAdmin && !isSuperAdmin) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isAdmin, isSuperAdmin, loading, rolesLoaded, navigate]);
+  }, [user, isAdmin, isSuperAdmin, authLoading, rolesLoading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={adminNavigation} />} title="Admin Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
