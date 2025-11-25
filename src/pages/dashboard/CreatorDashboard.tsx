@@ -15,7 +15,7 @@ import Settings from "@/pages/Settings";
 export default function CreatorDashboard() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isCreator, loading: rolesLoading, rolesLoaded } = useUserRole();
+  const { isCreator, isAdmin, isSuperAdmin, loading: rolesLoading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
@@ -30,11 +30,18 @@ export default function CreatorDashboard() {
       return;
     }
 
+    // Redirect admins to full admin dashboard
+    if (!rolesLoading && rolesLoaded && (isSuperAdmin || isAdmin)) {
+      hasRedirected.current = true;
+      navigate("/admin", { replace: true });
+      return;
+    }
+
     if (!rolesLoading && rolesLoaded && !isCreator) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isCreator, authLoading, rolesLoading, rolesLoaded, navigate]);
+  }, [user, isCreator, isAdmin, isSuperAdmin, authLoading, rolesLoading, rolesLoaded, navigate]);
 
   if (authLoading || rolesLoading || !rolesLoaded) {
     return (
