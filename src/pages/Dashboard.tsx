@@ -602,20 +602,6 @@ const Dashboard = () => {
               return null;
             })()}
 
-            {activeTab === "chat" && (isAdmin || isManager || isChatter) && (() => {
-              navigate('/dashboard/chat');
-              return null;
-            })()}
-
-            {activeTab === "marketing" && (isAdmin || isManager || isMarketing) && (() => {
-              navigate('/dashboard/marketing');
-              return null;
-            })()}
-
-            {activeTab === "studio" && (isAdmin || isManager || isStudio) && (() => {
-              navigate('/dashboard/studio');
-              return null;
-            })()}
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
               <div className="space-y-6">
