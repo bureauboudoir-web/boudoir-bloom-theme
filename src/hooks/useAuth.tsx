@@ -70,9 +70,34 @@ export const useAuth = () => {
         };
       }
       
-      // All users redirect to unified dashboard
-      // The dashboard has role-based tabs (admin, manager) for different user types
-      navigate("/dashboard");
+      // Redirect to role-specific dashboard
+      const primaryRole = userRoles[0]?.role || 'creator';
+      let dashboardPath = '/dashboard/creator'; // Default
+      
+      switch (primaryRole) {
+        case 'admin':
+        case 'super_admin':
+          dashboardPath = '/dashboard/admin';
+          break;
+        case 'manager':
+          dashboardPath = '/dashboard/manager';
+          break;
+        case 'chatter':
+          dashboardPath = '/dashboard/chat';
+          break;
+        case 'marketing':
+          dashboardPath = '/dashboard/marketing';
+          break;
+        case 'studio':
+          dashboardPath = '/dashboard/studio';
+          break;
+        case 'creator':
+        default:
+          dashboardPath = '/dashboard/creator';
+          break;
+      }
+      
+      navigate(dashboardPath);
     }
     
     return { data, error };
