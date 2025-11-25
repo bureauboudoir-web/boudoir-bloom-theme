@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -63,6 +63,7 @@ export const DashboardNav = ({
 }: DashboardNavProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
@@ -268,11 +269,16 @@ export const DashboardNav = ({
                 : item.id === "studio" ? "/dashboard/studio"
                 : "";
               
+              const isActive = location.pathname === dashboardPath;
+              
               return (
                 <Button
                   key={item.id}
-                  variant="ghost"
-                  className="w-full justify-start h-11 px-3 transition-all hover:bg-primary/10"
+                  variant={isActive ? "default" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-11 px-3 transition-all",
+                    isActive && "bg-primary text-primary-foreground shadow-sm"
+                  )}
                   onClick={() => handleTeamToolClick(dashboardPath)}
                 >
                   <span className="mr-3">{item.icon}</span>
