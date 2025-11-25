@@ -1,16 +1,19 @@
 import { PageContainer } from "@/components/PageContainer";
 import { Camera, Video, TrendingUp, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const About = () => {
+  const { t } = useTranslation();
+  
   return (
     <PageContainer>
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-[#d1ae94] mb-6">
-          About Bureau Boudoir
+          {t('about.hero.title')}
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Elevating Amsterdam creators through professional content management and strategic marketing
+          {t('about.hero.subtitle')}
         </p>
       </section>
 

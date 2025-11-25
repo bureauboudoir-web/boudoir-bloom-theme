@@ -1,17 +1,20 @@
 import { PageContainer } from "@/components/PageContainer";
 import { Twitter, Music, Instagram, MessageCircle, Mail } from "lucide-react";
 import mapImage from "@/assets/amsterdam-map-luxury.png";
+import { useTranslation } from "react-i18next";
 
 const Contact = () => {
+  const { t } = useTranslation();
+  
   return (
     <PageContainer>
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-[#d1ae94] mb-6">
-          Get in Touch
+          {t('contact.hero.title')}
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Ready to begin your journey with Bureau Boudoir? We're here to help.
+          {t('contact.hero.subtitle')}
         </p>
       </section>
 

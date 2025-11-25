@@ -70,5 +70,112 @@
       "youtube": "Tilaa YouTubessa",
       "tiktok": "Seuraa meitä TikTokissa"
     }
+  },
+  "login": {
+    "title": "Luoja-kirjautuminen",
+    "subtitle": "Pääsy kojelautaan",
+    "email": "Sähköpostiosoite",
+    "password": "Salasana",
+    "forgotPassword": "Unohditko salasanan?",
+    "loginButton": "Kirjaudu sisään",
+    "loggingIn": "Kirjaudutaan...",
+    "noAccount": "Eikö sinulla ole tiliä?",
+    "applyHere": "Hae tästä",
+    "invalidCredentials": "Virheellinen sähköposti tai salasana",
+    "loginSuccess": "Kirjautuminen onnistui!",
+    "loginError": "Kirjautumisessa tapahtui virhe"
+  },
+  "signup": {
+    "title": "Ryhdy luojaksi",
+    "subtitle": "Lähetä hakemuksesi liittyäksesi Bureau Boudoiriin",
+    "fullName": "Koko nimi",
+    "namePlaceholder": "Nimesi",
+    "email": "Sähköpostiosoite",
+    "emailPlaceholder": "sinun@email.com",
+    "phoneNumber": "Puhelinnumero",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Luojataso",
+    "selectLevel": "Valitse tasosi",
+    "startLevel": "Aloittaja - Vasta aloittamassa",
+    "growingLevel": "Kasvava - Rakentaa yleisöä",
+    "establishedLevel": "Vakiintunut - Kokenut luoja",
+    "submitButton": "Lähetä hakemus",
+    "submitting": "Lähetetään...",
+    "haveAccount": "Onko sinulla jo tili?",
+    "loginHere": "Kirjaudu tästä",
+    "successMessage": "Hakemus lähetetty! Tarkista sähköpostisi vahvistusta varten.",
+    "duplicateError": "Tällä sähköpostiosoitteella on jo hakemus.",
+    "submitError": "Hakemuksen lähettäminen epäonnistui. Yritä uudelleen."
+  },
+  "about": {
+    "hero": {
+      "title": "Tietoa Bureau Boudoirista",
+      "subtitle": "Nostamme Amsterdamin luojia ammattimaisen sisällönhallinnan ja strategisen markkinoinnin avulla"
+    },
+    "story": {
+      "title": "Tarinmme",
+      "para1": "Amsterdamin ikonisen Red Light Districtin sydämessä syntynyt Bureau Boudoir sai alkunsa yksinkertaisesta visiosta: muuttaa tapaa, jolla luojat lähestyvät sisältöliiketoimintaansa.",
+      "para2": "Ymmärsimme, että lahjakkaat luojat käyttivät lukemattomia tunteja tuotantoon, markkinointiin ja liiketoimintaan—aikaa, joka voitaisiin käyttää paremmin siihen, mitä he osaavat parhaiten: luomiseen.",
+      "para3": "Nykyään Bureau Boudoir on Amsterdamin johtava sisällönhallintavirasto, joka yhdistää luovan huippuosaamisen, ammattimaiset tuotantostandardit ja strategisen markkinointiosaamisen."
+    },
+    "whatWeDo": {
+      "title": "Mitä teemme",
+      "planning": {
+        "title": "Sisällön suunnittelu",
+        "description": "Strategiset sisältökalenterit, kuvaussuunnittelu ja luova ohjaus räätälöitynä ainutlaatuiseen tyyliisi ja yleisöösi."
+      },
+      "production": {
+        "title": "Ammattimainen tuotanto",
+        "description": "Studiolaatuinen valokuva- ja videotuotanto kokeneiden tiimien kanssa, jotka ymmärtävät luksussisällön luomista."
+      },
+      "marketing": {
+        "title": "Strateginen markkinointi",
+        "description": "Datalähtöiset markkinointistrategiat, alustaoptimointi ja kasvutaktiikat, jotka maksimoivat tavoittavuutesi ja tulosi."
+      }
+    },
+    "values": {
+      "title": "Arvomme",
+      "professionalism": {
+        "title": "Ammattimaisuus",
+        "description": "Tuomme alan johtavat standardit kaikkiin sisällönluomisen ja -hallinnan osa-alueisiin."
+      },
+      "creativity": {
+        "title": "Luovuus",
+        "description": "Ainutlaatuinen äänesi ja visiosi ovat kaiken tekemisemme keskiössä."
+      },
+      "support": {
+        "title": "Tuki",
+        "description": "24/7-pääsy tiimimme varmistaa, että sinulla on aina tarvitsemasi ohjaus ja resurssit."
+      },
+      "empowerment": {
+        "title": "Voimaannuttaminen",
+        "description": "Annamme luojille työkalut, tietämyksen ja itsevarmuuden rakentaa kestäviä, menestyksekkäitä yrityksiä."
+      }
+    },
+    "cta": {
+      "title": "Valmis nostamaan sisältöäsi?",
+      "description": "Liity Amsterdamin ammattimaisimpaan luojayhteisöön.",
+      "button": "Ryhdy luojaksi"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Ota yhteyttä",
+      "subtitle": "Valmis aloittamaan matkasi Bureau Boudoirin kanssa? Olemme täällä auttamassa."
+    },
+    "info": {
+      "title": "Yhteystiedot",
+      "subtitle": "Haluamme kuulla sinusta. Ota yhteyttä jommankumman näistä kanavista kautta."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Sähköposti",
+    "visit": {
+      "title": "Vieraile luonamme",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Alankomaat"
+    }
   }
 }

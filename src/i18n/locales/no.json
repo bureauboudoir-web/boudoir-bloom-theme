@@ -70,5 +70,112 @@
       "youtube": "Abonner på YouTube",
       "tiktok": "Følg oss på TikTok"
     }
+  },
+  "login": {
+    "title": "Skaper-pålogging",
+    "subtitle": "Få tilgang til dashbordet ditt",
+    "email": "E-postadresse",
+    "password": "Passord",
+    "forgotPassword": "Glemt passord?",
+    "loginButton": "Logg inn",
+    "loggingIn": "Logger inn...",
+    "noAccount": "Har du ikke konto?",
+    "applyHere": "Søk her",
+    "invalidCredentials": "Ugyldig e-post eller passord",
+    "loginSuccess": "Innlogging vellykket!",
+    "loginError": "En feil oppstod under innlogging"
+  },
+  "signup": {
+    "title": "Bli skaper",
+    "subtitle": "Send inn søknaden din for å bli med i Bureau Boudoir",
+    "fullName": "Fullt navn",
+    "namePlaceholder": "Ditt navn",
+    "email": "E-postadresse",
+    "emailPlaceholder": "din@epost.com",
+    "phoneNumber": "Telefonnummer",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Skapernivå",
+    "selectLevel": "Velg ditt nivå",
+    "startLevel": "Start - Nettopp begynt",
+    "growingLevel": "Voksende - Bygger publikum",
+    "establishedLevel": "Etablert - Erfaren skaper",
+    "submitButton": "Send inn søknad",
+    "submitting": "Sender inn...",
+    "haveAccount": "Har du allerede konto?",
+    "loginHere": "Logg inn her",
+    "successMessage": "Søknad sendt! Sjekk e-posten din for bekreftelse.",
+    "duplicateError": "En søknad med denne e-postadressen eksisterer allerede.",
+    "submitError": "Kunne ikke sende inn søknad. Vennligst prøv igjen."
+  },
+  "about": {
+    "hero": {
+      "title": "Om Bureau Boudoir",
+      "subtitle": "Løfter Amsterdam-skapere gjennom profesjonell innholdsstyring og strategisk markedsføring"
+    },
+    "story": {
+      "title": "Vår historie",
+      "para1": "Født i hjertet av Amsterdams ikoniske Red Light District, oppstod Bureau Boudoir fra en enkel visjon: å transformere måten skapere nærmer seg innholdsvirksomheten sin på.",
+      "para2": "Vi innså at talentfulle skapere brukte utallige timer på produksjon, markedsføring og forretningsdrift—tid som kunne brukes bedre på det de kan best: å skape.",
+      "para3": "I dag står Bureau Boudoir som Amsterdams fremste innholdsstyringsbyrå, og samler kreativ fortreffelighet, profesjonelle produksjonsstandarder og strategisk markedsføringsekspertise."
+    },
+    "whatWeDo": {
+      "title": "Hva vi gjør",
+      "planning": {
+        "title": "Innholdsplanlegging",
+        "description": "Strategiske innholdskalendere, fotograferingsplanlegging og kreativ retning tilpasset din unike stil og publikum."
+      },
+      "production": {
+        "title": "Profesjonell produksjon",
+        "description": "Studiokvalitet foto- og videoproduksjon med erfarne team som forstår luksuriøs innholdsskaping."
+      },
+      "marketing": {
+        "title": "Strategisk markedsføring",
+        "description": "Datadrevne markedsføringsstrategier, plattformoptimalisering og veksttaktikker som maksimerer din rekkevidde og inntekt."
+      }
+    },
+    "values": {
+      "title": "Våre verdier",
+      "professionalism": {
+        "title": "Profesjonalitet",
+        "description": "Vi bringer bransjelegendende standarder til alle aspekter av innholdsskaping og -styring."
+      },
+      "creativity": {
+        "title": "Kreativitet",
+        "description": "Din unike stemme og visjon er i sentrum av alt vi gjør."
+      },
+      "support": {
+        "title": "Støtte",
+        "description": "24/7 tilgang til teamet vårt sikrer at du alltid har veiledningen og ressursene du trenger."
+      },
+      "empowerment": {
+        "title": "Myndiggjøring",
+        "description": "Vi gir skapere verktøyene, kunnskapen og selvtilliten til å bygge bærekraftige, vellykkede virksomheter."
+      }
+    },
+    "cta": {
+      "title": "Klar til å løfte innholdet ditt?",
+      "description": "Bli med i Amsterdams mest profesjonelle skaperfellesskap.",
+      "button": "Bli skaper"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Ta kontakt",
+      "subtitle": "Klar til å begynne reisen din med Bureau Boudoir? Vi er her for å hjelpe."
+    },
+    "info": {
+      "title": "Kontaktinformasjon",
+      "subtitle": "Vi vil gjerne høre fra deg. Ta kontakt gjennom noen av disse kanalene."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "E-post",
+    "visit": {
+      "title": "Besøk oss",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Nederland"
+    }
   }
 }
