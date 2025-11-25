@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -7,24 +7,38 @@ import { RoleNavigation } from "@/components/RoleNavigation";
 import { chatNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, DollarSign, MessageCircle, TrendingUp } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function ChatDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isChatter, isAdmin, isManager, loading } = useUserRole();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
+    if (hasRedirected.current) return;
+    
     if (!user) {
+      hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && !isChatter && !isAdmin && !isManager) {
+      hasRedirected.current = true;
       navigate("/dashboard");
     }
   }, [user, isChatter, isAdmin, isManager, loading, navigate]);
 
-  if (!user || loading || (!isChatter && !isAdmin && !isManager)) {
+  if (!user || loading) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={chatNavigation} />} title="Chat Dashboard">
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
+      </DashboardLayout>
+    );
+  }
+
+  if (!isChatter && !isAdmin && !isManager) {
     return null;
   }
 

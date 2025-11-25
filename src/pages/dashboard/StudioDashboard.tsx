@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -7,24 +7,38 @@ import { RoleNavigation } from "@/components/RoleNavigation";
 import { studioNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Camera, CheckSquare, Clock, Upload } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function StudioDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isStudio, isAdmin, isManager, loading } = useUserRole();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
+    if (hasRedirected.current) return;
+    
     if (!user) {
+      hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && !isStudio && !isAdmin && !isManager) {
+      hasRedirected.current = true;
       navigate("/dashboard");
     }
   }, [user, isStudio, isAdmin, isManager, loading, navigate]);
 
-  if (!user || loading || (!isStudio && !isAdmin && !isManager)) {
+  if (!user || loading) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={studioNavigation} />} title="Studio Dashboard">
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
+      </DashboardLayout>
+    );
+  }
+
+  if (!isStudio && !isAdmin && !isManager) {
     return null;
   }
 

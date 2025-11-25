@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -7,24 +7,38 @@ import { RoleNavigation } from "@/components/RoleNavigation";
 import { adminNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCog, Shield, TrendingUp } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isAdmin, isSuperAdmin, loading } = useUserRole();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
+    if (hasRedirected.current) return;
+    
     if (!user) {
+      hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && !isAdmin && !isSuperAdmin) {
+      hasRedirected.current = true;
       navigate("/dashboard");
     }
   }, [user, isAdmin, isSuperAdmin, loading, navigate]);
 
-  if (!user || loading || (!isAdmin && !isSuperAdmin)) {
+  if (!user || loading) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={adminNavigation} />} title="Admin Dashboard">
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
+      </DashboardLayout>
+    );
+  }
+
+  if (!isAdmin && !isSuperAdmin) {
     return null;
   }
 
