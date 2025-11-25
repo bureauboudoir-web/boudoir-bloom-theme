@@ -1,34 +1,34 @@
 {
   "common": {
-    "loading": "Loading...",
-    "error": "An error occurred",
-    "save": "Save",
-    "cancel": "Cancel",
-    "submit": "Submit",
-    "close": "Close",
-    "delete": "Delete",
-    "edit": "Edit"
+    "loading": "Загрузка...",
+    "error": "Произошла ошибка",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "submit": "Отправить",
+    "close": "Закрыть",
+    "delete": "Удалить",
+    "edit": "Редактировать"
   },
   "nav": {
-    "home": "Home",
-    "about": "About",
-    "contact": "Contact",
-    "terms": "Terms & Conditions",
-    "login": "Login",
-    "signup": "Become a Creator",
-    "dashboard": "Dashboard",
-    "logout": "Logout"
+    "home": "Главная",
+    "about": "О нас",
+    "contact": "Контакт",
+    "terms": "Условия и положения",
+    "login": "Войти",
+    "signup": "Стать Создателем",
+    "dashboard": "Панель",
+    "logout": "Выйти"
   },
   "dashboard": {
     "sections": {
-      "dashboard": "Dashboard",
-      "profileSetup": "Profile & Setup",
-      "workPayments": "Work & Payments",
-      "supportAdmin": "Support & Admin",
+      "dashboard": "Панель",
+      "profileSetup": "Профиль и Настройка",
+      "workPayments": "Работа и Платежи",
+      "supportAdmin": "Поддержка и Администрирование",
       "management": "Управление"
     },
     "nav": {
-      "overview": "Overview",
+      "overview": "Обзор",
       "onboarding": "Регистрация",
       "account": "Профиль Создателя",
       "settings": "Настройки",
@@ -54,21 +54,128 @@
   "homepage": {
     "hero": {
       "title": "Bureau Boudoir",
-      "subtitle": "Amsterdam's Premier Creator Management Platform"
+      "subtitle": "Ведущая Платформа Управления Создателями Амстердама"
     }
   },
   "footer": {
     "brand": "Bureau Boudoir",
-    "tagline": "Empowering creators in Amsterdam",
-    "about": "About",
-    "contact": "Contact",
-    "terms": "Terms & Conditions",
-    "copyright": "© 2024 Bureau Boudoir. All rights reserved.",
+    "tagline": "Расширение возможностей создателей Амстердама",
+    "about": "О нас",
+    "contact": "Контакт",
+    "terms": "Условия и положения",
+    "copyright": "© 2024 Bureau Boudoir. Все права защищены.",
     "social": {
-      "twitter": "Follow us on X",
-      "instagram": "Follow us on Instagram",
-      "youtube": "Subscribe on YouTube",
-      "tiktok": "Follow us on TikTok"
+      "twitter": "Следуйте за нами в X",
+      "instagram": "Следуйте за нами в Instagram",
+      "youtube": "Подпишитесь на YouTube",
+      "tiktok": "Следуйте за нами в TikTok"
+    }
+  },
+  "login": {
+    "title": "Вход для Создателя",
+    "subtitle": "Доступ к вашей панели",
+    "email": "Адрес Электронной Почты",
+    "password": "Пароль",
+    "forgotPassword": "Забыли пароль?",
+    "loginButton": "Войти",
+    "loggingIn": "Вход...",
+    "noAccount": "Нет учетной записи?",
+    "applyHere": "Подать заявку здесь",
+    "invalidCredentials": "Неверный email или пароль",
+    "loginSuccess": "Успешный вход!",
+    "loginError": "Произошла ошибка при входе"
+  },
+  "signup": {
+    "title": "Стать Создателем",
+    "subtitle": "Отправьте заявку на присоединение к Bureau Boudoir",
+    "fullName": "Полное Имя",
+    "namePlaceholder": "Ваше имя",
+    "email": "Адрес Электронной Почты",
+    "emailPlaceholder": "ваш@email.com",
+    "phoneNumber": "Номер Телефона",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Уровень Создателя",
+    "selectLevel": "Выберите ваш уровень",
+    "startLevel": "Начало - Только начинаю",
+    "growingLevel": "Развитие - Построение аудитории",
+    "establishedLevel": "Установленный - Опытный создатель",
+    "submitButton": "Отправить Заявку",
+    "submitting": "Отправка...",
+    "haveAccount": "Уже есть учетная запись?",
+    "loginHere": "Войти здесь",
+    "successMessage": "Заявка отправлена! Проверьте электронную почту для подтверждения.",
+    "duplicateError": "Заявка с этим email уже существует.",
+    "submitError": "Не удалось отправить заявку. Попробуйте еще раз."
+  },
+  "about": {
+    "hero": {
+      "title": "О Bureau Boudoir",
+      "subtitle": "Повышение уровня создателей Амстердама через профессиональное управление контентом и стратегический маркетинг"
+    },
+    "story": {
+      "title": "Наша История",
+      "para1": "Родившись в сердце знаменитого квартала Красных фонарей Амстердама, Bureau Boudoir возник из простого видения: преобразовать подход создателей к их контент-бизнесу.",
+      "para2": "Мы признали, что талантливые создатели тратили бесчисленные часы на производство, маркетинг и бизнес-операции—время, которое можно было бы лучше потратить на то, что они делают лучше всего: создание.",
+      "para3": "Сегодня Bureau Boudoir позиционируется как ведущее агентство по управлению контентом Амстердама, объединяющее творческое совершенство, профессиональные производственные стандарты и опыт стратегического маркетинга."
+    },
+    "whatWeDo": {
+      "title": "Чем Мы Занимаемся",
+      "planning": {
+        "title": "Планирование Контента",
+        "description": "Стратегические календари контента, планирование съемок и креативное направление, адаптированное к вашему уникальному стилю и аудитории."
+      },
+      "production": {
+        "title": "Профессиональное Производство",
+        "description": "Производство фото и видео студийного качества с опытными командами, понимающими создание роскошного контента."
+      },
+      "marketing": {
+        "title": "Стратегический Маркетинг",
+        "description": "Стратегии маркетинга на основе данных, оптимизация платформы и тактики роста, которые максимизируют ваш охват и доход."
+      }
+    },
+    "values": {
+      "title": "Наши Ценности",
+      "professionalism": {
+        "title": "Профессионализм",
+        "description": "Мы привносим передовые отраслевые стандарты в каждый аспект создания и управления контентом."
+      },
+      "creativity": {
+        "title": "Креативность",
+        "description": "Ваш уникальный голос и видение находятся в центре всего, что мы делаем."
+      },
+      "support": {
+        "title": "Поддержка",
+        "description": "Круглосуточный доступ к нашей команде гарантирует, что у вас всегда есть необходимые рекомендации и ресурсы."
+      },
+      "empowerment": {
+        "title": "Расширение Возможностей",
+        "description": "Мы даем создателям инструменты, знания и уверенность для построения устойчивого, успешного бизнеса."
+      }
+    },
+    "cta": {
+      "title": "Готовы повысить уровень вашего контента?",
+      "description": "Присоединяйтесь к самому профессиональному сообществу создателей Амстердама.",
+      "button": "Стать Создателем"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Свяжитесь с Нами",
+      "subtitle": "Готовы начать свое путешествие с Bureau Boudoir? Мы здесь, чтобы помочь."
+    },
+    "info": {
+      "title": "Контактная Информация",
+      "subtitle": "Мы хотели бы услышать от вас. Свяжитесь с нами по любому из этих каналов."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Электронная Почта",
+    "visit": {
+      "title": "Посетите Нас",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Амстердам, Нидерланды"
     }
   }
 }

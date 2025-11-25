@@ -1,34 +1,34 @@
 {
   "common": {
-    "loading": "Loading...",
-    "error": "An error occurred",
-    "save": "Save",
-    "cancel": "Cancel",
-    "submit": "Submit",
-    "close": "Close",
-    "delete": "Delete",
-    "edit": "Edit"
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "edit": "Modifier"
   },
   "nav": {
-    "home": "Home",
-    "about": "About",
+    "home": "Accueil",
+    "about": "À propos",
     "contact": "Contact",
-    "terms": "Terms & Conditions",
-    "login": "Login",
-    "signup": "Become a Creator",
-    "dashboard": "Dashboard",
-    "logout": "Logout"
+    "terms": "Conditions générales",
+    "login": "Connexion",
+    "signup": "Devenez Créateur",
+    "dashboard": "Tableau de bord",
+    "logout": "Déconnexion"
   },
   "dashboard": {
     "sections": {
-      "dashboard": "Dashboard",
-      "profileSetup": "Profile & Setup",
-      "workPayments": "Work & Payments",
-      "supportAdmin": "Support & Admin",
+      "dashboard": "Tableau de bord",
+      "profileSetup": "Profil et Configuration",
+      "workPayments": "Travail et Paiements",
+      "supportAdmin": "Support et Administration",
       "management": "Gestion"
     },
     "nav": {
-      "overview": "Overview",
+      "overview": "Aperçu",
       "onboarding": "Intégration",
       "account": "Profil du Créateur",
       "settings": "Paramètres",
@@ -54,21 +54,128 @@
   "homepage": {
     "hero": {
       "title": "Bureau Boudoir",
-      "subtitle": "Amsterdam's Premier Creator Management Platform"
+      "subtitle": "La Plateforme de Gestion de Créateurs de Premier Plan d'Amsterdam"
     }
   },
   "footer": {
     "brand": "Bureau Boudoir",
-    "tagline": "Empowering creators in Amsterdam",
-    "about": "About",
+    "tagline": "Autonomiser les créateurs d'Amsterdam",
+    "about": "À propos",
     "contact": "Contact",
-    "terms": "Terms & Conditions",
-    "copyright": "© 2024 Bureau Boudoir. All rights reserved.",
+    "terms": "Conditions générales",
+    "copyright": "© 2024 Bureau Boudoir. Tous droits réservés.",
     "social": {
-      "twitter": "Follow us on X",
-      "instagram": "Follow us on Instagram",
-      "youtube": "Subscribe on YouTube",
-      "tiktok": "Follow us on TikTok"
+      "twitter": "Suivez-nous sur X",
+      "instagram": "Suivez-nous sur Instagram",
+      "youtube": "Abonnez-vous sur YouTube",
+      "tiktok": "Suivez-nous sur TikTok"
+    }
+  },
+  "login": {
+    "title": "Connexion Créateur",
+    "subtitle": "Accédez à votre tableau de bord",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié?",
+    "loginButton": "Connexion",
+    "loggingIn": "Connexion en cours...",
+    "noAccount": "Vous n'avez pas de compte?",
+    "applyHere": "Postulez ici",
+    "invalidCredentials": "E-mail ou mot de passe invalide",
+    "loginSuccess": "Connexion réussie!",
+    "loginError": "Une erreur s'est produite lors de la connexion"
+  },
+  "signup": {
+    "title": "Devenez Créateur",
+    "subtitle": "Soumettez votre candidature pour rejoindre Bureau Boudoir",
+    "fullName": "Nom Complet",
+    "namePlaceholder": "Votre nom",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "votre@email.com",
+    "phoneNumber": "Numéro de Téléphone",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Niveau de Créateur",
+    "selectLevel": "Sélectionnez votre niveau",
+    "startLevel": "Début - Juste commencer",
+    "growingLevel": "Croissance - Construction d'audience",
+    "establishedLevel": "Établi - Créateur expérimenté",
+    "submitButton": "Soumettre la Candidature",
+    "submitting": "Envoi en cours...",
+    "haveAccount": "Vous avez déjà un compte?",
+    "loginHere": "Connectez-vous ici",
+    "successMessage": "Candidature soumise! Vérifiez votre e-mail pour confirmation.",
+    "duplicateError": "Une candidature avec cet e-mail existe déjà.",
+    "submitError": "Échec de la soumission de la candidature. Veuillez réessayer."
+  },
+  "about": {
+    "hero": {
+      "title": "À Propos de Bureau Boudoir",
+      "subtitle": "Élever les créateurs d'Amsterdam grâce à une gestion professionnelle de contenu et un marketing stratégique"
+    },
+    "story": {
+      "title": "Notre Histoire",
+      "para1": "Né au cœur du quartier rouge emblématique d'Amsterdam, Bureau Boudoir est né d'une vision simple: transformer la façon dont les créateurs abordent leur activité de contenu.",
+      "para2": "Nous avons reconnu que les créateurs talentueux passaient d'innombrables heures sur la production, le marketing et les opérations commerciales—temps qui pourrait être mieux utilisé pour ce qu'ils font de mieux: créer.",
+      "para3": "Aujourd'hui, Bureau Boudoir se présente comme l'agence de gestion de contenu de premier plan d'Amsterdam, rassemblant excellence créative, normes de production professionnelles et expertise en marketing stratégique."
+    },
+    "whatWeDo": {
+      "title": "Ce Que Nous Faisons",
+      "planning": {
+        "title": "Planification de Contenu",
+        "description": "Calendriers de contenu stratégiques, planification de séances et direction créative adaptée à votre style unique et votre audience."
+      },
+      "production": {
+        "title": "Production Professionnelle",
+        "description": "Production photo et vidéo de qualité studio avec des équipes expérimentées qui comprennent la création de contenu de luxe."
+      },
+      "marketing": {
+        "title": "Marketing Stratégique",
+        "description": "Stratégies marketing basées sur les données, optimisation de plateforme et tactiques de croissance qui maximisent votre portée et vos revenus."
+      }
+    },
+    "values": {
+      "title": "Nos Valeurs",
+      "professionalism": {
+        "title": "Professionnalisme",
+        "description": "Nous apportons des normes de pointe à chaque aspect de la création et de la gestion de contenu."
+      },
+      "creativity": {
+        "title": "Créativité",
+        "description": "Votre voix et vision uniques sont au centre de tout ce que nous faisons."
+      },
+      "support": {
+        "title": "Soutien",
+        "description": "Accès 24/7 à notre équipe garantit que vous avez toujours les conseils et les ressources dont vous avez besoin."
+      },
+      "empowerment": {
+        "title": "Autonomisation",
+        "description": "Nous donnons aux créateurs les outils, les connaissances et la confiance pour bâtir des entreprises durables et prospères."
+      }
+    },
+    "cta": {
+      "title": "Prêt à élever votre contenu?",
+      "description": "Rejoignez la communauté de créateurs la plus professionnelle d'Amsterdam.",
+      "button": "Devenez Créateur"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contactez-Nous",
+      "subtitle": "Prêt à commencer votre voyage avec Bureau Boudoir? Nous sommes là pour vous aider."
+    },
+    "info": {
+      "title": "Informations de Contact",
+      "subtitle": "Nous aimerions avoir de vos nouvelles. Contactez-nous via l'un de ces canaux."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "E-mail",
+    "visit": {
+      "title": "Visitez-Nous",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Pays-Bas"
     }
   }
 }
