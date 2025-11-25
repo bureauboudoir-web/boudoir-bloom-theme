@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "chat" | "marketing" | "studio";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -148,6 +148,11 @@ export const DashboardNav = ({
       { 
         id: "creators" as TabId, 
         label: "Creators", 
+        icon: <Users className="w-4 h-4" /> 
+      },
+      { 
+        id: "users" as TabId, 
+        label: "User Management", 
         icon: <Users className="w-4 h-4" /> 
       },
       ...(isAdmin || isSuperAdmin ? [{ 
