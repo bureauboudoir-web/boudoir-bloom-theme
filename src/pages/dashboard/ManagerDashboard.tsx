@@ -26,6 +26,13 @@ export default function ManagerDashboard() {
       return;
     }
 
+    // Redirect admins to full admin dashboard
+    if (!rolesLoading && rolesLoaded && (isSuperAdmin || isAdmin)) {
+      hasRedirected.current = true;
+      navigate("/admin", { replace: true });
+      return;
+    }
+
     if (!rolesLoading && rolesLoaded && !isManager && !isAdmin && !isSuperAdmin) {
       hasRedirected.current = true;
       navigate("/dashboard");
