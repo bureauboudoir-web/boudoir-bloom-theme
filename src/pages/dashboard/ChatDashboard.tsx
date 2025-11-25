@@ -12,7 +12,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 export default function ChatDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isChatter, isAdmin, isManager, loading } = useUserRole();
+  const { isChatter, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function ChatDashboard() {
       return;
     }
 
-    if (!loading && !isChatter && !isAdmin && !isManager) {
+    if (!loading && rolesLoaded && !isChatter && !isAdmin && !isManager) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isChatter, isAdmin, isManager, loading, navigate]);
+  }, [user, isChatter, isAdmin, isManager, loading, rolesLoaded, navigate]);
 
-  if (!user || loading) {
+  if (!user || loading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={chatNavigation} />} title="Chat Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
@@ -39,7 +39,11 @@ export default function ChatDashboard() {
   }
 
   if (!isChatter && !isAdmin && !isManager) {
-    return null;
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={chatNavigation} />} title="Chat Dashboard">
+        <LoadingSpinner size="lg" text="Access denied..." />
+      </DashboardLayout>
+    );
   }
 
   return (

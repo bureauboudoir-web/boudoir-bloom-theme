@@ -18,6 +18,7 @@ export const useUserRole = () => {
   
   return {
     ...context,
+    rolesLoaded: context.rolesLoaded,
     isManagerOnly,
     isCreator,
     isChatter,

@@ -11,7 +11,7 @@ import { CheckCircle2, Clock, Calendar, TrendingUp } from "lucide-react";
 export default function CreatorDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isCreator, loading } = useUserRole();
+  const { isCreator, loading, rolesLoaded } = useUserRole();
 
   useEffect(() => {
     if (!user) {
@@ -19,13 +19,29 @@ export default function CreatorDashboard() {
       return;
     }
 
-    if (!loading && !isCreator) {
+    if (!loading && rolesLoaded && !isCreator) {
       navigate("/dashboard");
     }
-  }, [user, isCreator, loading, navigate]);
+  }, [user, isCreator, loading, rolesLoaded, navigate]);
 
-  if (!user || loading || !isCreator) {
-    return null;
+  if (!user || loading || !rolesLoaded) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!isCreator) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-muted-foreground">Access denied</p>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (

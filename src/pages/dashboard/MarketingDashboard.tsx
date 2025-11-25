@@ -12,7 +12,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 export default function MarketingDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isMarketing, isAdmin, isManager, loading } = useUserRole();
+  const { isMarketing, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function MarketingDashboard() {
       return;
     }
 
-    if (!loading && !isMarketing && !isAdmin && !isManager) {
+    if (!loading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isMarketing, isAdmin, isManager, loading, navigate]);
+  }, [user, isMarketing, isAdmin, isManager, loading, rolesLoaded, navigate]);
 
-  if (!user || loading) {
+  if (!user || loading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={marketingNavigation} />} title="Marketing Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
@@ -39,7 +39,11 @@ export default function MarketingDashboard() {
   }
 
   if (!isMarketing && !isAdmin && !isManager) {
-    return null;
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={marketingNavigation} />} title="Marketing Dashboard">
+        <LoadingSpinner size="lg" text="Access denied..." />
+      </DashboardLayout>
+    );
   }
 
   return (

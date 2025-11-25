@@ -7,6 +7,7 @@ export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter
 interface UserRoleContextType {
   roles: AppRole[];
   loading: boolean;
+  rolesLoaded: boolean;
   hasRole: (role: AppRole) => boolean;
   isSuperAdmin: boolean;
   isAdmin: boolean;
@@ -24,11 +25,13 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rolesLoaded, setRolesLoaded] = useState(false);
 
   useEffect(() => {
     if (!user?.id) {
       setRoles([]);
       setLoading(false);
+      setRolesLoaded(true);
       return;
     }
 
@@ -44,9 +47,11 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
         
         const fetchedRoles = data?.map(r => r.role as AppRole) || [];
         setRoles(fetchedRoles);
+        setRolesLoaded(true);
       } catch (error) {
         console.error('Error fetching user roles:', error);
         setRoles([]);
+        setRolesLoaded(true);
       } finally {
         setLoading(false);
       }
@@ -90,6 +95,7 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
     <UserRoleContext.Provider value={{
       roles,
       loading,
+      rolesLoaded,
       hasRole,
       isSuperAdmin,
       isAdmin,

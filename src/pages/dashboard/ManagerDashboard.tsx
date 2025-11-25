@@ -11,7 +11,7 @@ import { UserCheck, Camera, MessageSquare, TrendingUp } from "lucide-react";
 export default function ManagerDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isManager, isAdmin, isSuperAdmin, loading } = useUserRole();
+  const { isManager, isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
 
   useEffect(() => {
     if (!user) {
@@ -19,13 +19,29 @@ export default function ManagerDashboard() {
       return;
     }
 
-    if (!loading && !isManager && !isAdmin && !isSuperAdmin) {
+    if (!loading && rolesLoaded && !isManager && !isAdmin && !isSuperAdmin) {
       navigate("/dashboard");
     }
-  }, [user, isManager, isAdmin, isSuperAdmin, loading, navigate]);
+  }, [user, isManager, isAdmin, isSuperAdmin, loading, rolesLoaded, navigate]);
 
-  if (!user || loading || (!isManager && !isAdmin && !isSuperAdmin)) {
-    return null;
+  if (!user || loading || !rolesLoaded) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={managerNavigation} />} title="Manager Dashboard">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!isManager && !isAdmin && !isSuperAdmin) {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={managerNavigation} />} title="Manager Dashboard">
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-muted-foreground">Access denied</p>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
