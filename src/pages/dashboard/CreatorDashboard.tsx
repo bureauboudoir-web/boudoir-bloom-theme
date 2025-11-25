@@ -7,6 +7,10 @@ import { RoleNavigation } from "@/components/RoleNavigation";
 import { creatorNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Clock, Calendar, TrendingUp } from "lucide-react";
+import { MeetingBookingView } from "@/components/dashboard/MeetingBookingView";
+import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
+import ContactSupport from "@/components/dashboard/ContactSupport";
+import Settings from "@/pages/Settings";
 
 export default function CreatorDashboard() {
   const navigate = useNavigate();
@@ -183,15 +187,16 @@ export default function CreatorDashboard() {
     >
       <Routes>
         <Route path="/" element={<CreatorOverview />} />
-        <Route path="/profile" element={<div className="p-6"><h2 className="text-2xl font-bold">Profile Info</h2><p className="text-muted-foreground mt-2">Profile interface coming soon</p></div>} />
-        <Route path="/persona" element={<div className="p-6"><h2 className="text-2xl font-bold">Persona</h2><p className="text-muted-foreground mt-2">Persona interface coming soon</p></div>} />
-        <Route path="/starter-pack" element={<div className="p-6"><h2 className="text-2xl font-bold">Starter Pack</h2><p className="text-muted-foreground mt-2">Starter pack interface coming soon</p></div>} />
-        <Route path="/voice-training" element={<div className="p-6"><h2 className="text-2xl font-bold">Voice Training</h2><p className="text-muted-foreground mt-2">Voice training interface coming soon</p></div>} />
-        <Route path="/samples" element={<div className="p-6"><h2 className="text-2xl font-bold">Sample Selector</h2><p className="text-muted-foreground mt-2">Sample selector interface coming soon</p></div>} />
-        <Route path="/scripts" element={<div className="p-6"><h2 className="text-2xl font-bold">Scripts Review</h2><p className="text-muted-foreground mt-2">Scripts review interface coming soon</p></div>} />
-        <Route path="/meetings" element={<div className="p-6"><h2 className="text-2xl font-bold">My Meetings</h2><p className="text-muted-foreground mt-2">Meetings interface coming soon</p></div>} />
-        <Route path="/commitments" element={<div className="p-6"><h2 className="text-2xl font-bold">My Commitments</h2><p className="text-muted-foreground mt-2">Commitments interface coming soon</p></div>} />
-        <Route path="/contact" element={<div className="p-6"><h2 className="text-2xl font-bold">Contact Us</h2><p className="text-muted-foreground mt-2">Contact interface coming soon</p></div>} />
+        <Route path="/profile" element={<div className="p-6"><h2 className="text-2xl font-bold">Profile Info</h2><p className="text-muted-foreground mt-2">Complete your profile information and persona details.</p></div>} />
+        <Route path="/persona" element={<div className="p-6"><h2 className="text-2xl font-bold">Persona Development</h2><p className="text-muted-foreground mt-2">This feature will help you develop your online persona and character.</p></div>} />
+        <Route path="/starter-pack" element={<div className="p-6"><h2 className="text-2xl font-bold">Starter Pack</h2><p className="text-muted-foreground mt-2">Your essential materials and resources to get started.</p></div>} />
+        <Route path="/voice-training" element={<div className="p-6"><h2 className="text-2xl font-bold">Voice Training</h2><p className="text-muted-foreground mt-2">Practice and refine your communication style.</p></div>} />
+        <Route path="/samples" element={<div className="p-6"><h2 className="text-2xl font-bold">Sample Selector</h2><p className="text-muted-foreground mt-2">Choose and customize content samples.</p></div>} />
+        <Route path="/scripts" element={<div className="p-6"><h2 className="text-2xl font-bold">Scripts Review</h2><p className="text-muted-foreground mt-2">Review and approve your messaging scripts.</p></div>} />
+        <Route path="/meetings" element={<MeetingBookingView />} />
+        <Route path="/commitments" element={user?.id ? <WeeklyCommitments userId={user.id} /> : <div className="p-6">Loading...</div>} />
+        <Route path="/contact" element={user?.id ? <ContactSupport userId={user.id} userName={user.email || ''} /> : <div className="p-6">Loading...</div>} />
+        <Route path="/settings" element={user?.id ? <Settings userId={user.id} /> : <div className="p-6">Loading...</div>} />
       </Routes>
     </DashboardLayout>
   );

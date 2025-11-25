@@ -8,6 +8,16 @@ import { adminNavigation } from "@/config/roleNavigation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCog, Shield, TrendingUp } from "lucide-react";
+import { AdminMeetings } from "@/components/admin/AdminMeetings";
+import { AdminCommitments } from "@/components/admin/AdminCommitments";
+import ContactSupport from "@/components/dashboard/ContactSupport";
+import { RoleManagement } from "@/components/admin/RoleManagement";
+import { CreatorAccountsManager } from "@/components/admin/CreatorAccountsManager";
+import { Analytics } from "@/components/admin/Analytics";
+import { EmailSettings } from "@/components/admin/EmailSettings";
+import { ApplicationsManagement } from "@/components/admin/ApplicationsManagement";
+import { CreateManagerAccount } from "@/components/admin/CreateManagerAccount";
+import Settings from "@/pages/Settings";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -168,15 +178,15 @@ export default function AdminDashboard() {
     >
       <Routes>
         <Route path="/" element={<AdminOverview />} />
-        <Route path="/users" element={<div className="p-6"><h2 className="text-2xl font-bold">User Management</h2><p className="text-muted-foreground mt-2">User management interface coming soon</p></div>} />
-        <Route path="/creators" element={<div className="p-6"><h2 className="text-2xl font-bold">Creator Management</h2><p className="text-muted-foreground mt-2">Creator management interface coming soon</p></div>} />
-        <Route path="/staff" element={<div className="p-6"><h2 className="text-2xl font-bold">Staff Management</h2><p className="text-muted-foreground mt-2">Staff management interface coming soon</p></div>} />
-        <Route path="/roles" element={<div className="p-6"><h2 className="text-2xl font-bold">Roles & Permissions</h2><p className="text-muted-foreground mt-2">Roles management interface coming soon</p></div>} />
-        <Route path="/reports" element={<div className="p-6"><h2 className="text-2xl font-bold">Reports</h2><p className="text-muted-foreground mt-2">Reports interface coming soon</p></div>} />
-        <Route path="/settings" element={<div className="p-6"><h2 className="text-2xl font-bold">Settings</h2><p className="text-muted-foreground mt-2">Settings interface coming soon</p></div>} />
-        <Route path="/meetings" element={<div className="p-6"><h2 className="text-2xl font-bold">My Meetings</h2><p className="text-muted-foreground mt-2">Meetings interface coming soon</p></div>} />
-        <Route path="/commitments" element={<div className="p-6"><h2 className="text-2xl font-bold">My Commitments</h2><p className="text-muted-foreground mt-2">Commitments interface coming soon</p></div>} />
-        <Route path="/contact" element={<div className="p-6"><h2 className="text-2xl font-bold">Contact Us</h2><p className="text-muted-foreground mt-2">Contact interface coming soon</p></div>} />
+        <Route path="/users" element={<CreatorAccountsManager />} />
+        <Route path="/creators" element={<ApplicationsManagement />} />
+        <Route path="/staff" element={<CreateManagerAccount />} />
+        <Route path="/roles" element={<RoleManagement />} />
+        <Route path="/reports" element={<Analytics />} />
+        <Route path="/settings" element={user?.id ? <Settings userId={user.id} /> : <LoadingSpinner />} />
+        <Route path="/meetings" element={<AdminMeetings />} />
+        <Route path="/commitments" element={<AdminCommitments />} />
+        <Route path="/contact" element={user?.id ? <ContactSupport userId={user.id} userName={user.email || ''} /> : <LoadingSpinner />} />
       </Routes>
     </DashboardLayout>
   );
