@@ -117,7 +117,7 @@ const Dashboard = () => {
     if (!authLoading && !rolesLoading && user) {
       // Determine primary role and redirect to appropriate dashboard
       if (isSuperAdmin || isAdmin) {
-        navigate('/dashboard/admin', { replace: true });
+        navigate('/admin', { replace: true });
       } else if (isManagerOnly) {
         navigate('/dashboard/manager', { replace: true });
       } else if (isChatter) {
