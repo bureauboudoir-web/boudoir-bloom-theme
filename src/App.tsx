@@ -22,6 +22,8 @@ const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
 const StudioPage = lazy(() => import("./pages/StudioPage"));
 const MarketingPage = lazy(() => import("./pages/MarketingPage"));
 const ChatPage = lazy(() => import("./pages/ChatPage"));
+const Users = lazy(() => import("./pages/Users"));
+const UserDetail = lazy(() => import("./pages/UserDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const About = lazy(() => import("./pages/About"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -61,6 +63,8 @@ const App = () => (
                 <Route path="/studio" element={<StudioPage />} />
                 <Route path="/marketing" element={<MarketingPage />} />
                 <Route path="/chat" element={<ChatPage />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/users/:id" element={<UserDetail />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

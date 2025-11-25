@@ -91,7 +91,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "chat" | "marketing" | "studio">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -593,6 +593,11 @@ const Dashboard = () => {
             {activeTab === "creators" && (isAdmin || isSuperAdmin || isManagerOnly) && (
               <CreatorsList />
             )}
+
+            {activeTab === "users" && (isAdmin || isSuperAdmin || isManagerOnly) && (() => {
+              navigate('/users');
+              return null;
+            })()}
 
             {activeTab === "chat" && (isAdmin || isManager || isChatter) && (
               <Card>
