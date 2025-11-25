@@ -37,6 +37,13 @@ export default function CreatorDashboard() {
       return;
     }
 
+    // Redirect creators to the comprehensive dashboard with full onboarding
+    if (!rolesLoading && rolesLoaded && isCreator && !isAdmin && !isSuperAdmin) {
+      hasRedirected.current = true;
+      navigate("/dashboard", { replace: true });
+      return;
+    }
+
     if (!rolesLoading && rolesLoaded && !isCreator) {
       hasRedirected.current = true;
       navigate("/dashboard");
