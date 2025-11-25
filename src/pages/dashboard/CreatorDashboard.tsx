@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -10,21 +10,29 @@ import { CheckCircle2, Clock, Calendar, TrendingUp } from "lucide-react";
 
 export default function CreatorDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { isCreator, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { isCreator, loading: rolesLoading, rolesLoaded } = useUserRole();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
+    if (hasRedirected.current) return;
+    
+    // Wait for auth to finish loading before checking user
+    if (authLoading) return;
+    
     if (!user) {
+      hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
-    if (!loading && rolesLoaded && !isCreator) {
+    if (!rolesLoading && rolesLoaded && !isCreator) {
+      hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isCreator, loading, rolesLoaded, navigate]);
+  }, [user, isCreator, authLoading, rolesLoading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
         <div className="min-h-screen flex items-center justify-center">

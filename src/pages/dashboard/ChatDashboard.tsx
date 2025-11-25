@@ -11,37 +11,29 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function ChatDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { isChatter, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { isChatter, isAdmin, isManager, loading: rolesLoading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
-    console.log('ChatDashboard - Roles check:', { 
-      isChatter, 
-      isAdmin, 
-      isManager, 
-      loading, 
-      rolesLoaded,
-      hasRedirected: hasRedirected.current 
-    });
-    
     if (hasRedirected.current) return;
     
+    // Wait for auth to finish loading before checking user
+    if (authLoading) return;
+    
     if (!user) {
-      console.log('ChatDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
-    if (!loading && rolesLoaded && !isChatter && !isAdmin && !isManager) {
-      console.log('ChatDashboard - No permission, redirecting to dashboard');
+    if (!rolesLoading && rolesLoaded && !isChatter && !isAdmin && !isManager) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isChatter, isAdmin, isManager, loading, rolesLoaded, navigate]);
+  }, [user, isChatter, isAdmin, isManager, authLoading, rolesLoading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={chatNavigation} />} title="Chat Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />

@@ -11,37 +11,29 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function MarketingDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { isMarketing, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { isMarketing, isAdmin, isManager, loading: rolesLoading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
-    console.log('MarketingDashboard - Roles check:', { 
-      isMarketing, 
-      isAdmin, 
-      isManager, 
-      loading, 
-      rolesLoaded,
-      hasRedirected: hasRedirected.current 
-    });
-    
     if (hasRedirected.current) return;
     
+    // Wait for auth to finish loading before checking user
+    if (authLoading) return;
+    
     if (!user) {
-      console.log('MarketingDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
-    if (!loading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
-      console.log('MarketingDashboard - No permission, redirecting to dashboard');
+    if (!rolesLoading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isMarketing, isAdmin, isManager, loading, rolesLoaded, navigate]);
+  }, [user, isMarketing, isAdmin, isManager, authLoading, rolesLoading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={marketingNavigation} />} title="Marketing Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
