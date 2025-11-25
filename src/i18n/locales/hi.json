@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "एक त्रुटि हुई",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "submit": "सबमिट करें",
+    "close": "बंद करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें"
+  },
+  "nav": {
+    "home": "होम",
+    "about": "के बारे में",
+    "contact": "संपर्क",
+    "terms": "नियम और शर्तें",
+    "login": "लॉगिन",
+    "signup": "क्रिएटर बनें",
+    "dashboard": "डैशबोर्ड",
+    "logout": "लॉगआउट"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "डैशबोर्ड",
+      "profileSetup": "प्रोफ़ाइल और सेटअप",
+      "workPayments": "काम और भुगतान",
+      "supportAdmin": "सहायता और प्रशासन",
+      "management": "प्रबंधन"
+    },
+    "nav": {
+      "overview": "अवलोकन",
+      "onboarding": "ऑनबोर्डिंग",
+      "account": "क्रिएटर प्रोफ़ाइल",
+      "settings": "सेटिंग्स",
+      "meetings": "मेरी मीटिंग्स",
+      "upload": "अपलोड",
+      "library": "कंटेंट लाइब्रेरी",
+      "commitments": "प्रतिबद्धताएं",
+      "shoots": "स्टूडियो शूट",
+      "invoices": "चालान",
+      "contract": "अनुबंध",
+      "support": "हमसे संपर्क करें",
+      "adminDashboard": "एडमिन डैशबोर्ड",
+      "managerDashboard": "मैनेजर डैशबोर्ड",
+      "adminControls": "एडमिन नियंत्रण",
+      "managerControls": "मैनेजर नियंत्रण"
+    },
+    "pageTitle": {
+      "creatorDashboard": "क्रिएटर डैशबोर्ड",
+      "managerDashboard": "मैनेजर डैशबोर्ड",
+      "adminDashboard": "एडमिन डैशबोर्ड"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "एम्स्टर्डम में क्रिएटर्स को सशक्त बनाना",
+    "about": "के बारे में",
+    "contact": "संपर्क",
+    "terms": "नियम और शर्तें",
+    "copyright": "© 2024 Bureau Boudoir. सर्वाधिकार सुरक्षित।",
+    "social": {
+      "twitter": "X पर फॉलो करें",
+      "instagram": "Instagram पर फॉलो करें",
+      "youtube": "YouTube पर सब्सक्राइब करें",
+      "tiktok": "TikTok पर फॉलो करें"
+    }
+  }
+}

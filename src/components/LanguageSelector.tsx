@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,9 +16,29 @@ import { toast } from "sonner";
 const languages = [
   { code: "en", name: "English", flag: "🇬🇧" },
   { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "it", name: "Italiano", flag: "🇮🇹" },
   { code: "ru", name: "Русский", flag: "🇷🇺" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "nl", name: "Nederlands", flag: "🇳🇱" },
+  { code: "de", name: "Deutsch", flag: "🇩🇪" },
+  { code: "pt", name: "Português", flag: "🇵🇹" },
+  { code: "zh", name: "中文", flag: "🇨🇳" },
+  { code: "ja", name: "日本語", flag: "🇯🇵" },
+  { code: "ko", name: "한국어", flag: "🇰🇷" },
+  { code: "ar", name: "العربية", flag: "🇸🇦" },
+  { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
+  { code: "tr", name: "Türkçe", flag: "🇹🇷" },
+  { code: "pl", name: "Polski", flag: "🇵🇱" },
+  { code: "sv", name: "Svenska", flag: "🇸🇪" },
+  { code: "no", name: "Norsk", flag: "🇳🇴" },
+  { code: "da", name: "Dansk", flag: "🇩🇰" },
+  { code: "fi", name: "Suomi", flag: "🇫🇮" },
+  { code: "el", name: "Ελληνικά", flag: "🇬🇷" },
+  { code: "cs", name: "Čeština", flag: "🇨🇿" },
+  { code: "hu", name: "Magyar", flag: "🇭🇺" },
+  { code: "ro", name: "Română", flag: "🇷🇴" },
+  { code: "th", name: "ไทย", flag: "🇹🇭" },
+  { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
 ];
 
 export const LanguageSelector = () => {
@@ -64,17 +85,19 @@ export const LanguageSelector = () => {
           <span className="sm:hidden">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className={i18n.language === language.code ? "bg-accent" : ""}
-          >
-            <span className="mr-2">{language.flag}</span>
-            {language.name}
-          </DropdownMenuItem>
-        ))}
+      <DropdownMenuContent align="end" className="w-56">
+        <ScrollArea className="h-[300px]">
+          {languages.map((language) => (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => handleLanguageChange(language.code)}
+              className={i18n.language === language.code ? "bg-accent" : ""}
+            >
+              <span className="mr-2">{language.flag}</span>
+              {language.name}
+            </DropdownMenuItem>
+          ))}
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   );

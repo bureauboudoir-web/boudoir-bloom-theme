@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Laddar...",
+    "error": "Ett fel uppstod",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "submit": "Skicka",
+    "close": "Stäng",
+    "delete": "Ta bort",
+    "edit": "Redigera"
+  },
+  "nav": {
+    "home": "Hem",
+    "about": "Om",
+    "contact": "Kontakt",
+    "terms": "Villkor",
+    "login": "Logga in",
+    "signup": "Bli skapare",
+    "dashboard": "Instrumentpanel",
+    "logout": "Logga ut"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Instrumentpanel",
+      "profileSetup": "Profil och inställning",
+      "workPayments": "Arbete och betalningar",
+      "supportAdmin": "Support och administration",
+      "management": "Hantering"
+    },
+    "nav": {
+      "overview": "Översikt",
+      "onboarding": "Introduktion",
+      "account": "Skaparprofil",
+      "settings": "Inställningar",
+      "meetings": "Mina möten",
+      "upload": "Uppladdningar",
+      "library": "Innehållsbibliotek",
+      "commitments": "Åtaganden",
+      "shoots": "Studiofotograferingar",
+      "invoices": "Fakturor",
+      "contract": "Kontrakt",
+      "support": "Kontakta oss",
+      "adminDashboard": "Admin-panel",
+      "managerDashboard": "Chef-panel",
+      "adminControls": "Admin-kontroller",
+      "managerControls": "Chef-kontroller"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Skaparpanel",
+      "managerDashboard": "Chef-panel",
+      "adminDashboard": "Admin-panel"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Stärker skapare i Amsterdam",
+    "about": "Om",
+    "contact": "Kontakt",
+    "terms": "Villkor",
+    "copyright": "© 2024 Bureau Boudoir. Alla rättigheter förbehållna.",
+    "social": {
+      "twitter": "Följ oss på X",
+      "instagram": "Följ oss på Instagram",
+      "youtube": "Prenumerera på YouTube",
+      "tiktok": "Följ oss på TikTok"
+    }
+  }
+}

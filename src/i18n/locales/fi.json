@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Ladataan...",
+    "error": "Tapahtui virhe",
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "submit": "Lähetä",
+    "close": "Sulje",
+    "delete": "Poista",
+    "edit": "Muokkaa"
+  },
+  "nav": {
+    "home": "Etusivu",
+    "about": "Tietoja",
+    "contact": "Yhteystiedot",
+    "terms": "Käyttöehdot",
+    "login": "Kirjaudu sisään",
+    "signup": "Ryhdy luojaksi",
+    "dashboard": "Kojelauta",
+    "logout": "Kirjaudu ulos"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Kojelauta",
+      "profileSetup": "Profiili ja asetukset",
+      "workPayments": "Työ ja maksut",
+      "supportAdmin": "Tuki ja hallinto",
+      "management": "Hallinta"
+    },
+    "nav": {
+      "overview": "Yleiskatsaus",
+      "onboarding": "Perehdytys",
+      "account": "Luojaprofiili",
+      "settings": "Asetukset",
+      "meetings": "Omat kokoukset",
+      "upload": "Lataukset",
+      "library": "Sisältökirjasto",
+      "commitments": "Sitoumukset",
+      "shoots": "Studiokuvaukset",
+      "invoices": "Laskut",
+      "contract": "Sopimus",
+      "support": "Ota yhteyttä",
+      "adminDashboard": "Admin-kojelauta",
+      "managerDashboard": "Esimies-kojelauta",
+      "adminControls": "Admin-hallinta",
+      "managerControls": "Esimies-hallinta"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Luojakojelauta",
+      "managerDashboard": "Esimies-kojelauta",
+      "adminDashboard": "Admin-kojelauta"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Voimaannuttaa luojia Amsterdamissa",
+    "about": "Tietoja",
+    "contact": "Yhteystiedot",
+    "terms": "Käyttöehdot",
+    "copyright": "© 2024 Bureau Boudoir. Kaikki oikeudet pidätetään.",
+    "social": {
+      "twitter": "Seuraa meitä X:ssä",
+      "instagram": "Seuraa meitä Instagramissa",
+      "youtube": "Tilaa YouTubessa",
+      "tiktok": "Seuraa meitä TikTokissa"
+    }
+  }
+}

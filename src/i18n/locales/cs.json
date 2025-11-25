@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Načítání...",
+    "error": "Došlo k chybě",
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "submit": "Odeslat",
+    "close": "Zavřít",
+    "delete": "Smazat",
+    "edit": "Upravit"
+  },
+  "nav": {
+    "home": "Domů",
+    "about": "O nás",
+    "contact": "Kontakt",
+    "terms": "Podmínky",
+    "login": "Přihlásit se",
+    "signup": "Stát se tvůrcem",
+    "dashboard": "Nástěnka",
+    "logout": "Odhlásit se"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Nástěnka",
+      "profileSetup": "Profil a nastavení",
+      "workPayments": "Práce a platby",
+      "supportAdmin": "Podpora a správa",
+      "management": "Správa"
+    },
+    "nav": {
+      "overview": "Přehled",
+      "onboarding": "Zaškolení",
+      "account": "Profil tvůrce",
+      "settings": "Nastavení",
+      "meetings": "Moje schůzky",
+      "upload": "Nahrávání",
+      "library": "Knihovna obsahu",
+      "commitments": "Závazky",
+      "shoots": "Studiové focení",
+      "invoices": "Faktury",
+      "contract": "Smlouva",
+      "support": "Kontaktujte nás",
+      "adminDashboard": "Admin nástěnka",
+      "managerDashboard": "Manažerská nástěnka",
+      "adminControls": "Admin ovládání",
+      "managerControls": "Manažerské ovládání"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Nástěnka tvůrce",
+      "managerDashboard": "Manažerská nástěnka",
+      "adminDashboard": "Admin nástěnka"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Posilování tvůrců v Amsterdamu",
+    "about": "O nás",
+    "contact": "Kontakt",
+    "terms": "Podmínky",
+    "copyright": "© 2024 Bureau Boudoir. Všechna práva vyhrazena.",
+    "social": {
+      "twitter": "Sledujte nás na X",
+      "instagram": "Sledujte nás na Instagramu",
+      "youtube": "Přihlaste se k odběru na YouTube",
+      "tiktok": "Sledujte nás na TikToku"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "delete": "حذف",
+    "edit": "تعديل"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "about": "حول",
+    "contact": "اتصل بنا",
+    "terms": "الشروط والأحكام",
+    "login": "تسجيل الدخول",
+    "signup": "كن منشئ محتوى",
+    "dashboard": "لوحة التحكم",
+    "logout": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "لوحة التحكم",
+      "profileSetup": "الملف الشخصي والإعداد",
+      "workPayments": "العمل والمدفوعات",
+      "supportAdmin": "الدعم والإدارة",
+      "management": "الإدارة"
+    },
+    "nav": {
+      "overview": "نظرة عامة",
+      "onboarding": "التأهيل",
+      "account": "ملف المنشئ",
+      "settings": "الإعدادات",
+      "meetings": "اجتماعاتي",
+      "upload": "التحميلات",
+      "library": "مكتبة المحتوى",
+      "commitments": "الالتزامات",
+      "shoots": "جلسات التصوير",
+      "invoices": "الفواتير",
+      "contract": "العقد",
+      "support": "اتصل بنا",
+      "adminDashboard": "لوحة المسؤول",
+      "managerDashboard": "لوحة المدير",
+      "adminControls": "ضوابط المسؤول",
+      "managerControls": "ضوابط المدير"
+    },
+    "pageTitle": {
+      "creatorDashboard": "لوحة المنشئ",
+      "managerDashboard": "لوحة المدير",
+      "adminDashboard": "لوحة المسؤول"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "تمكين المنشئين في أمستردام",
+    "about": "حول",
+    "contact": "اتصل بنا",
+    "terms": "الشروط والأحكام",
+    "copyright": "© 2024 Bureau Boudoir. جميع الحقوق محفوظة.",
+    "social": {
+      "twitter": "تابعنا على X",
+      "instagram": "تابعنا على Instagram",
+      "youtube": "اشترك في YouTube",
+      "tiktok": "تابعنا على TikTok"
+    }
+  }
+}

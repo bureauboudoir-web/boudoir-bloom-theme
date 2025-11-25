@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Laster...",
+    "error": "Det oppstod en feil",
+    "save": "Lagre",
+    "cancel": "Avbryt",
+    "submit": "Send inn",
+    "close": "Lukk",
+    "delete": "Slett",
+    "edit": "Rediger"
+  },
+  "nav": {
+    "home": "Hjem",
+    "about": "Om",
+    "contact": "Kontakt",
+    "terms": "Vilkår og betingelser",
+    "login": "Logg inn",
+    "signup": "Bli skaper",
+    "dashboard": "Dashbord",
+    "logout": "Logg ut"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Dashbord",
+      "profileSetup": "Profil og oppsett",
+      "workPayments": "Arbeid og betalinger",
+      "supportAdmin": "Støtte og administrasjon",
+      "management": "Ledelse"
+    },
+    "nav": {
+      "overview": "Oversikt",
+      "onboarding": "Onboarding",
+      "account": "Skaperprofil",
+      "settings": "Innstillinger",
+      "meetings": "Mine møter",
+      "upload": "Opplastinger",
+      "library": "Innholdsbibliotek",
+      "commitments": "Forpliktelser",
+      "shoots": "Studiofotograferinger",
+      "invoices": "Fakturaer",
+      "contract": "Kontrakt",
+      "support": "Kontakt oss",
+      "adminDashboard": "Admin-dashbord",
+      "managerDashboard": "Leder-dashbord",
+      "adminControls": "Admin-kontroller",
+      "managerControls": "Leder-kontroller"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Skaper-dashbord",
+      "managerDashboard": "Leder-dashbord",
+      "adminDashboard": "Admin-dashbord"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Styrker skapere i Amsterdam",
+    "about": "Om",
+    "contact": "Kontakt",
+    "terms": "Vilkår og betingelser",
+    "copyright": "© 2024 Bureau Boudoir. Alle rettigheter forbeholdt.",
+    "social": {
+      "twitter": "Følg oss på X",
+      "instagram": "Følg oss på Instagram",
+      "youtube": "Abonner på YouTube",
+      "tiktok": "Følg oss på TikTok"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "submit": "Gửi",
+    "close": "Đóng",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "terms": "Điều khoản và Điều kiện",
+    "login": "Đăng nhập",
+    "signup": "Trở thành Nhà sáng tạo",
+    "dashboard": "Bảng điều khiển",
+    "logout": "Đăng xuất"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Bảng điều khiển",
+      "profileSetup": "Hồ sơ và Cài đặt",
+      "workPayments": "Công việc và Thanh toán",
+      "supportAdmin": "Hỗ trợ và Quản trị",
+      "management": "Quản lý"
+    },
+    "nav": {
+      "overview": "Tổng quan",
+      "onboarding": "Giới thiệu",
+      "account": "Hồ sơ Nhà sáng tạo",
+      "settings": "Cài đặt",
+      "meetings": "Cuộc họp của tôi",
+      "upload": "Tải lên",
+      "library": "Thư viện Nội dung",
+      "commitments": "Cam kết",
+      "shoots": "Chụp ảnh Studio",
+      "invoices": "Hóa đơn",
+      "contract": "Hợp đồng",
+      "support": "Liên hệ chúng tôi",
+      "adminDashboard": "Bảng điều khiển Quản trị",
+      "managerDashboard": "Bảng điều khiển Quản lý",
+      "adminControls": "Điều khiển Quản trị",
+      "managerControls": "Điều khiển Quản lý"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Bảng điều khiển Nhà sáng tạo",
+      "managerDashboard": "Bảng điều khiển Quản lý",
+      "adminDashboard": "Bảng điều khiển Quản trị"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Trao quyền cho các nhà sáng tạo ở Amsterdam",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "terms": "Điều khoản và Điều kiện",
+    "copyright": "© 2024 Bureau Boudoir. Bảo lưu mọi quyền.",
+    "social": {
+      "twitter": "Theo dõi chúng tôi trên X",
+      "instagram": "Theo dõi chúng tôi trên Instagram",
+      "youtube": "Đăng ký trên YouTube",
+      "tiktok": "Theo dõi chúng tôi trên TikTok"
+    }
+  }
+}

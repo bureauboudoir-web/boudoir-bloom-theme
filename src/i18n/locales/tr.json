@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "submit": "Gönder",
+    "close": "Kapat",
+    "delete": "Sil",
+    "edit": "Düzenle"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkında",
+    "contact": "İletişim",
+    "terms": "Şartlar ve Koşullar",
+    "login": "Giriş",
+    "signup": "İçerik Üreticisi Ol",
+    "dashboard": "Gösterge Paneli",
+    "logout": "Çıkış"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Gösterge Paneli",
+      "profileSetup": "Profil ve Kurulum",
+      "workPayments": "İş ve Ödemeler",
+      "supportAdmin": "Destek ve Yönetim",
+      "management": "Yönetim"
+    },
+    "nav": {
+      "overview": "Genel Bakış",
+      "onboarding": "İşe Alım",
+      "account": "İçerik Üreticisi Profili",
+      "settings": "Ayarlar",
+      "meetings": "Toplantılarım",
+      "upload": "Yüklemeler",
+      "library": "İçerik Kütüphanesi",
+      "commitments": "Taahhütler",
+      "shoots": "Stüdyo Çekimleri",
+      "invoices": "Faturalar",
+      "contract": "Sözleşme",
+      "support": "Bize Ulaşın",
+      "adminDashboard": "Yönetici Paneli",
+      "managerDashboard": "Müdür Paneli",
+      "adminControls": "Yönetici Kontrolleri",
+      "managerControls": "Müdür Kontrolleri"
+    },
+    "pageTitle": {
+      "creatorDashboard": "İçerik Üreticisi Paneli",
+      "managerDashboard": "Müdür Paneli",
+      "adminDashboard": "Yönetici Paneli"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Amsterdam'da içerik üreticilerini güçlendirme",
+    "about": "Hakkında",
+    "contact": "İletişim",
+    "terms": "Şartlar ve Koşullar",
+    "copyright": "© 2024 Bureau Boudoir. Tüm hakları saklıdır.",
+    "social": {
+      "twitter": "X'te takip edin",
+      "instagram": "Instagram'da takip edin",
+      "youtube": "YouTube'da abone olun",
+      "tiktok": "TikTok'ta takip edin"
+    }
+  }
+}

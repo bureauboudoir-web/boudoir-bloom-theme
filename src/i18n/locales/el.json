@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Φόρτωση...",
+    "error": "Παρουσιάστηκε σφάλμα",
+    "save": "Αποθήκευση",
+    "cancel": "Ακύρωση",
+    "submit": "Υποβολή",
+    "close": "Κλείσιμο",
+    "delete": "Διαγραφή",
+    "edit": "Επεξεργασία"
+  },
+  "nav": {
+    "home": "Αρχική",
+    "about": "Σχετικά",
+    "contact": "Επικοινωνία",
+    "terms": "Όροι και Προϋποθέσεις",
+    "login": "Σύνδεση",
+    "signup": "Γίνε δημιουργός",
+    "dashboard": "Πίνακας ελέγχου",
+    "logout": "Αποσύνδεση"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Πίνακας ελέγχου",
+      "profileSetup": "Προφίλ και ρυθμίσεις",
+      "workPayments": "Εργασία και πληρωμές",
+      "supportAdmin": "Υποστήριξη και διαχείριση",
+      "management": "Διαχείριση"
+    },
+    "nav": {
+      "overview": "Επισκόπηση",
+      "onboarding": "Ενσωμάτωση",
+      "account": "Προφίλ δημιουργού",
+      "settings": "Ρυθμίσεις",
+      "meetings": "Οι συναντήσεις μου",
+      "upload": "Μεταφορτώσεις",
+      "library": "Βιβλιοθήκη περιεχομένου",
+      "commitments": "Δεσμεύσεις",
+      "shoots": "Φωτογραφίσεις στούντιο",
+      "invoices": "Τιμολόγια",
+      "contract": "Σύμβαση",
+      "support": "Επικοινωνήστε μαζί μας",
+      "adminDashboard": "Πίνακας διαχειριστή",
+      "managerDashboard": "Πίνακας διευθυντή",
+      "adminControls": "Έλεγχοι διαχειριστή",
+      "managerControls": "Έλεγχοι διευθυντή"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Πίνακας δημιουργού",
+      "managerDashboard": "Πίνακας διευθυντή",
+      "adminDashboard": "Πίνακας διαχειριστή"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Ενδυναμώνοντας δημιουργούς στο Άμστερνταμ",
+    "about": "Σχετικά",
+    "contact": "Επικοινωνία",
+    "terms": "Όροι και Προϋποθέσεις",
+    "copyright": "© 2024 Bureau Boudoir. Όλα τα δικαιώματα διατηρούνται.",
+    "social": {
+      "twitter": "Ακολουθήστε μας στο X",
+      "instagram": "Ακολουθήστε μας στο Instagram",
+      "youtube": "Εγγραφείτε στο YouTube",
+      "tiktok": "Ακολουθήστε μας στο TikTok"
+    }
+  }
+}

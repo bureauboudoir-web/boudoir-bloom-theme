@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "submit": "Wyślij",
+    "close": "Zamknij",
+    "delete": "Usuń",
+    "edit": "Edytuj"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "terms": "Regulamin",
+    "login": "Zaloguj się",
+    "signup": "Zostań twórcą",
+    "dashboard": "Panel",
+    "logout": "Wyloguj się"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Panel",
+      "profileSetup": "Profil i konfiguracja",
+      "workPayments": "Praca i płatności",
+      "supportAdmin": "Wsparcie i administracja",
+      "management": "Zarządzanie"
+    },
+    "nav": {
+      "overview": "Przegląd",
+      "onboarding": "Wdrożenie",
+      "account": "Profil twórcy",
+      "settings": "Ustawienia",
+      "meetings": "Moje spotkania",
+      "upload": "Przesyłanie",
+      "library": "Biblioteka treści",
+      "commitments": "Zobowiązania",
+      "shoots": "Sesje studyjne",
+      "invoices": "Faktury",
+      "contract": "Umowa",
+      "support": "Skontaktuj się z nami",
+      "adminDashboard": "Panel administratora",
+      "managerDashboard": "Panel menedżera",
+      "adminControls": "Kontrole administratora",
+      "managerControls": "Kontrole menedżera"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Panel twórcy",
+      "managerDashboard": "Panel menedżera",
+      "adminDashboard": "Panel administratora"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Wspieramy twórców w Amsterdamie",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "terms": "Regulamin",
+    "copyright": "© 2024 Bureau Boudoir. Wszelkie prawa zastrzeżone.",
+    "social": {
+      "twitter": "Śledź nas na X",
+      "instagram": "Śledź nas na Instagram",
+      "youtube": "Subskrybuj na YouTube",
+      "tiktok": "Śledź nas na TikTok"
+    }
+  }
+}

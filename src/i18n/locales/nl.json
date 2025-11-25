@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "submit": "Verzenden",
+    "close": "Sluiten",
+    "delete": "Verwijderen",
+    "edit": "Bewerken"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "Over",
+    "contact": "Contact",
+    "terms": "Algemene Voorwaarden",
+    "login": "Inloggen",
+    "signup": "Word Creator",
+    "dashboard": "Dashboard",
+    "logout": "Uitloggen"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Dashboard",
+      "profileSetup": "Profiel & Instelling",
+      "workPayments": "Werk & Betalingen",
+      "supportAdmin": "Ondersteuning & Beheer",
+      "management": "Beheer"
+    },
+    "nav": {
+      "overview": "Overzicht",
+      "onboarding": "Onboarding",
+      "account": "Creator Profiel",
+      "settings": "Instellingen",
+      "meetings": "Mijn Afspraken",
+      "upload": "Uploads",
+      "library": "Content Bibliotheek",
+      "commitments": "Verplichtingen",
+      "shoots": "Studio Shoots",
+      "invoices": "Facturen",
+      "contract": "Contract",
+      "support": "Contact Ons",
+      "adminDashboard": "Admin Dashboard",
+      "managerDashboard": "Manager Dashboard",
+      "adminControls": "Admin Bediening",
+      "managerControls": "Manager Bediening"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Creator Dashboard",
+      "managerDashboard": "Manager Dashboard",
+      "adminDashboard": "Admin Dashboard"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Creators versterken in Amsterdam",
+    "about": "Over",
+    "contact": "Contact",
+    "terms": "Algemene Voorwaarden",
+    "copyright": "© 2024 Bureau Boudoir. Alle rechten voorbehouden.",
+    "social": {
+      "twitter": "Volg ons op X",
+      "instagram": "Volg ons op Instagram",
+      "youtube": "Abonneer op YouTube",
+      "tiktok": "Volg ons op TikTok"
+    }
+  }
+}
