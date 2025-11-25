@@ -30,7 +30,7 @@ interface UserWithRoles {
   roles: string[];
 }
 
-type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator';
+type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio';
 
 const roleConfig = {
   super_admin: {
@@ -50,6 +50,24 @@ const roleConfig = {
     icon: Briefcase,
     color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
     description: 'Manage creators and content'
+  },
+  chatter: {
+    label: 'Chatter',
+    icon: UserIcon,
+    color: 'text-purple-400 bg-purple-400/10 border-purple-400/20',
+    description: 'Access chat tools and scripts'
+  },
+  marketing: {
+    label: 'Marketing',
+    icon: UserIcon,
+    color: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    description: 'Marketing and content planning'
+  },
+  studio: {
+    label: 'Studio',
+    icon: UserIcon,
+    color: 'text-pink-500 bg-pink-500/10 border-pink-500/20',
+    description: 'Studio uploads and shoots'
   },
   creator: {
     label: 'Creator',
@@ -265,6 +283,9 @@ export const RoleManagement = () => {
   const totalSuperAdmins = users.filter(u => u.roles.includes('super_admin')).length;
   const totalAdmins = users.filter(u => u.roles.includes('admin')).length;
   const totalManagers = users.filter(u => u.roles.includes('manager')).length;
+  const totalChatters = users.filter(u => u.roles.includes('chatter')).length;
+  const totalMarketing = users.filter(u => u.roles.includes('marketing')).length;
+  const totalStudio = users.filter(u => u.roles.includes('studio')).length;
   const totalCreators = users.filter(u => u.roles.includes('creator')).length;
 
   return (
@@ -294,6 +315,18 @@ export const RoleManagement = () => {
               <span className="text-muted-foreground">{totalManagers} Managers</span>
             </div>
             <div className="flex items-center gap-1">
+              <Users className="w-4 h-4 text-purple-400" />
+              <span className="text-muted-foreground">{totalChatters} Chatters</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4 text-orange-500" />
+              <span className="text-muted-foreground">{totalMarketing} Marketing</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4 text-pink-500" />
+              <span className="text-muted-foreground">{totalStudio} Studio</span>
+            </div>
+            <div className="flex items-center gap-1">
               <Users className="w-4 h-4 text-green-500" />
               <span className="text-muted-foreground">{totalCreators} Creators</span>
             </div>
@@ -313,7 +346,7 @@ export const RoleManagement = () => {
         {/* Role Legend */}
         <Card className="p-4 bg-muted/30 border-border/50">
           <h4 className="text-sm font-medium mb-3">Role Descriptions</h4>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {(Object.entries(roleConfig) as [AppRole, typeof roleConfig[AppRole]][]).map(([key, config]) => {
               const Icon = config.icon;
               return (

@@ -9,7 +9,7 @@ const corsHeaders = {
 interface CreateManagerRequest {
   email: string;
   fullName: string;
-  role: 'manager' | 'admin';
+  role: 'admin' | 'manager' | 'chatter' | 'marketing' | 'studio';
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -72,9 +72,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Validate role
-    if (role !== 'manager' && role !== 'admin') {
+    const validRoles = ['admin', 'manager', 'chatter', 'marketing', 'studio'];
+    if (!validRoles.includes(role)) {
       return new Response(
-        JSON.stringify({ error: "Invalid role. Must be 'manager' or 'admin'" }),
+        JSON.stringify({ error: `Invalid role. Must be one of: ${validRoles.join(', ')}` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -216,7 +217,7 @@ const handler = async (req: Request): Promise<Response> => {
         role,
         invitationUrl,
         expiresAt: expiresAt.toISOString(),
-        message: `${role === 'manager' ? 'Manager' : 'Admin'} account created successfully`,
+        message: `${role.charAt(0).toUpperCase() + role.slice(1)} account created successfully`,
       }),
       {
         status: 200,

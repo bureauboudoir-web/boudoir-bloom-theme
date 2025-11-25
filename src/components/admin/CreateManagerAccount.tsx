@@ -28,7 +28,7 @@ interface CreateManagerAccountProps {
 export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<'manager' | 'admin'>('manager');
+  const [role, setRole] = useState<'admin' | 'manager' | 'chatter' | 'marketing' | 'studio'>('manager');
   const [isCreating, setIsCreating] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successData, setSuccessData] = useState<{
@@ -105,9 +105,17 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
       setFullName("");
       setRole('manager');
 
+      const roleLabels: Record<string, string> = {
+        admin: 'Admin',
+        manager: 'Manager',
+        chatter: 'Chatter',
+        marketing: 'Marketing',
+        studio: 'Studio'
+      };
+
       toast({
         title: "Success",
-        description: `${data.role === 'manager' ? 'Manager' : 'Admin'} account created successfully`,
+        description: `${roleLabels[data.role] || data.role} account created successfully`,
       });
 
       onSuccess?.();
@@ -142,7 +150,7 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
       <Card className="p-6 bg-muted/30 border-primary/20 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <UserPlus className="w-5 h-5 text-primary" />
-          <h3 className="font-serif text-lg font-bold">Create Manager/Admin Account</h3>
+          <h3 className="font-serif text-lg font-bold">Create Team Account</h3>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -193,11 +201,20 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
             <Label htmlFor="role">
               Role <span className="text-destructive">*</span>
             </Label>
-            <Select value={role} onValueChange={(value) => setRole(value as 'manager' | 'admin')} disabled={isCreating}>
-              <SelectTrigger id="role">
+            <Select value={role} onValueChange={(value) => setRole(value as typeof role)} disabled={isCreating}>
+              <SelectTrigger id="role" className="bg-background">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-popover border-border z-50">
+                <SelectItem value="admin">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-red-500" />
+                    <div>
+                      <div className="font-medium">Admin</div>
+                      <div className="text-xs text-muted-foreground">Full system access and control</div>
+                    </div>
+                  </div>
+                </SelectItem>
                 <SelectItem value="manager">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-blue-500" />
@@ -207,12 +224,30 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
                     </div>
                   </div>
                 </SelectItem>
-                <SelectItem value="admin">
+                <SelectItem value="chatter">
                   <div className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-red-500" />
+                    <Shield className="w-4 h-4 text-purple-500" />
                     <div>
-                      <div className="font-medium">Admin</div>
-                      <div className="text-xs text-muted-foreground">Full system access and control</div>
+                      <div className="font-medium">Chatter</div>
+                      <div className="text-xs text-muted-foreground">Access chat tools and scripts</div>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem value="marketing">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-orange-500" />
+                    <div>
+                      <div className="font-medium">Marketing</div>
+                      <div className="text-xs text-muted-foreground">Marketing and content planning</div>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem value="studio">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-pink-500" />
+                    <div>
+                      <div className="font-medium">Studio</div>
+                      <div className="text-xs text-muted-foreground">Studio uploads and shoots</div>
                     </div>
                   </div>
                 </SelectItem>
@@ -235,7 +270,7 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
               ) : (
                 <>
                   <UserPlus className="w-4 h-4 mr-2" />
-                  Create {role === 'manager' ? 'Manager' : 'Admin'} Account
+                  Create {role.charAt(0).toUpperCase() + role.slice(1)} Account
                 </>
               )}
             </Button>
@@ -265,7 +300,7 @@ export const CreateManagerAccount = ({ onSuccess }: CreateManagerAccountProps) =
           <DialogHeader>
             <DialogTitle>Account Created Successfully! 🎉</DialogTitle>
             <DialogDescription>
-              The {successData?.role === 'manager' ? 'manager' : 'admin'} account has been created and a welcome email has been sent.
+              The {successData?.role} account has been created and a welcome email has been sent.
             </DialogDescription>
           </DialogHeader>
 
