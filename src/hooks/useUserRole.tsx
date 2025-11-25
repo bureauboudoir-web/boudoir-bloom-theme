@@ -1,6 +1,6 @@
 import { useUserRoleContext } from "@/contexts/UserRoleContext";
 
-export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator';
+export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio';
 
 export const useUserRole = () => {
   const context = useUserRoleContext();
