@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { loginSchema } from "@/lib/validation";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { signIn, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
@@ -43,15 +45,15 @@ const Login = () => {
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          toast.error("Invalid email or password");
+          toast.error(t('login.invalidCredentials'));
         } else {
           toast.error(error.message);
         }
       } else {
-        toast.success("Login successful!");
+        toast.success(t('login.loginSuccess'));
       }
     } catch (error: any) {
-      toast.error("An error occurred during login");
+      toast.error(t('login.loginError'));
     } finally {
       setLoading(false);
     }
@@ -62,14 +64,14 @@ const Login = () => {
       <div className="container mx-auto px-6 py-24 max-w-md">
         <Card className="border-border bg-secondary/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl text-[#d1ae94]">Creator Login</CardTitle>
-            <CardDescription>Access your dashboard</CardDescription>
+            <CardTitle className="text-3xl text-[#d1ae94]">{t('login.title')}</CardTitle>
+            <CardDescription>{t('login.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t('login.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -82,12 +84,12 @@ const Login = () => {
             
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('login.password')}</Label>
                 <a 
                   href="/forgot-password" 
                   className="text-sm text-[#d1ae94] hover:text-primary transition-colors"
                 >
-                  Forgot password?
+                  {t('login.forgotPassword')}
                 </a>
               </div>
               <Input
@@ -101,13 +103,13 @@ const Login = () => {
             </div>
             
             <Button type="submit" className="w-full glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? t('login.loggingIn') : t('login.loginButton')}
             </Button>
 
             <p className="text-center text-sm text-muted-foreground mt-4">
-              Don't have an account?{" "}
+              {t('login.noAccount')}{" "}
               <a href="/signup" className="text-[#d1ae94] hover:text-primary transition-colors">
-                Apply here
+                {t('login.applyHere')}
               </a>
             </p>
           </form>
