@@ -16,15 +16,26 @@ export default function ChatDashboard() {
   const hasRedirected = useRef(false);
 
   useEffect(() => {
+    console.log('ChatDashboard - Roles check:', { 
+      isChatter, 
+      isAdmin, 
+      isManager, 
+      loading, 
+      rolesLoaded,
+      hasRedirected: hasRedirected.current 
+    });
+    
     if (hasRedirected.current) return;
     
     if (!user) {
+      console.log('ChatDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && rolesLoaded && !isChatter && !isAdmin && !isManager) {
+      console.log('ChatDashboard - No permission, redirecting to dashboard');
       hasRedirected.current = true;
       navigate("/dashboard");
     }

@@ -16,15 +16,26 @@ export default function StudioDashboard() {
   const hasRedirected = useRef(false);
 
   useEffect(() => {
+    console.log('StudioDashboard - Roles check:', { 
+      isStudio, 
+      isAdmin, 
+      isManager, 
+      loading, 
+      rolesLoaded,
+      hasRedirected: hasRedirected.current 
+    });
+    
     if (hasRedirected.current) return;
     
     if (!user) {
+      console.log('StudioDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && rolesLoaded && !isStudio && !isAdmin && !isManager) {
+      console.log('StudioDashboard - No permission, redirecting to dashboard');
       hasRedirected.current = true;
       navigate("/dashboard");
     }

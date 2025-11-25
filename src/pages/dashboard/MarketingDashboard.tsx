@@ -16,15 +16,26 @@ export default function MarketingDashboard() {
   const hasRedirected = useRef(false);
 
   useEffect(() => {
+    console.log('MarketingDashboard - Roles check:', { 
+      isMarketing, 
+      isAdmin, 
+      isManager, 
+      loading, 
+      rolesLoaded,
+      hasRedirected: hasRedirected.current 
+    });
+    
     if (hasRedirected.current) return;
     
     if (!user) {
+      console.log('MarketingDashboard - No user, redirecting to login');
       hasRedirected.current = true;
       navigate("/login");
       return;
     }
 
     if (!loading && rolesLoaded && !isMarketing && !isAdmin && !isManager) {
+      console.log('MarketingDashboard - No permission, redirecting to dashboard');
       hasRedirected.current = true;
       navigate("/dashboard");
     }
