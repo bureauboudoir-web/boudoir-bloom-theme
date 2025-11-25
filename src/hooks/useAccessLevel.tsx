@@ -7,7 +7,7 @@ export type AccessLevel = 'no_access' | 'meeting_only' | 'full_access';
 
 export const useAccessLevel = () => {
   const { user } = useAuth();
-  const { isAdmin, isManager, isSuperAdmin, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isManager, isSuperAdmin, isChatter, isMarketing, isStudio, loading: rolesLoading } = useUserRole();
   const [accessLevel, setAccessLevel] = useState<AccessLevel>('no_access');
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +18,7 @@ export const useAccessLevel = () => {
       setAccessLevel('no_access');
       setLoading(false);
     }
-  }, [user, isAdmin, isManager, isSuperAdmin]);
+  }, [user, isAdmin, isManager, isSuperAdmin, isChatter, isMarketing, isStudio]);
 
   const fetchAccessLevel = async () => {
     if (!user) {
@@ -33,8 +33,8 @@ export const useAccessLevel = () => {
         return;
       }
 
-      // Admins, managers, and super admins get automatic full access
-      if (isAdmin || isManager || isSuperAdmin) {
+      // All team roles get automatic full access
+      if (isAdmin || isManager || isSuperAdmin || isChatter || isMarketing || isStudio) {
         setAccessLevel('full_access');
         setLoading(false);
         return;
