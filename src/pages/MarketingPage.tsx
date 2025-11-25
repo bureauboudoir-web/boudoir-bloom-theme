@@ -35,7 +35,7 @@ const MarketingPage = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="font-serif text-2xl font-bold">Marketing Tools</h1>
+                <h1 className="font-serif text-2xl font-bold">Marketing Dashboard</h1>
                 <p className="text-sm text-muted-foreground">Marketing</p>
               </div>
             </div>
@@ -48,38 +48,16 @@ const MarketingPage = () => {
       </header>
 
       <div className="container mx-auto px-6 py-8">
-        <Tabs defaultValue="planner" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="planner">Content Planner</TabsTrigger>
-            <TabsTrigger value="posting">Posting Tools</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="planner">
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Planner</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  This tool will be added after export. Plan and schedule content campaigns here.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="posting">
-            <Card>
-              <CardHeader>
-                <CardTitle>Posting Tools</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  This tool will be added after export. Manage social media posting and automation here.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        <Card>
+          <CardHeader>
+            <CardTitle>Marketing Dashboard</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              This area will contain posting tools, planner access, content ideas, and campaign tasks.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

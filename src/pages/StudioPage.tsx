@@ -34,7 +34,7 @@ const StudioPage = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="font-serif text-2xl font-bold">Studio Upload</h1>
+                <h1 className="font-serif text-2xl font-bold">Studio Dashboard</h1>
                 <p className="text-sm text-muted-foreground">Studio</p>
               </div>
             </div>
@@ -49,11 +49,11 @@ const StudioPage = () => {
       <div className="container mx-auto px-6 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Studio Content Upload</CardTitle>
+            <CardTitle>Studio Dashboard</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              This tool will be added after export. Studio staff will be able to upload and manage studio content here.
+              This area will contain studio upload area, shoot checklists, content requirements, and booking schedule.
             </p>
           </CardContent>
         </Card>

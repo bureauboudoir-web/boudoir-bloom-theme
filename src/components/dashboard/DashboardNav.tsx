@@ -12,11 +12,14 @@ import {
   DollarSign,
   FolderOpen,
   Settings,
-  Users
+  Users,
+  MessageSquare,
+  TrendingUp,
+  Camera
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "chat" | "marketing" | "studio";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -29,6 +32,9 @@ interface DashboardNavProps {
   isManagerOnly: boolean;
   isCreator: boolean;
   isManager: boolean;
+  isChatter: boolean;
+  isMarketing: boolean;
+  isStudio: boolean;
   onAdminClick: () => void;
   onManagerClick: () => void;
   onMobileMenuClose?: () => void;
@@ -46,6 +52,9 @@ export const DashboardNav = ({
   isManagerOnly,
   isCreator,
   isManager,
+  isChatter,
+  isMarketing,
+  isStudio,
   onAdminClick,
   onManagerClick,
   onMobileMenuClose,
@@ -154,6 +163,30 @@ export const DashboardNav = ({
     ]
   } : null;
 
+  // Add team-specific section based on role
+  const teamToolsSection = {
+    title: "Team Tools",
+    items: [
+      ...((isAdmin || isManager || isChatter) ? [{ 
+        id: "chat" as TabId, 
+        label: "Chat", 
+        icon: <MessageSquare className="w-4 h-4" /> 
+      }] : []),
+      ...((isAdmin || isManager || isMarketing) ? [{ 
+        id: "marketing" as TabId, 
+        label: "Marketing", 
+        icon: <TrendingUp className="w-4 h-4" /> 
+      }] : []),
+      ...((isAdmin || isManager || isStudio) ? [{ 
+        id: "studio" as TabId, 
+        label: "Studio", 
+        icon: <Camera className="w-4 h-4" /> 
+      }] : []),
+    ]
+  };
+
+  const hasTeamTools = teamToolsSection.items.length > 0;
+
   return (
     <nav className="space-y-6">
       {filteredSections.map((section, idx) => (
@@ -193,6 +226,31 @@ export const DashboardNav = ({
           </h3>
           <div className="space-y-1">
             {managementSection.items.map((item) => (
+              <Button
+                key={item.id}
+                variant={activeTab === item.id ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start h-11 px-3 transition-all",
+                  activeTab === item.id && "bg-primary text-primary-foreground shadow-sm"
+                )}
+                onClick={() => handleTabClick(item.id)}
+              >
+                <span className="mr-3">{item.icon}</span>
+                <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Team Tools Section */}
+      {hasTeamTools && (
+        <div className="pt-4 border-t border-border space-y-2">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
+            {teamToolsSection.title}
+          </h3>
+          <div className="space-y-1">
+            {teamToolsSection.items.map((item) => (
               <Button
                 key={item.id}
                 variant={activeTab === item.id ? "default" : "ghost"}

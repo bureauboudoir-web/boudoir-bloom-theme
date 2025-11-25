@@ -25,6 +25,9 @@ import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { CreatorContract } from "@/components/dashboard/CreatorContract";
 import { CreatorsList } from "@/components/dashboard/CreatorsList";
+import ChatPage from "@/pages/ChatPage";
+import MarketingPage from "@/pages/MarketingPage";
+import StudioPage from "@/pages/StudioPage";
 import { Settings } from "@/pages/Settings";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
@@ -79,7 +82,7 @@ const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
   const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
-  const { isAdmin, isSuperAdmin, isManagerOnly, isCreator, isManager, roles, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isSuperAdmin, isManagerOnly, isCreator, isManager, isChatter, isMarketing, isStudio, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
   const { 
@@ -91,7 +94,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "chat" | "marketing" | "studio">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -351,6 +354,9 @@ const Dashboard = () => {
                       isManagerOnly={isManagerOnly}
                       isCreator={isCreator}
                       isManager={isManager}
+                      isChatter={isChatter}
+                      isMarketing={isMarketing}
+                      isStudio={isStudio}
                       onAdminClick={() => setActiveTab("admin")}
                       onManagerClick={() => setActiveTab("manager")}
                       onMobileMenuClose={() => setMobileMenuOpen(false)}
@@ -416,6 +422,9 @@ const Dashboard = () => {
                 isManagerOnly={isManagerOnly}
                 isCreator={isCreator}
                 isManager={isManager}
+                isChatter={isChatter}
+                isMarketing={isMarketing}
+                isStudio={isStudio}
                 onAdminClick={() => setActiveTab("admin")}
                 onManagerClick={() => setActiveTab("manager")}
                 accessLevel={accessLevel}
@@ -586,6 +595,45 @@ const Dashboard = () => {
 
             {activeTab === "creators" && (isAdmin || isSuperAdmin || isManagerOnly) && (
               <CreatorsList />
+            )}
+
+            {activeTab === "chat" && (isAdmin || isManager || isChatter) && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold font-serif">Chat Team Dashboard</h2>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    This area will contain AI message tools, templates, and chat workflow for assigned creators.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "marketing" && (isAdmin || isManager || isMarketing) && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold font-serif">Marketing Dashboard</h2>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    This area will contain posting tools, planner access, content ideas, and campaign tasks.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "studio" && (isAdmin || isManager || isStudio) && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-bold font-serif">Studio Dashboard</h2>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    This area will contain studio upload area, shoot checklists, content requirements, and booking schedule.
+                  </p>
+                </CardContent>
+              </Card>
             )}
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
