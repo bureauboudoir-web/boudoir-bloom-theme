@@ -60,6 +60,14 @@ export const adminNavigation: NavSection[] = [
     ]
   },
   {
+    title: "Team Tools",
+    items: [
+      { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
+      { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
+      { label: "Studio", icon: Camera, path: "/dashboard/studio" },
+    ]
+  },
+  {
     title: "Personal",
     items: [
       { label: "My Meetings", icon: Calendar, path: "/dashboard/admin/meetings" },
@@ -91,6 +99,14 @@ export const managerNavigation: NavSection[] = [
     items: [
       { label: "Studio Schedule", icon: Camera, path: "/dashboard/manager/studio" },
       { label: "Team Notes", icon: MessageSquare, path: "/dashboard/manager/notes" },
+    ]
+  },
+  {
+    title: "Team Tools",
+    items: [
+      { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
+      { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
+      { label: "Studio", icon: Camera, path: "/dashboard/studio" },
     ]
   },
   {

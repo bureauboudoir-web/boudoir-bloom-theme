@@ -599,44 +599,20 @@ const Dashboard = () => {
               return null;
             })()}
 
-            {activeTab === "chat" && (isAdmin || isManager || isChatter) && (
-              <Card>
-                <CardHeader>
-                  <h2 className="text-2xl font-bold font-serif">Chat Team Dashboard</h2>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    This area will contain AI message tools, templates, and chat workflow for assigned creators.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            {activeTab === "chat" && (isAdmin || isManager || isChatter) && (() => {
+              navigate('/dashboard/chat');
+              return null;
+            })()}
 
-            {activeTab === "marketing" && (isAdmin || isManager || isMarketing) && (
-              <Card>
-                <CardHeader>
-                  <h2 className="text-2xl font-bold font-serif">Marketing Dashboard</h2>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    This area will contain posting tools, planner access, content ideas, and campaign tasks.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            {activeTab === "marketing" && (isAdmin || isManager || isMarketing) && (() => {
+              navigate('/dashboard/marketing');
+              return null;
+            })()}
 
-            {activeTab === "studio" && (isAdmin || isManager || isStudio) && (
-              <Card>
-                <CardHeader>
-                  <h2 className="text-2xl font-bold font-serif">Studio Dashboard</h2>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    This area will contain studio upload area, shoot checklists, content requirements, and booking schedule.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            {activeTab === "studio" && (isAdmin || isManager || isStudio) && (() => {
+              navigate('/dashboard/studio');
+              return null;
+            })()}
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
               <div className="space-y-6">

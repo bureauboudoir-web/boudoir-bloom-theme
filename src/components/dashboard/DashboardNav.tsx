@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -61,9 +62,15 @@ export const DashboardNav = ({
   accessLevel = 'full_access',
 }: DashboardNavProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
+    onMobileMenuClose?.();
+  };
+
+  const handleTeamToolClick = (path: string) => {
+    navigate(path);
     onMobileMenuClose?.();
   };
 
@@ -255,20 +262,24 @@ export const DashboardNav = ({
             {teamToolsSection.title}
           </h3>
           <div className="space-y-1">
-            {teamToolsSection.items.map((item) => (
-              <Button
-                key={item.id}
-                variant={activeTab === item.id ? "default" : "ghost"}
-                className={cn(
-                  "w-full justify-start h-11 px-3 transition-all",
-                  activeTab === item.id && "bg-primary text-primary-foreground shadow-sm"
-                )}
-                onClick={() => handleTabClick(item.id)}
-              >
-                <span className="mr-3">{item.icon}</span>
-                <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
-              </Button>
-            ))}
+            {teamToolsSection.items.map((item) => {
+              const dashboardPath = item.id === "chat" ? "/dashboard/chat" 
+                : item.id === "marketing" ? "/dashboard/marketing"
+                : item.id === "studio" ? "/dashboard/studio"
+                : "";
+              
+              return (
+                <Button
+                  key={item.id}
+                  variant="ghost"
+                  className="w-full justify-start h-11 px-3 transition-all hover:bg-primary/10"
+                  onClick={() => handleTeamToolClick(dashboardPath)}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
+                </Button>
+              );
+            })}
           </div>
         </div>
       )}
