@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Se încarcă...",
+    "error": "A apărut o eroare",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "submit": "Trimite",
+    "close": "Închide",
+    "delete": "Șterge",
+    "edit": "Editează"
+  },
+  "nav": {
+    "home": "Acasă",
+    "about": "Despre",
+    "contact": "Contact",
+    "terms": "Termeni și Condiții",
+    "login": "Autentificare",
+    "signup": "Devino creator",
+    "dashboard": "Panou",
+    "logout": "Deconectare"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Panou",
+      "profileSetup": "Profil și configurare",
+      "workPayments": "Muncă și plăți",
+      "supportAdmin": "Suport și administrare",
+      "management": "Management"
+    },
+    "nav": {
+      "overview": "Prezentare generală",
+      "onboarding": "Integrare",
+      "account": "Profil creator",
+      "settings": "Setări",
+      "meetings": "Întâlnirile mele",
+      "upload": "Încărcări",
+      "library": "Bibliotecă de conținut",
+      "commitments": "Angajamente",
+      "shoots": "Ședințe foto studio",
+      "invoices": "Facturi",
+      "contract": "Contract",
+      "support": "Contactați-ne",
+      "adminDashboard": "Panou administrator",
+      "managerDashboard": "Panou manager",
+      "adminControls": "Controale administrator",
+      "managerControls": "Controale manager"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Panou creator",
+      "managerDashboard": "Panou manager",
+      "adminDashboard": "Panou administrator"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Împuternicind creatorii din Amsterdam",
+    "about": "Despre",
+    "contact": "Contact",
+    "terms": "Termeni și Condiții",
+    "copyright": "© 2024 Bureau Boudoir. Toate drepturile rezervate.",
+    "social": {
+      "twitter": "Urmărește-ne pe X",
+      "instagram": "Urmărește-ne pe Instagram",
+      "youtube": "Abonează-te pe YouTube",
+      "tiktok": "Urmărește-ne pe TikTok"
+    }
+  }
+}

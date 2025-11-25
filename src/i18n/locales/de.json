@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "close": "Schließen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten"
+  },
+  "nav": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "terms": "Allgemeine Geschäftsbedingungen",
+    "login": "Anmelden",
+    "signup": "Creator werden",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Dashboard",
+      "profileSetup": "Profil & Einrichtung",
+      "workPayments": "Arbeit & Zahlungen",
+      "supportAdmin": "Support & Verwaltung",
+      "management": "Verwaltung"
+    },
+    "nav": {
+      "overview": "Übersicht",
+      "onboarding": "Onboarding",
+      "account": "Creator-Profil",
+      "settings": "Einstellungen",
+      "meetings": "Meine Meetings",
+      "upload": "Uploads",
+      "library": "Content-Bibliothek",
+      "commitments": "Verpflichtungen",
+      "shoots": "Studio-Shoots",
+      "invoices": "Rechnungen",
+      "contract": "Vertrag",
+      "support": "Kontaktieren Sie uns",
+      "adminDashboard": "Admin-Dashboard",
+      "managerDashboard": "Manager-Dashboard",
+      "adminControls": "Admin-Steuerung",
+      "managerControls": "Manager-Steuerung"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Creator-Dashboard",
+      "managerDashboard": "Manager-Dashboard",
+      "adminDashboard": "Admin-Dashboard"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Creators in Amsterdam stärken",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "terms": "Allgemeine Geschäftsbedingungen",
+    "copyright": "© 2024 Bureau Boudoir. Alle Rechte vorbehalten.",
+    "social": {
+      "twitter": "Folgen Sie uns auf X",
+      "instagram": "Folgen Sie uns auf Instagram",
+      "youtube": "Abonnieren Sie auf YouTube",
+      "tiktok": "Folgen Sie uns auf TikTok"
+    }
+  }
+}

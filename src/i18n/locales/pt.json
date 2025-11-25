@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "close": "Fechar",
+    "delete": "Excluir",
+    "edit": "Editar"
+  },
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "contact": "Contato",
+    "terms": "Termos e Condições",
+    "login": "Entrar",
+    "signup": "Tornar-se Creator",
+    "dashboard": "Painel",
+    "logout": "Sair"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Painel",
+      "profileSetup": "Perfil e Configuração",
+      "workPayments": "Trabalho e Pagamentos",
+      "supportAdmin": "Suporte e Administração",
+      "management": "Gestão"
+    },
+    "nav": {
+      "overview": "Visão Geral",
+      "onboarding": "Integração",
+      "account": "Perfil do Creator",
+      "settings": "Configurações",
+      "meetings": "Minhas Reuniões",
+      "upload": "Uploads",
+      "library": "Biblioteca de Conteúdo",
+      "commitments": "Compromissos",
+      "shoots": "Sessões de Estúdio",
+      "invoices": "Faturas",
+      "contract": "Contrato",
+      "support": "Fale Conosco",
+      "adminDashboard": "Painel do Administrador",
+      "managerDashboard": "Painel do Gerente",
+      "adminControls": "Controles do Administrador",
+      "managerControls": "Controles do Gerente"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Painel do Creator",
+      "managerDashboard": "Painel do Gerente",
+      "adminDashboard": "Painel do Administrador"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Capacitando creators em Amsterdam",
+    "about": "Sobre",
+    "contact": "Contato",
+    "terms": "Termos e Condições",
+    "copyright": "© 2024 Bureau Boudoir. Todos os direitos reservados.",
+    "social": {
+      "twitter": "Siga-nos no X",
+      "instagram": "Siga-nos no Instagram",
+      "youtube": "Inscreva-se no YouTube",
+      "tiktok": "Siga-nos no TikTok"
+    }
+  }
+}

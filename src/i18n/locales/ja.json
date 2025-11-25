@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "submit": "送信",
+    "close": "閉じる",
+    "delete": "削除",
+    "edit": "編集"
+  },
+  "nav": {
+    "home": "ホーム",
+    "about": "概要",
+    "contact": "お問い合わせ",
+    "terms": "利用規約",
+    "login": "ログイン",
+    "signup": "クリエイターになる",
+    "dashboard": "ダッシュボード",
+    "logout": "ログアウト"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "ダッシュボード",
+      "profileSetup": "プロフィールと設定",
+      "workPayments": "仕事と支払い",
+      "supportAdmin": "サポートと管理",
+      "management": "管理"
+    },
+    "nav": {
+      "overview": "概要",
+      "onboarding": "オンボーディング",
+      "account": "クリエイタープロフィール",
+      "settings": "設定",
+      "meetings": "マイミーティング",
+      "upload": "アップロード",
+      "library": "コンテンツライブラリ",
+      "commitments": "コミットメント",
+      "shoots": "スタジオ撮影",
+      "invoices": "請求書",
+      "contract": "契約",
+      "support": "お問い合わせ",
+      "adminDashboard": "管理者ダッシュボード",
+      "managerDashboard": "マネージャーダッシュボード",
+      "adminControls": "管理者コントロール",
+      "managerControls": "マネージャーコントロール"
+    },
+    "pageTitle": {
+      "creatorDashboard": "クリエイターダッシュボード",
+      "managerDashboard": "マネージャーダッシュボード",
+      "adminDashboard": "管理者ダッシュボード"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "アムステルダムのクリエイターを支援",
+    "about": "概要",
+    "contact": "お問い合わせ",
+    "terms": "利用規約",
+    "copyright": "© 2024 Bureau Boudoir. 無断転載を禁じます。",
+    "social": {
+      "twitter": "Xでフォロー",
+      "instagram": "Instagramでフォロー",
+      "youtube": "YouTubeで登録",
+      "tiktok": "TikTokでフォロー"
+    }
+  }
+}

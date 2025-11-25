@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "save": "저장",
+    "cancel": "취소",
+    "submit": "제출",
+    "close": "닫기",
+    "delete": "삭제",
+    "edit": "편집"
+  },
+  "nav": {
+    "home": "홈",
+    "about": "소개",
+    "contact": "연락처",
+    "terms": "이용 약관",
+    "login": "로그인",
+    "signup": "크리에이터 되기",
+    "dashboard": "대시보드",
+    "logout": "로그아웃"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "대시보드",
+      "profileSetup": "프로필 및 설정",
+      "workPayments": "작업 및 결제",
+      "supportAdmin": "지원 및 관리",
+      "management": "관리"
+    },
+    "nav": {
+      "overview": "개요",
+      "onboarding": "온보딩",
+      "account": "크리에이터 프로필",
+      "settings": "설정",
+      "meetings": "내 미팅",
+      "upload": "업로드",
+      "library": "콘텐츠 라이브러리",
+      "commitments": "약속",
+      "shoots": "스튜디오 촬영",
+      "invoices": "청구서",
+      "contract": "계약",
+      "support": "문의하기",
+      "adminDashboard": "관리자 대시보드",
+      "managerDashboard": "매니저 대시보드",
+      "adminControls": "관리자 제어",
+      "managerControls": "매니저 제어"
+    },
+    "pageTitle": {
+      "creatorDashboard": "크리에이터 대시보드",
+      "managerDashboard": "매니저 대시보드",
+      "adminDashboard": "관리자 대시보드"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "암스테르담의 크리에이터 지원",
+    "about": "소개",
+    "contact": "연락처",
+    "terms": "이용 약관",
+    "copyright": "© 2024 Bureau Boudoir. 모든 권리 보유.",
+    "social": {
+      "twitter": "X에서 팔로우",
+      "instagram": "Instagram에서 팔로우",
+      "youtube": "YouTube에서 구독",
+      "tiktok": "TikTok에서 팔로우"
+    }
+  }
+}

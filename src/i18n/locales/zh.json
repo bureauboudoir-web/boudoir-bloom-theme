@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "发生错误",
+    "save": "保存",
+    "cancel": "取消",
+    "submit": "提交",
+    "close": "关闭",
+    "delete": "删除",
+    "edit": "编辑"
+  },
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系",
+    "terms": "条款和条件",
+    "login": "登录",
+    "signup": "成为创作者",
+    "dashboard": "仪表板",
+    "logout": "登出"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "仪表板",
+      "profileSetup": "个人资料和设置",
+      "workPayments": "工作和付款",
+      "supportAdmin": "支持和管理",
+      "management": "管理"
+    },
+    "nav": {
+      "overview": "概览",
+      "onboarding": "入职",
+      "account": "创作者资料",
+      "settings": "设置",
+      "meetings": "我的会议",
+      "upload": "上传",
+      "library": "内容库",
+      "commitments": "承诺",
+      "shoots": "工作室拍摄",
+      "invoices": "发票",
+      "contract": "合同",
+      "support": "联系我们",
+      "adminDashboard": "管理员仪表板",
+      "managerDashboard": "经理仪表板",
+      "adminControls": "管理员控制",
+      "managerControls": "经理控制"
+    },
+    "pageTitle": {
+      "creatorDashboard": "创作者仪表板",
+      "managerDashboard": "经理仪表板",
+      "adminDashboard": "管理员仪表板"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "赋能阿姆斯特丹的创作者",
+    "about": "关于",
+    "contact": "联系",
+    "terms": "条款和条件",
+    "copyright": "© 2024 Bureau Boudoir. 版权所有。",
+    "social": {
+      "twitter": "在 X 上关注我们",
+      "instagram": "在 Instagram 上关注我们",
+      "youtube": "在 YouTube 上订阅",
+      "tiktok": "在 TikTok 上关注我们"
+    }
+  }
+}

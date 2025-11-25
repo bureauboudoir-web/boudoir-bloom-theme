@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "Betöltés...",
+    "error": "Hiba történt",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "submit": "Küldés",
+    "close": "Bezárás",
+    "delete": "Törlés",
+    "edit": "Szerkesztés"
+  },
+  "nav": {
+    "home": "Kezdőlap",
+    "about": "Rólunk",
+    "contact": "Kapcsolat",
+    "terms": "Felhasználási feltételek",
+    "login": "Bejelentkezés",
+    "signup": "Légy alkotó",
+    "dashboard": "Irányítópult",
+    "logout": "Kijelentkezés"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "Irányítópult",
+      "profileSetup": "Profil és beállítás",
+      "workPayments": "Munka és fizetések",
+      "supportAdmin": "Támogatás és adminisztráció",
+      "management": "Menedzsment"
+    },
+    "nav": {
+      "overview": "Áttekintés",
+      "onboarding": "Betanítás",
+      "account": "Alkotói profil",
+      "settings": "Beállítások",
+      "meetings": "Találkozóim",
+      "upload": "Feltöltések",
+      "library": "Tartalom könyvtár",
+      "commitments": "Kötelezettségek",
+      "shoots": "Stúdió fotózások",
+      "invoices": "Számlák",
+      "contract": "Szerződés",
+      "support": "Kapcsolat",
+      "adminDashboard": "Admin irányítópult",
+      "managerDashboard": "Menedzser irányítópult",
+      "adminControls": "Admin vezérlők",
+      "managerControls": "Menedzser vezérlők"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Alkotói irányítópult",
+      "managerDashboard": "Menedzser irányítópult",
+      "adminDashboard": "Admin irányítópult"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "Alkotók támogatása Amszterdamban",
+    "about": "Rólunk",
+    "contact": "Kapcsolat",
+    "terms": "Felhasználási feltételek",
+    "copyright": "© 2024 Bureau Boudoir. Minden jog fenntartva.",
+    "social": {
+      "twitter": "Kövess minket X-en",
+      "instagram": "Kövess minket Instagramon",
+      "youtube": "Iratkozz fel YouTube-on",
+      "tiktok": "Kövess minket TikTokon"
+    }
+  }
+}

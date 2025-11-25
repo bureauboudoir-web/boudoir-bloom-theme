@@ -1,0 +1,74 @@
+{
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "submit": "ส่ง",
+    "close": "ปิด",
+    "delete": "ลบ",
+    "edit": "แก้ไข"
+  },
+  "nav": {
+    "home": "หน้าแรก",
+    "about": "เกี่ยวกับ",
+    "contact": "ติดต่อ",
+    "terms": "ข้อกำหนดและเงื่อนไข",
+    "login": "เข้าสู่ระบบ",
+    "signup": "เป็นผู้สร้างสรรค์",
+    "dashboard": "แดชบอร์ด",
+    "logout": "ออกจากระบบ"
+  },
+  "dashboard": {
+    "sections": {
+      "dashboard": "แดชบอร์ด",
+      "profileSetup": "โปรไฟล์และการตั้งค่า",
+      "workPayments": "งานและการชำระเงิน",
+      "supportAdmin": "การสนับสนุนและการจัดการ",
+      "management": "การจัดการ"
+    },
+    "nav": {
+      "overview": "ภาพรวม",
+      "onboarding": "การเริ่มต้น",
+      "account": "โปรไฟล์ผู้สร้างสรรค์",
+      "settings": "การตั้งค่า",
+      "meetings": "การประชุมของฉัน",
+      "upload": "อัพโหลด",
+      "library": "ห้องสมุดเนื้อหา",
+      "commitments": "ภาระผูกพัน",
+      "shoots": "การถ่ายภาพในสตูดิโอ",
+      "invoices": "ใบแจ้งหนี้",
+      "contract": "สัญญา",
+      "support": "ติดต่อเรา",
+      "adminDashboard": "แดชบอร์ดผู้ดูแลระบบ",
+      "managerDashboard": "แดชบอร์ดผู้จัดการ",
+      "adminControls": "การควบคุมผู้ดูแลระบบ",
+      "managerControls": "การควบคุมผู้จัดการ"
+    },
+    "pageTitle": {
+      "creatorDashboard": "แดชบอร์ดผู้สร้างสรรค์",
+      "managerDashboard": "แดชบอร์ดผู้จัดการ",
+      "adminDashboard": "แดชบอร์ดผู้ดูแลระบบ"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Bureau Boudoir",
+      "subtitle": "Amsterdam's Premier Creator Management Platform"
+    }
+  },
+  "footer": {
+    "brand": "Bureau Boudoir",
+    "tagline": "เสริมพลังผู้สร้างสรรค์ในอัมสเตอร์ดัม",
+    "about": "เกี่ยวกับ",
+    "contact": "ติดต่อ",
+    "terms": "ข้อกำหนดและเงื่อนไข",
+    "copyright": "© 2024 Bureau Boudoir. สงวนลิขสิทธิ์",
+    "social": {
+      "twitter": "ติดตามเราบน X",
+      "instagram": "ติดตามเราบน Instagram",
+      "youtube": "สมัครสมาชิกบน YouTube",
+      "tiktok": "ติดตามเราบน TikTok"
+    }
+  }
+}
