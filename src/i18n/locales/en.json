@@ -53,8 +53,141 @@
   },
   "homepage": {
     "hero": {
-      "title": "Bureau Boudoir",
-      "subtitle": "Amsterdam's Premier Creator Management Platform"
+      "title": "Where Real Creators Become Iconic",
+      "subtitle": "A luxury creative agency in heart of Amsterdam iconic district, guiding creators in the art of presence, identity, and digital performance.",
+      "cta": "Become a Creator"
+    },
+    "whoWeAre": {
+      "title": "Who We Are",
+      "para1": "Bureau Boudoir is an exclusive creator management agency based in Amsterdam's iconic Red Light District. We blend artistic vision with business intelligence to build sustainable creator careers.",
+      "para2": "From professional photoshoots to AI-powered marketing, we handle everything so you can focus on being creative.",
+      "benefits": {
+        "title": "Your Benefits",
+        "production": {
+          "title": "Professional Production",
+          "description": "Studio shoots, editing, and content curation"
+        },
+        "revenue": {
+          "title": "Revenue Optimization",
+          "description": "Pricing strategy and upselling automation"
+        },
+        "support": {
+          "title": "24/7 Support Team",
+          "description": "Dedicated account manager and creative director"
+        },
+        "location": {
+          "title": "Amsterdam Location",
+          "description": "Iconic backdrop for authentic content"
+        }
+      }
+    },
+    "whatWeDo": {
+      "label": "What We Do",
+      "title": "We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing",
+      "vision": {
+        "title": "Our Vision",
+        "description": "To be the premier creator agency in Europe, setting the standard for luxury adult content creation. We envision a world where creators are empowered with world-class tools, support, and opportunities to build sustainable, fulfilling careers on their own terms."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "description": "To transform creators into successful entrepreneurs by providing end-to-end support: from professional content production in our Amsterdam studio to AI-driven marketing and personalized account management. We handle the business so you can focus on creativity."
+      }
+    },
+    "services": {
+      "title": "Our Creator Services",
+      "intro": "End-to-end creator management. From strategy to execution.",
+      "cta": "Start Your Journey",
+      "list": {
+        "brandStrategy": "Brand strategy & persona development",
+        "studioShoots": "Studio shoots & content production",
+        "marketing": "Marketing & audience growth",
+        "support": "24/7 dedicated support team"
+      },
+      "planning": {
+        "title": "Planning",
+        "description": "Persona development, boundaries, brand strategy, and market positioning."
+      },
+      "production": {
+        "title": "Production",
+        "description": "Studio shoots, lighting, styling, posing, and high-end visual content."
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": "Content strategy, storytelling, social hooks, and audience building."
+      },
+      "supportCard": {
+        "title": "Support",
+        "description": "team access, analytics, guidance, and ongoing optimization.",
+        "emphasis": "24/7"
+      }
+    },
+    "different": {
+      "title": "What Makes Us Different",
+      "brand": {
+        "title": "The Brand Umbrella",
+        "description": "A cinematic Amsterdam-inspired identity shaped uniquely around you. We don't use templates — we craft brands that feel like stories."
+      },
+      "content": {
+        "title": "Professional Content",
+        "description": "Studio lighting, posing, styling, and high-end content direction. Not phone selfies — real production quality."
+      },
+      "marketingMachine": {
+        "title": "Marketing Machine",
+        "description": "Not random posting — real funnels, scripts, high-ticket strategy, and retention systems. Growth backed by structure."
+      }
+    },
+    "management": {
+      "title": "Support & Management",
+      "dashboard": {
+        "title": "Your Creator Dashboard",
+        "subtitle": "Everything organized in one professional platform",
+        "stats": {
+          "shoots": "Active Shoots",
+          "commitments": "Commitments",
+          "content": "Content Pieces"
+        },
+        "upload": {
+          "title": "Content Upload",
+          "subtitle": "Drag & drop or click to upload"
+        },
+        "weeklyCommitments": "This Week's Commitments",
+        "mockItem1": "Solo photo set - Red Light theme",
+        "mockItem2": "Story content - Behind the scenes"
+      },
+      "features": {
+        "commitments": {
+          "title": "Weekly content commitments",
+          "description": "Clear expectations, organized week by week"
+        },
+        "organized": {
+          "title": "Everything organised in one place.",
+          "description": "Submit content directly through the platform"
+        },
+        "manager": {
+          "title": "Personal brand manager",
+          "description": "Direct access to your dedicated team member"
+        },
+        "growth": {
+          "title": "Growth strategy",
+          "description": "Real-time feedback and planning for your next phase"
+        },
+        "privacy": {
+          "title": "Privacy & boundaries",
+          "description": "Full control over your limits and comfort zones"
+        }
+      }
+    },
+    "newsletter": {
+      "title": "Join Our Newsletter",
+      "description": "Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.",
+      "placeholder": "Enter your email",
+      "button": "Subscribe",
+      "privacy": "We respect your privacy. Unsubscribe at any time."
+    },
+    "finalCta": {
+      "title": "Ready to Begin Your Journey?",
+      "description": "Join a community of creators who've chosen clarity, artistry, and long-term growth over shortcuts and noise. Let's build something extraordinary together.",
+      "button": "Apply Now"
     }
   },
   "footer": {

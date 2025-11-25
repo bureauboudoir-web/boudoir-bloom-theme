@@ -70,5 +70,112 @@
       "youtube": "Přihlaste se k odběru na YouTube",
       "tiktok": "Sledujte nás na TikToku"
     }
+  },
+  "login": {
+    "title": "Přihlášení Tvůrce",
+    "subtitle": "Přístup k vašemu nástěnce",
+    "email": "Emailová Adresa",
+    "password": "Heslo",
+    "forgotPassword": "Zapomněli jste heslo?",
+    "loginButton": "Přihlásit se",
+    "loggingIn": "Přihlašování...",
+    "noAccount": "Nemáte účet?",
+    "applyHere": "Přihlaste se zde",
+    "invalidCredentials": "Neplatný email nebo heslo",
+    "loginSuccess": "Úspěšné přihlášení!",
+    "loginError": "Při přihlašování došlo k chybě"
+  },
+  "signup": {
+    "title": "Stát se tvůrcem",
+    "subtitle": "Odešlete svou žádost o připojení k Bureau Boudoir",
+    "fullName": "Celé Jméno",
+    "namePlaceholder": "Vaše jméno",
+    "email": "Emailová Adresa",
+    "emailPlaceholder": "vas@email.cz",
+    "phoneNumber": "Telefonní Číslo",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Úroveň Tvůrce",
+    "selectLevel": "Vyberte svou úroveň",
+    "startLevel": "Start - Právě začínám",
+    "growingLevel": "Rostoucí - Budování publika",
+    "establishedLevel": "Zavedený - Zkušený tvůrce",
+    "submitButton": "Odeslat žádost",
+    "submitting": "Odesílání...",
+    "haveAccount": "Už máte účet?",
+    "loginHere": "Přihlaste se zde",
+    "successMessage": "Žádost odeslána! Zkontrolujte svůj email pro potvrzení.",
+    "duplicateError": "Žádost s tímto emailem již existuje.",
+    "submitError": "Nepodařilo se odeslat žádost. Zkuste to prosím znovu."
+  },
+  "about": {
+    "hero": {
+      "title": "O Bureau Boudoir",
+      "subtitle": "Povzbuzování amsterdamských tvůrců prostřednictvím profesionální správy obsahu a strategického marketingu"
+    },
+    "story": {
+      "title": "Náš příběh",
+      "para1": "Narozené v srdci ikonické čtvrti Red Light District v Amsterdamu, Bureau Boudoir vzniklo z jednoduché vize: transformovat způsob, jakým tvůrci přistupují ke svému obchodnímu obsahu.",
+      "para2": "Poznali jsme, že talentovaní tvůrci trávili nespočet hodin produkcí, marketingem a obchodními operacemi—čas, který mohl být lépe využit na to, co umějí nejlépe: tvorbu.",
+      "para3": "Dnes je Bureau Boudoir předním amsterdamským agenturou pro správu obsahu, spojující kreativní dokonalost, profesionální produkční standardy a strategické marketingové znalosti."
+    },
+    "whatWeDo": {
+      "title": "Co děláme",
+      "planning": {
+        "title": "Plánování obsahu",
+        "description": "Strategické obsahové kalendáře, plánování focení a kreativní směr přizpůsobený vašemu jedinečnému stylu a publiku."
+      },
+      "production": {
+        "title": "Profesionální produkce",
+        "description": "Studiová kvalita foto a video produkce se zkušenými týmy, které rozumí tvorbě luxusního obsahu."
+      },
+      "marketing": {
+        "title": "Strategický marketing",
+        "description": "Datově řízené marketingové strategie, optimalizace platforem a růstové taktiky, které maximalizují váš dosah a příjmy."
+      }
+    },
+    "values": {
+      "title": "Naše hodnoty",
+      "professionalism": {
+        "title": "Profesionalita",
+        "description": "Přinášíme špičkové standardy do každého aspektu tvorby a správy obsahu."
+      },
+      "creativity": {
+        "title": "Kreativita",
+        "description": "Váš jedinečný hlas a vize jsou středem všeho, co děláme."
+      },
+      "support": {
+        "title": "Podpora",
+        "description": "24/7 přístup k našemu týmu zajišťuje, že vždy máte potřebné vedení a zdroje."
+      },
+      "empowerment": {
+        "title": "Posílení",
+        "description": "Dáváme tvůrcům nástroje, znalosti a sebevědomí k budování udržitelných, úspěšných podniků."
+      }
+    },
+    "cta": {
+      "title": "Připraveni pozvednout svůj obsah?",
+      "description": "Připojte se k nejprofesionálnější komunitě tvůrců v Amsterdamu.",
+      "button": "Stát se tvůrcem"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Kontaktujte nás",
+      "subtitle": "Připraveni začít svou cestu s Bureau Boudoir? Jsme tu, abychom pomohli."
+    },
+    "info": {
+      "title": "Kontaktní informace",
+      "subtitle": "Rádi bychom od vás slyšeli. Oslovte nás prostřednictvím některého z těchto kanálů."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "visit": {
+      "title": "Navštivte nás",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Nizozemsko"
+    }
   }
 }

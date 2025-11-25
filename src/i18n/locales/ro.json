@@ -70,5 +70,112 @@
       "youtube": "Abonează-te pe YouTube",
       "tiktok": "Urmărește-ne pe TikTok"
     }
+  },
+  "login": {
+    "title": "Autentificare Creator",
+    "subtitle": "Acces la panoul tău",
+    "email": "Adresă Email",
+    "password": "Parolă",
+    "forgotPassword": "Ai uitat parola?",
+    "loginButton": "Autentificare",
+    "loggingIn": "Autentificare...",
+    "noAccount": "Nu ai cont?",
+    "applyHere": "Aplică aici",
+    "invalidCredentials": "Email sau parolă invalidă",
+    "loginSuccess": "Autentificare reușită!",
+    "loginError": "A apărut o eroare la autentificare"
+  },
+  "signup": {
+    "title": "Devino creator",
+    "subtitle": "Trimite aplicația ta pentru a te alătura Bureau Boudoir",
+    "fullName": "Nume Complet",
+    "namePlaceholder": "Numele tău",
+    "email": "Adresă Email",
+    "emailPlaceholder": "tu@email.ro",
+    "phoneNumber": "Număr de Telefon",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Nivel Creator",
+    "selectLevel": "Selectează nivelul tău",
+    "startLevel": "Start - Abia încep",
+    "growingLevel": "În creștere - Construiesc audiență",
+    "establishedLevel": "Stabilit - Creator experimentat",
+    "submitButton": "Trimite aplicația",
+    "submitting": "Trimitere...",
+    "haveAccount": "Ai deja cont?",
+    "loginHere": "Autentifică-te aici",
+    "successMessage": "Aplicație trimisă! Verifică-ți emailul pentru confirmare.",
+    "duplicateError": "Există deja o aplicație cu acest email.",
+    "submitError": "Aplicația nu a putut fi trimisă. Te rugăm să încerci din nou."
+  },
+  "about": {
+    "hero": {
+      "title": "Despre Bureau Boudoir",
+      "subtitle": "Ridicând creatorii din Amsterdam prin managementul profesionist al conținutului și marketing strategic"
+    },
+    "story": {
+      "title": "Povestea noastră",
+      "para1": "Născut în inima iconicului Red Light District din Amsterdam, Bureau Boudoir a apărut dintr-o viziune simplă: să transformăm modul în care creatorii își abordează afacerea de conținut.",
+      "para2": "Am recunoscut că creatorii talentați petreceau nenumărate ore în producție, marketing și operațiuni de afaceri—timp care ar putea fi folosit mai bine pentru ceea ce fac cel mai bine: crearea.",
+      "para3": "Astăzi, Bureau Boudoir este principala agenție de management al conținutului din Amsterdam, reunind excelența creativă, standardele profesionale de producție și expertiza în marketing strategic."
+    },
+    "whatWeDo": {
+      "title": "Ce facem",
+      "planning": {
+        "title": "Planificarea conținutului",
+        "description": "Calendare strategice de conținut, planificarea ședințelor foto și direcție creativă adaptată stilului și audienței tale unice."
+      },
+      "production": {
+        "title": "Producție profesională",
+        "description": "Producție foto și video de calitate studio cu echipe experimentate care înțeleg crearea de conținut de lux."
+      },
+      "marketing": {
+        "title": "Marketing strategic",
+        "description": "Strategii de marketing bazate pe date, optimizarea platformei și tactici de creștere care maximizează acoperirea și veniturile tale."
+      }
+    },
+    "values": {
+      "title": "Valorile noastre",
+      "professionalism": {
+        "title": "Profesionalism",
+        "description": "Aducem standarde de top din industrie în fiecare aspect al creării și managementului conținutului."
+      },
+      "creativity": {
+        "title": "Creativitate",
+        "description": "Vocea și viziunea ta unică sunt în centrul a tot ceea ce facem."
+      },
+      "support": {
+        "title": "Suport",
+        "description": "Acces 24/7 la echipa noastră asigură că ai întotdeauna îndrumarea și resursele de care ai nevoie."
+      },
+      "empowerment": {
+        "title": "Împuternicire",
+        "description": "Oferim creatorilor instrumentele, cunoștințele și încrederea pentru a construi afaceri sustenabile și de succes."
+      }
+    },
+    "cta": {
+      "title": "Gata să îți ridici conținutul?",
+      "description": "Alătură-te celei mai profesioniste comunități de creatori din Amsterdam.",
+      "button": "Devino creator"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Intră în legătură",
+      "subtitle": "Gata să îți începi călătoria cu Bureau Boudoir? Suntem aici să ajutăm."
+    },
+    "info": {
+      "title": "Informații de Contact",
+      "subtitle": "Ne-ar plăcea să auzim de la tine. Contactează-ne prin oricare dintre aceste canale."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "visit": {
+      "title": "Vizitează-ne",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Olanda"
+    }
   }
 }

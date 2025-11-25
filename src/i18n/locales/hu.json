@@ -70,5 +70,112 @@
       "youtube": "Iratkozz fel YouTube-on",
       "tiktok": "Kövess minket TikTokon"
     }
+  },
+  "login": {
+    "title": "Alkotó Bejelentkezés",
+    "subtitle": "Hozzáférés az irányítópulthoz",
+    "email": "Email Cím",
+    "password": "Jelszó",
+    "forgotPassword": "Elfelejtett jelszó?",
+    "loginButton": "Bejelentkezés",
+    "loggingIn": "Bejelentkezés...",
+    "noAccount": "Nincs fiókod?",
+    "applyHere": "Jelentkezz itt",
+    "invalidCredentials": "Érvénytelen email vagy jelszó",
+    "loginSuccess": "Sikeres bejelentkezés!",
+    "loginError": "Hiba történt a bejelentkezés során"
+  },
+  "signup": {
+    "title": "Légy alkotó",
+    "subtitle": "Küldd be jelentkezésedet a Bureau Boudoir csapatába",
+    "fullName": "Teljes Név",
+    "namePlaceholder": "A neved",
+    "email": "Email Cím",
+    "emailPlaceholder": "te@email.hu",
+    "phoneNumber": "Telefonszám",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Alkotói Szint",
+    "selectLevel": "Válaszd ki a szintedet",
+    "startLevel": "Kezdő - Most indulok",
+    "growingLevel": "Növekvő - Közönség építés",
+    "establishedLevel": "Kialakult - Tapasztalt alkotó",
+    "submitButton": "Jelentkezés Elküldése",
+    "submitting": "Küldés...",
+    "haveAccount": "Már van fiókod?",
+    "loginHere": "Jelentkezz be itt",
+    "successMessage": "Jelentkezés elküldve! Ellenőrizd az emailedet a megerősítéshez.",
+    "duplicateError": "Ezzel az email címmel már létezik jelentkezés.",
+    "submitError": "Nem sikerült elküldeni a jelentkezést. Kérlek próbáld újra."
+  },
+  "about": {
+    "hero": {
+      "title": "A Bureau Boudoir-ról",
+      "subtitle": "Amszterdami alkotók felemelése professzionális tartalomkezelésen és stratégiai marketingen keresztül"
+    },
+    "story": {
+      "title": "Történetünk",
+      "para1": "Amszterdam ikonikus Red Light District-jének szívében született Bureau Boudoir egy egyszerű vízióból fakadt: átalakítani azt, ahogy az alkotók a tartalmi üzletükhöz közelítenek.",
+      "para2": "Felismertük, hogy a tehetséges alkotók számtalan órát töltenek produkcióval, marketinggel és üzleti műveletekkel—időt, amely jobban kihasználható lenne arra, amit a legjobban tudnak: alkotásra.",
+      "para3": "Ma a Bureau Boudoir Amszterdam vezető tartalomkezelési ügynökségeként működik, összekapcsolva a kreatív kiválóságot, professzionális produkciós standardokat és stratégiai marketing szakértelmet."
+    },
+    "whatWeDo": {
+      "title": "Mit csinálunk",
+      "planning": {
+        "title": "Tartalom Tervezés",
+        "description": "Stratégiai tartalmi naptárak, fotózás tervezés és kreatív irányítás, az egyedi stílusodhoz és közönségedhez igazítva."
+      },
+      "production": {
+        "title": "Professzionális Produkció",
+        "description": "Stúdió minőségű fotó és videó produkció tapasztalt csapatokkal, akik értik a luxus tartalom készítést."
+      },
+      "marketing": {
+        "title": "Stratégiai Marketing",
+        "description": "Adatvezérelt marketing stratégiák, platform optimalizálás és növekedési taktikák, amelyek maximalizálják az elérésedet és bevételedet."
+      }
+    },
+    "values": {
+      "title": "Értékeink",
+      "professionalism": {
+        "title": "Professzionalizmus",
+        "description": "Iparágvezető standardokat hozunk a tartalom készítés és kezelés minden aspektusába."
+      },
+      "creativity": {
+        "title": "Kreativitás",
+        "description": "Az egyedi hangod és víziód minden tevékenységünk középpontjában áll."
+      },
+      "support": {
+        "title": "Támogatás",
+        "description": "24/7 hozzáférés a csapatunkhoz biztosítja, hogy mindig megkapod a szükséges útmutatást és erőforrásokat."
+      },
+      "empowerment": {
+        "title": "Felhatalmazás",
+        "description": "Eszközöket, tudást és önbizalmat adunk az alkotóknak fenntartható, sikeres vállalkozások építéséhez."
+      }
+    },
+    "cta": {
+      "title": "Készen állsz tartalm ad felemelésére?",
+      "description": "Csatlakozz Amszterdam legprofesszionálisabb alkotói közösségéhez.",
+      "button": "Légy alkotó"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Lépj kapcsolatba",
+      "subtitle": "Készen állsz elindítani az utad a Bureau Boudoir-ral? Itt vagyunk, hogy segítsünk."
+    },
+    "info": {
+      "title": "Kapcsolati Információk",
+      "subtitle": "Szeretnénk hallani rólad. Lépj kapcsolatba bármelyik csatornán keresztül."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "visit": {
+      "title": "Látogass meg minket",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amszterdam, Hollandia"
+    }
   }
 }

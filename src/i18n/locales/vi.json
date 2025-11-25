@@ -70,5 +70,112 @@
       "youtube": "Đăng ký trên YouTube",
       "tiktok": "Theo dõi chúng tôi trên TikTok"
     }
+  },
+  "login": {
+    "title": "Đăng nhập Nhà sáng tạo",
+    "subtitle": "Truy cập bảng điều khiển của bạn",
+    "email": "Địa chỉ Email",
+    "password": "Mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "loginButton": "Đăng nhập",
+    "loggingIn": "Đang đăng nhập...",
+    "noAccount": "Chưa có tài khoản?",
+    "applyHere": "Đăng ký tại đây",
+    "invalidCredentials": "Email hoặc mật khẩu không hợp lệ",
+    "loginSuccess": "Đăng nhập thành công!",
+    "loginError": "Đã xảy ra lỗi khi đăng nhập"
+  },
+  "signup": {
+    "title": "Trở thành Nhà sáng tạo",
+    "subtitle": "Gửi đơn đăng ký để tham gia Bureau Boudoir",
+    "fullName": "Họ và Tên",
+    "namePlaceholder": "Tên của bạn",
+    "email": "Địa chỉ Email",
+    "emailPlaceholder": "ban@email.com",
+    "phoneNumber": "Số Điện thoại",
+    "phonePlaceholder": "+31 6 12345678",
+    "experienceLevel": "Cấp độ Nhà sáng tạo",
+    "selectLevel": "Chọn cấp độ của bạn",
+    "startLevel": "Bắt đầu - Mới bắt đầu",
+    "growingLevel": "Phát triển - Đang xây dựng khán giả",
+    "establishedLevel": "Đã thiết lập - Nhà sáng tạo có kinh nghiệm",
+    "submitButton": "Gửi đơn đăng ký",
+    "submitting": "Đang gửi...",
+    "haveAccount": "Đã có tài khoản?",
+    "loginHere": "Đăng nhập tại đây",
+    "successMessage": "Đơn đăng ký đã được gửi! Kiểm tra email của bạn để xác nhận.",
+    "duplicateError": "Đã tồn tại đơn đăng ký với email này.",
+    "submitError": "Không thể gửi đơn đăng ký. Vui lòng thử lại."
+  },
+  "about": {
+    "hero": {
+      "title": "Về Bureau Boudoir",
+      "subtitle": "Nâng tầm các nhà sáng tạo Amsterdam thông qua quản lý nội dung chuyên nghiệp và tiếp thị chiến lược"
+    },
+    "story": {
+      "title": "Câu chuyện của chúng tôi",
+      "para1": "Sinh ra tại trung tâm Khu Đèn Đỏ nổi tiếng của Amsterdam, Bureau Boudoir xuất hiện từ một tầm nhìn đơn giản: thay đổi cách các nhà sáng tạo tiếp cận kinh doanh nội dung của họ.",
+      "para2": "Chúng tôi nhận ra rằng các nhà sáng tạo tài năng đã dành vô số giờ cho sản xuất, tiếp thị và hoạt động kinh doanh—thời gian có thể được sử dụng tốt hơn cho điều họ làm tốt nhất: sáng tạo.",
+      "para3": "Ngày nay, Bureau Boudoir là công ty quản lý nội dung hàng đầu của Amsterdam, kết hợp sự xuất sắc sáng tạo, tiêu chuẩn sản xuất chuyên nghiệp và chuyên môn tiếp thị chiến lược."
+    },
+    "whatWeDo": {
+      "title": "Chúng tôi làm gì",
+      "planning": {
+        "title": "Lập kế hoạch nội dung",
+        "description": "Lịch nội dung chiến lược, lập kế hoạch chụp và định hướng sáng tạo phù hợp với phong cách và khán giả độc đáo của bạn."
+      },
+      "production": {
+        "title": "Sản xuất chuyên nghiệp",
+        "description": "Sản xuất ảnh và video chất lượng studio với các đội ngũ giàu kinh nghiệm hiểu về tạo nội dung cao cấp."
+      },
+      "marketing": {
+        "title": "Tiếp thị chiến lược",
+        "description": "Chiến lược tiếp thị dựa trên dữ liệu, tối ưu hóa nền tảng và chiến thuật tăng trưởng giúp tối đa hóa phạm vi tiếp cận và doanh thu của bạn."
+      }
+    },
+    "values": {
+      "title": "Giá trị của chúng tôi",
+      "professionalism": {
+        "title": "Tính chuyên nghiệp",
+        "description": "Chúng tôi mang tiêu chuẩn hàng đầu ngành vào mọi khía cạnh của việc tạo và quản lý nội dung."
+      },
+      "creativity": {
+        "title": "Sáng tạo",
+        "description": "Tiếng nói và tầm nhìn độc đáo của bạn là trung tâm của mọi thứ chúng tôi làm."
+      },
+      "support": {
+        "title": "Hỗ trợ",
+        "description": "Truy cập 24/7 vào đội ngũ của chúng tôi đảm bảo bạn luôn có hướng dẫn và nguồn lực cần thiết."
+      },
+      "empowerment": {
+        "title": "Trao quyền",
+        "description": "Chúng tôi cung cấp cho các nhà sáng tạo các công cụ, kiến thức và sự tự tin để xây dựng doanh nghiệp bền vững, thành công."
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng nâng tầm nội dung của bạn?",
+      "description": "Tham gia cộng đồng nhà sáng tạo chuyên nghiệp nhất Amsterdam.",
+      "button": "Trở thành Nhà sáng tạo"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Liên hệ",
+      "subtitle": "Sẵn sàng bắt đầu hành trình của bạn với Bureau Boudoir? Chúng tôi ở đây để giúp đỡ."
+    },
+    "info": {
+      "title": "Thông tin Liên hệ",
+      "subtitle": "Chúng tôi muốn nghe từ bạn. Liên hệ qua bất kỳ kênh nào sau đây."
+    },
+    "twitter": "X (Twitter)",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "visit": {
+      "title": "Ghé thăm chúng tôi",
+      "address1": "Oudekerksplein 18h",
+      "address2": "Amsterdam, Hà Lan"
+    }
   }
 }
