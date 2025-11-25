@@ -70,5 +70,111 @@
       "youtube": "YouTube에서 구독",
       "tiktok": "TikTok에서 팔로우"
     }
+  },
+  "login": {
+    "title": "다시 오신 것을 환영합니다",
+    "subtitle": "Bureau Boudoir 계정에 로그인",
+    "email": "이메일 주소",
+    "emailPlaceholder": "your@email.com",
+    "password": "비밀번호",
+    "passwordPlaceholder": "비밀번호를 입력하세요",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "submit": "로그인",
+    "submitting": "로그인 중...",
+    "noAccount": "계정이 없으신가요?",
+    "applyHere": "여기서 신청하기",
+    "invalidCredentials": "잘못된 로그인 정보",
+    "error": "로그인에 실패했습니다. 다시 시도해주세요."
+  },
+  "signup": {
+    "title": "크리에이터 되기",
+    "subtitle": "Bureau Boudoir에 가입하기 위해 신청서를 제출하세요",
+    "fullName": "전체 이름",
+    "fullNamePlaceholder": "이름",
+    "email": "이메일 주소",
+    "emailPlaceholder": "your@email.com",
+    "phone": "전화번호",
+    "phonePlaceholder": "+31 6 12345678",
+    "creatorLevel": "크리에이터 레벨",
+    "selectLevel": "레벨 선택",
+    "levelStart": "시작 - 막 시작함",
+    "levelGrowing": "성장 - 오디언스 구축 중",
+    "levelEstablished": "확립됨 - 경험 많은 크리에이터",
+    "submit": "신청서 제출",
+    "submitting": "제출 중...",
+    "hasAccount": "이미 계정이 있으신가요?",
+    "loginHere": "여기서 로그인",
+    "success": "신청서가 제출되었습니다! 확인을 위해 이메일을 확인하세요.",
+    "duplicateError": "이 이메일로 이미 신청서가 존재합니다.",
+    "error": "신청서 제출에 실패했습니다. 다시 시도해주세요."
+  },
+  "about": {
+    "hero": {
+      "title": "Bureau Boudoir 소개",
+      "subtitle": "전문적인 콘텐츠 관리와 전략적 마케팅을 통해 암스테르담 크리에이터를 향상시킵니다"
+    },
+    "story": {
+      "title": "우리의 이야기",
+      "paragraph1": "암스테르담의 상징적인 홍등가 중심에서 탄생한 Bureau Boudoir는 간단한 비전에서 시작되었습니다: 크리에이터가 콘텐츠 비즈니스에 접근하는 방식을 변화시키는 것.",
+      "paragraph2": "우리는 재능 있는 크리에이터들이 제작, 마케팅 및 비즈니스 운영에 무수한 시간을 소비한다는 것을 인식했습니다—그 시간은 그들이 가장 잘하는 일에 더 잘 사용될 수 있었습니다: 창작.",
+      "paragraph3": "오늘날 Bureau Boudoir는 암스테르담의 프리미어 콘텐츠 관리 에이전시로서 창의적 우수성, 전문적인 제작 표준 및 전략적 마케팅 전문 지식을 결합합니다."
+    },
+    "whatWeDo": {
+      "title": "우리가 하는 일",
+      "content": {
+        "title": "콘텐츠 기획",
+        "description": "귀하의 독특한 스타일과 오디언스에 맞춘 전략적 콘텐츠 캘린더, 촬영 계획 및 창의적 방향."
+      },
+      "production": {
+        "title": "전문 제작",
+        "description": "럭셔리 콘텐츠 제작을 이해하는 경험 많은 팀과 함께하는 스튜디오 품질 사진 및 비디오 제작."
+      },
+      "marketing": {
+        "title": "전략적 마케팅",
+        "description": "데이터 기반 마케팅 전략, 플랫폼 최적화 및 도달 범위와 수익을 극대화하는 성장 전술."
+      }
+    },
+    "values": {
+      "title": "우리의 가치",
+      "professionalism": {
+        "title": "전문성",
+        "description": "콘텐츠 제작 및 관리의 모든 측면에 업계 최고 표준을 제공합니다."
+      },
+      "creativity": {
+        "title": "창의성",
+        "description": "귀하의 독특한 목소리와 비전이 우리가 하는 모든 일의 중심입니다."
+      },
+      "support": {
+        "title": "지원",
+        "description": "24/7 팀 액세스로 항상 필요한 지침과 리소스를 제공받을 수 있습니다."
+      },
+      "empowerment": {
+        "title": "역량 강화",
+        "description": "지속 가능하고 성공적인 비즈니스를 구축할 수 있는 도구, 지식 및 자신감을 크리에이터에게 제공합니다."
+      }
+    },
+    "cta": {
+      "title": "콘텐츠를 향상시킬 준비가 되셨나요?",
+      "subtitle": "암스테르담에서 가장 전문적인 크리에이터 커뮤니티에 가입하세요.",
+      "button": "크리에이터 되기"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "연락하기",
+      "subtitle": "Bureau Boudoir와 함께 여정을 시작할 준비가 되셨나요? 도와드리겠습니다."
+    },
+    "info": {
+      "title": "연락처 정보",
+      "subtitle": "여러분의 의견을 듣고 싶습니다. 다음 채널 중 하나를 통해 연락하세요.",
+      "visitUs": "방문하기"
+    },
+    "platforms": {
+      "twitter": "X (Twitter)",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "email": "이메일"
+    }
   }
 }

@@ -70,5 +70,111 @@
       "youtube": "YouTube'da abone olun",
       "tiktok": "TikTok'ta takip edin"
     }
+  },
+  "login": {
+    "title": "Tekrar Hoş Geldiniz",
+    "subtitle": "Bureau Boudoir hesabınıza giriş yapın",
+    "email": "E-posta Adresi",
+    "emailPlaceholder": "sizin@eposta.com",
+    "password": "Şifre",
+    "passwordPlaceholder": "Şifrenizi girin",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "submit": "Giriş Yap",
+    "submitting": "Giriş yapılıyor...",
+    "noAccount": "Hesabınız yok mu?",
+    "applyHere": "Buradan başvurun",
+    "invalidCredentials": "Geçersiz giriş bilgileri",
+    "error": "Giriş başarısız. Tekrar deneyin."
+  },
+  "signup": {
+    "title": "İçerik Üreticisi Ol",
+    "subtitle": "Bureau Boudoir'a katılmak için başvurunuzu gönderin",
+    "fullName": "Tam Ad",
+    "fullNamePlaceholder": "Adınız",
+    "email": "E-posta Adresi",
+    "emailPlaceholder": "sizin@eposta.com",
+    "phone": "Telefon Numarası",
+    "phonePlaceholder": "+31 6 12345678",
+    "creatorLevel": "İçerik Üreticisi Seviyesi",
+    "selectLevel": "Seviyenizi seçin",
+    "levelStart": "Başlangıç - Yeni başladı",
+    "levelGrowing": "Büyüyen - Kitle oluşturuyor",
+    "levelEstablished": "Yerleşik - Deneyimli içerik üreticisi",
+    "submit": "Başvuruyu Gönder",
+    "submitting": "Gönderiliyor...",
+    "hasAccount": "Zaten bir hesabınız var mı?",
+    "loginHere": "Buradan giriş yapın",
+    "success": "Başvuru gönderildi! Onay için e-postanızı kontrol edin.",
+    "duplicateError": "Bu e-posta ile bir başvuru zaten mevcut.",
+    "error": "Başvuru gönderilemedi. Tekrar deneyin."
+  },
+  "about": {
+    "hero": {
+      "title": "Bureau Boudoir Hakkında",
+      "subtitle": "Profesyonel içerik yönetimi ve stratejik pazarlama yoluyla Amsterdam'daki içerik üreticilerini yükseltmek"
+    },
+    "story": {
+      "title": "Hikayemiz",
+      "paragraph1": "Amsterdam'ın ikonik Kırmızı Işık Bölgesi'nin kalbinde doğan Bureau Boudoir, basit bir vizyondan ortaya çıktı: içerik üreticilerinin içerik işlerine yaklaşım şeklini dönüştürmek.",
+      "paragraph2": "Yetenekli içerik üreticilerinin üretim, pazarlama ve iş operasyonlarına sayısız saat harcadığını fark ettik—en iyi yaptıkları şeye daha iyi harcanabilecek zaman: yaratmak.",
+      "paragraph3": "Bugün, Bureau Boudoir, yaratıcı mükemmelliği, profesyonel üretim standartlarını ve stratejik pazarlama uzmanlığını bir araya getirerek Amsterdam'ın önde gelen içerik yönetimi ajansı olarak duruyor."
+    },
+    "whatWeDo": {
+      "title": "Ne Yapıyoruz",
+      "content": {
+        "title": "İçerik Planlaması",
+        "description": "Benzersiz stilinize ve kitlenize göre uyarlanmış stratejik içerik takvimleri, çekim planlaması ve yaratıcı yönlendirme."
+      },
+      "production": {
+        "title": "Profesyonel Üretim",
+        "description": "Lüks içerik oluşturmayı anlayan deneyimli ekiplerle stüdyo kalitesinde fotoğraf ve video üretimi."
+      },
+      "marketing": {
+        "title": "Stratejik Pazarlama",
+        "description": "Veriye dayalı pazarlama stratejileri, platform optimizasyonu ve erişiminizi ve gelirinizi maksimize eden büyüme taktikleri."
+      }
+    },
+    "values": {
+      "title": "Değerlerimiz",
+      "professionalism": {
+        "title": "Profesyonellik",
+        "description": "İçerik oluşturma ve yönetimin her yönüne sektör lideri standartlar getiriyoruz."
+      },
+      "creativity": {
+        "title": "Yaratıcılık",
+        "description": "Benzersiz sesiniz ve vizyonunuz, yaptığımız her şeyin merkezindedir."
+      },
+      "support": {
+        "title": "Destek",
+        "description": "Ekibimize 24/7 erişim, her zaman ihtiyacınız olan rehberliğe ve kaynaklara sahip olmanızı sağlar."
+      },
+      "empowerment": {
+        "title": "Güçlendirme",
+        "description": "İçerik üreticilerine sürdürülebilir, başarılı işler kurmak için araçlar, bilgi ve güven veriyoruz."
+      }
+    },
+    "cta": {
+      "title": "İçeriğinizi yükseltmeye hazır mısınız?",
+      "subtitle": "Amsterdam'ın en profesyonel içerik üreticisi topluluğuna katılın.",
+      "button": "İçerik Üreticisi Ol"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "İletişime Geçin",
+      "subtitle": "Bureau Boudoir ile yolculuğunuza başlamaya hazır mısınız? Yardım etmek için buradayız."
+    },
+    "info": {
+      "title": "İletişim Bilgileri",
+      "subtitle": "Sizden haber almayı çok isteriz. Bu kanallardan herhangi biri aracılığıyla ulaşın.",
+      "visitUs": "Bizi Ziyaret Edin"
+    },
+    "platforms": {
+      "twitter": "X (Twitter)",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "email": "E-posta"
+    }
   }
 }

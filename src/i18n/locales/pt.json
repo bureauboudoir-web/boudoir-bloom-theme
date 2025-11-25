@@ -70,5 +70,111 @@
       "youtube": "Inscreva-se no YouTube",
       "tiktok": "Siga-nos no TikTok"
     }
+  },
+  "login": {
+    "title": "Bem-vindo de Volta",
+    "subtitle": "Entre na sua conta do Bureau Boudoir",
+    "email": "Endereço de E-mail",
+    "emailPlaceholder": "seu@email.com",
+    "password": "Senha",
+    "passwordPlaceholder": "Digite sua senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "submit": "Entrar",
+    "submitting": "Entrando...",
+    "noAccount": "Não tem uma conta?",
+    "applyHere": "Candidate-se aqui",
+    "invalidCredentials": "Credenciais inválidas",
+    "error": "Falha no login. Tente novamente."
+  },
+  "signup": {
+    "title": "Torne-se um Creator",
+    "subtitle": "Envie sua candidatura para se juntar ao Bureau Boudoir",
+    "fullName": "Nome Completo",
+    "fullNamePlaceholder": "Seu nome",
+    "email": "Endereço de E-mail",
+    "emailPlaceholder": "seu@email.com",
+    "phone": "Número de Telefone",
+    "phonePlaceholder": "+31 6 12345678",
+    "creatorLevel": "Nível de Creator",
+    "selectLevel": "Selecione seu nível",
+    "levelStart": "Início - Apenas começando",
+    "levelGrowing": "Crescendo - Construindo audiência",
+    "levelEstablished": "Estabelecido - Creator experiente",
+    "submit": "Enviar Candidatura",
+    "submitting": "Enviando...",
+    "hasAccount": "Já tem uma conta?",
+    "loginHere": "Entre aqui",
+    "success": "Candidatura enviada! Verifique seu e-mail para confirmação.",
+    "duplicateError": "Uma candidatura com este e-mail já existe.",
+    "error": "Falha ao enviar candidatura. Tente novamente."
+  },
+  "about": {
+    "hero": {
+      "title": "Sobre o Bureau Boudoir",
+      "subtitle": "Elevando creators de Amsterdam através de gerenciamento profissional de conteúdo e marketing estratégico"
+    },
+    "story": {
+      "title": "Nossa História",
+      "paragraph1": "Nascido no coração do icônico Distrito da Luz Vermelha de Amsterdam, o Bureau Boudoir surgiu de uma visão simples: transformar a maneira como creators abordam seu negócio de conteúdo.",
+      "paragraph2": "Reconhecemos que creators talentosos gastavam inúmeras horas em produção, marketing e operações comerciais—tempo que poderia ser melhor gasto no que fazem de melhor: criar.",
+      "paragraph3": "Hoje, o Bureau Boudoir se destaca como a principal agência de gerenciamento de conteúdo de Amsterdam, reunindo excelência criativa, padrões de produção profissional e expertise em marketing estratégico."
+    },
+    "whatWeDo": {
+      "title": "O que fazemos",
+      "content": {
+        "title": "Planejamento de Conteúdo",
+        "description": "Calendários de conteúdo estratégicos, planejamento de sessões e direção criativa adaptados ao seu estilo único e audiência."
+      },
+      "production": {
+        "title": "Produção Profissional",
+        "description": "Produção de fotos e vídeos com qualidade de estúdio com equipes experientes que entendem a criação de conteúdo de luxo."
+      },
+      "marketing": {
+        "title": "Marketing Estratégico",
+        "description": "Estratégias de marketing orientadas por dados, otimização de plataforma e táticas de crescimento que maximizam seu alcance e receita."
+      }
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "professionalism": {
+        "title": "Profissionalismo",
+        "description": "Trazemos padrões líderes da indústria para todos os aspectos da criação e gerenciamento de conteúdo."
+      },
+      "creativity": {
+        "title": "Criatividade",
+        "description": "Sua voz única e visão estão no centro de tudo o que fazemos."
+      },
+      "support": {
+        "title": "Suporte",
+        "description": "Acesso 24/7 à nossa equipe garante que você sempre tenha a orientação e recursos necessários."
+      },
+      "empowerment": {
+        "title": "Capacitação",
+        "description": "Damos aos creators as ferramentas, conhecimento e confiança para construir negócios sustentáveis e bem-sucedidos."
+      }
+    },
+    "cta": {
+      "title": "Pronto para elevar seu conteúdo?",
+      "subtitle": "Junte-se à comunidade de creators mais profissional de Amsterdam.",
+      "button": "Torne-se um Creator"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Entre em Contato",
+      "subtitle": "Pronto para começar sua jornada com o Bureau Boudoir? Estamos aqui para ajudar."
+    },
+    "info": {
+      "title": "Informações de Contato",
+      "subtitle": "Adoraríamos ouvir de você. Entre em contato através de qualquer um destes canais.",
+      "visitUs": "Visite-nos"
+    },
+    "platforms": {
+      "twitter": "X (Twitter)",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail"
+    }
   }
 }

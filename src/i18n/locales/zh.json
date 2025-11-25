@@ -70,5 +70,111 @@
       "youtube": "在 YouTube 上订阅",
       "tiktok": "在 TikTok 上关注我们"
     }
+  },
+  "login": {
+    "title": "欢迎回来",
+    "subtitle": "登录您的 Bureau Boudoir 账户",
+    "email": "电子邮件地址",
+    "emailPlaceholder": "您的@邮箱.com",
+    "password": "密码",
+    "passwordPlaceholder": "输入您的密码",
+    "forgotPassword": "忘记密码？",
+    "submit": "登录",
+    "submitting": "登录中...",
+    "noAccount": "还没有账户？",
+    "applyHere": "在此申请",
+    "invalidCredentials": "无效的登录凭据",
+    "error": "登录失败。请重试。"
+  },
+  "signup": {
+    "title": "成为创作者",
+    "subtitle": "提交您的申请以加入 Bureau Boudoir",
+    "fullName": "全名",
+    "fullNamePlaceholder": "您的姓名",
+    "email": "电子邮件地址",
+    "emailPlaceholder": "您的@邮箱.com",
+    "phone": "电话号码",
+    "phonePlaceholder": "+31 6 12345678",
+    "creatorLevel": "创作者级别",
+    "selectLevel": "选择您的级别",
+    "levelStart": "起步 - 刚开始",
+    "levelGrowing": "成长 - 建立受众",
+    "levelEstablished": "成熟 - 经验丰富的创作者",
+    "submit": "提交申请",
+    "submitting": "提交中...",
+    "hasAccount": "已有账户？",
+    "loginHere": "在此登录",
+    "success": "申请已提交！请查看您的电子邮件确认。",
+    "duplicateError": "此电子邮件的申请已存在。",
+    "error": "提交申请失败。请重试。"
+  },
+  "about": {
+    "hero": {
+      "title": "关于 Bureau Boudoir",
+      "subtitle": "通过专业的内容管理和战略营销提升阿姆斯特丹的创作者"
+    },
+    "story": {
+      "title": "我们的故事",
+      "paragraph1": "诞生于阿姆斯特丹标志性红灯区的中心，Bureau Boudoir 源于一个简单的愿景：改变创作者对待内容业务的方式。",
+      "paragraph2": "我们认识到，有才华的创作者在制作、营销和业务运营上花费了无数时间——这些时间本可以更好地用于他们最擅长的事情：创作。",
+      "paragraph3": "如今，Bureau Boudoir 作为阿姆斯特丹首屈一指的内容管理机构，汇集了创意卓越、专业制作标准和战略营销专长。"
+    },
+    "whatWeDo": {
+      "title": "我们所做的",
+      "content": {
+        "title": "内容规划",
+        "description": "战略内容日历、拍摄策划和创意指导，量身定制您独特的风格和受众。"
+      },
+      "production": {
+        "title": "专业制作",
+        "description": "工作室质量的照片和视频制作，经验丰富的团队了解奢侈内容创作。"
+      },
+      "marketing": {
+        "title": "战略营销",
+        "description": "数据驱动的营销策略、平台优化和增长策略，最大化您的覆盖面和收入。"
+      }
+    },
+    "values": {
+      "title": "我们的价值观",
+      "professionalism": {
+        "title": "专业性",
+        "description": "我们为内容创作和管理的每个方面带来行业领先的标准。"
+      },
+      "creativity": {
+        "title": "创造力",
+        "description": "您独特的声音和愿景是我们所做一切的核心。"
+      },
+      "support": {
+        "title": "支持",
+        "description": "24/7 访问我们的团队确保您始终拥有所需的指导和资源。"
+      },
+      "empowerment": {
+        "title": "赋能",
+        "description": "我们为创作者提供工具、知识和信心，以建立可持续、成功的业务。"
+      }
+    },
+    "cta": {
+      "title": "准备好提升您的内容了吗？",
+      "subtitle": "加入阿姆斯特丹最专业的创作者社区。",
+      "button": "成为创作者"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "联系我们",
+      "subtitle": "准备好开始您在 Bureau Boudoir 的旅程了吗？我们在这里提供帮助。"
+    },
+    "info": {
+      "title": "联系信息",
+      "subtitle": "我们很乐意听到您的声音。通过以下任何渠道与我们联系。",
+      "visitUs": "访问我们"
+    },
+    "platforms": {
+      "twitter": "X (Twitter)",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "email": "电子邮件"
+    }
   }
 }
