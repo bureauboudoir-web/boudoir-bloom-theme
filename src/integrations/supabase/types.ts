@@ -1783,7 +1783,14 @@ export type Database = {
       update_overdue_invoices: { Args: never; Returns: undefined }
     }
     Enums: {
-      app_role: "admin" | "manager" | "creator" | "super_admin"
+      app_role:
+        | "admin"
+        | "manager"
+        | "creator"
+        | "super_admin"
+        | "chatter"
+        | "marketing"
+        | "studio"
       support_ticket_status: "open" | "in_progress" | "resolved"
     }
     CompositeTypes: {
@@ -1912,7 +1919,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "manager", "creator", "super_admin"],
+      app_role: [
+        "admin",
+        "manager",
+        "creator",
+        "super_admin",
+        "chatter",
+        "marketing",
+        "studio",
+      ],
       support_ticket_status: ["open", "in_progress", "resolved"],
     },
   },

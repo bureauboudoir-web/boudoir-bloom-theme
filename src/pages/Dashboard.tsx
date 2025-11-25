@@ -24,6 +24,7 @@ import { ContentUpload } from "@/components/uploads/ContentUpload";
 import { ContentGallery } from "@/components/uploads/ContentGallery";
 import { CreatorProfile } from "@/components/dashboard/CreatorProfile";
 import { CreatorContract } from "@/components/dashboard/CreatorContract";
+import { CreatorsList } from "@/components/dashboard/CreatorsList";
 import { Settings } from "@/pages/Settings";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
@@ -90,7 +91,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -581,6 +582,10 @@ const Dashboard = () => {
 
             {activeTab === "library" && user && accessLevel === 'full_access' && (
               <ContentLibrary userId={user.id} />
+            )}
+
+            {activeTab === "creators" && (isAdmin || isSuperAdmin || isManagerOnly) && (
+              <CreatorsList />
             )}
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (

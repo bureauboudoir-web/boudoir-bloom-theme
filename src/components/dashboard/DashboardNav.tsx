@@ -11,11 +11,12 @@ import {
   Shield, 
   DollarSign,
   FolderOpen,
-  Settings
+  Settings,
+  Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -135,6 +136,11 @@ export const DashboardNav = ({
   const managementSection = (isAdmin || isSuperAdmin || isManagerOnly) ? {
     title: t('dashboard.sections.management'),
     items: [
+      { 
+        id: "creators" as TabId, 
+        label: "Creators", 
+        icon: <Users className="w-4 h-4" /> 
+      },
       ...(isAdmin || isSuperAdmin ? [{ 
         id: "admin" as TabId, 
         label: t('dashboard.nav.adminControls'), 
