@@ -126,8 +126,6 @@ const Dashboard = () => {
         navigate('/dashboard/marketing', { replace: true });
       } else if (isStudio) {
         navigate('/dashboard/studio', { replace: true });
-      } else if (isCreator) {
-        navigate('/dashboard/creator', { replace: true });
       }
     } else if (!authLoading && !user) {
       navigate("/login");
