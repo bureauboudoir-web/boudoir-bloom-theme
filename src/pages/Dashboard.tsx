@@ -72,6 +72,9 @@ import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerF
 import { ComprehensiveProductionTest } from "@/components/admin/ComprehensiveProductionTest";
 import { useTranslation } from "react-i18next";
 import { Wrench, ArrowRight } from "lucide-react";
+import { ChatDashboardContent } from "@/components/dashboard/ChatDashboardContent";
+import { MarketingDashboardContent } from "@/components/dashboard/MarketingDashboardContent";
+import { StudioDashboardContent } from "@/components/dashboard/StudioDashboardContent";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -859,6 +862,27 @@ const Dashboard = () => {
                     </Tabs>
                   </CardContent>
                 </Card>
+              </div>
+            )}
+
+            {/* Team Tools - Chat Dashboard */}
+            {activeTab === "chat" && (isAdmin || isManager || isChatter) && (
+              <div className="space-y-6">
+                <ChatDashboardContent />
+              </div>
+            )}
+
+            {/* Team Tools - Marketing Dashboard */}
+            {activeTab === "marketing" && (isAdmin || isManager || isMarketing) && (
+              <div className="space-y-6">
+                <MarketingDashboardContent />
+              </div>
+            )}
+
+            {/* Team Tools - Studio Dashboard */}
+            {activeTab === "studio" && (isAdmin || isManager || isStudio) && (
+              <div className="space-y-6">
+                <StudioDashboardContent />
               </div>
             )}
           </div>
