@@ -71,8 +71,8 @@ export default function MarketingDashboard() {
           <Route path="/calendar" element={<ContentCalendar creatorId={selectedCreatorId} />} />
           <Route path="/notes" element={<TeamNotes creatorId={selectedCreatorId} teamType="marketing" />} />
           <Route path="/meetings" element={<MeetingBookingView />} />
-          <Route path="/commitments" element={<WeeklyCommitments />} />
-          <Route path="/contact" element={<ContactSupport />} />
+          <Route path="/commitments" element={<WeeklyCommitments userId={user?.id || ''} />} />
+          <Route path="/contact" element={<ContactSupport userId={user?.id || ''} userName={user?.email || ''} />} />
         </Routes>
       </div>
     </DashboardLayout>
