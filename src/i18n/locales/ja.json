@@ -70,5 +70,111 @@
       "youtube": "YouTubeで登録",
       "tiktok": "TikTokでフォロー"
     }
+  },
+  "login": {
+    "title": "おかえりなさい",
+    "subtitle": "Bureau Boudoirアカウントにログイン",
+    "email": "メールアドレス",
+    "emailPlaceholder": "あなたの@メール.com",
+    "password": "パスワード",
+    "passwordPlaceholder": "パスワードを入力",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "submit": "ログイン",
+    "submitting": "ログイン中...",
+    "noAccount": "アカウントをお持ちでない方",
+    "applyHere": "こちらから応募",
+    "invalidCredentials": "無効な認証情報",
+    "error": "ログインに失敗しました。もう一度お試しください。"
+  },
+  "signup": {
+    "title": "クリエイターになる",
+    "subtitle": "Bureau Boudoirに参加するための申請を提出",
+    "fullName": "氏名",
+    "fullNamePlaceholder": "お名前",
+    "email": "メールアドレス",
+    "emailPlaceholder": "あなたの@メール.com",
+    "phone": "電話番号",
+    "phonePlaceholder": "+31 6 12345678",
+    "creatorLevel": "クリエイターレベル",
+    "selectLevel": "レベルを選択",
+    "levelStart": "スタート - 始めたばかり",
+    "levelGrowing": "成長中 - オーディエンスを構築中",
+    "levelEstablished": "確立済み - 経験豊富なクリエイター",
+    "submit": "申請を提出",
+    "submitting": "送信中...",
+    "hasAccount": "既にアカウントをお持ちですか？",
+    "loginHere": "こちらからログイン",
+    "success": "申請が送信されました！確認のためメールをご確認ください。",
+    "duplicateError": "このメールアドレスの申請は既に存在します。",
+    "error": "申請の送信に失敗しました。もう一度お試しください。"
+  },
+  "about": {
+    "hero": {
+      "title": "Bureau Boudoirについて",
+      "subtitle": "プロフェッショナルなコンテンツ管理と戦略的マーケティングを通じてアムステルダムのクリエイターを向上させる"
+    },
+    "story": {
+      "title": "私たちのストーリー",
+      "paragraph1": "アムステルダムの象徴的な歓楽街の中心で生まれたBureau Boudoirは、シンプルなビジョンから生まれました：クリエイターがコンテンツビジネスにアプローチする方法を変革すること。",
+      "paragraph2": "才能あるクリエイターが制作、マーケティング、ビジネス運営に無数の時間を費やしていることに気づきました―その時間は、彼らが最も得意とすることに費やすことができる時間でした：創造すること。",
+      "paragraph3": "今日、Bureau Boudoirはアムステルダムのプレミアコンテンツ管理エージェンシーとして、創造的な卓越性、プロフェッショナルな制作基準、戦略的マーケティングの専門知識を結集しています。"
+    },
+    "whatWeDo": {
+      "title": "私たちが行うこと",
+      "content": {
+        "title": "コンテンツ企画",
+        "description": "あなたの独自のスタイルとオーディエンスに合わせた戦略的コンテンツカレンダー、撮影計画、クリエイティブディレクション。"
+      },
+      "production": {
+        "title": "プロフェッショナル制作",
+        "description": "高級コンテンツ制作を理解する経験豊富なチームによるスタジオ品質の写真・ビデオ制作。"
+      },
+      "marketing": {
+        "title": "戦略的マーケティング",
+        "description": "データ駆動型マーケティング戦略、プラットフォーム最適化、リーチと収益を最大化する成長戦略。"
+      }
+    },
+    "values": {
+      "title": "私たちの価値観",
+      "professionalism": {
+        "title": "プロフェッショナリズム",
+        "description": "コンテンツ制作と管理のあらゆる側面に業界をリードする基準をもたらします。"
+      },
+      "creativity": {
+        "title": "創造性",
+        "description": "あなたのユニークな声とビジョンは、私たちが行うすべての中心にあります。"
+      },
+      "support": {
+        "title": "サポート",
+        "description": "24時間365日チームへのアクセスにより、必要なガイダンスとリソースが常に得られます。"
+      },
+      "empowerment": {
+        "title": "エンパワーメント",
+        "description": "持続可能で成功するビジネスを構築するためのツール、知識、自信をクリエイターに提供します。"
+      }
+    },
+    "cta": {
+      "title": "コンテンツを向上させる準備はできていますか？",
+      "subtitle": "アムステルダムで最もプロフェッショナルなクリエイターコミュニティに参加しましょう。",
+      "button": "クリエイターになる"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "お問い合わせ",
+      "subtitle": "Bureau Boudoirでの旅を始める準備はできていますか？私たちがお手伝いします。"
+    },
+    "info": {
+      "title": "連絡先情報",
+      "subtitle": "お話を伺えることを楽しみにしています。これらのチャネルのいずれかを通じてお問い合わせください。",
+      "visitUs": "訪問する"
+    },
+    "platforms": {
+      "twitter": "X (Twitter)",
+      "tiktok": "TikTok",
+      "instagram": "Instagram",
+      "whatsapp": "WhatsApp",
+      "email": "メール"
+    }
   }
 }
