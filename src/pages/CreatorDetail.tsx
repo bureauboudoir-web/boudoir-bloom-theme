@@ -6,6 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { ArrowLeft, LogOut, Mic, FileText, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -101,13 +102,44 @@ const CreatorDetail = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
+              <div className="space-y-2">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                        Dashboard
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                        Creators
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{creator.full_name || creator.email}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                    {activeTab !== "overview" && (
+                      <>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>
+                            {activeTab === "ai-voice" && "AI Voice"}
+                            {activeTab === "ai-scripts" && "AI Scripts"}
+                            {activeTab === "ai-planner" && "AI Planner"}
+                            {activeTab === "profile" && "Profile"}
+                            {activeTab === "contracts" && "Contracts"}
+                            {activeTab === "meetings" && "Meetings"}
+                          </BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </>
+                    )}
+                  </BreadcrumbList>
+                </Breadcrumb>
                 <h1 className="font-serif text-2xl font-bold">
                   {creator.full_name || "Creator Profile"}
                 </h1>
-                <p className="text-sm text-muted-foreground">
-                  Creators → {creator.full_name || creator.email}
-                </p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={signOut}>
