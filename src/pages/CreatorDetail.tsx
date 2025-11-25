@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -6,7 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, LogOut, Mic, FileText, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
@@ -14,10 +14,24 @@ const CreatorDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { isAdmin, isManager, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isManager, isChatter, isMarketing, isStudio, loading: rolesLoading } = useUserRole();
   const [creator, setCreator] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Role-based tab visibility
+  const visibleTabs = useMemo(() => {
+    const tabs = {
+      overview: true,
+      profile: isAdmin || isManager,
+      aiVoice: isAdmin || isManager,
+      aiScripts: isAdmin || isManager || isChatter || isMarketing,
+      aiPlanner: isAdmin || isManager || isMarketing || isStudio,
+      contracts: isAdmin || isManager,
+      meetings: isAdmin || isManager,
+    };
+    return tabs;
+  }, [isAdmin, isManager, isChatter, isMarketing, isStudio]);
 
   useEffect(() => {
     if (!user) {
@@ -106,14 +120,14 @@ const CreatorDetail = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="ai-voice">AI Voice</TabsTrigger>
-            <TabsTrigger value="ai-scripts">AI Scripts</TabsTrigger>
-            <TabsTrigger value="ai-planner">AI Planner</TabsTrigger>
-            <TabsTrigger value="contracts">Contracts</TabsTrigger>
-            <TabsTrigger value="meetings">Meetings</TabsTrigger>
+          <TabsList className="grid w-full auto-cols-fr" style={{ gridTemplateColumns: `repeat(${Object.values(visibleTabs).filter(Boolean).length}, minmax(0, 1fr))` }}>
+            {visibleTabs.overview && <TabsTrigger value="overview">Overview</TabsTrigger>}
+            {visibleTabs.profile && <TabsTrigger value="profile">Profile</TabsTrigger>}
+            {visibleTabs.aiVoice && <TabsTrigger value="ai-voice">AI Voice</TabsTrigger>}
+            {visibleTabs.aiScripts && <TabsTrigger value="ai-scripts">AI Scripts</TabsTrigger>}
+            {visibleTabs.aiPlanner && <TabsTrigger value="ai-planner">AI Planner</TabsTrigger>}
+            {visibleTabs.contracts && <TabsTrigger value="contracts">Contracts</TabsTrigger>}
+            {visibleTabs.meetings && <TabsTrigger value="meetings">Meetings</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -156,60 +170,100 @@ const CreatorDetail = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="ai-voice">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Voice</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">This tool will be added after export.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {visibleTabs.aiVoice && (
+            <TabsContent value="ai-voice">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Mic className="w-5 h-5 text-primary" />
+                    </div>
+                    <CardTitle>AI Voice Generator</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Text-to-Voice generation will be added after export.
+                  </p>
+                  <Button disabled variant="secondary">
+                    Generate Voice (coming soon)
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
 
-          <TabsContent value="ai-scripts">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Scripts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">This tool will be added after export.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {visibleTabs.aiScripts && (
+            <TabsContent value="ai-scripts">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <CardTitle>AI Script Generator</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    This tool will generate PPV messages, funnels, hooks, and roleplay scripts.
+                  </p>
+                  <Button disabled variant="secondary">
+                    Generate Script (coming soon)
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
 
-          <TabsContent value="ai-planner">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Planner</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">This tool will be added after export.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {visibleTabs.aiPlanner && (
+            <TabsContent value="ai-planner">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Calendar className="w-5 h-5 text-primary" />
+                    </div>
+                    <CardTitle>AI Content Planner</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    This tool will generate weekly content plans, schedules, and ideas.
+                  </p>
+                  <Button disabled variant="secondary">
+                    Create Weekly Plan (coming soon)
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
 
-          <TabsContent value="contracts">
-            <Card>
-              <CardHeader>
-                <CardTitle>Contracts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Contract management will be shown here.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {visibleTabs.contracts && (
+            <TabsContent value="contracts">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contracts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Contract management will be shown here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
 
-          <TabsContent value="meetings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Meetings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Meeting history will be shown here.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {visibleTabs.meetings && (
+            <TabsContent value="meetings">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Meetings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Meeting history will be shown here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
