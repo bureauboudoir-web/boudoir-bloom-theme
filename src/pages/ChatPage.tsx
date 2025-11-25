@@ -34,7 +34,7 @@ const ChatPage = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="font-serif text-2xl font-bold">Chat Tools</h1>
+                <h1 className="font-serif text-2xl font-bold">Chat Team Dashboard</h1>
                 <p className="text-sm text-muted-foreground">Chat</p>
               </div>
             </div>
@@ -49,11 +49,11 @@ const ChatPage = () => {
       <div className="container mx-auto px-6 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Chat Management</CardTitle>
+            <CardTitle>Chat Team Dashboard</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              This tool will be added after export. Chatter staff will be able to manage creator chats and interactions here.
+              This area will contain AI message tools, templates, and chat workflow for assigned creators.
             </p>
           </CardContent>
         </Card>
