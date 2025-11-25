@@ -12,7 +12,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 export default function StudioDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isStudio, isAdmin, isManager, loading } = useUserRole();
+  const { isStudio, isAdmin, isManager, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function StudioDashboard() {
       return;
     }
 
-    if (!loading && !isStudio && !isAdmin && !isManager) {
+    if (!loading && rolesLoaded && !isStudio && !isAdmin && !isManager) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isStudio, isAdmin, isManager, loading, navigate]);
+  }, [user, isStudio, isAdmin, isManager, loading, rolesLoaded, navigate]);
 
-  if (!user || loading) {
+  if (!user || loading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={studioNavigation} />} title="Studio Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
@@ -39,7 +39,11 @@ export default function StudioDashboard() {
   }
 
   if (!isStudio && !isAdmin && !isManager) {
-    return null;
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={studioNavigation} />} title="Studio Dashboard">
+        <LoadingSpinner size="lg" text="Access denied..." />
+      </DashboardLayout>
+    );
   }
 
   return (

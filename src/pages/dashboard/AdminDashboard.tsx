@@ -12,7 +12,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isAdmin, isSuperAdmin, loading } = useUserRole();
+  const { isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (!loading && !isAdmin && !isSuperAdmin) {
+    if (!loading && rolesLoaded && !isAdmin && !isSuperAdmin) {
       hasRedirected.current = true;
       navigate("/dashboard");
     }
-  }, [user, isAdmin, isSuperAdmin, loading, navigate]);
+  }, [user, isAdmin, isSuperAdmin, loading, rolesLoaded, navigate]);
 
-  if (!user || loading) {
+  if (!user || loading || !rolesLoaded) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={adminNavigation} />} title="Admin Dashboard">
         <LoadingSpinner size="lg" text="Loading dashboard..." />
@@ -39,7 +39,11 @@ export default function AdminDashboard() {
   }
 
   if (!isAdmin && !isSuperAdmin) {
-    return null;
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={adminNavigation} />} title="Admin Dashboard">
+        <LoadingSpinner size="lg" text="Access denied..." />
+      </DashboardLayout>
+    );
   }
 
   return (
