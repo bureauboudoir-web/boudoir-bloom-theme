@@ -26,7 +26,7 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user?.id) {
       setRoles([]);
       setLoading(false);
       return;
