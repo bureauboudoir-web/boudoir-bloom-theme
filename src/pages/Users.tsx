@@ -17,6 +17,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { CreateTestRoleAccounts } from "@/components/admin/CreateTestRoleAccounts";
 
 interface UserData {
   id: string;
@@ -119,6 +120,8 @@ const Users = () => {
             </p>
           </div>
         </div>
+
+        <CreateTestRoleAccounts />
 
         <Card>
           <CardHeader>
