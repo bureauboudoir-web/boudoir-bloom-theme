@@ -15,20 +15,25 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Login = lazy(() => import("./pages/Login"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const ManagerDashboard = lazy(() => import("./pages/ManagerDashboard"));
-const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
-const StudioPage = lazy(() => import("./pages/StudioPage"));
-const MarketingPage = lazy(() => import("./pages/MarketingPage"));
-const ChatPage = lazy(() => import("./pages/ChatPage"));
-const Users = lazy(() => import("./pages/Users"));
-const UserDetail = lazy(() => import("./pages/UserDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const About = lazy(() => import("./pages/About"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const CompleteSetup = lazy(() => import("./pages/CompleteSetup"));
+
+// Role-specific dashboards
+const AdminDashboard = lazy(() => import("./pages/dashboard/AdminDashboard"));
+const ManagerDashboard = lazy(() => import("./pages/dashboard/ManagerDashboard"));
+const CreatorDashboard = lazy(() => import("./pages/dashboard/CreatorDashboard"));
+const ChatDashboard = lazy(() => import("./pages/dashboard/ChatDashboard"));
+const MarketingDashboard = lazy(() => import("./pages/dashboard/MarketingDashboard"));
+const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
+
+// Legacy pages (for backward compatibility)
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
+const Users = lazy(() => import("./pages/Users"));
+const UserDetail = lazy(() => import("./pages/UserDetail"));
 
 const queryClient = new QueryClient();
 
@@ -47,6 +52,7 @@ const App = () => (
               </div>
             }>
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/about" element={<About />} />
@@ -56,16 +62,24 @@ const App = () => (
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/complete-setup" element={<CompleteSetup />} />
+
+                {/* Role-Based Dashboard Routes */}
+                <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
+                <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
+                <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
+                <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
+                <Route path="/dashboard/marketing/*" element={<MarketingDashboard />} />
+                <Route path="/dashboard/studio/*" element={<StudioDashboard />} />
+
+                {/* Legacy Routes (for backward compatibility) */}
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/manager" element={<ManagerDashboard />} />
                 <Route path="/creator/:id" element={<CreatorDetail />} />
-                <Route path="/studio" element={<StudioPage />} />
-                <Route path="/marketing" element={<MarketingPage />} />
-                <Route path="/chat" element={<ChatPage />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/users/:id" element={<UserDetail />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+                {/* Catch All */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
