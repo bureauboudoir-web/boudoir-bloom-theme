@@ -133,6 +133,60 @@ export type Database = {
           },
         ]
       }
+      content_items: {
+        Row: {
+          content_text: string | null
+          created_at: string | null
+          id: string
+          item_type: string
+          starter_pack_id: string
+        }
+        Insert: {
+          content_text?: string | null
+          created_at?: string | null
+          id?: string
+          item_type: string
+          starter_pack_id: string
+        }
+        Update: {
+          content_text?: string | null
+          created_at?: string | null
+          id?: string
+          item_type?: string
+          starter_pack_id?: string
+        }
+        Relationships: []
+      }
+      content_library: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          file_url: string | null
+          id: string
+          title: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          title?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          title?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       content_uploads: {
         Row: {
           commitment_id: string | null
@@ -1612,6 +1666,30 @@ export type Database = {
           },
         ]
       }
+      starter_packs: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       studio_shoots: {
         Row: {
           budget: number | null
@@ -1905,6 +1983,30 @@ export type Database = {
           stage?: string
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      uploads: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          file_type: string
+          file_url: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          file_type: string
+          file_url: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          file_type?: string
+          file_url?: string
+          id?: string
         }
         Relationships: []
       }
