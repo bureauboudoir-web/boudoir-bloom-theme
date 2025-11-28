@@ -34,6 +34,9 @@ const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
 const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWizard"));
 const ContentPreferencesWizard = lazy(() => import("./pages/creator/ContentPreferencesWizard"));
 
+// Dev utilities
+const CreateTestUsers = lazy(() => import("./pages/dev/CreateTestUsers"));
+
 // Legacy pages (for backward compatibility)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
@@ -67,6 +70,10 @@ const App = () => (
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/complete-setup" element={<CompleteSetup />} />
+
+                {/* Role-Based Dashboard Routes */}
+                {/* Dev Routes */}
+                <Route path="/dev/create-test-users" element={<CreateTestUsers />} />
 
                 {/* Role-Based Dashboard Routes */}
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
