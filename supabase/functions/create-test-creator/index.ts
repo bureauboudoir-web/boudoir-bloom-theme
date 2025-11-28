@@ -28,8 +28,24 @@ serve(async (req) => {
     const userToDelete = existingUser?.users.find(u => u.email === testEmail)
     
     if (userToDelete) {
-      console.log('Deleting existing user:', testEmail)
+      console.log('Deleting existing user and related records:', testEmail)
+      
+      // Delete related records first to avoid foreign key constraints
+      await supabaseAdmin.from('access_level_audit_log').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('timeline_events').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('creator_contracts').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('creator_meetings').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('creator_access_levels').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('onboarding_data').delete().eq('user_id', userToDelete.id)
+      await supabaseAdmin.from('user_roles').delete().eq('user_id', userToDelete.id)
+      
+      // Delete applications by email since they're not linked by user_id initially
+      await supabaseAdmin.from('creator_applications').delete().eq('email', testEmail)
+      
+      // Finally delete the user
       await supabaseAdmin.auth.admin.deleteUser(userToDelete.id)
+      
+      console.log('Existing records deleted successfully')
     }
 
     // Create new user
