@@ -29,6 +29,9 @@ const ChatDashboard = lazy(() => import("./pages/dashboard/ChatDashboard"));
 const MarketingDashboard = lazy(() => import("./pages/dashboard/MarketingDashboard"));
 const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
 
+// Creator sub-pages
+const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
+
 // Legacy pages (for backward compatibility)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
@@ -66,6 +69,7 @@ const App = () => (
                 {/* Role-Based Dashboard Routes */}
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
+                <Route path="/dashboard/creator/tools" element={<CreatorTools />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
                 <Route path="/dashboard/marketing/*" element={<MarketingDashboard />} />
