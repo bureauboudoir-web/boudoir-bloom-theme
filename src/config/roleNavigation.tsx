@@ -20,7 +20,8 @@ import {
   CalendarRange,
   User,
   Sparkles,
-  Mic
+  Mic,
+  Wrench
 } from "lucide-react";
 
 export interface NavItem {
@@ -221,6 +222,7 @@ export const creatorNavigation: NavSection[] = [
   {
     title: "Tools",
     items: [
+      { label: "Tools", icon: Wrench, path: "/dashboard/creator/tools" },
       { label: "Voice Training", icon: Mic, path: "/dashboard/creator/voice-training" },
       { label: "Sample Selector", icon: Palette, path: "/dashboard/creator/samples" },
       { label: "Scripts Review", icon: FileText, path: "/dashboard/creator/scripts" },
