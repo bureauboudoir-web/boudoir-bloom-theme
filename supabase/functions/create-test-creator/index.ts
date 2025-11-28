@@ -82,10 +82,11 @@ serve(async (req) => {
     console.log('Role assigned successfully')
 
     // Create comprehensive onboarding data (all 10 steps)
+    // Using upsert since handle_new_user trigger already creates an empty record
     console.log('Creating onboarding data...')
     const { error: onboardingError } = await supabaseAdmin
       .from('onboarding_data')
-      .insert({
+      .upsert({
         user_id: newUser.user.id,
         // Step 1: Personal Info
         personal_full_name: 'Test Creator',
