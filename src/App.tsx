@@ -31,6 +31,7 @@ const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
 
 // Creator sub-pages
 const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
+const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWizard"));
 
 // Legacy pages (for backward compatibility)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -69,6 +70,7 @@ const App = () => (
                 {/* Role-Based Dashboard Routes */}
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
+                <Route path="/dashboard/creator/tools/voice-training" element={<VoiceTrainingWizard />} />
                 <Route path="/dashboard/creator/tools" element={<CreatorTools />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
