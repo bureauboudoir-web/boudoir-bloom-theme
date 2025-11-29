@@ -108,7 +108,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         const activities: RecentActivity[] = recentContent?.map(upload => ({
           id: upload.id,
           type: 'upload',
-          title: 'Content Submitted',
+          title: t('dashboardOverview.activity.contentSubmitted'),
           description: upload.file_name,
           timestamp: upload.created_at || '',
           status: upload.status || 'pending_review',
@@ -143,7 +143,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         const activities: RecentActivity[] = recentContent?.map(upload => ({
           id: upload.id,
           type: 'upload',
-          title: 'Creator Content',
+          title: t('dashboardOverview.activity.creatorContent'),
           description: upload.file_name,
           timestamp: upload.created_at || '',
           status: upload.status || 'pending_review',
@@ -210,7 +210,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           activities.push({
             id: upload.id,
             type: 'upload',
-            title: 'Content Uploaded',
+            title: t('dashboardOverview.activity.contentUploaded'),
             description: upload.file_name,
             timestamp: upload.created_at || '',
             status: upload.status || 'pending_review',
@@ -221,7 +221,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           activities.push({
             id: shoot.id,
             type: 'shoot',
-            title: 'Studio Shoot',
+            title: t('dashboardOverview.activity.studioShoot'),
             description: shoot.title,
             timestamp: shoot.shoot_date,
             status: shoot.status || 'scheduled',
@@ -246,7 +246,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     if (isSuperAdmin || isAdmin) {
       return [
         {
-          title: "Pending Applications",
+          title: t('dashboardOverview.statCards.pendingApplications'),
           value: stats.pendingCommitments,
           icon: ClipboardList,
           color: "text-amber-500",
@@ -254,7 +254,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('applications') : navigate('/admin'),
         },
         {
-          title: "Content to Review",
+          title: t('dashboardOverview.statCards.contentToReview'),
           value: stats.upcomingMeetings,
           icon: FileCheck,
           color: "text-blue-500",
@@ -262,7 +262,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('review') : navigate('/admin'),
         },
         {
-          title: "Total Creators",
+          title: t('dashboardOverview.statCards.totalCreators'),
           value: stats.pendingInvoices,
           icon: Users,
           color: "text-green-500",
@@ -270,7 +270,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('creators') : navigate('/admin'),
         },
         {
-          title: "Open Tickets",
+          title: t('dashboardOverview.statCards.openTickets'),
           value: stats.totalUploads,
           icon: Mail,
           color: "text-purple-500",
@@ -283,7 +283,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     if (isManager) {
       return [
         {
-          title: "Pending Tasks",
+          title: t('dashboardOverview.statCards.pendingTasks'),
           value: stats.pendingCommitments,
           icon: CheckSquare,
           color: "text-amber-500",
@@ -291,7 +291,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('commitments') : navigate('/manager'),
         },
         {
-          title: "Scheduled Meetings",
+          title: t('dashboardOverview.statCards.scheduledMeetings'),
           value: stats.upcomingMeetings,
           icon: Calendar,
           color: "text-blue-500",
@@ -299,7 +299,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('meetings') : navigate('/manager'),
         },
         {
-          title: "Assigned Creators",
+          title: t('dashboardOverview.statCards.assignedCreators'),
           value: stats.pendingInvoices,
           icon: Users,
           color: "text-green-500",
@@ -307,7 +307,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
         },
         {
-          title: "Content to Review",
+          title: t('dashboardOverview.statCards.contentToReview'),
           value: stats.totalUploads,
           icon: Upload,
           color: "text-purple-500",
@@ -320,7 +320,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     // Creator stat cards
     return [
       {
-        title: "Pending Commitments",
+        title: t('dashboardOverview.statCards.pendingCommitments'),
         value: stats.pendingCommitments,
         icon: CheckSquare,
         color: "text-amber-500",
@@ -328,7 +328,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         action: () => onNavigate('commitments'),
       },
       {
-        title: "Upcoming Meetings",
+        title: t('dashboardOverview.statCards.upcomingMeetings'),
         value: stats.upcomingMeetings,
         icon: Calendar,
         color: "text-blue-500",
@@ -336,7 +336,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         action: () => onNavigate('meetings'),
       },
       {
-        title: "Pending Invoices",
+        title: t('dashboardOverview.statCards.pendingInvoices'),
         value: stats.pendingInvoices,
         icon: DollarSign,
         color: "text-green-500",
@@ -344,7 +344,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         action: () => onNavigate('invoices'),
       },
       {
-        title: "Recent Uploads",
+        title: t('dashboardOverview.statCards.recentUploads'),
         value: stats.totalUploads,
         icon: Upload,
         color: "text-purple-500",
@@ -361,25 +361,25 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     if (isSuperAdmin || isAdmin) {
       return [
         {
-          label: "Manage Applications",
+          label: t('dashboardOverview.quickActions.manageApplications'),
           icon: ClipboardList,
           action: () => onNavigate('admin', 'applications'),
           variant: "default" as const,
         },
         {
-          label: "Review Content",
+          label: t('dashboardOverview.quickActions.reviewContent'),
           icon: FileCheck,
           action: () => onNavigate('admin', 'review'),
           variant: "secondary" as const,
         },
         {
-          label: "Manage Users",
+          label: t('dashboardOverview.quickActions.manageUsers'),
           icon: Users,
           action: () => onNavigate('admin', 'access'),
           variant: "secondary" as const,
         },
         {
-          label: "Analytics",
+          label: t('dashboardOverview.quickActions.analytics'),
           icon: BarChart3,
           action: () => onNavigate('admin', 'analytics'),
           variant: "outline" as const,
@@ -390,25 +390,25 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     if (isManager) {
       return [
         {
-          label: "Manage Creators",
+          label: t('dashboardOverview.quickActions.manageCreators'),
           icon: Users,
           action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
           variant: "default" as const,
         },
         {
-          label: "Review Content",
+          label: t('dashboardOverview.quickActions.reviewContent'),
           icon: FileCheck,
           action: () => onNavigate ? onNavigate('review') : navigate('/manager'),
           variant: "secondary" as const,
         },
         {
-          label: "Schedule Meetings",
+          label: t('dashboardOverview.quickActions.scheduleMeetings'),
           icon: Calendar,
           action: () => onNavigate ? onNavigate('meetings') : navigate('/manager'),
           variant: "secondary" as const,
         },
         {
-          label: "Settings",
+          label: t('dashboardOverview.quickActions.settings'),
           icon: Settings,
           action: () => navigate('/settings'),
           variant: "outline" as const,
@@ -419,25 +419,25 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     // Default creator actions
     return [
       {
-        label: "Upload Content",
+        label: t('dashboardOverview.quickActions.uploadContent'),
         icon: Upload,
         action: () => onNavigate('upload'),
         variant: "default" as const,
       },
       {
-        label: "View Commitments",
+        label: t('dashboardOverview.quickActions.viewCommitments'),
         icon: CheckSquare,
         action: () => onNavigate('commitments'),
         variant: "secondary" as const,
       },
       {
-        label: "My Meetings",
+        label: t('dashboardOverview.quickActions.myMeetings'),
         icon: Calendar,
         action: () => onNavigate('meetings'),
         variant: "secondary" as const,
       },
       {
-        label: "Get Support",
+        label: t('dashboardOverview.quickActions.getSupport'),
         icon: Mail,
         action: () => onNavigate('support'),
         variant: "outline" as const,
@@ -462,11 +462,11 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     if (!status) return null;
     
     const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-      pending_review: { label: "Pending Review", variant: "secondary" },
-      approved: { label: "Approved", variant: "default" },
-      pending: { label: "Pending", variant: "secondary" },
-      confirmed: { label: "Confirmed", variant: "default" },
-      scheduled: { label: "Scheduled", variant: "outline" },
+      pending_review: { label: t('dashboardOverview.status.pendingReview'), variant: "secondary" },
+      approved: { label: t('dashboardOverview.status.approved'), variant: "default" },
+      pending: { label: t('dashboardOverview.status.pending'), variant: "secondary" },
+      confirmed: { label: t('dashboardOverview.status.confirmed'), variant: "default" },
+      scheduled: { label: t('dashboardOverview.status.scheduled'), variant: "outline" },
     };
 
     const config = statusConfig[status] || { label: status, variant: "outline" as const };

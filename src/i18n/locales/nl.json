@@ -45,10 +45,28 @@
       "adminControls": "Admin Bediening",
       "managerControls": "Manager Bediening"
     },
+    "pages": {
+      "creator": "Creator Dashboard",
+      "manager": "Manager Dashboard",
+      "admin": "Admin Dashboard",
+      "chat": "Chat Dashboard",
+      "marketing": "Marketing Dashboard",
+      "studio": "Studio Dashboard"
+    },
     "pageTitle": {
       "creatorDashboard": "Creator Dashboard",
       "managerDashboard": "Manager Dashboard",
       "adminDashboard": "Admin Dashboard"
+    },
+    "titles": {
+      "adminOverview": "Admin Overview",
+      "managerOverview": "Manager Overview",
+      "creatorWelcome": "Welcome Back!"
+    },
+    "subtitles": {
+      "adminDescription": "Full system control and monitoring",
+      "managerDescription": "Run the agency day-to-day operations",
+      "creatorDescription": "Your personal workspace"
     }
   },
   "homepage": {
