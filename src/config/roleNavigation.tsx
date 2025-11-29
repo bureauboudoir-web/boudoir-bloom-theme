@@ -27,6 +27,7 @@ import {
 
 export interface NavItem {
   label: string;
+  labelKey?: string;
   icon: any;
   path: string;
   requiresRole?: string[];
@@ -42,25 +43,25 @@ export const adminNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/admin" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/admin" },
     ]
   },
   {
     title: "Management",
     items: [
-      { label: "User Management", icon: Users, path: "/dashboard/admin/users" },
-      { label: "Creator Management", icon: UserCog, path: "/dashboard/admin/creators" },
-      { label: "Staff Management", icon: UserCheck, path: "/dashboard/admin/staff" },
-      { label: "Roles & Permissions", icon: Shield, path: "/dashboard/admin/roles" },
+      { label: "User Management", labelKey: "admin.nav.userManagement", icon: Users, path: "/dashboard/admin/users" },
+      { label: "Creator Management", labelKey: "admin.nav.creatorManagement", icon: UserCog, path: "/dashboard/admin/creators" },
+      { label: "Staff Management", labelKey: "admin.nav.staffManagement", icon: UserCheck, path: "/dashboard/admin/staff" },
+      { label: "Roles & Permissions", labelKey: "admin.nav.rolesPermissions", icon: Shield, path: "/dashboard/admin/roles" },
     ]
   },
   {
     title: "Operations",
     items: [
-      { label: "Reports", icon: FileText, path: "/dashboard/admin/reports" },
-      { label: "API Keys", icon: Key, path: "/dashboard/admin/api-keys" },
-      { label: "API Documentation", icon: BookOpen, path: "/dashboard/admin/api-docs" },
-      { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
+      { label: "Reports", labelKey: "admin.nav.reports", icon: FileText, path: "/dashboard/admin/reports" },
+      { label: "API Keys", labelKey: "admin.nav.apiKeys", icon: Key, path: "/dashboard/admin/api-keys" },
+      { label: "API Documentation", labelKey: "admin.nav.apiDocs", icon: BookOpen, path: "/dashboard/admin/api-docs" },
+      { label: "Settings", labelKey: "dashboard.nav.settings", icon: Settings, path: "/dashboard/admin/settings" },
     ]
   },
   {
@@ -74,9 +75,9 @@ export const adminNavigation: NavSection[] = [
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/admin/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/admin/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/admin/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/admin/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/admin/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/admin/contact" },
     ]
   }
 ];
@@ -86,23 +87,23 @@ export const managerNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/manager" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/manager" },
     ]
   },
   {
     title: "Creator Management",
     items: [
-      { label: "Approve Creators", icon: UserCheck, path: "/dashboard/manager/approve" },
-      { label: "Assign Creators", icon: Users, path: "/dashboard/manager/assign" },
-      { label: "Review Scripts", icon: FileText, path: "/dashboard/manager/scripts" },
-      { label: "Review Hooks", icon: Sparkles, path: "/dashboard/manager/hooks" },
+      { label: "Approve Creators", labelKey: "manager.nav.approveCreators", icon: UserCheck, path: "/dashboard/manager/approve" },
+      { label: "Assign Creators", labelKey: "manager.nav.assignCreators", icon: Users, path: "/dashboard/manager/assign" },
+      { label: "Review Scripts", labelKey: "manager.nav.reviewScripts", icon: FileText, path: "/dashboard/manager/scripts" },
+      { label: "Review Hooks", labelKey: "manager.nav.reviewHooks", icon: Sparkles, path: "/dashboard/manager/hooks" },
     ]
   },
   {
     title: "Operations",
     items: [
-      { label: "Studio Schedule", icon: Camera, path: "/dashboard/manager/studio" },
-      { label: "Team Notes", icon: MessageSquare, path: "/dashboard/manager/notes" },
+      { label: "Studio Schedule", labelKey: "manager.nav.studioSchedule", icon: Camera, path: "/dashboard/manager/studio" },
+      { label: "Team Notes", labelKey: "manager.nav.teamNotes", icon: MessageSquare, path: "/dashboard/manager/notes" },
     ]
   },
   {
@@ -116,9 +117,9 @@ export const managerNavigation: NavSection[] = [
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/manager/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/manager/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/manager/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/manager/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/manager/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/manager/contact" },
     ]
   }
 ];
@@ -128,25 +129,25 @@ export const chatNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/chat" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/chat" },
     ]
   },
   {
     title: "Content",
     items: [
-      { label: "Creator Personas", icon: User, path: "/dashboard/chat/personas" },
-      { label: "PPV Scripts", icon: FileText, path: "/dashboard/chat/ppv-scripts" },
-      { label: "Chat Templates", icon: MessageCircle, path: "/dashboard/chat/templates" },
-      { label: "Creator Campaigns", icon: TrendingUp, path: "/dashboard/chat/campaigns" },
-      { label: "Notes", icon: MessageSquare, path: "/dashboard/chat/notes" },
+      { label: "Creator Personas", labelKey: "chat.nav.personas", icon: User, path: "/dashboard/chat/personas" },
+      { label: "PPV Scripts", labelKey: "chat.nav.ppvScripts", icon: FileText, path: "/dashboard/chat/ppv-scripts" },
+      { label: "Chat Templates", labelKey: "chat.nav.templates", icon: MessageCircle, path: "/dashboard/chat/templates" },
+      { label: "Creator Campaigns", labelKey: "chat.nav.campaigns", icon: TrendingUp, path: "/dashboard/chat/campaigns" },
+      { label: "Notes", labelKey: "chat.nav.notes", icon: MessageSquare, path: "/dashboard/chat/notes" },
     ]
   },
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/chat/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/chat/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/chat/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/chat/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/chat/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/chat/contact" },
     ]
   }
 ];
@@ -156,25 +157,25 @@ export const marketingNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/marketing" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/marketing" },
     ]
   },
   {
     title: "Content",
     items: [
-      { label: "Hook Library", icon: Sparkles, path: "/dashboard/marketing/hooks" },
-      { label: "Post Ideas", icon: BookOpen, path: "/dashboard/marketing/ideas" },
-      { label: "Content Calendar", icon: CalendarRange, path: "/dashboard/marketing/calendar" },
-      { label: "Captions Library", icon: FileText, path: "/dashboard/marketing/captions" },
-      { label: "Funnels", icon: TrendingUp, path: "/dashboard/marketing/funnels" },
+      { label: "Hook Library", labelKey: "marketing.nav.hookLibrary", icon: Sparkles, path: "/dashboard/marketing/hooks" },
+      { label: "Post Ideas", labelKey: "marketing.nav.postIdeas", icon: BookOpen, path: "/dashboard/marketing/ideas" },
+      { label: "Content Calendar", labelKey: "marketing.nav.contentCalendar", icon: CalendarRange, path: "/dashboard/marketing/calendar" },
+      { label: "Captions Library", labelKey: "marketing.nav.captionsLibrary", icon: FileText, path: "/dashboard/marketing/captions" },
+      { label: "Funnels", labelKey: "marketing.nav.funnels", icon: TrendingUp, path: "/dashboard/marketing/funnels" },
     ]
   },
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/marketing/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/marketing/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/marketing/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/marketing/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/marketing/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/marketing/contact" },
     ]
   }
 ];
@@ -184,24 +185,24 @@ export const studioNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/studio" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/studio" },
     ]
   },
   {
     title: "Production",
     items: [
-      { label: "Shoot Planner", icon: Calendar, path: "/dashboard/studio/planner" },
-      { label: "Shot Lists", icon: CheckSquare, path: "/dashboard/studio/shot-lists" },
-      { label: "Upload Area", icon: Upload, path: "/dashboard/studio/upload" },
-      { label: "Studio Calendar", icon: CalendarRange, path: "/dashboard/studio/calendar" },
+      { label: "Shoot Planner", labelKey: "studio.nav.shootPlanner", icon: Calendar, path: "/dashboard/studio/planner" },
+      { label: "Shot Lists", labelKey: "studio.nav.shotLists", icon: CheckSquare, path: "/dashboard/studio/shot-lists" },
+      { label: "Upload Area", labelKey: "studio.nav.uploadArea", icon: Upload, path: "/dashboard/studio/upload" },
+      { label: "Studio Calendar", labelKey: "studio.nav.studioCalendar", icon: CalendarRange, path: "/dashboard/studio/calendar" },
     ]
   },
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/studio/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/studio/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/studio/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/studio/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/studio/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/studio/contact" },
     ]
   }
 ];
@@ -211,32 +212,32 @@ export const creatorNavigation: NavSection[] = [
   {
     title: "Dashboard",
     items: [
-      { label: "Overview", icon: LayoutDashboard, path: "/dashboard/creator" },
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/creator" },
     ]
   },
   {
     title: "Profile",
     items: [
-      { label: "Profile Info", icon: User, path: "/dashboard/creator/profile" },
-      { label: "Persona", icon: Sparkles, path: "/dashboard/creator/persona" },
-      { label: "Starter Pack", icon: BookOpen, path: "/dashboard/creator/starter-pack" },
+      { label: "Profile Info", labelKey: "dashboard.nav.profile", icon: User, path: "/dashboard/creator/profile" },
+      { label: "Persona", labelKey: "dashboard.nav.persona", icon: Sparkles, path: "/dashboard/creator/persona" },
+      { label: "Starter Pack", labelKey: "dashboard.nav.starterPack", icon: BookOpen, path: "/dashboard/creator/starter-pack" },
     ]
   },
   {
     title: "Tools",
     items: [
-      { label: "Tools", icon: Wrench, path: "/dashboard/creator/tools" },
-      { label: "Voice Training", icon: Mic, path: "/dashboard/creator/voice-training" },
-      { label: "Sample Selector", icon: Palette, path: "/dashboard/creator/samples" },
-      { label: "Scripts Review", icon: FileText, path: "/dashboard/creator/scripts" },
+      { label: "Tools", labelKey: "dashboard.nav.tools", icon: Wrench, path: "/dashboard/creator/tools" },
+      { label: "Voice Training", labelKey: "dashboard.nav.voiceTraining", icon: Mic, path: "/dashboard/creator/voice-training" },
+      { label: "Sample Selector", labelKey: "dashboard.nav.contentPreferences", icon: Palette, path: "/dashboard/creator/samples" },
+      { label: "Scripts Review", labelKey: "dashboard.nav.scripts", icon: FileText, path: "/dashboard/creator/scripts" },
     ]
   },
   {
     title: "Personal",
     items: [
-      { label: "My Meetings", icon: Calendar, path: "/dashboard/creator/meetings" },
-      { label: "My Commitments", icon: CheckSquare, path: "/dashboard/creator/commitments" },
-      { label: "Contact Us", icon: Phone, path: "/dashboard/creator/contact" },
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/creator/meetings" },
+      { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/creator/commitments" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/creator/contact" },
     ]
   }
 ];

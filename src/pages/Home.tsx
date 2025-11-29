@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -9,7 +10,10 @@ import StreetLampIcon from "@/components/StreetLampIcon";
 import heroBg from "@/assets/hero-curtains-amsterdam.jpg";
 import { Lightbulb, Camera, Megaphone, DollarSign, Crown, Gem, CheckCircle, Twitter, Instagram, Shield, Target, TrendingUp, Users, MapPin, Sparkles, HeadphonesIcon, Eye, Upload } from "lucide-react";
 import { SharedFooter } from "@/components/SharedFooter";
+
 const Home = () => {
+  const { t } = useTranslation();
+  
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -19,6 +23,7 @@ const Home = () => {
       });
     }
   };
+
   return <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
@@ -31,13 +36,13 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-background" />
         <div className="container mx-auto px-6 text-center relative z-10 max-w-5xl">
           <h1 className="font-serif text-5xl font-bold mb-8 leading-tight text-[#d1ae94] md:text-5xl">
-            Where Real Creators Become Iconic
+            {t('homepage.hero.title')}
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed md:text-xl">
-            A luxury creative agency in heart of Amsterdam iconic district, guiding creators in the art of presence, identity, and digital performance.
+            {t('homepage.hero.subtitle')}
           </p>
           <Button asChild size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 inline-flex">
-            <Link to="/signup">Become a Creator</Link>
+            <Link to="/signup">{t('homepage.hero.cta')}</Link>
           </Button>
         </div>
       </section>
@@ -47,29 +52,25 @@ const Home = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-start">
             <div>
-              <h2 className="font-serif text-4xl md:text-5xl mb-8 text-[#d1ae94]">Who We Are</h2>
+              <h2 className="font-serif text-4xl md:text-5xl mb-8 text-[#d1ae94]">{t('homepage.whoWeAre.title')}</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Bureau Boudoir is an exclusive creator management agency based in Amsterdam's iconic Red Light District. 
-                We blend artistic vision with business intelligence to build sustainable creator careers.
+                {t('homepage.whoWeAre.para1')}
               </p>
               <p className="text-lg text-muted-foreground mb-12 leading-relaxed">
-                From professional photoshoots to AI-powered marketing, we handle everything so you can focus on being creative.
+                {t('homepage.whoWeAre.para2')}
               </p>
-              
-              
-              
             </div>
             
             <Card className="p-8 bg-card border-2 border-primary/40 hover:border-rose-gold transition-all rounded-xl shadow-xl">
-              <h3 className="font-serif text-2xl sm:text-3xl mb-8 text-center text-primary">Your Benefits</h3>
+              <h3 className="font-serif text-2xl sm:text-3xl mb-8 text-center text-primary">{t('homepage.whoWeAre.benefits.title')}</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0 border-2 border-primary/40">
                     <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Professional Production</p>
-                    <p className="text-sm text-muted-foreground">Studio shoots, editing, and content curation</p>
+                    <p className="font-semibold text-foreground">{t('homepage.whoWeAre.benefits.production.title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('homepage.whoWeAre.benefits.production.description')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -77,8 +78,8 @@ const Home = () => {
                     <TrendingUp className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Revenue Optimization</p>
-                    <p className="text-sm text-muted-foreground">Pricing strategy and upselling automation</p>
+                    <p className="font-semibold text-foreground">{t('homepage.whoWeAre.benefits.revenue.title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('homepage.whoWeAre.benefits.revenue.description')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -86,8 +87,8 @@ const Home = () => {
                     <Users className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">24/7 Support Team</p>
-                    <p className="text-sm text-muted-foreground">Dedicated account manager and creative director</p>
+                    <p className="font-semibold text-foreground">{t('homepage.whoWeAre.benefits.support.title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('homepage.whoWeAre.benefits.support.description')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -95,8 +96,8 @@ const Home = () => {
                     <MapPin className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Amsterdam Location</p>
-                    <p className="text-sm text-muted-foreground">Iconic backdrop for authentic content</p>
+                    <p className="font-semibold text-foreground">{t('homepage.whoWeAre.benefits.location.title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('homepage.whoWeAre.benefits.location.description')}</p>
                   </div>
                 </div>
               </div>
@@ -108,9 +109,9 @@ const Home = () => {
       {/* Section 3: What We Do */}
       <section className="py-20 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl text-center">
-          <p className="text-sm text-[#d1ae94] mb-4 font-medium">What We Do</p>
+          <p className="text-sm text-[#d1ae94] mb-4 font-medium">{t('homepage.whatWeDo.label')}</p>
           <h2 className="font-serif mb-6 sm:mb-8 text-[#d1ae94] leading-tight text-2xl sm:text-3xl md:text-4xl">
-            We Help Creators Build Profitable Personal Brands Through Professional Content & Smart Marketing
+            {t('homepage.whatWeDo.title')}
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 mt-16 text-left">
@@ -118,11 +119,9 @@ const Home = () => {
               <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-primary/40">
                 <Sparkles className="w-8 h-8 text-rose-gold" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Vision</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">{t('homepage.whatWeDo.vision.title')}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To be the premier creator agency in Europe, setting the standard for luxury adult content creation. 
-                We envision a world where creators are empowered with world-class tools, support, and opportunities 
-                to build sustainable, fulfilling careers on their own terms.
+                {t('homepage.whatWeDo.vision.description')}
               </p>
             </Card>
             
@@ -130,11 +129,9 @@ const Home = () => {
               <div className="w-16 h-16 rounded-full bg-rose-gold/10 flex items-center justify-center mb-6 mx-auto border-2 border-primary/40">
                 <Target className="w-8 h-8 text-rose-gold" />
               </div>
-              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">Our Mission</h3>
+              <h3 className="font-serif text-2xl mb-4 text-center text-rose-gold">{t('homepage.whatWeDo.mission.title')}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To transform creators into successful entrepreneurs by providing end-to-end support: from professional 
-                content production in our Amsterdam studio to AI-driven marketing and personalized account management. 
-                We handle the business so you can focus on creativity.
+                {t('homepage.whatWeDo.mission.description')}
               </p>
             </Card>
           </div>
@@ -145,40 +142,40 @@ const Home = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-center mb-12 sm:mb-16 text-[#d1ae94]">
-            Our Creator Services
+            {t('homepage.services.title')}
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left: Main Content */}
             <div className="space-y-8">
               <p className="text-xl text-muted-foreground leading-relaxed font-light">
-                End-to-end creator management. From strategy to execution.
+                {t('homepage.services.intro')}
               </p>
               
               <div className="space-y-5">
                 <div className="flex gap-3 items-start">
                   <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-foreground">Brand strategy & persona development</p>
+                  <p className="text-base text-foreground">{t('homepage.services.list.brandStrategy')}</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
                   <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-foreground">Studio shoots & content production</p>
+                  <p className="text-base text-foreground">{t('homepage.services.list.studioShoots')}</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
                   <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-foreground">Marketing & audience growth</p>
+                  <p className="text-base text-foreground">{t('homepage.services.list.marketing')}</p>
                 </div>
                 
                 <div className="flex gap-3 items-start">
                   <CheckCircle className="w-5 h-5 text-rose-gold flex-shrink-0 mt-0.5" />
-                  <p className="text-base text-foreground">24/7 dedicated support team</p>
+                  <p className="text-base text-foreground">{t('homepage.services.list.support')}</p>
                 </div>
               </div>
               
               <Button asChild size="default" className="bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full mt-4 px-6 inline-flex">
-                <Link to="/signup">Start Your Journey</Link>
+                <Link to="/signup">{t('homepage.services.cta')}</Link>
               </Button>
             </div>
             
@@ -191,9 +188,9 @@ const Home = () => {
                     <Lightbulb className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Planning</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">{t('homepage.services.planning.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Persona development, boundaries, brand strategy, and market positioning.
+                      {t('homepage.services.planning.description')}
                     </p>
                   </div>
                 </div>
@@ -206,9 +203,9 @@ const Home = () => {
                     <Camera className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Production</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">{t('homepage.services.production.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Studio shoots, lighting, styling, posing, and high-end visual content.
+                      {t('homepage.services.production.description')}
                     </p>
                   </div>
                 </div>
@@ -221,9 +218,9 @@ const Home = () => {
                     <Megaphone className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Marketing</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">{t('homepage.services.marketing.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Content strategy, storytelling, social hooks, and audience building.
+                      {t('homepage.services.marketing.description')}
                     </p>
                   </div>
                 </div>
@@ -236,9 +233,9 @@ const Home = () => {
                     <HeadphonesIcon className="w-7 h-7 text-rose-gold" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">Support</h3>
+                    <h3 className="font-serif text-lg font-bold mb-1 text-primary">{t('homepage.services.supportCard.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      <span className="font-bold text-[#d1ae94]">24/7</span> team access, analytics, guidance, and ongoing optimization.
+                      <span className="font-bold text-[#d1ae94]">{t('homepage.services.supportCard.emphasis')}</span> {t('homepage.services.supportCard.description')}
                     </p>
                   </div>
                 </div>
@@ -252,7 +249,7 @@ const Home = () => {
       <section className="py-20 bg-secondary/20">
         <div className="container mx-auto px-6 max-w-6xl">
           <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
-            What Makes Us Different
+            {t('homepage.different.title')}
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -264,11 +261,10 @@ const Home = () => {
                   </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
-                  The Brand Umbrella
+                  {t('homepage.different.brand.title')}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  A cinematic Amsterdam-inspired identity shaped uniquely around you. We don't use templates — 
-                  we craft brands that feel like stories.
+                  {t('homepage.different.brand.description')}
                 </p>
               </CardContent>
             </Card>
@@ -281,10 +277,10 @@ const Home = () => {
                   </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
-                  Professional Content  
+                  {t('homepage.different.content.title')}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Studio lighting, posing, styling, and high-end content direction. Not phone selfies — real production quality.
+                  {t('homepage.different.content.description')}
                 </p>
               </CardContent>
             </Card>
@@ -297,11 +293,10 @@ const Home = () => {
                   </div>
                 </div>
                 <h3 className="font-serif text-2xl font-bold mb-4 text-rose-gold">
-                  Marketing Machine
+                  {t('homepage.different.marketingMachine.title')}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Not random posting — real funnels, scripts, high-ticket strategy, and retention systems. 
-                  Growth backed by structure.
+                  {t('homepage.different.marketingMachine.description')}
                 </p>
               </CardContent>
             </Card>
@@ -313,7 +308,7 @@ const Home = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-6 max-w-6xl">
           <h2 className="font-serif text-4xl md:text-5xl text-center mb-16 text-[#d1ae94]">
-            Support & Management
+            {t('homepage.management.title')}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -333,9 +328,9 @@ const Home = () => {
               
               <Card className="bg-gradient-to-br from-secondary/50 to-secondary/20 border-2 border-primary/40 p-8 space-y-6 rounded-t-none border-t-0">
                 <div className="text-center mb-6">
-                  <h3 className="font-serif text-2xl text-[#d1ae94] mb-2">Your Creator Dashboard</h3>
+                  <h3 className="font-serif text-2xl text-[#d1ae94] mb-2">{t('homepage.management.dashboard.title')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Everything organized in one professional platform
+                    {t('homepage.management.dashboard.subtitle')}
                   </p>
                 </div>
                 
@@ -345,15 +340,15 @@ const Home = () => {
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">12</div>
-                      <div className="text-xs text-muted-foreground">Active Shoots</div>
+                      <div className="text-xs text-muted-foreground">{t('homepage.management.dashboard.stats.shoots')}</div>
                     </div>
                     <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">8</div>
-                      <div className="text-xs text-muted-foreground">Commitments</div>
+                      <div className="text-xs text-muted-foreground">{t('homepage.management.dashboard.stats.commitments')}</div>
                     </div>
                     <div className="bg-background/50 rounded-lg p-3 text-center border-2 border-primary/40">
                       <div className="text-2xl font-bold text-rose-gold">45</div>
-                      <div className="text-xs text-muted-foreground">Content Pieces</div>
+                      <div className="text-xs text-muted-foreground">{t('homepage.management.dashboard.stats.content')}</div>
                     </div>
                   </div>
                   
@@ -362,26 +357,22 @@ const Home = () => {
                     <div className="flex items-center gap-3">
                       <Upload className="w-8 h-8 text-rose-gold" />
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-rose-gold">Content Upload</div>
-                        <div className="text-xs text-muted-foreground">Drag & drop or click to upload</div>
+                        <div className="text-sm font-semibold text-rose-gold">{t('homepage.management.dashboard.upload.title')}</div>
+                        <div className="text-xs text-muted-foreground">{t('homepage.management.dashboard.upload.subtitle')}</div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Mock Commitment List */}
                   <div className="bg-background/50 rounded-lg p-4 border-2 border-primary/40 space-y-2">
-                    <div className="text-xs font-semibold text-foreground mb-2">This Week's Commitments</div>
+                    <div className="text-xs font-semibold text-foreground mb-2">{t('homepage.management.dashboard.weeklyCommitments')}</div>
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-primary"></div>
-                      <span className="text-muted-foreground">Solo photo set - Red Light theme</span>
+                      <span className="text-muted-foreground">{t('homepage.management.dashboard.mockItem1')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-primary/50"></div>
-                      <span className="text-muted-foreground">Story content - Behind the scenes</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      
-                      
+                      <span className="text-muted-foreground">{t('homepage.management.dashboard.mockItem2')}</span>
                     </div>
                   </div>
                 </div>
@@ -393,46 +384,42 @@ const Home = () => {
               <div className="flex items-start gap-4">
                 <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">Weekly content commitments</h4>
-                  <p className="text-muted-foreground">Clear expectations, organized week by week</p>
+                  <h4 className="text-lg font-semibold text-foreground mb-1">{t('homepage.management.features.commitments.title')}</h4>
+                  <p className="text-muted-foreground">{t('homepage.management.features.commitments.description')}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
                 <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">Everything organised in one place.</h4>
-                  <p className="text-muted-foreground">Submit content directly through the platform</p>
+                  <h4 className="text-lg font-semibold text-foreground mb-1">{t('homepage.management.features.organized.title')}</h4>
+                  <p className="text-muted-foreground">{t('homepage.management.features.organized.description')}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
                 <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">Personal brand manager          </h4>
-                  <p className="text-muted-foreground">Direct access to your dedicated team member</p>
-                </div>
-              </div>
-
-              
-
-              <div className="flex items-start gap-4">
-                <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">Growth strategy</h4>
-                  <p className="text-muted-foreground">Real-time feedback and planning for your next phase</p>
+                  <h4 className="text-lg font-semibold text-foreground mb-1">{t('homepage.management.features.manager.title')}</h4>
+                  <p className="text-muted-foreground">{t('homepage.management.features.manager.description')}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
                 <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-lg font-semibold text-foreground mb-1">Privacy & boundaries</h4>
-                  <p className="text-muted-foreground">Full control over your limits and comfort zones</p>
+                  <h4 className="text-lg font-semibold text-foreground mb-1">{t('homepage.management.features.growth.title')}</h4>
+                  <p className="text-muted-foreground">{t('homepage.management.features.growth.description')}</p>
                 </div>
               </div>
 
-              
+              <div className="flex items-start gap-4">
+                <CheckCircle className="w-6 h-6 text-rose-gold flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="text-lg font-semibold text-foreground mb-1">{t('homepage.management.features.privacy.title')}</h4>
+                  <p className="text-muted-foreground">{t('homepage.management.features.privacy.description')}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -445,19 +432,19 @@ const Home = () => {
       <section className="py-20 bg-secondary/30">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
-            Join Our Newsletter
+            {t('homepage.newsletter.title')}
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Get exclusive insights, creator tips, and behind-the-scenes stories from Amsterdam's premier creator agency delivered to your inbox.
+            {t('homepage.newsletter.description')}
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 px-4 py-2.5 rounded-full bg-background border-2 border-primary/40 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
+            <input type="email" placeholder={t('homepage.newsletter.placeholder')} className="flex-1 px-4 py-2.5 rounded-full bg-background border-2 border-primary/40 focus:border-rose-gold focus:outline-none focus:ring-2 focus:ring-rose-gold/20 text-foreground" required />
             <Button type="submit" size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 sm:w-auto">
-              Subscribe
+              {t('homepage.newsletter.button')}
             </Button>
           </form>
           <p className="text-xs text-muted-foreground mt-4">
-            We respect your privacy. Unsubscribe at any time.
+            {t('homepage.newsletter.privacy')}
           </p>
         </div>
       </section>
@@ -469,14 +456,13 @@ const Home = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-6 text-center max-w-4xl">
           <h2 className="font-serif text-4xl md:text-5xl mb-6 text-[#d1ae94]">
-            Ready to Begin Your Journey?
+            {t('homepage.finalCta.title')}
           </h2>
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Join a community of creators who've chosen clarity, artistry, and long-term growth 
-            over shortcuts and noise. Let's build something extraordinary together.
+            {t('homepage.finalCta.description')}
           </p>
           <Button asChild size="default" className="glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full px-6 inline-flex">
-            <Link to="/signup">Apply Now</Link>
+            <Link to="/signup">{t('homepage.finalCta.button')}</Link>
           </Button>
         </div>
       </section>
@@ -484,4 +470,5 @@ const Home = () => {
       <SharedFooter />
     </div>;
 };
+
 export default Home;
