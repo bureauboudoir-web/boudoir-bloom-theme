@@ -177,5 +177,160 @@
       "address1": "Oudekerksplein 18h",
       "address2": "Amsterdam, Pays-Bas"
     }
+  },
+  "creator": {
+    "welcome": "Welcome Back!",
+    "quickActions": "Quick Actions",
+    "quickActionsDesc": "Get started with these common tasks",
+    "status": {
+      "applicationPending": "Application Pending",
+      "applicationPendingDesc": "Thank you for applying! Our team is reviewing your application.",
+      "applicationPendingEmail": "You'll receive an email once your application is approved and you can begin onboarding.",
+      "applicationApproved": "Application Approved!",
+      "applicationApprovedDesc": "Welcome to Bureau Boudoir! Let's get you set up.",
+      "applicationApprovedReady": "You're ready to start your onboarding journey. Complete all steps to unlock full access to the platform.",
+      "onboardingComplete": "Onboarding Complete!",
+      "onboardingCompleteDesc": "Your profile is under review",
+      "onboardingCompleteReview": "Thank you for completing your onboarding! Our team is reviewing your profile. You'll receive an email once you have full access to all creator tools and features."
+    },
+    "cards": {
+      "toolsAvailable": "Tools Available",
+      "fullAccess": "Full Access",
+      "allFeaturesUnlocked": "All features unlocked",
+      "creatorTools": "Creator Tools",
+      "explore": "Explore",
+      "voiceContentMore": "Voice, Content & More",
+      "contentLibrary": "Content Library",
+      "browse": "Browse",
+      "yourUploadedContent": "Your uploaded content",
+      "support": "Support",
+      "getHelp": "Get Help",
+      "contactSupport": "Contact support"
+    },
+    "actions": {
+      "startOnboarding": "Start Onboarding",
+      "uploadVoiceSamples": "Upload Voice Samples",
+      "updateContentPreferences": "Update Content Preferences"
+    }
+  },
+  "admin": {
+    "stats": {
+      "totalUsers": "Total Users",
+      "allRegisteredUsers": "All registered users",
+      "activeCreators": "Active Creators",
+      "withFullAccess": "With full access",
+      "staffMembers": "Staff Members",
+      "allRoles": "All roles",
+      "systemHealth": "System Health",
+      "allSystemsOperational": "All systems operational"
+    },
+    "activity": {
+      "recentActivity": "Recent Activity",
+      "latestEvents": "Latest system events and alerts",
+      "newCreatorApproved": "New creator approved",
+      "studioShootScheduled": "Studio shoot scheduled",
+      "permissionUpdateRequired": "Permission update required"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Common administrative tasks",
+      "reviewPendingApplications": "Review Pending Applications",
+      "applicationsWaiting": "applications waiting",
+      "manageUserRoles": "Manage User Roles",
+      "updatePermissions": "Update permissions",
+      "viewSystemReports": "View System Reports",
+      "generateAnalytics": "Generate analytics"
+    }
+  },
+  "manager": {
+    "stats": {
+      "pendingApprovals": "Pending Approvals",
+      "creatorsAwaitingReview": "Creators awaiting review",
+      "shootsThisWeek": "Shoots This Week",
+      "scheduledToday": "4 scheduled today",
+      "activeScripts": "Active Scripts",
+      "needReview": "8 need review",
+      "teamPerformance": "Team Performance",
+      "aboveTarget": "Above target"
+    },
+    "tasks": {
+      "todaysTasks": "Today's Tasks",
+      "priorityItems": "Priority items requiring attention",
+      "reviewApplications": "Review 3 new creator applications",
+      "approvePPVScripts": "Approve PPV scripts for Luna",
+      "studioShoot": "Studio shoot at 2 PM",
+      "dueToday": "Due today",
+      "inHours": "In 3 hours"
+    },
+    "team": {
+      "teamOverview": "Team Overview",
+      "staffPerformance": "Staff performance metrics",
+      "chatTeam": "Chat Team",
+      "marketingTeam": "Marketing Team",
+      "studioTeam": "Studio Team",
+      "target": "Target"
+    }
+  },
+  "dashboardOverview": {
+    "welcomeBack": "Welcome Back!",
+    "welcomeSubtitle": "Here's what's happening with your creator journey",
+    "yourJourney": "Your Journey",
+    "trackOnboarding": "Track your onboarding progress",
+    "pendingCommitmentsAlert": "You have <strong>{{count}}</strong> pending commitment{{count, plural, one {} other {s}}} that need attention.",
+    "statCards": {
+      "pendingApplications": "Pending Applications",
+      "contentToReview": "Content to Review",
+      "totalCreators": "Total Creators",
+      "openTickets": "Open Tickets",
+      "pendingTasks": "Pending Tasks",
+      "scheduledMeetings": "Scheduled Meetings",
+      "assignedCreators": "Assigned Creators",
+      "pendingCommitments": "Pending Commitments",
+      "upcomingMeetings": "Upcoming Meetings",
+      "pendingInvoices": "Pending Invoices",
+      "recentUploads": "Recent Uploads"
+    },
+    "quickActions": {
+      "manageApplications": "Manage Applications",
+      "reviewContent": "Review Content",
+      "manageUsers": "Manage Users",
+      "analytics": "Analytics",
+      "manageCreators": "Manage Creators",
+      "scheduleMeetings": "Schedule Meetings",
+      "settings": "Settings",
+      "uploadContent": "Upload Content",
+      "viewCommitments": "View Commitments",
+      "myMeetings": "My Meetings",
+      "getSupport": "Get Support"
+    },
+    "meetingOnly": {
+      "welcomeTitle": "Welcome to Bureau Boudoir!",
+      "welcomeDesc": "Your application has been approved. Complete your introductory meeting to unlock full access to your creator dashboard and begin your journey with us.",
+      "yourJourney": "Your Journey",
+      "trackProgress": "Track your progress through the onboarding process",
+      "bookMeetingTitle": "Book Your Introduction Meeting",
+      "bookMeetingDesc": "Schedule your meeting to unlock full dashboard access",
+      "viewMeetingDetails": "View Meeting Details",
+      "whatUnlocksTitle": "What Unlocks After Your Meeting",
+      "whatUnlocksDesc": "Features that become available once you complete your introduction",
+      "unlocks": {
+        "onboarding": "Complete Detailed Onboarding",
+        "onboardingDesc": "Share your story, boundaries, and creative vision",
+        "uploadPortfolio": "Upload Portfolio Content",
+        "uploadPortfolioDesc": "Share your best work and build your content library",
+        "signContract": "Review and Sign Contract",
+        "signContractDesc": "Finalize your partnership agreement",
+        "weeklyCommitments": "Set Weekly Commitments",
+        "weeklyCommitmentsDesc": "Plan your content creation schedule",
+        "studioShoots": "Schedule Studio Shoots",
+        "studioShootsDesc": "Book professional production sessions",
+        "invoicing": "Access Invoicing System",
+        "invoicingDesc": "Track payments and financial details"
+      },
+      "availableNow": "Available Now",
+      "availableNowDesc": "Features you can access before your meeting",
+      "viewPreMeeting": "View Pre-Meeting Onboarding",
+      "manageProfile": "Manage Your Profile"
+    }
   }
 }

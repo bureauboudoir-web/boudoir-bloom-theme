@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
@@ -12,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
   const hasRedirected = useRef(false);
@@ -98,20 +100,20 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout
       navigation={<RoleNavigation sections={adminNavigation} />}
-      title="Admin Dashboard"
+      title={t('dashboard.pageTitle.adminDashboard')}
     >
       <div className="space-y-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Admin Overview</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.titles.adminOverview')}</h2>
           <p className="text-muted-foreground">
-            Full system control and monitoring
+            {t('dashboard.subtitles.adminDescription')}
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.totalUsers')}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -120,13 +122,13 @@ export default function AdminDashboard() {
               ) : (
                 <div className="text-2xl font-bold">{stats.totalUsers}</div>
               )}
-              <p className="text-xs text-muted-foreground">All registered users</p>
+              <p className="text-xs text-muted-foreground">{t('admin.stats.allRegisteredUsers')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Creators</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.activeCreators')}</CardTitle>
               <UserCog className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -135,13 +137,13 @@ export default function AdminDashboard() {
               ) : (
                 <div className="text-2xl font-bold">{stats.activeCreators}</div>
               )}
-              <p className="text-xs text-muted-foreground">With full access</p>
+              <p className="text-xs text-muted-foreground">{t('admin.stats.withFullAccess')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Staff Members</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.staffMembers')}</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -150,18 +152,18 @@ export default function AdminDashboard() {
               ) : (
                 <div className="text-2xl font-bold">{stats.staffMembers}</div>
               )}
-              <p className="text-xs text-muted-foreground">All roles</p>
+              <p className="text-xs text-muted-foreground">{t('admin.stats.allRoles')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">System Health</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.systemHealth')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.systemHealth}%</div>
-              <p className="text-xs text-muted-foreground">All systems operational</p>
+              <p className="text-xs text-muted-foreground">{t('admin.stats.allSystemsOperational')}</p>
             </CardContent>
           </Card>
         </div>
@@ -169,29 +171,29 @@ export default function AdminDashboard() {
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest system events and alerts</CardDescription>
+              <CardTitle>{t('admin.activity.recentActivity')}</CardTitle>
+              <CardDescription>{t('admin.activity.latestEvents')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">New creator approved</p>
+                    <p className="text-sm font-medium">{t('admin.activity.newCreatorApproved')}</p>
                     <p className="text-xs text-muted-foreground">2 hours ago</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-blue-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Studio shoot scheduled</p>
+                    <p className="text-sm font-medium">{t('admin.activity.studioShootScheduled')}</p>
                     <p className="text-xs text-muted-foreground">5 hours ago</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-amber-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Permission update required</p>
+                    <p className="text-sm font-medium">{t('admin.activity.permissionUpdateRequired')}</p>
                     <p className="text-xs text-muted-foreground">1 day ago</p>
                   </div>
                 </div>
@@ -201,22 +203,22 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Common administrative tasks</CardDescription>
+              <CardTitle>{t('admin.quickActions.title')}</CardTitle>
+              <CardDescription>{t('admin.quickActions.subtitle')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <button className="w-full text-left px-3 py-2 rounded-md hover:bg-secondary transition-colors">
-                  <p className="text-sm font-medium">Review Pending Applications</p>
-                  <p className="text-xs text-muted-foreground">3 applications waiting</p>
+                  <p className="text-sm font-medium">{t('admin.quickActions.reviewPendingApplications')}</p>
+                  <p className="text-xs text-muted-foreground">3 {t('admin.quickActions.applicationsWaiting')}</p>
                 </button>
                 <button className="w-full text-left px-3 py-2 rounded-md hover:bg-secondary transition-colors">
-                  <p className="text-sm font-medium">Manage User Roles</p>
-                  <p className="text-xs text-muted-foreground">Update permissions</p>
+                  <p className="text-sm font-medium">{t('admin.quickActions.manageUserRoles')}</p>
+                  <p className="text-xs text-muted-foreground">{t('admin.quickActions.updatePermissions')}</p>
                 </button>
                 <button className="w-full text-left px-3 py-2 rounded-md hover:bg-secondary transition-colors">
-                  <p className="text-sm font-medium">View System Reports</p>
-                  <p className="text-xs text-muted-foreground">Generate analytics</p>
+                  <p className="text-sm font-medium">{t('admin.quickActions.viewSystemReports')}</p>
+                  <p className="text-xs text-muted-foreground">{t('admin.quickActions.generateAnalytics')}</p>
                 </button>
               </div>
             </CardContent>
