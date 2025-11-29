@@ -81,6 +81,13 @@ serve(async (req) => {
       .eq('creator_id', creatorId)
       .order('created_at', { ascending: false });
 
+    // Fetch creator style preferences (colors, vibe, sample images)
+    const { data: stylePreferences } = await supabase
+      .from('creator_content_preferences')
+      .select('primary_color, secondary_color, accent_color, vibe, sample_image_urls, notes')
+      .eq('creator_id', creatorId)
+      .maybeSingle();
+
     // Build response object
     const response = {
       profile: {
@@ -97,6 +104,14 @@ serve(async (req) => {
         fantasy: onboarding.persona_fantasy
       } : null,
       content_preferences: contentLibrary || [],
+      style_preferences: stylePreferences ? {
+        primary_color: stylePreferences.primary_color,
+        secondary_color: stylePreferences.secondary_color,
+        accent_color: stylePreferences.accent_color,
+        vibe: stylePreferences.vibe,
+        sample_image_urls: stylePreferences.sample_image_urls,
+        notes: stylePreferences.notes
+      } : null,
       voice_files: voiceFiles || []
     };
 
