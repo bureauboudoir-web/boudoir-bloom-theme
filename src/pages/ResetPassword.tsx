@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PageContainer } from "@/components/PageContainer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { z } from "zod";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -79,15 +81,15 @@ const ResetPassword = () => {
         });
       }
 
-      toast.success("Password updated successfully!");
+      toast.success(t('resetPassword.success'));
       setTimeout(() => navigate("/login"), 2000);
     } catch (error: any) {
       console.error("Error updating password:", error);
       
       if (error.message?.includes("expired") || error.message?.includes("invalid")) {
-        toast.error("This password reset link has expired. Please request a new one from your administrator.");
+        toast.error(t('resetPassword.expiredLink'));
       } else {
-        toast.error(error.message || "Failed to update password");
+        toast.error(error.message || t('settings.security.updateFailed'));
       }
     } finally {
       setLoading(false);
@@ -99,21 +101,21 @@ const ResetPassword = () => {
       <div className="container mx-auto px-6 py-24 max-w-md">
         <Card className="border-border bg-secondary/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl text-[#d1ae94]">Create New Password</CardTitle>
+            <CardTitle className="text-3xl text-[#d1ae94]">{t('resetPassword.title')}</CardTitle>
             <CardDescription>
-              Enter your new password below
+              {t('resetPassword.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
+                <Label htmlFor="password">{t('resetPassword.newPasswordLabel')}</Label>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder={t('resetPassword.newPasswordPlaceholder')}
                   className={errors.password ? "border-red-500" : ""}
                   required
                 />
@@ -123,13 +125,13 @@ const ResetPassword = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('resetPassword.confirmPasswordLabel')}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
+                  placeholder={t('resetPassword.confirmPasswordPlaceholder')}
                   className={errors.confirmPassword ? "border-red-500" : ""}
                   required
                 />
@@ -143,7 +145,7 @@ const ResetPassword = () => {
                 className="w-full glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full"
                 disabled={loading}
               >
-                {loading ? "Updating..." : "Update Password"}
+                {loading ? t('resetPassword.updating') : t('resetPassword.updateButton')}
               </Button>
             </form>
           </CardContent>

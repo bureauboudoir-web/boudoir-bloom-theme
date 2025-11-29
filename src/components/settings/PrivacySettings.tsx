@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -7,6 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export const PrivacySettings = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleExportData = async () => {
@@ -43,10 +45,10 @@ export const PrivacySettings = () => {
       a.click();
       URL.revokeObjectURL(url);
 
-      toast.success("Data exported successfully");
+      toast.success(t('settings.privacy.exportSuccess'));
     } catch (error: any) {
       console.error("Error exporting data:", error);
-      toast.error(error.message || "Failed to export data");
+      toast.error(error.message || t('settings.privacy.exportFailed'));
     } finally {
       setLoading(false);
     }
@@ -58,11 +60,11 @@ export const PrivacySettings = () => {
       const { error } = await supabase.functions.invoke("delete-user-account");
       if (error) throw error;
 
-      toast.success("Account deletion request submitted");
+      toast.success(t('settings.privacy.deleteSuccess'));
       await supabase.auth.signOut();
     } catch (error: any) {
       console.error("Error deleting account:", error);
-      toast.error(error.message || "Failed to delete account");
+      toast.error(error.message || t('settings.privacy.deleteFailed'));
     } finally {
       setLoading(false);
     }
@@ -73,46 +75,46 @@ export const PrivacySettings = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lock className="h-5 w-5" />
-          Privacy & Data
+          {t('settings.privacy.title')}
         </CardTitle>
-        <CardDescription>Manage your data and privacy</CardDescription>
+        <CardDescription>{t('settings.privacy.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <p className="font-medium">Export Your Data</p>
-              <p className="text-sm text-muted-foreground">Download all your data</p>
+              <p className="font-medium">{t('settings.privacy.exportData')}</p>
+              <p className="text-sm text-muted-foreground">{t('settings.privacy.exportDataDesc')}</p>
             </div>
             <Button onClick={handleExportData} disabled={loading} variant="outline">
               <Download className="h-4 w-4 mr-2" />
-              Export
+              {t('settings.privacy.exportButton')}
             </Button>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <p className="font-medium text-destructive">Delete Account</p>
-              <p className="text-sm text-muted-foreground">Permanently delete your account</p>
+              <p className="font-medium text-destructive">{t('settings.privacy.deleteAccount')}</p>
+              <p className="text-sm text-muted-foreground">{t('settings.privacy.deleteAccountDesc')}</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" disabled={loading}>
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
+                  {t('settings.privacy.deleteButton')}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t('settings.privacy.deleteDialogTitle')}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+                    {t('settings.privacy.deleteDialogDesc')}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t('settings.privacy.deleteDialogCancel')}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                    Delete Account
+                    {t('settings.privacy.deleteDialogConfirm')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

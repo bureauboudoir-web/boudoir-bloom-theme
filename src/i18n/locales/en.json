@@ -369,5 +369,334 @@
       "address1": "Oudekerksplein 18h",
       "address2": "Amsterdam, Netherlands"
     }
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "lastUpdated": "Last updated: January 2024",
+    "agreement": {
+      "title": "1. Agreement to Terms",
+      "content": "By accessing or using Bureau Boudoir's services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you may not access our services."
+    },
+    "services": {
+      "title": "2. Creator Services",
+      "intro": "Bureau Boudoir provides professional content creation, marketing, and management services for adult content creators.",
+      "item1": "All creators must be 18 years or older",
+      "item2": "Valid identification is required for verification",
+      "item3": "Content must comply with platform guidelines and local laws"
+    },
+    "privacy": {
+      "title": "3. Privacy & Confidentiality",
+      "content": "We take your privacy seriously. All personal information, content, and business details are kept strictly confidential and protected under our privacy policy."
+    },
+    "payment": {
+      "title": "4. Payment Terms",
+      "content": "Payment schedules, revenue sharing, and financial arrangements are detailed in individual creator agreements. All payments are processed securely and transparently."
+    },
+    "ownership": {
+      "title": "5. Content Ownership",
+      "content": "Creators retain ownership of their content. Bureau Boudoir is granted license to use, distribute, and market content as part of our services."
+    },
+    "contactSection": {
+      "title": "6. Contact",
+      "content": "For questions about these terms, please contact us at",
+      "email": "legal@bureauboudoir.com"
+    }
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email address and we'll send you a link to reset your password",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "sendButton": "Send Reset Link",
+    "sending": "Sending...",
+    "backToLogin": "Back to Login",
+    "success": "Password reset link sent! Check your email."
+  },
+  "resetPassword": {
+    "title": "Create New Password",
+    "subtitle": "Enter your new password below",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "updateButton": "Update Password",
+    "updating": "Updating...",
+    "success": "Password updated successfully!",
+    "expiredLink": "This password reset link has expired. Please request a new one from your administrator."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about working with Bureau Boudoir.",
+    "experience": {
+      "q": "Do I need experience to join?",
+      "a": "No — we focus on potential, not past experience. Whether you're completely new or have been creating content for years, our system is designed to meet you where you are and guide you to the next level."
+    },
+    "control": {
+      "q": "Do I stay in control of my accounts?",
+      "a": "Always. You own everything. We guide the strategy, build the brand, and manage the marketing — but your accounts, your content, and your identity remain 100% yours."
+    },
+    "location": {
+      "q": "Do I need to live in Amsterdam?",
+      "a": "No — remote creators are welcome. While our studio is based in Amsterdam's historic centre, we work with creators from around the world. Studio shoots can be arranged when you visit, or we can coordinate content creation remotely."
+    },
+    "services": {
+      "q": "What do you do for creators?",
+      "a": "We build your brand, persona, storyline, content plan, scripts, funnels, and growth systems. Think of us as your creative director, marketing team, and business strategist — all working together to transform your online presence into something unforgettable."
+    },
+    "safety": {
+      "q": "How safe is this?",
+      "a": "Your boundaries, privacy, and identity come first. We never push you beyond your comfort zone. Everything is discussed and agreed upon before any content is created. Your safety and well-being are non-negotiable."
+    },
+    "contentReq": {
+      "q": "How much content is required weekly?",
+      "a": "Typically 10–20 photos and 2–4 clips per week. Your dashboard shows everything clearly, and we work together to create a schedule that fits your life. Consistency matters, but so does quality — we'll never sacrifice one for the other."
+    },
+    "different": {
+      "q": "What makes BB different?",
+      "a": "We don't outsource or use templates — we build creators into characters the world wants to follow. Every brand is handcrafted, every strategy is personalized, and every creator receives the kind of attention typically reserved for celebrities and high-end talent."
+    },
+    "start": {
+      "q": "How fast can I start?",
+      "a": "Usually within 48–72 hours after your application is approved. We'll schedule an onboarding call, begin building your persona and brand map, and start planning your first content immediately."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account preferences and security",
+    "security": {
+      "title": "Security",
+      "subtitle": "Manage your password and security settings",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm New Password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "updateButton": "Update Password",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "updateSuccess": "Password updated successfully",
+      "updateFailed": "Failed to update password"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "subtitle": "Customize your experience",
+      "language": "Language",
+      "languageDesc": "Choose your preferred language",
+      "emailNotifications": "Email Notifications",
+      "emailNotificationsDesc": "Receive updates via email",
+      "meetingReminders": "Meeting Reminders",
+      "meetingRemindersDesc": "Get notified before meetings",
+      "commitmentNotifications": "Commitment Notifications",
+      "commitmentNotificationsDesc": "Get updates on commitments"
+    },
+    "privacy": {
+      "title": "Privacy & Data",
+      "subtitle": "Manage your data and privacy",
+      "exportData": "Export Your Data",
+      "exportDataDesc": "Download all your data",
+      "exportButton": "Export",
+      "exportSuccess": "Data exported successfully",
+      "exportFailed": "Failed to export data",
+      "deleteAccount": "Delete Account",
+      "deleteAccountDesc": "Permanently delete your account",
+      "deleteButton": "Delete",
+      "deleteDialogTitle": "Are you absolutely sure?",
+      "deleteDialogDesc": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+      "deleteDialogCancel": "Cancel",
+      "deleteDialogConfirm": "Delete Account",
+      "deleteSuccess": "Account deletion request submitted",
+      "deleteFailed": "Failed to delete account"
+    }
+  },
+  "dashboardOverview": {
+    "statCards": {
+      "pendingApplications": "Pending Applications",
+      "contentToReview": "Content to Review",
+      "totalCreators": "Total Creators",
+      "openTickets": "Open Tickets",
+      "pendingTasks": "Pending Tasks",
+      "scheduledMeetings": "Scheduled Meetings",
+      "assignedCreators": "Assigned Creators",
+      "pendingCommitments": "Pending Commitments",
+      "upcomingMeetings": "Upcoming Meetings",
+      "pendingInvoices": "Pending Invoices",
+      "recentUploads": "Recent Uploads"
+    },
+    "quickActions": {
+      "manageApplications": "Manage Applications",
+      "reviewContent": "Review Content",
+      "manageUsers": "Manage Users",
+      "analytics": "Analytics",
+      "manageCreators": "Manage Creators",
+      "scheduleMeetings": "Schedule Meetings",
+      "settings": "Settings",
+      "uploadContent": "Upload Content",
+      "viewCommitments": "View Commitments",
+      "myMeetings": "My Meetings",
+      "getSupport": "Get Support"
+    },
+    "activity": {
+      "contentSubmitted": "Content Submitted",
+      "creatorContent": "Creator Content",
+      "contentUploaded": "Content Uploaded",
+      "studioShoot": "Studio Shoot"
+    },
+    "status": {
+      "pendingReview": "Pending Review",
+      "approved": "Approved",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "scheduled": "Scheduled"
+    }
+  },
+  "support": {
+    "title": "Contact Your Representative",
+    "subtitle": "Reach out for any issues, questions, or concerns",
+    "whatsappButton": "Message on WhatsApp",
+    "orSubmit": "Or submit a detailed request",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Select a subject",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Describe your issue or question...",
+    "submitButton": "Submit Request",
+    "sending": "Sending...",
+    "ticketsTitle": "Your Support Tickets",
+    "noTickets": "No support tickets yet.",
+    "responseLabel": "Response:",
+    "respondedOn": "Responded on",
+    "problemReport": "Problem Report",
+    "websiteBug": "Website Bug",
+    "shootCancellation": "Shoot Cancellation",
+    "scheduleChange": "Schedule Change",
+    "paymentQuestion": "Payment Question",
+    "other": "Other",
+    "createSuccess": "Support ticket created",
+    "createSuccessDesc": "Your message has been sent to your representative.",
+    "createError": "Error",
+    "createErrorDesc": "Failed to send message. Please try again.",
+    "loadError": "Unable to load support section. Please refresh the page."
+  },
+  "onboarding": {
+    "personal": {
+      "title": "Personal Information",
+      "fullName": "Full Legal Name",
+      "fullNamePlaceholder": "Your full legal name",
+      "dateOfBirth": "Date of Birth",
+      "nationality": "Nationality",
+      "nationalityPlaceholder": "e.g., Dutch, Brazilian",
+      "location": "Current Location",
+      "locationPlaceholder": "City, Country",
+      "phoneNumber": "Phone Number",
+      "phoneNumberPlaceholder": "+31 6 12345678",
+      "email": "Email Address",
+      "emailPlaceholder": "your.email@example.com",
+      "emergencyContact": "Emergency Contact Name",
+      "emergencyContactPlaceholder": "Name of emergency contact",
+      "emergencyPhone": "Emergency Contact Phone",
+      "emergencyPhonePlaceholder": "+31 6 12345678",
+      "nextButton": "Next Step",
+      "saveSuccess": "Personal information saved!",
+      "saveFailed": "Failed to save. Please try again."
+    },
+    "persona": {
+      "title": "Persona & Story",
+      "subtitle": "Let's craft your unique identity that will captivate your audience.",
+      "stageName": "Stage Name / Persona Name",
+      "stageNamePlaceholder": "Your creator name",
+      "description": "Persona Description",
+      "descriptionPlaceholder": "Describe the character you want to portray (e.g., girl next door, mysterious seductress, confident professional...)",
+      "backstory": "Backstory",
+      "backstoryPlaceholder": "Your character's story and background...",
+      "personality": "Personality Traits",
+      "personalityPlaceholder": "Playful, Mysterious, Intellectual, etc.",
+      "interests": "Interests & Hobbies",
+      "interestsPlaceholder": "Yoga, Travel, Fashion, Gaming, etc.",
+      "fantasy": "Fantasy Niche",
+      "fantasyPlaceholder": "What specific fantasy or appeal will your persona embody?",
+      "backButton": "Back",
+      "nextButton": "Next Step",
+      "saveSuccess": "Persona information saved!",
+      "saveFailed": "Failed to save. Please try again."
+    }
+  },
+  "noAccess": {
+    "title": "Application Under Review",
+    "line1": "Thank you for submitting your application to become a Bureau Boudoir Creator.",
+    "line2": "Your application is currently being reviewed by our team. You'll receive an email when a decision has been made.",
+    "line3": "If you have any questions, please don't hesitate to reach out to us.",
+    "logout": "Logout"
+  },
+  "welcome": {
+    "admin": {
+      "titleSuper": "Welcome, Super Admin!",
+      "titleAdmin": "Welcome, Admin!",
+      "subtitle": "Get started with your admin dashboard",
+      "checklistTitle": "Quick Setup Checklist",
+      "reviewSettings": "Review System Settings",
+      "reviewSettingsDesc": "Check email settings, Google Drive sync, and other configurations",
+      "exploreDashboard": "Explore Dashboard Features",
+      "exploreDashboardDesc": "Applications, creator overview, commitments, meetings, and more",
+      "understandRoles": "Understand Role Management",
+      "understandRolesDesc": "Learn how to manage admins, managers, and creators",
+      "superAdminTitle": "Super Admin Features",
+      "superAdminFeature1": "Access to developer tools and test accounts",
+      "superAdminFeature2": "Full permission and role management",
+      "superAdminFeature3": "System-wide configuration control",
+      "getStarted": "Get Started",
+      "completeFirst": "Complete checklist first"
+    },
+    "manager": {
+      "title": "Welcome, Manager!",
+      "subtitle": "Get started managing your assigned creators",
+      "checklistTitle": "Quick Setup Checklist",
+      "setAvailability": "Set Your Availability",
+      "setAvailabilityDesc": "Configure your meeting schedule so creators can book time with you",
+      "reviewCreators": "Review Your Assigned Creators",
+      "reviewCreatorsDesc": "Check the Overview tab to see all creators assigned to you",
+      "understandResponsibilities": "Understand Your Responsibilities",
+      "understandResponsibilitiesDesc": "Manage meetings, review content, track commitments, and support creators",
+      "dashboardTitle": "Your Manager Dashboard",
+      "dashboardItem1": "Review and approve creator applications",
+      "dashboardItem2": "Schedule and manage meetings with creators",
+      "dashboardItem3": "Review and approve content uploads",
+      "dashboardItem4": "Track commitments and shoots",
+      "dashboardItem5": "Respond to support tickets",
+      "dashboardItem6": "Grant access levels to creators",
+      "getStarted": "Get Started",
+      "completeFirst": "Complete checklist first"
+    }
+  },
+  "profile": {
+    "title": "Creator Profile",
+    "subtitle": "Your onboarding information",
+    "editSettings": "Edit Settings",
+    "complete": "Profile Complete",
+    "inProgress": "In Progress",
+    "completeOnboarding": "Complete your onboarding to unlock all profile sections.",
+    "notProvided": "Not provided",
+    "pleaseComplete": "Please complete profile",
+    "fullName": "Full Name",
+    "dateOfBirth": "Date of Birth",
+    "nationality": "Nationality",
+    "location": "Location",
+    "phoneNumber": "Phone Number",
+    "businessPhone": "Business Phone",
+    "email": "Email",
+    "emergencyContact": "Emergency Contact",
+    "emergencyPhone": "Emergency Phone",
+    "height": "Height",
+    "weight": "Weight",
+    "bodyType": "Body Type",
+    "hairColor": "Hair Color",
+    "eyeColor": "Eye Color",
+    "tattoos": "Tattoos",
+    "piercings": "Piercings",
+    "distinctiveFeatures": "Distinctive Features",
+    "personalInfo": "Personal Information",
+    "physicalDesc": "Physical Description",
+    "amsterdamStory": "My Amsterdam Story",
+    "personaBrand": "Persona & Brand",
+    "lockedTitle": "Complete your meeting to unlock this section",
+    "lockedDesc": "Book and complete your introduction meeting to access all profile sections",
+    "lockedAction": "View Meetings"
   }
 }
