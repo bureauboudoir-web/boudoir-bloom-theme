@@ -47,7 +47,9 @@
       "contentPreferences": "Content Preferences",
       "persona": "Persona",
       "starterPack": "Starter Pack",
-      "scripts": "Scripts Review"
+      "scripts": "Scripts Review",
+      "adminControls": "Admin Controls",
+      "managerControls": "Manager Controls"
     },
     "pages": {
       "creator": "Creator Dashboard",
@@ -56,6 +58,21 @@
       "chat": "Chat Dashboard",
       "marketing": "Marketing Dashboard",
       "studio": "Studio Dashboard"
+    },
+    "pageTitle": {
+      "creatorDashboard": "Creator Dashboard",
+      "managerDashboard": "Manager Dashboard",
+      "adminDashboard": "Admin Dashboard"
+    },
+    "titles": {
+      "adminOverview": "Admin Overview",
+      "managerOverview": "Manager Overview",
+      "creatorWelcome": "Welcome Back!"
+    },
+    "subtitles": {
+      "adminDescription": "Full system control and monitoring",
+      "managerDescription": "Run the agency day-to-day operations",
+      "creatorDescription": "Your personal workspace"
     }
   },
   "admin": {
@@ -754,23 +771,6 @@
     "lockedTitle": "Complete your meeting to unlock this section",
     "lockedDesc": "Book and complete your introduction meeting to access all profile sections",
     "lockedAction": "View Meetings"
-  },
-  "dashboard": {
-    "pageTitle": {
-      "creatorDashboard": "Creator Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminDashboard": "Admin Dashboard"
-    },
-    "titles": {
-      "adminOverview": "Admin Overview",
-      "managerOverview": "Manager Overview",
-      "creatorWelcome": "Welcome Back!"
-    },
-    "subtitles": {
-      "adminDescription": "Full system control and monitoring",
-      "managerDescription": "Run the agency day-to-day operations",
-      "creatorDescription": "Your personal workspace"
-    }
   },
   "creator": {
     "welcome": "Welcome Back!",
