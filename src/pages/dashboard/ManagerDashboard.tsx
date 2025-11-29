@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
@@ -10,6 +11,7 @@ import { UserCheck, Camera, MessageSquare, TrendingUp } from "lucide-react";
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { isManager, isAdmin, isSuperAdmin, loading, rolesLoaded } = useUserRole();
 
@@ -47,58 +49,58 @@ export default function ManagerDashboard() {
   return (
     <DashboardLayout
       navigation={<RoleNavigation sections={managerNavigation} />}
-      title="Manager Dashboard"
+      title={t('dashboard.pageTitle.managerDashboard')}
     >
       <div className="space-y-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Manager Overview</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.titles.managerOverview')}</h2>
           <p className="text-muted-foreground">
-            Run the agency day-to-day operations
+            {t('dashboard.subtitles.managerDescription')}
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('manager.stats.pendingApprovals')}</CardTitle>
               <UserCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">7</div>
-              <p className="text-xs text-muted-foreground">Creators awaiting review</p>
+              <p className="text-xs text-muted-foreground">{t('manager.stats.creatorsAwaitingReview')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Shoots This Week</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('manager.stats.shootsThisWeek')}</CardTitle>
               <Camera className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">4 scheduled today</p>
+              <p className="text-xs text-muted-foreground">{t('manager.stats.scheduledToday')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Scripts</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('manager.stats.activeScripts')}</CardTitle>
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">34</div>
-              <p className="text-xs text-muted-foreground">8 need review</p>
+              <p className="text-xs text-muted-foreground">{t('manager.stats.needReview')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Team Performance</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('manager.stats.teamPerformance')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">95%</div>
-              <p className="text-xs text-muted-foreground">Above target</p>
+              <p className="text-xs text-muted-foreground">{t('manager.stats.aboveTarget')}</p>
             </CardContent>
           </Card>
         </div>
@@ -106,30 +108,30 @@ export default function ManagerDashboard() {
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Today's Tasks</CardTitle>
-              <CardDescription>Priority items requiring attention</CardDescription>
+              <CardTitle>{t('manager.tasks.todaysTasks')}</CardTitle>
+              <CardDescription>{t('manager.tasks.priorityItems')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-red-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Review 3 new creator applications</p>
-                    <p className="text-xs text-muted-foreground">Due today</p>
+                    <p className="text-sm font-medium">{t('manager.tasks.reviewApplications')}</p>
+                    <p className="text-xs text-muted-foreground">{t('manager.tasks.dueToday')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-amber-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Approve PPV scripts for Luna</p>
-                    <p className="text-xs text-muted-foreground">Due today</p>
+                    <p className="text-sm font-medium">{t('manager.tasks.approvePPVScripts')}</p>
+                    <p className="text-xs text-muted-foreground">{t('manager.tasks.dueToday')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Studio shoot at 2 PM</p>
-                    <p className="text-xs text-muted-foreground">In 3 hours</p>
+                    <p className="text-sm font-medium">{t('manager.tasks.studioShoot')}</p>
+                    <p className="text-xs text-muted-foreground">{t('manager.tasks.inHours')}</p>
                   </div>
                 </div>
               </div>
@@ -138,15 +140,15 @@ export default function ManagerDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Team Overview</CardTitle>
-              <CardDescription>Staff performance metrics</CardDescription>
+              <CardTitle>{t('manager.team.teamOverview')}</CardTitle>
+              <CardDescription>{t('manager.team.staffPerformance')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span>Chat Team</span>
-                    <span className="font-medium">92% Target</span>
+                    <span>{t('manager.team.chatTeam')}</span>
+                    <span className="font-medium">92% {t('manager.team.target')}</span>
                   </div>
                   <div className="h-2 rounded-full bg-secondary">
                     <div className="h-2 rounded-full bg-primary w-[92%]" />
@@ -154,8 +156,8 @@ export default function ManagerDashboard() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span>Marketing Team</span>
-                    <span className="font-medium">88% Target</span>
+                    <span>{t('manager.team.marketingTeam')}</span>
+                    <span className="font-medium">88% {t('manager.team.target')}</span>
                   </div>
                   <div className="h-2 rounded-full bg-secondary">
                     <div className="h-2 rounded-full bg-primary w-[88%]" />
@@ -163,8 +165,8 @@ export default function ManagerDashboard() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span>Studio Team</span>
-                    <span className="font-medium">95% Target</span>
+                    <span>{t('manager.team.studioTeam')}</span>
+                    <span className="font-medium">95% {t('manager.team.target')}</span>
                   </div>
                   <div className="h-2 rounded-full bg-secondary">
                     <div className="h-2 rounded-full bg-primary w-[95%]" />

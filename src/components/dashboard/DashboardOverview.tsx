@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +59,7 @@ interface DashboardOverviewProps {
 
 export const DashboardOverview = memo(function DashboardOverview({ userId, onNavigate, accessLevel = 'full_access', meetingCompleted }: DashboardOverviewProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isCreator, isManager, isAdmin, isSuperAdmin } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     pendingCommitments: 0,
@@ -500,9 +502,9 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
                   <Calendar className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl font-serif font-bold mb-2">Welcome to Bureau Boudoir!</h2>
+                  <h2 className="text-xl sm:text-2xl font-serif font-bold mb-2">{t('dashboardOverview.meetingOnly.welcomeTitle')}</h2>
                   <p className="text-muted-foreground text-sm sm:text-base">
-                    Your application has been approved. Complete your introductory meeting to unlock full access to your creator dashboard and begin your journey with us.
+                    {t('dashboardOverview.meetingOnly.welcomeDesc')}
                   </p>
                 </div>
               </div>
@@ -515,9 +517,9 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
-              Your Journey
+              {t('dashboardOverview.meetingOnly.yourJourney')}
             </CardTitle>
-            <CardDescription>Track your progress through the onboarding process</CardDescription>
+            <CardDescription>{t('dashboardOverview.meetingOnly.trackProgress')}</CardDescription>
           </CardHeader>
           <CardContent>
             <CreatorTimeline accessLevel={accessLevel} meetingCompleted={meetingCompleted} />
@@ -529,9 +531,9 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Video className="w-5 h-5 text-primary" />
-              Book Your Introduction Meeting
+              {t('dashboardOverview.meetingOnly.bookMeetingTitle')}
             </CardTitle>
-            <CardDescription>Schedule your meeting to unlock full dashboard access</CardDescription>
+            <CardDescription>{t('dashboardOverview.meetingOnly.bookMeetingDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button 
@@ -540,7 +542,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
               size="lg"
             >
               <Calendar className="w-5 h-5 mr-2" />
-              View Meeting Details
+              {t('dashboardOverview.meetingOnly.viewMeetingDetails')}
             </Button>
           </CardContent>
         </Card>
@@ -550,52 +552,52 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <FileCheck className="w-5 h-5 text-primary" />
-              What Unlocks After Your Meeting
+              {t('dashboardOverview.meetingOnly.whatUnlocksTitle')}
             </CardTitle>
-            <CardDescription>Features that become available once you complete your introduction</CardDescription>
+            <CardDescription>{t('dashboardOverview.meetingOnly.whatUnlocksDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Complete Detailed Onboarding</p>
-                  <p className="text-xs text-muted-foreground">Share your story, boundaries, and creative vision</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.onboarding')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.onboardingDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <Upload className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Upload Portfolio Content</p>
-                  <p className="text-xs text-muted-foreground">Share your best work and build your content library</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.uploadPortfolio')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.uploadPortfolioDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Review and Sign Contract</p>
-                  <p className="text-xs text-muted-foreground">Finalize your partnership agreement</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.signContract')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.signContractDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <CheckSquare className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Set Weekly Commitments</p>
-                  <p className="text-xs text-muted-foreground">Plan your content creation schedule</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.weeklyCommitments')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.weeklyCommitmentsDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <Video className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Schedule Studio Shoots</p>
-                  <p className="text-xs text-muted-foreground">Book professional production sessions</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.studioShoots')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.studioShootsDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <DollarSign className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">Access Invoicing System</p>
-                  <p className="text-xs text-muted-foreground">Track payments and financial details</p>
+                  <p className="font-medium text-sm">{t('dashboardOverview.meetingOnly.unlocks.invoicing')}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboardOverview.meetingOnly.unlocks.invoicingDesc')}</p>
                 </div>
               </div>
             </div>
@@ -605,8 +607,8 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         {/* Quick Access to Available Features */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Available Now</CardTitle>
-            <CardDescription>Features you can access before your meeting</CardDescription>
+            <CardTitle className="text-lg">{t('dashboardOverview.meetingOnly.availableNow')}</CardTitle>
+            <CardDescription>{t('dashboardOverview.meetingOnly.availableNowDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <Button
@@ -615,7 +617,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
               onClick={() => onNavigate('onboarding')}
             >
               <FileText className="w-4 h-4 mr-3" />
-              <span className="flex-1 text-left">View Pre-Meeting Onboarding</span>
+              <span className="flex-1 text-left">{t('dashboardOverview.meetingOnly.viewPreMeeting')}</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
             <Button
@@ -624,7 +626,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
               onClick={() => onNavigate('account')}
             >
               <User className="w-4 h-4 mr-3" />
-              <span className="flex-1 text-left">Manage Your Profile</span>
+              <span className="flex-1 text-left">{t('dashboardOverview.meetingOnly.manageProfile')}</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           </CardContent>
@@ -660,8 +662,8 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="space-y-2">
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold">Welcome Back!</h2>
-        <p className="text-muted-foreground">Here's what's happening with your creator journey</p>
+        <h2 className="text-2xl sm:text-3xl font-serif font-bold">{t('dashboardOverview.welcomeBack')}</h2>
+        <p className="text-muted-foreground">{t('dashboardOverview.welcomeSubtitle')}</p>
       </div>
 
       {/* Alerts - Always Visible */}
@@ -669,7 +671,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         <Alert className="border-amber-500/50 bg-amber-500/10">
           <AlertCircle className="h-4 w-4 text-amber-500" />
           <AlertDescription className="text-sm">
-            You have <strong>{stats.pendingCommitments}</strong> pending commitment{stats.pendingCommitments > 1 ? 's' : ''} that need attention.
+            {t('dashboardOverview.pendingCommitmentsAlert', { count: stats.pendingCommitments })}
           </AlertDescription>
         </Alert>
       )}
@@ -680,9 +682,9 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-primary" />
-              Your Journey
+              {t('dashboardOverview.yourJourney')}
             </CardTitle>
-            <CardDescription>Track your onboarding progress</CardDescription>
+            <CardDescription>{t('dashboardOverview.trackOnboarding')}</CardDescription>
           </CardHeader>
           <CardContent>
             <CreatorTimeline />

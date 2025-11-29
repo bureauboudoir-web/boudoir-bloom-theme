@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
@@ -14,6 +15,7 @@ type CreatorStatus = 'applied' | 'approved' | 'onboarding_in_progress' | 'onboar
 
 export default function CreatorDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { isCreator, loading, rolesLoaded } = useUserRole();
   const [creatorStatus, setCreatorStatus] = useState<CreatorStatus | null>(null);
@@ -79,19 +81,19 @@ export default function CreatorDashboard() {
   // Status-based views
   if (creatorStatus === 'applied') {
     return (
-      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title={t('dashboard.pageTitle.creatorDashboard')}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Card className="max-w-md">
             <CardHeader>
               <Clock className="h-12 w-12 mx-auto mb-4 text-amber-500" />
-              <CardTitle className="text-center">Application Pending</CardTitle>
+              <CardTitle className="text-center">{t('creator.status.applicationPending')}</CardTitle>
               <CardDescription className="text-center">
-                Thank you for applying! Our team is reviewing your application.
+                {t('creator.status.applicationPendingDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground text-center">
-                You'll receive an email once your application is approved and you can begin onboarding.
+                {t('creator.status.applicationPendingEmail')}
               </p>
             </CardContent>
           </Card>
@@ -102,26 +104,26 @@ export default function CreatorDashboard() {
 
   if (creatorStatus === 'approved') {
     return (
-      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title={t('dashboard.pageTitle.creatorDashboard')}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Card className="max-w-md">
             <CardHeader>
               <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
-              <CardTitle className="text-center">Application Approved!</CardTitle>
+              <CardTitle className="text-center">{t('creator.status.applicationApproved')}</CardTitle>
               <CardDescription className="text-center">
-                Welcome to Bureau Boudoir! Let's get you set up.
+                {t('creator.status.applicationApprovedDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground text-center">
-                You're ready to start your onboarding journey. Complete all steps to unlock full access to the platform.
+                {t('creator.status.applicationApprovedReady')}
               </p>
               <Button 
                 className="w-full" 
                 size="lg"
                 onClick={() => navigate('/dashboard')}
               >
-                Start Onboarding
+                {t('creator.actions.startOnboarding')}
               </Button>
             </CardContent>
           </Card>
@@ -132,20 +134,19 @@ export default function CreatorDashboard() {
 
   if (creatorStatus === 'onboarding_complete') {
     return (
-      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title={t('dashboard.pageTitle.creatorDashboard')}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Card className="max-w-md">
             <CardHeader>
               <Sparkles className="h-12 w-12 mx-auto mb-4 text-primary" />
-              <CardTitle className="text-center">Onboarding Complete!</CardTitle>
+              <CardTitle className="text-center">{t('creator.status.onboardingComplete')}</CardTitle>
               <CardDescription className="text-center">
-                Your profile is under review
+                {t('creator.status.onboardingCompleteDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground text-center">
-                Thank you for completing your onboarding! Our team is reviewing your profile. 
-                You'll receive an email once you have full access to all creator tools and features.
+                {t('creator.status.onboardingCompleteReview')}
               </p>
             </CardContent>
           </Card>
@@ -158,79 +159,79 @@ export default function CreatorDashboard() {
   return (
     <DashboardLayout
       navigation={<RoleNavigation sections={creatorNavigation} />}
-      title="Creator Dashboard"
+      title={t('dashboard.pageTitle.creatorDashboard')}
     >
       <div className="space-y-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Welcome Back!</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t('creator.welcome')}</h2>
           <p className="text-muted-foreground">
-            Your personal workspace
+            {t('dashboard.subtitles.creatorDescription')}
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tools Available</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('creator.cards.toolsAvailable')}</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Full Access</div>
-              <p className="text-xs text-muted-foreground">All features unlocked</p>
+              <div className="text-2xl font-bold">{t('creator.cards.fullAccess')}</div>
+              <p className="text-xs text-muted-foreground">{t('creator.cards.allFeaturesUnlocked')}</p>
             </CardContent>
           </Card>
 
           <Link to="/dashboard/creator/tools">
             <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Creator Tools</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('creator.cards.creatorTools')}</CardTitle>
                 <Sparkles className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">Explore</div>
-                <p className="text-xs text-muted-foreground">Voice, Content & More</p>
+                <div className="text-2xl font-bold">{t('creator.cards.explore')}</div>
+                <p className="text-xs text-muted-foreground">{t('creator.cards.voiceContentMore')}</p>
               </CardContent>
             </Card>
           </Link>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Content Library</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('creator.cards.contentLibrary')}</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Browse</div>
-              <p className="text-xs text-muted-foreground">Your uploaded content</p>
+              <div className="text-2xl font-bold">{t('creator.cards.browse')}</div>
+              <p className="text-xs text-muted-foreground">{t('creator.cards.yourUploadedContent')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Support</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('creator.cards.support')}</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Get Help</div>
-              <p className="text-xs text-muted-foreground">Contact support</p>
+              <div className="text-2xl font-bold">{t('creator.cards.getHelp')}</div>
+              <p className="text-xs text-muted-foreground">{t('creator.cards.contactSupport')}</p>
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Get started with these common tasks</CardDescription>
+            <CardTitle>{t('creator.quickActions')}</CardTitle>
+            <CardDescription>{t('creator.quickActionsDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <Button variant="outline" className="justify-start" asChild>
                 <Link to="/dashboard/creator/tools/voice-training">
-                  Upload Voice Samples
+                  {t('creator.actions.uploadVoiceSamples')}
                 </Link>
               </Button>
               <Button variant="outline" className="justify-start" asChild>
                 <Link to="/dashboard/creator/tools/content-preferences">
-                  Update Content Preferences
+                  {t('creator.actions.updateContentPreferences')}
                 </Link>
               </Button>
             </div>
