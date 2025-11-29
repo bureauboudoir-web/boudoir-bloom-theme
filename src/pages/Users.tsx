@@ -2,21 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
-import { PageContainer } from "@/components/PageContainer";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import { RoleNavigation } from "@/components/RoleNavigation";
+import { adminNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users as UsersIcon, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { CreateTestRoleAccounts } from "@/components/admin/CreateTestRoleAccounts";
 
 interface UserData {
@@ -95,20 +89,11 @@ const Users = () => {
   };
 
   return (
-    <PageContainer>
+    <DashboardLayout
+      title="User Management"
+      navigation={<RoleNavigation sections={adminNavigation} />}
+    >
       <div className="space-y-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>User Management</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <UsersIcon className="h-6 w-6 text-primary" />
@@ -188,7 +173,7 @@ const Users = () => {
           </CardContent>
         </Card>
       </div>
-    </PageContainer>
+    </DashboardLayout>
   );
 };
 
