@@ -35,6 +35,10 @@ const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWiza
 const ContentPreferencesWizard = lazy(() => import("./pages/creator/ContentPreferencesWizard"));
 const ApiSettings = lazy(() => import("./pages/creator/ApiSettings"));
 
+// BB Integration pages
+const BBCreatorsList = lazy(() => import("./pages/bb/CreatorsList"));
+const BBCreatorDetail = lazy(() => import("./pages/bb/CreatorDetail"));
+
 // Legacy pages (for backward compatibility)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CreatorDetail = lazy(() => import("./pages/CreatorDetail"));
@@ -77,6 +81,8 @@ const App = () => (
                 <Route path="/dashboard/creator/tools" element={<CreatorTools />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
                 <Route path="/dashboard/api-settings" element={<ApiSettings />} />
+                <Route path="/dashboard/creators" element={<BBCreatorsList />} />
+                <Route path="/dashboard/creators/:id" element={<BBCreatorDetail />} />
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
                 <Route path="/dashboard/marketing/*" element={<MarketingDashboard />} />
                 <Route path="/dashboard/studio/*" element={<StudioDashboard />} />
