@@ -49,6 +49,98 @@
       "creatorDashboard": "Tableau de Bord Créateur",
       "managerDashboard": "Tableau de Bord Manager",
       "adminDashboard": "Tableau de Bord Admin"
+    },
+    "titles": {
+      "adminOverview": "Admin Overview",
+      "managerOverview": "Manager Overview",
+      "creatorWelcome": "Welcome Back!"
+    },
+    "subtitles": {
+      "adminDescription": "Full system control and monitoring",
+      "managerDescription": "Run the agency day-to-day operations",
+      "creatorDescription": "Your personal workspace"
+    }
+  },
+  "admin": {
+    "nav": {
+      "userManagement": "User Management",
+      "creatorManagement": "Creator Management",
+      "staffManagement": "Staff Management",
+      "rolesPermissions": "Roles & Permissions",
+      "reports": "Reports",
+      "apiKeys": "API Keys",
+      "apiDocs": "API Documentation",
+      "settings": "Settings",
+      "approveCreators": "Approve Creators",
+      "assignCreators": "Assign Creators",
+      "reviewScripts": "Review Scripts",
+      "reviewHooks": "Review Hooks",
+      "studioSchedule": "Studio Schedule",
+      "teamNotes": "Team Notes"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "allRegisteredUsers": "All registered users",
+      "activeCreators": "Active Creators",
+      "withFullAccess": "With full access",
+      "staffMembers": "Staff Members",
+      "allRoles": "All roles",
+      "systemHealth": "System Health",
+      "allSystemsOperational": "All systems operational"
+    },
+    "activity": {
+      "recentActivity": "Recent Activity",
+      "latestEvents": "Latest system events and alerts",
+      "newCreatorApproved": "New creator approved",
+      "studioShootScheduled": "Studio shoot scheduled",
+      "permissionUpdateRequired": "Permission update required"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Common administrative tasks",
+      "reviewPendingApplications": "Review Pending Applications",
+      "applicationsWaiting": "applications waiting",
+      "manageUserRoles": "Manage User Roles",
+      "updatePermissions": "Update permissions",
+      "viewSystemReports": "View System Reports",
+      "generateAnalytics": "Generate analytics"
+    }
+  },
+  "manager": {
+    "nav": {
+      "approveCreators": "Approve Creators",
+      "assignCreators": "Assign Creators",
+      "reviewScripts": "Review Scripts",
+      "reviewHooks": "Review Hooks",
+      "studioSchedule": "Studio Schedule",
+      "teamNotes": "Team Notes"
+    },
+    "stats": {
+      "pendingApprovals": "Pending Approvals",
+      "creatorsAwaitingReview": "Creators awaiting review",
+      "shootsThisWeek": "Shoots This Week",
+      "scheduledToday": "4 scheduled today",
+      "activeScripts": "Active Scripts",
+      "needReview": "8 need review",
+      "teamPerformance": "Team Performance",
+      "aboveTarget": "Above target"
+    },
+    "tasks": {
+      "todaysTasks": "Today's Tasks",
+      "priorityItems": "Priority items requiring attention",
+      "reviewApplications": "Review 3 new creator applications",
+      "approvePPVScripts": "Approve PPV scripts for Luna",
+      "studioShoot": "Studio shoot at 2 PM",
+      "dueToday": "Due today",
+      "inHours": "In 3 hours"
+    },
+    "team": {
+      "teamOverview": "Team Overview",
+      "staffPerformance": "Staff performance metrics",
+      "chatTeam": "Chat Team",
+      "marketingTeam": "Marketing Team",
+      "studioTeam": "Studio Team",
+      "target": "Target"
     }
   },
   "homepage": {

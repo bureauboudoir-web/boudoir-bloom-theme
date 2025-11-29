@@ -72,6 +72,33 @@
       "reviewHooks": "Review Hooks",
       "studioSchedule": "Studio Schedule",
       "teamNotes": "Team Notes"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "allRegisteredUsers": "All registered users",
+      "activeCreators": "Active Creators",
+      "withFullAccess": "With full access",
+      "staffMembers": "Staff Members",
+      "allRoles": "All roles",
+      "systemHealth": "System Health",
+      "allSystemsOperational": "All systems operational"
+    },
+    "activity": {
+      "recentActivity": "Recent Activity",
+      "latestEvents": "Latest system events and alerts",
+      "newCreatorApproved": "New creator approved",
+      "studioShootScheduled": "Studio shoot scheduled",
+      "permissionUpdateRequired": "Permission update required"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Common administrative tasks",
+      "reviewPendingApplications": "Review Pending Applications",
+      "applicationsWaiting": "applications waiting",
+      "manageUserRoles": "Manage User Roles",
+      "updatePermissions": "Update permissions",
+      "viewSystemReports": "View System Reports",
+      "generateAnalytics": "Generate analytics"
     }
   },
   "manager": {
@@ -82,6 +109,33 @@
       "reviewHooks": "Review Hooks",
       "studioSchedule": "Studio Schedule",
       "teamNotes": "Team Notes"
+    },
+    "stats": {
+      "pendingApprovals": "Pending Approvals",
+      "creatorsAwaitingReview": "Creators awaiting review",
+      "shootsThisWeek": "Shoots This Week",
+      "scheduledToday": "4 scheduled today",
+      "activeScripts": "Active Scripts",
+      "needReview": "8 need review",
+      "teamPerformance": "Team Performance",
+      "aboveTarget": "Above target"
+    },
+    "tasks": {
+      "todaysTasks": "Today's Tasks",
+      "priorityItems": "Priority items requiring attention",
+      "reviewApplications": "Review 3 new creator applications",
+      "approvePPVScripts": "Approve PPV scripts for Luna",
+      "studioShoot": "Studio shoot at 2 PM",
+      "dueToday": "Due today",
+      "inHours": "In 3 hours"
+    },
+    "team": {
+      "teamOverview": "Team Overview",
+      "staffPerformance": "Staff performance metrics",
+      "chatTeam": "Chat Team",
+      "marketingTeam": "Marketing Team",
+      "studioTeam": "Studio Team",
+      "target": "Target"
     }
   },
   "chat": {
@@ -749,64 +803,6 @@
       "startOnboarding": "Start Onboarding",
       "uploadVoiceSamples": "Upload Voice Samples",
       "updateContentPreferences": "Update Content Preferences"
-    }
-  },
-  "admin": {
-    "stats": {
-      "totalUsers": "Total Users",
-      "allRegisteredUsers": "All registered users",
-      "activeCreators": "Active Creators",
-      "withFullAccess": "With full access",
-      "staffMembers": "Staff Members",
-      "allRoles": "All roles",
-      "systemHealth": "System Health",
-      "allSystemsOperational": "All systems operational"
-    },
-    "activity": {
-      "recentActivity": "Recent Activity",
-      "latestEvents": "Latest system events and alerts",
-      "newCreatorApproved": "New creator approved",
-      "studioShootScheduled": "Studio shoot scheduled",
-      "permissionUpdateRequired": "Permission update required"
-    },
-    "quickActions": {
-      "title": "Quick Actions",
-      "subtitle": "Common administrative tasks",
-      "reviewPendingApplications": "Review Pending Applications",
-      "applicationsWaiting": "applications waiting",
-      "manageUserRoles": "Manage User Roles",
-      "updatePermissions": "Update permissions",
-      "viewSystemReports": "View System Reports",
-      "generateAnalytics": "Generate analytics"
-    }
-  },
-  "manager": {
-    "stats": {
-      "pendingApprovals": "Pending Approvals",
-      "creatorsAwaitingReview": "Creators awaiting review",
-      "shootsThisWeek": "Shoots This Week",
-      "scheduledToday": "4 scheduled today",
-      "activeScripts": "Active Scripts",
-      "needReview": "8 need review",
-      "teamPerformance": "Team Performance",
-      "aboveTarget": "Above target"
-    },
-    "tasks": {
-      "todaysTasks": "Today's Tasks",
-      "priorityItems": "Priority items requiring attention",
-      "reviewApplications": "Review 3 new creator applications",
-      "approvePPVScripts": "Approve PPV scripts for Luna",
-      "studioShoot": "Studio shoot at 2 PM",
-      "dueToday": "Due today",
-      "inHours": "In 3 hours"
-    },
-    "team": {
-      "teamOverview": "Team Overview",
-      "staffPerformance": "Staff performance metrics",
-      "chatTeam": "Chat Team",
-      "marketingTeam": "Marketing Team",
-      "studioTeam": "Studio Team",
-      "target": "Target"
     }
   },
   "dashboardOverview": {
