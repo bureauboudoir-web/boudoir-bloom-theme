@@ -33,6 +33,7 @@ const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
 const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
 const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWizard"));
 const ContentPreferencesWizard = lazy(() => import("./pages/creator/ContentPreferencesWizard"));
+const ApiSettings = lazy(() => import("./pages/creator/ApiSettings"));
 
 // Legacy pages (for backward compatibility)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -75,6 +76,7 @@ const App = () => (
                 <Route path="/dashboard/creator/tools/content-preferences" element={<ContentPreferencesWizard />} />
                 <Route path="/dashboard/creator/tools" element={<CreatorTools />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
+                <Route path="/dashboard/api-settings" element={<ApiSettings />} />
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
                 <Route path="/dashboard/marketing/*" element={<MarketingDashboard />} />
                 <Route path="/dashboard/studio/*" element={<StudioDashboard />} />

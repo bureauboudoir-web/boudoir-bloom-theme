@@ -821,6 +821,33 @@ export type Database = {
           },
         ]
       }
+      fastcast_content_settings: {
+        Row: {
+          bb_api_url: string | null
+          created_at: string | null
+          external_api_key: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bb_api_url?: string | null
+          created_at?: string | null
+          external_api_key?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bb_api_url?: string | null
+          created_at?: string | null
+          external_api_key?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       gdrive_file_syncs: {
         Row: {
           created_at: string | null
