@@ -1,20 +1,26 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { RoleNavigation } from "@/components/RoleNavigation";
 import { creatorNavigation } from "@/config/roleNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Clock, Calendar, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Clock, AlertCircle, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+type CreatorStatus = 'applied' | 'approved' | 'onboarding_in_progress' | 'onboarding_complete' | 'full_access';
 
 export default function CreatorDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isCreator, loading, rolesLoaded } = useUserRole();
+  const [creatorStatus, setCreatorStatus] = useState<CreatorStatus | null>(null);
+  const [statusLoading, setStatusLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !loading) {
       navigate("/login");
       return;
     }
@@ -24,7 +30,33 @@ export default function CreatorDashboard() {
     }
   }, [user, isCreator, loading, rolesLoaded, navigate]);
 
-  if (!user || loading || !rolesLoaded) {
+  useEffect(() => {
+    if (user) {
+      fetchCreatorStatus();
+    }
+  }, [user]);
+
+  const fetchCreatorStatus = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('creator_status')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      
+      setCreatorStatus((data?.creator_status as CreatorStatus) || 'applied');
+    } catch (error) {
+      console.error('Error fetching creator status:', error);
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  if (!user || loading || !rolesLoaded || statusLoading) {
     return (
       <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
         <div className="min-h-screen flex items-center justify-center">
@@ -44,6 +76,85 @@ export default function CreatorDashboard() {
     );
   }
 
+  // Status-based views
+  if (creatorStatus === 'applied') {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Card className="max-w-md">
+            <CardHeader>
+              <Clock className="h-12 w-12 mx-auto mb-4 text-amber-500" />
+              <CardTitle className="text-center">Application Pending</CardTitle>
+              <CardDescription className="text-center">
+                Thank you for applying! Our team is reviewing your application.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground text-center">
+                You'll receive an email once your application is approved and you can begin onboarding.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (creatorStatus === 'approved') {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
+              <CardTitle className="text-center">Application Approved!</CardTitle>
+              <CardDescription className="text-center">
+                Welcome to Bureau Boudoir! Let's get you set up.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground text-center">
+                You're ready to start your onboarding journey. Complete all steps to unlock full access to the platform.
+              </p>
+              <Button 
+                className="w-full" 
+                size="lg"
+                onClick={() => navigate('/dashboard')}
+              >
+                Start Onboarding
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (creatorStatus === 'onboarding_complete') {
+    return (
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />} title="Creator Dashboard">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Card className="max-w-md">
+            <CardHeader>
+              <Sparkles className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <CardTitle className="text-center">Onboarding Complete!</CardTitle>
+              <CardDescription className="text-center">
+                Your profile is under review
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground text-center">
+                Thank you for completing your onboarding! Our team is reviewing your profile. 
+                You'll receive an email once you have full access to all creator tools and features.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Full access dashboard (existing design)
   return (
     <DashboardLayout
       navigation={<RoleNavigation sections={creatorNavigation} />}
@@ -60,117 +171,71 @@ export default function CreatorDashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Onboarding Progress</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Tools Available</CardTitle>
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">75%</div>
-              <p className="text-xs text-muted-foreground">3 steps remaining</p>
+              <div className="text-2xl font-bold">Full Access</div>
+              <p className="text-xs text-muted-foreground">All features unlocked</p>
             </CardContent>
           </Card>
 
+          <Link to="/dashboard/creator/tools">
+            <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Creator Tools</CardTitle>
+                <Sparkles className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Explore</div>
+                <p className="text-xs text-muted-foreground">Voice, Content & More</p>
+              </CardContent>
+            </Card>
+          </Link>
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Tasks</CardTitle>
+              <CardTitle className="text-sm font-medium">Content Library</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-muted-foreground">2 due today</p>
+              <div className="text-2xl font-bold">Browse</div>
+              <p className="text-xs text-muted-foreground">Your uploaded content</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Support</CardTitle>
+              <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">3</div>
-              <p className="text-xs text-muted-foreground">1 meeting, 2 shoots</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progress Score</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">92%</div>
-              <p className="text-xs text-muted-foreground">Great progress!</p>
+              <div className="text-2xl font-bold">Get Help</div>
+              <p className="text-xs text-muted-foreground">Contact support</p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Tasks</CardTitle>
-              <CardDescription>Items requiring your attention</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-2 w-2 rounded-full bg-red-500" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Complete persona details</p>
-                    <p className="text-xs text-muted-foreground">Due today</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="h-2 w-2 rounded-full bg-amber-500" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Review and approve scripts</p>
-                    <p className="text-xs text-muted-foreground">Due tomorrow</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="h-2 w-2 rounded-full bg-green-500" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Meeting with manager</p>
-                    <p className="text-xs text-muted-foreground">Friday at 2 PM</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Getting Started</CardTitle>
-              <CardDescription>Complete your profile</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Profile Info</span>
-                    <span className="font-medium text-green-600">✓ Complete</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Persona Details</span>
-                    <span className="font-medium text-amber-600">75%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-secondary">
-                    <div className="h-2 rounded-full bg-primary w-[75%]" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Starter Pack</span>
-                    <span className="font-medium text-muted-foreground">0%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-secondary">
-                    <div className="h-2 rounded-full bg-primary w-0" />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Get started with these common tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Button variant="outline" className="justify-start" asChild>
+                <Link to="/dashboard/creator/tools/voice-training">
+                  Upload Voice Samples
+                </Link>
+              </Button>
+              <Button variant="outline" className="justify-start" asChild>
+                <Link to="/dashboard/creator/tools/content-preferences">
+                  Update Content Preferences
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

@@ -1584,6 +1584,7 @@ export type Database = {
         Row: {
           assigned_manager_id: string | null
           created_at: string | null
+          creator_status: string | null
           email: string
           full_name: string | null
           id: string
@@ -1595,6 +1596,7 @@ export type Database = {
         Insert: {
           assigned_manager_id?: string | null
           created_at?: string | null
+          creator_status?: string | null
           email: string
           full_name?: string | null
           id: string
@@ -1606,6 +1608,7 @@ export type Database = {
         Update: {
           assigned_manager_id?: string | null
           created_at?: string | null
+          creator_status?: string | null
           email?: string
           full_name?: string | null
           id?: string

@@ -39,7 +39,10 @@ export default function ContentPreferencesWizard() {
   const { roles, loading } = useUserRole();
   const { toast } = useToast();
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [secondaryColor, setSecondaryColor] = useState<string>("#000000");
+  const [accentColor, setAccentColor] = useState<string>("#000000");
   const [selectedVibe, setSelectedVibe] = useState<string>("");
+  const [styleNotes, setStyleNotes] = useState<string>("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [existingUrls, setExistingUrls] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -75,7 +78,10 @@ export default function ContentPreferencesWizard() {
       if (data) {
         setPreferencesId(data.id);
         setSelectedColor(data.primary_color || "");
+        setSecondaryColor(data.secondary_color || "#000000");
+        setAccentColor(data.accent_color || "#000000");
         setSelectedVibe(data.vibe || "");
+        setStyleNotes(data.notes || "");
         if (data.sample_image_urls) {
           const urls = data.sample_image_urls.split(",").filter(Boolean);
           setExistingUrls(urls);
@@ -130,11 +136,11 @@ export default function ContentPreferencesWizard() {
       const preferencesData = {
         creator_id: user.id,
         primary_color: selectedColor || null,
-        secondary_color: null,
-        accent_color: null,
+        secondary_color: secondaryColor || null,
+        accent_color: accentColor || null,
         vibe: selectedVibe || null,
         sample_image_urls: urlString || null,
-        notes: null,
+        notes: styleNotes || null,
       };
 
       if (preferencesId) {
@@ -211,9 +217,9 @@ export default function ContentPreferencesWizard() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Color Picker */}
+            {/* Primary Color Picker */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold">Preferred Colours</Label>
+              <Label className="text-base font-semibold">Primary Brand Colour</Label>
               <div className="flex flex-wrap gap-3">
                 {COLOR_SWATCHES.map((color) => (
                   <button
@@ -229,6 +235,28 @@ export default function ContentPreferencesWizard() {
                     type="button"
                   />
                 ))}
+              </div>
+            </div>
+
+            {/* Secondary and Accent Colors */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Secondary Colour</Label>
+                <Input
+                  type="color"
+                  value={secondaryColor}
+                  onChange={(e) => setSecondaryColor(e.target.value)}
+                  className="h-12 cursor-pointer"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Accent Colour</Label>
+                <Input
+                  type="color"
+                  value={accentColor}
+                  onChange={(e) => setAccentColor(e.target.value)}
+                  className="h-12 cursor-pointer"
+                />
               </div>
             </div>
 
@@ -271,6 +299,18 @@ export default function ContentPreferencesWizard() {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Textual Style Notes */}
+            <div className="space-y-2">
+              <Label className="text-base font-semibold">Textual Style Notes</Label>
+              <textarea
+                value={styleNotes}
+                onChange={(e) => setStyleNotes(e.target.value)}
+                placeholder="Describe your preferred style, tone, and aesthetic preferences..."
+                rows={4}
+                className="w-full px-3 py-2 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              />
             </div>
 
             <Button 

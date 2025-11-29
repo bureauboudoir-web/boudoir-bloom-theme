@@ -26,6 +26,7 @@ interface CreatorStats {
   meeting_status: string | null;
   meeting_date: string | null;
   assigned_manager_name: string | null;
+  creator_status: string | null;
 }
 
 export const CreatorOverview = () => {
@@ -47,7 +48,7 @@ export const CreatorOverview = () => {
     try {
       let query = supabase
         .from('profiles')
-        .select('id, email, full_name, assigned_manager_id')
+        .select('id, email, full_name, assigned_manager_id, creator_status')
         .order('email');
 
       // If manager (not admin/super_admin), filter by assigned creators
@@ -107,6 +108,7 @@ export const CreatorOverview = () => {
           meeting_status: meeting.data?.status || null,
           meeting_date: meeting.data?.meeting_date || null,
           assigned_manager_name: profile.assigned_manager_id ? managerMap.get(profile.assigned_manager_id) || null : null,
+          creator_status: profile.creator_status || 'applied',
         };
       });
 
@@ -190,17 +192,36 @@ export const CreatorOverview = () => {
                       <div className="text-left flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold">{creator.full_name || 'Unnamed Creator'}</h4>
-                          {creator.access_level === 'full_access' && (
+                          
+                          {/* Creator Status Badge */}
+                          {creator.creator_status === 'full_access' && (
                             <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
                               <ShieldCheck className="w-3 h-3 mr-1" />
                               Full Access
                             </Badge>
                           )}
-                          {creator.access_level === 'meeting_only' && (
-                            <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                              Meeting Only
+                          {creator.creator_status === 'onboarding_complete' && (
+                            <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                              Onboarding Complete
                             </Badge>
                           )}
+                          {creator.creator_status === 'onboarding_in_progress' && (
+                            <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                              Onboarding In Progress
+                            </Badge>
+                          )}
+                          {creator.creator_status === 'approved' && (
+                            <Badge className="bg-purple-500/10 text-purple-500 border-purple-500/20">
+                              Approved
+                            </Badge>
+                          )}
+                          {creator.creator_status === 'applied' && (
+                            <Badge className="bg-gray-500/10 text-gray-500 border-gray-500/20">
+                              Applied
+                            </Badge>
+                          )}
+
+                          {/* Meeting Status */}
                           {creator.meeting_status === 'completed' && (
                             <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
                               ✓ Meeting Done

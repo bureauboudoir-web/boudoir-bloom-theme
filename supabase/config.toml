@@ -7,7 +7,13 @@ project_id = "pohxtstwslymiqrxmlal"
 verify_jwt = false  # Public endpoint protected by API key
 
 [functions.upload-external-content]
-verify_jwt = false  # Public endpoint protected by API key
+verify_jwt = false
+
+[functions.send-onboarding-complete]
+verify_jwt = false
+
+[functions.run-production-tests]
+verify_jwt = false
 
 [functions.get-all-creators]
 verify_jwt = false  # Public endpoint protected by API key
