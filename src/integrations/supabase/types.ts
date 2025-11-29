@@ -458,6 +458,45 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_content_preferences: {
+        Row: {
+          accent_color: string | null
+          created_at: string | null
+          creator_id: string
+          id: string
+          notes: string | null
+          primary_color: string | null
+          sample_image_urls: string | null
+          secondary_color: string | null
+          updated_at: string | null
+          vibe: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          notes?: string | null
+          primary_color?: string | null
+          sample_image_urls?: string | null
+          secondary_color?: string | null
+          updated_at?: string | null
+          vibe?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          notes?: string | null
+          primary_color?: string | null
+          sample_image_urls?: string | null
+          secondary_color?: string | null
+          updated_at?: string | null
+          vibe?: string | null
+        }
+        Relationships: []
+      }
       creator_contracts: {
         Row: {
           contract_data: Json | null
