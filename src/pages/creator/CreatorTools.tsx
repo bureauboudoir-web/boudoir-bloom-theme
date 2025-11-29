@@ -70,7 +70,10 @@ export default function CreatorTools() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
+              <Button 
+                className="w-full"
+                onClick={() => navigate('/dashboard/creator/tools/voice-training')}
+              >
                 Launch Voice Training
               </Button>
             </CardContent>
@@ -87,7 +90,10 @@ export default function CreatorTools() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
+              <Button 
+                className="w-full"
+                onClick={() => navigate('/dashboard/creator/tools/content-preferences')}
+              >
                 Launch Preferences Setup
               </Button>
             </CardContent>
