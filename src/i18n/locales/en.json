@@ -40,15 +40,74 @@
       "invoices": "Invoices",
       "contract": "Contract",
       "support": "Contact Us",
-      "adminDashboard": "Admin Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminControls": "Admin Controls",
-      "managerControls": "Manager Controls"
+      "tools": "Tools",
+      "voiceTraining": "Voice Training",
+      "contentPreferences": "Content Preferences",
+      "persona": "Persona",
+      "starterPack": "Starter Pack",
+      "scripts": "Scripts Review"
     },
-    "pageTitle": {
-      "creatorDashboard": "Creator Dashboard",
-      "managerDashboard": "Manager Dashboard",
-      "adminDashboard": "Admin Dashboard"
+    "pages": {
+      "creator": "Creator Dashboard",
+      "manager": "Manager Dashboard",
+      "admin": "Admin Dashboard",
+      "chat": "Chat Dashboard",
+      "marketing": "Marketing Dashboard",
+      "studio": "Studio Dashboard"
+    }
+  },
+  "admin": {
+    "nav": {
+      "userManagement": "User Management",
+      "creatorManagement": "Creator Management",
+      "staffManagement": "Staff Management",
+      "rolesPermissions": "Roles & Permissions",
+      "reports": "Reports",
+      "apiKeys": "API Keys",
+      "apiDocs": "API Documentation",
+      "settings": "Settings",
+      "approveCreators": "Approve Creators",
+      "assignCreators": "Assign Creators",
+      "reviewScripts": "Review Scripts",
+      "reviewHooks": "Review Hooks",
+      "studioSchedule": "Studio Schedule",
+      "teamNotes": "Team Notes"
+    }
+  },
+  "manager": {
+    "nav": {
+      "approveCreators": "Approve Creators",
+      "assignCreators": "Assign Creators",
+      "reviewScripts": "Review Scripts",
+      "reviewHooks": "Review Hooks",
+      "studioSchedule": "Studio Schedule",
+      "teamNotes": "Team Notes"
+    }
+  },
+  "chat": {
+    "nav": {
+      "personas": "Creator Personas",
+      "ppvScripts": "PPV Scripts",
+      "templates": "Chat Templates",
+      "campaigns": "Creator Campaigns",
+      "notes": "Notes"
+    }
+  },
+  "marketing": {
+    "nav": {
+      "hookLibrary": "Hook Library",
+      "postIdeas": "Post Ideas",
+      "contentCalendar": "Content Calendar",
+      "captionsLibrary": "Captions Library",
+      "funnels": "Funnels"
+    }
+  },
+  "studio": {
+    "nav": {
+      "shootPlanner": "Shoot Planner",
+      "shotLists": "Shot Lists",
+      "uploadArea": "Upload Area",
+      "studioCalendar": "Studio Calendar"
     }
   },
   "homepage": {

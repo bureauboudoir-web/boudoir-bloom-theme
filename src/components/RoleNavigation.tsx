@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ interface RoleNavigationProps {
 export const RoleNavigation = ({ sections, onNavigate }: RoleNavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -42,7 +44,7 @@ export const RoleNavigation = ({ sections, onNavigate }: RoleNavigationProps) =>
                     onClick={() => handleNavigate(item.path)}
                   >
                     <Icon className="h-4 w-4" />
-                    <span>{item.label}</span>
+                    <span>{item.labelKey ? t(item.labelKey) : item.label}</span>
                   </Button>
                 );
               })}

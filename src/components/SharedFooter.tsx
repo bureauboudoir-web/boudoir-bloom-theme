@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { X, Instagram, Youtube, Music } from "lucide-react";
 import StreetLampIcon from "./StreetLampIcon";
+import { LanguageSelector } from "./LanguageSelector";
 
 export const SharedFooter = () => {
   const { t } = useTranslation();
@@ -37,20 +38,23 @@ export const SharedFooter = () => {
             </Link>
           </nav>
 
-          {/* Social Icons */}
-          <div className="flex gap-6">
-            <a href="https://x.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.twitter')}>
-              <X className="w-5 h-5" />
-            </a>
-            <a href="https://www.instagram.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.instagram')}>
-              <Instagram className="w-5 h-5" />
-            </a>
-            <a href="https://www.youtube.com/@BureauBoudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.youtube')}>
-              <Youtube className="w-5 h-5" />
-            </a>
-            <a href="https://www.tiktok.com/@bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.tiktok')}>
-              <Music className="w-5 h-5" />
-            </a>
+          {/* Language Selector & Social Icons */}
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <LanguageSelector />
+            <div className="flex gap-6">
+              <a href="https://x.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.twitter')}>
+                <X className="w-5 h-5" />
+              </a>
+              <a href="https://www.instagram.com/bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.instagram')}>
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="https://www.youtube.com/@BureauBoudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.youtube')}>
+                <Youtube className="w-5 h-5" />
+              </a>
+              <a href="https://www.tiktok.com/@bureauboudoir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={t('footer.social.tiktok')}>
+                <Music className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           {/* Copyright */}
