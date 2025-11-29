@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useTranslation } from "react-i18next";
 
 interface OnboardingPersonalProps {
   onNext: () => void;
@@ -24,6 +25,7 @@ interface OnboardingPersonalProps {
 }
 
 const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPersonalProps) => {
+  const { t } = useTranslation();
   const form = useForm<z.infer<typeof onboardingPersonalSchema>>({
     resolver: zodResolver(onboardingPersonalSchema),
     defaultValues: {
@@ -86,16 +88,16 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
 
     const result = await onComplete(1, stepData);
     if (!result.error) {
-      toast.success("Personal information saved!");
+      toast.success(t('onboarding.personal.saveSuccess'));
       onNext();
     } else {
-      toast.error("Failed to save. Please try again.");
+      toast.error(t('onboarding.personal.saveFailed'));
     }
   };
 
   return (
     <Card className="p-6 bg-card border-primary/20">
-      <h3 className="font-serif text-xl font-bold mb-6">Personal Information</h3>
+      <h3 className="font-serif text-xl font-bold mb-6">{t('onboarding.personal.title')}</h3>
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -105,9 +107,9 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Legal Name *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.fullName')} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your full legal name" {...field} />
+                    <Input placeholder={t('onboarding.personal.fullNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +121,7 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="dateOfBirth"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date of Birth</FormLabel>
+                  <FormLabel>{t('onboarding.personal.dateOfBirth')}</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
@@ -133,9 +135,9 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="nationality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nationality *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.nationality')} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Dutch, Brazilian" {...field} />
+                    <Input placeholder={t('onboarding.personal.nationalityPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,9 +149,9 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Current Location *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.location')} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="City, Country" {...field} />
+                    <Input placeholder={t('onboarding.personal.locationPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -161,11 +163,11 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.phoneNumber')} *</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="+31 6 12345678"
+                      placeholder={t('onboarding.personal.phoneNumberPlaceholder')}
                       {...field}
                     />
                   </FormControl>
@@ -179,11 +181,11 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.email')} *</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="your.email@example.com"
+                      placeholder={t('onboarding.personal.emailPlaceholder')}
                       {...field}
                     />
                   </FormControl>
@@ -197,9 +199,9 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="emergencyContact"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Emergency Contact Name *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.emergencyContact')} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name of emergency contact" {...field} />
+                    <Input placeholder={t('onboarding.personal.emergencyContactPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,11 +213,11 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
               name="emergencyPhone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Emergency Contact Phone *</FormLabel>
+                  <FormLabel>{t('onboarding.personal.emergencyPhone')} *</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="+31 6 12345678"
+                      placeholder={t('onboarding.personal.emergencyPhonePlaceholder')}
                       {...field}
                     />
                   </FormControl>
@@ -227,7 +229,7 @@ const OnboardingPersonal = ({ onNext, onboardingData, onComplete }: OnboardingPe
           
           <div className="flex justify-end pt-4">
             <Button type="submit" className="glow-red">
-              Next Step
+              {t('onboarding.personal.nextButton')}
             </Button>
           </div>
         </form>

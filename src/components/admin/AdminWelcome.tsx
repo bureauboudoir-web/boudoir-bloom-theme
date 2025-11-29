@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Shield, Users, Settings, Calendar, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface AdminWelcomeProps {
   userId: string;
@@ -11,6 +12,7 @@ interface AdminWelcomeProps {
 }
 
 export const AdminWelcome = ({ userId, onDismiss, isSuperAdmin }: AdminWelcomeProps) => {
+  const { t } = useTranslation();
   const [checklist, setChecklist] = useState({
     reviewedSettings: false,
     exploredDashboard: false,
