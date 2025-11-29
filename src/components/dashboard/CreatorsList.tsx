@@ -135,7 +135,10 @@ export const CreatorsList = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate(`/creator/${creator.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/creator/${creator.id}`);
+                  }}
                 >
                   View Details
                 </Button>
