@@ -31,6 +31,7 @@
       "overview": "Panoramica",
       "onboarding": "Inserimento",
       "account": "Profilo Creatore",
+      "profile": "Profile",
       "settings": "Impostazioni",
       "meetings": "I Miei Incontri",
       "upload": "Caricamenti",
@@ -40,10 +41,13 @@
       "invoices": "Fatture",
       "contract": "Contratto",
       "support": "Contattaci",
-      "adminDashboard": "Dashboard Admin",
-      "managerDashboard": "Dashboard Manager",
-      "adminControls": "Controlli Admin",
-      "managerControls": "Controlli Manager"
+      "contact": "Contact Us",
+      "tools": "Tools",
+      "voiceTraining": "Voice Training",
+      "contentPreferences": "Content Preferences",
+      "persona": "Persona",
+      "starterPack": "Starter Pack",
+      "scripts": "Scripts Review"
     },
     "pageTitle": {
       "creatorDashboard": "Dashboard Creatore",

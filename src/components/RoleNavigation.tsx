@@ -26,7 +26,7 @@ export const RoleNavigation = ({ sections, onNavigate }: RoleNavigationProps) =>
         {sections.map((section, sectionIndex) => (
           <div key={sectionIndex} className="space-y-2">
             <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              {section.title}
+              {section.titleKey ? t(section.titleKey) : section.title}
             </h3>
             <div className="space-y-1">
               {section.items.map((item, itemIndex) => {

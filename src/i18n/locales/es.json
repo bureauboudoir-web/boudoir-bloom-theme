@@ -31,6 +31,7 @@
       "overview": "Vista General",
       "onboarding": "Incorporación",
       "account": "Perfil de Creador",
+      "profile": "Profile",
       "settings": "Configuración",
       "meetings": "Mis Reuniones",
       "upload": "Subidas",
@@ -40,10 +41,13 @@
       "invoices": "Facturas",
       "contract": "Contrato",
       "support": "Contáctanos",
-      "adminDashboard": "Panel de Administrador",
-      "managerDashboard": "Panel de Gestor",
-      "adminControls": "Controles de Administrador",
-      "managerControls": "Controles de Gestor"
+      "contact": "Contact Us",
+      "tools": "Tools",
+      "voiceTraining": "Voice Training",
+      "contentPreferences": "Content Preferences",
+      "persona": "Persona",
+      "starterPack": "Starter Pack",
+      "scripts": "Scripts Review"
     },
     "pageTitle": {
       "creatorDashboard": "Panel de Creador",
