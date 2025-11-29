@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useTranslation } from "react-i18next";
 
 interface OnboardingPersonaProps {
   onNext: () => void;
@@ -31,6 +32,7 @@ const OnboardingPersona = ({
   onboardingData,
   onComplete,
 }: OnboardingPersonaProps) => {
+  const { t } = useTranslation();
   const form = useForm<z.infer<typeof onboardingPersonaSchema>>({
     resolver: zodResolver(onboardingPersonaSchema),
     defaultValues: {
@@ -85,18 +87,18 @@ const OnboardingPersona = ({
 
     const result = await onComplete(2, stepData);
     if (!result.error) {
-      toast.success("Persona information saved!");
+      toast.success(t('onboarding.persona.saveSuccess'));
       onNext();
     } else {
-      toast.error("Failed to save. Please try again.");
+      toast.error(t('onboarding.persona.saveFailed'));
     }
   };
 
   return (
     <Card className="p-6 bg-card border-primary/20">
-      <h3 className="font-serif text-xl font-bold mb-6">Persona & Story</h3>
+      <h3 className="font-serif text-xl font-bold mb-6">{t('onboarding.persona.title')}</h3>
       <p className="text-sm text-muted-foreground mb-6">
-        Let's craft your unique identity that will captivate your audience.
+        {t('onboarding.persona.subtitle')}
       </p>
 
       <Form {...form}>

@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ListSkeleton } from "@/components/ui/loading-skeletons";
+import { useTranslation } from "react-i18next";
 
 interface ContactSupportProps {
   userId: string;
@@ -50,6 +51,7 @@ const SUBJECT_OPTIONS = [
 const WHATSAPP_NUMBER = "1234567890";
 
 const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingTickets, setLoadingTickets] = useState(true);
@@ -58,7 +60,7 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
   if (!userId || !userName) {
     return (
       <Card className="p-6 bg-card border-primary/20">
-        <p className="text-muted-foreground">Unable to load support section. Please refresh the page.</p>
+        <p className="text-muted-foreground">{t('support.loadError')}</p>
       </Card>
     );
   }
@@ -104,8 +106,8 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
       if (error) throw error;
 
       toast({
-        title: "Support ticket created",
-        description: "Your message has been sent to your representative.",
+        title: t('support.createSuccess'),
+        description: t('support.createSuccessDesc'),
       });
 
       form.reset();
@@ -113,8 +115,8 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
     } catch (error) {
       console.error("Error creating ticket:", error);
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: t('support.createError'),
+        description: t('support.createErrorDesc'),
         variant: "destructive",
       });
     } finally {
@@ -149,9 +151,9 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
       <Card className="p-6 bg-card border-primary/20">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="font-serif text-2xl font-bold mb-2">Contact Your Representative</h2>
+            <h2 className="font-serif text-2xl font-bold mb-2">{t('support.title')}</h2>
             <p className="text-muted-foreground">
-              Reach out for any issues, questions, or concerns
+              {t('support.subtitle')}
             </p>
           </div>
         </div>
@@ -162,7 +164,7 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
           size="default"
         >
           <MessageCircle className="mr-2 h-4 w-4" />
-          Message on WhatsApp
+          {t('support.whatsappButton')}
         </Button>
 
         <div className="relative mb-6">
@@ -170,7 +172,7 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or submit a detailed request</span>
+            <span className="bg-card px-2 text-muted-foreground">{t('support.orSubmit')}</span>
           </div>
         </div>
 
@@ -181,17 +183,17 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
               name="subject"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subject</FormLabel>
+                  <FormLabel>{t('support.subjectLabel')}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a subject" />
+                        <SelectValue placeholder={t('support.subjectPlaceholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {SUBJECT_OPTIONS.map((option) => (
                         <SelectItem key={option} value={option}>
-                          {option}
+                          {t(`support.${option.replace(/\s+/g, '')}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -206,10 +208,10 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Message</FormLabel>
+                  <FormLabel>{t('support.messageLabel')}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Describe your issue or question..."
+                      placeholder={t('support.messagePlaceholder')}
                       className="min-h-[120px]"
                       {...field}
                     />
@@ -221,20 +223,20 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
 
             <Button type="submit" disabled={loading} size="default">
               <Send className="mr-2 h-4 w-4" />
-              {loading ? "Sending..." : "Submit Request"}
+              {loading ? t('support.sending') : t('support.submitButton')}
             </Button>
           </form>
         </Form>
       </Card>
 
       <Card className="p-6 bg-card border-primary/20">
-        <h3 className="font-serif text-xl font-bold mb-4">Your Support Tickets</h3>
+        <h3 className="font-serif text-xl font-bold mb-4">{t('support.ticketsTitle')}</h3>
         {loadingTickets ? (
           <div className="animate-in fade-in duration-300">
             <ListSkeleton count={3} />
           </div>
         ) : tickets.length === 0 ? (
-          <p className="text-muted-foreground">No support tickets yet.</p>
+          <p className="text-muted-foreground">{t('support.noTickets')}</p>
         ) : (
           <div className="space-y-4">
             {tickets.map((ticket) => (
@@ -245,7 +247,7 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold">{ticket.subject}</h4>
+                      <h4 className="font-semibold">{t(`support.${ticket.subject.replace(/\s+/g, '')}`)}</h4>
                       <span className={`text-sm capitalize ${getStatusColor(ticket.status)}`}>
                         {ticket.status.replace("_", " ")}
                       </span>
@@ -258,11 +260,11 @@ const ContactSupport = ({ userId, userName }: ContactSupportProps) => {
                 </div>
                 {ticket.admin_response && (
                   <div className="mt-3 pt-3 border-t border-border">
-                    <p className="text-sm font-semibold mb-1">Response:</p>
+                    <p className="text-sm font-semibold mb-1">{t('support.responseLabel')}</p>
                     <p className="text-sm text-muted-foreground">{ticket.admin_response}</p>
                     {ticket.responded_at && (
                       <p className="text-xs text-muted-foreground mt-1">
-                        Responded on {new Date(ticket.responded_at).toLocaleString()}
+                        {t('support.respondedOn')} {new Date(ticket.responded_at).toLocaleString()}
                       </p>
                     )}
                   </div>
