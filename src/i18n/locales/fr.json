@@ -31,6 +31,7 @@
       "overview": "Aperçu",
       "onboarding": "Intégration",
       "account": "Profil du Créateur",
+      "profile": "Profile",
       "settings": "Paramètres",
       "meetings": "Mes Réunions",
       "upload": "Téléchargements",
@@ -40,10 +41,13 @@
       "invoices": "Factures",
       "contract": "Contrat",
       "support": "Contactez-nous",
-      "adminDashboard": "Tableau de Bord Admin",
-      "managerDashboard": "Tableau de Bord Manager",
-      "adminControls": "Contrôles Admin",
-      "managerControls": "Contrôles Manager"
+      "contact": "Contact Us",
+      "tools": "Tools",
+      "voiceTraining": "Voice Training",
+      "contentPreferences": "Content Preferences",
+      "persona": "Persona",
+      "starterPack": "Starter Pack",
+      "scripts": "Scripts Review"
     },
     "pageTitle": {
       "creatorDashboard": "Tableau de Bord Créateur",

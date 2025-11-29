@@ -31,6 +31,7 @@
       "overview": "Обзор",
       "onboarding": "Регистрация",
       "account": "Профиль Создателя",
+      "profile": "Profile",
       "settings": "Настройки",
       "meetings": "Мои Встречи",
       "upload": "Загрузки",
@@ -40,10 +41,13 @@
       "invoices": "Счета",
       "contract": "Контракт",
       "support": "Связаться с Нами",
-      "adminDashboard": "Панель Администратора",
-      "managerDashboard": "Панель Менеджера",
-      "adminControls": "Управление Администратора",
-      "managerControls": "Управление Менеджера"
+      "contact": "Contact Us",
+      "tools": "Tools",
+      "voiceTraining": "Voice Training",
+      "contentPreferences": "Content Preferences",
+      "persona": "Persona",
+      "starterPack": "Starter Pack",
+      "scripts": "Scripts Review"
     },
     "pageTitle": {
       "creatorDashboard": "Панель Создателя",

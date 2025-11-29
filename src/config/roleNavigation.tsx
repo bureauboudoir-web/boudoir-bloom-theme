@@ -35,6 +35,7 @@ export interface NavItem {
 
 export interface NavSection {
   title: string;
+  titleKey?: string;
   items: NavItem[];
 }
 
@@ -42,12 +43,14 @@ export interface NavSection {
 export const adminNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/admin" },
     ]
   },
   {
     title: "Management",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "User Management", labelKey: "admin.nav.userManagement", icon: Users, path: "/dashboard/admin/users" },
       { label: "Creator Management", labelKey: "admin.nav.creatorManagement", icon: UserCog, path: "/dashboard/admin/creators" },
@@ -57,6 +60,7 @@ export const adminNavigation: NavSection[] = [
   },
   {
     title: "Operations",
+    titleKey: "dashboard.sections.supportAdmin",
     items: [
       { label: "Reports", labelKey: "admin.nav.reports", icon: FileText, path: "/dashboard/admin/reports" },
       { label: "API Keys", labelKey: "admin.nav.apiKeys", icon: Key, path: "/dashboard/admin/api-keys" },
@@ -66,6 +70,7 @@ export const adminNavigation: NavSection[] = [
   },
   {
     title: "Team Tools",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
       { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
@@ -74,6 +79,7 @@ export const adminNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/admin/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/admin/commitments" },
@@ -86,12 +92,14 @@ export const adminNavigation: NavSection[] = [
 export const managerNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/manager" },
     ]
   },
   {
     title: "Creator Management",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Approve Creators", labelKey: "manager.nav.approveCreators", icon: UserCheck, path: "/dashboard/manager/approve" },
       { label: "Assign Creators", labelKey: "manager.nav.assignCreators", icon: Users, path: "/dashboard/manager/assign" },
@@ -101,6 +109,7 @@ export const managerNavigation: NavSection[] = [
   },
   {
     title: "Operations",
+    titleKey: "dashboard.sections.workPayments",
     items: [
       { label: "Studio Schedule", labelKey: "manager.nav.studioSchedule", icon: Camera, path: "/dashboard/manager/studio" },
       { label: "Team Notes", labelKey: "manager.nav.teamNotes", icon: MessageSquare, path: "/dashboard/manager/notes" },
@@ -108,6 +117,7 @@ export const managerNavigation: NavSection[] = [
   },
   {
     title: "Team Tools",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
       { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
@@ -116,6 +126,7 @@ export const managerNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/manager/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/manager/commitments" },
@@ -128,12 +139,14 @@ export const managerNavigation: NavSection[] = [
 export const chatNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/chat" },
     ]
   },
   {
     title: "Content",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Creator Personas", labelKey: "chat.nav.personas", icon: User, path: "/dashboard/chat/personas" },
       { label: "PPV Scripts", labelKey: "chat.nav.ppvScripts", icon: FileText, path: "/dashboard/chat/ppv-scripts" },
@@ -144,6 +157,7 @@ export const chatNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/chat/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/chat/commitments" },
@@ -156,12 +170,14 @@ export const chatNavigation: NavSection[] = [
 export const marketingNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/marketing" },
     ]
   },
   {
     title: "Content",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Hook Library", labelKey: "marketing.nav.hookLibrary", icon: Sparkles, path: "/dashboard/marketing/hooks" },
       { label: "Post Ideas", labelKey: "marketing.nav.postIdeas", icon: BookOpen, path: "/dashboard/marketing/ideas" },
@@ -172,6 +188,7 @@ export const marketingNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/marketing/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/marketing/commitments" },
@@ -184,12 +201,14 @@ export const marketingNavigation: NavSection[] = [
 export const studioNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/studio" },
     ]
   },
   {
     title: "Production",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Shoot Planner", labelKey: "studio.nav.shootPlanner", icon: Calendar, path: "/dashboard/studio/planner" },
       { label: "Shot Lists", labelKey: "studio.nav.shotLists", icon: CheckSquare, path: "/dashboard/studio/shot-lists" },
@@ -199,6 +218,7 @@ export const studioNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/studio/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/studio/commitments" },
@@ -211,12 +231,14 @@ export const studioNavigation: NavSection[] = [
 export const creatorNavigation: NavSection[] = [
   {
     title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
     items: [
       { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/creator" },
     ]
   },
   {
     title: "Profile",
+    titleKey: "dashboard.sections.profileSetup",
     items: [
       { label: "Profile Info", labelKey: "dashboard.nav.profile", icon: User, path: "/dashboard/creator/profile" },
       { label: "Persona", labelKey: "dashboard.nav.persona", icon: Sparkles, path: "/dashboard/creator/persona" },
@@ -225,6 +247,7 @@ export const creatorNavigation: NavSection[] = [
   },
   {
     title: "Tools",
+    titleKey: "dashboard.sections.management",
     items: [
       { label: "Tools", labelKey: "dashboard.nav.tools", icon: Wrench, path: "/dashboard/creator/tools" },
       { label: "Voice Training", labelKey: "dashboard.nav.voiceTraining", icon: Mic, path: "/dashboard/creator/voice-training" },
@@ -234,6 +257,7 @@ export const creatorNavigation: NavSection[] = [
   },
   {
     title: "Personal",
+    titleKey: "dashboard.sections.workPayments",
     items: [
       { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/creator/meetings" },
       { label: "My Commitments", labelKey: "dashboard.nav.commitments", icon: CheckSquare, path: "/dashboard/creator/commitments" },

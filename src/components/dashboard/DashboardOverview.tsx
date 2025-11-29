@@ -671,7 +671,7 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         <Alert className="border-amber-500/50 bg-amber-500/10">
           <AlertCircle className="h-4 w-4 text-amber-500" />
           <AlertDescription className="text-sm">
-            {t('dashboardOverview.pendingCommitmentsAlert', { count: stats.pendingCommitments })}
+            You have <strong>{stats.pendingCommitments}</strong> pending commitment{stats.pendingCommitments > 1 ? 's' : ''} that need attention.
           </AlertDescription>
         </Alert>
       )}
