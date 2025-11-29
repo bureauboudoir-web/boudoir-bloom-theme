@@ -14,14 +14,15 @@ import { creatorNavigation } from "@/config/roleNavigation";
 
 interface Creator {
   id: string;
-  creator_name: string;
-  creator_email: string;
+  name: string;
+  email: string;
+  profile_photo_url?: string | null;
 }
 
 const mockCreators: Creator[] = [
-  { id: "creator-1", creator_name: "Isabella Night", creator_email: "isabella@example.com" },
-  { id: "creator-2", creator_name: "Emma Rose", creator_email: "emma@example.com" },
-  { id: "creator-3", creator_name: "Sophia Belle", creator_email: "sophia@example.com" },
+  { id: "creator-1", name: "Isabella Night", email: "isabella@example.com", profile_photo_url: null },
+  { id: "creator-2", name: "Emma Rose", email: "emma@example.com", profile_photo_url: null },
+  { id: "creator-3", name: "Sophia Belle", email: "sophia@example.com", profile_photo_url: null },
 ];
 
 export default function CreatorsList() {
@@ -44,8 +45,8 @@ export default function CreatorsList() {
       const query = searchQuery.toLowerCase();
       const filtered = creators.filter(
         (creator) =>
-          creator.creator_name?.toLowerCase().includes(query) ||
-          creator.creator_email.toLowerCase().includes(query)
+          creator.name?.toLowerCase().includes(query) ||
+          creator.email.toLowerCase().includes(query)
       );
       setFilteredCreators(filtered);
     }
@@ -83,7 +84,7 @@ export default function CreatorsList() {
         const response = await fetch(`${settings.bb_api_url}/functions/v1/get-all-creators`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${settings.external_api_key}`,
+            'x-api-key': settings.external_api_key,
             'Content-Type': 'application/json',
           },
         });
@@ -142,7 +143,7 @@ export default function CreatorsList() {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Please enter your API Settings first.{" "}
+            BB API not configured. Please add API URL + API Key in API Settings.{" "}
             <Button
               variant="link"
               className="p-0 h-auto font-semibold"
@@ -170,9 +171,9 @@ export default function CreatorsList() {
           {usingMockData && (
             <Alert>
               <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                Using mock data - BB endpoint not available
-              </AlertDescription>
+            <AlertDescription>
+              Using mock data (BB API unreachable).
+            </AlertDescription>
             </Alert>
           )}
 
@@ -198,8 +199,8 @@ export default function CreatorsList() {
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div>
-                    <p className="font-medium">{creator.creator_name}</p>
-                    <p className="text-sm text-muted-foreground">{creator.creator_email}</p>
+                    <p className="font-medium">{creator.name}</p>
+                    <p className="text-sm text-muted-foreground">{creator.email}</p>
                   </div>
                   <Button
                     onClick={() => navigate(`/dashboard/creators/${creator.id}`)}
