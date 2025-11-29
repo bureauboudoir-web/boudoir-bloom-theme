@@ -70,6 +70,7 @@ import { TestDataGenerator } from "@/components/admin/TestDataGenerator";
 import { ProductionReadinessCheck } from "@/components/admin/ProductionReadinessCheck";
 import { EnhancedTestManagerFlow } from "@/components/admin/EnhancedTestManagerFlow";
 import { ComprehensiveProductionTest } from "@/components/admin/ComprehensiveProductionTest";
+import { UsersManagement } from "@/components/admin/UsersManagement";
 import { useTranslation } from "react-i18next";
 import { Wrench, ArrowRight } from "lucide-react";
 import { ChatDashboardContent } from "@/components/dashboard/ChatDashboardContent";
@@ -597,10 +598,9 @@ const Dashboard = () => {
               <CreatorsList />
             )}
 
-            {activeTab === "users" && (isAdmin || isSuperAdmin || isManagerOnly) && (() => {
-              navigate('/users');
-              return null;
-            })()}
+            {activeTab === "users" && (isAdmin || isSuperAdmin || isManagerOnly) && (
+              <UsersManagement />
+            )}
 
 
             {activeTab === "admin" && (isAdmin || isSuperAdmin) && (
