@@ -29,6 +29,10 @@ const ChatDashboard = lazy(() => import("./pages/dashboard/ChatDashboard"));
 const MarketingDashboard = lazy(() => import("./pages/dashboard/MarketingDashboard"));
 const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
 
+// Admin sub-pages
+const ApiKeyManagement = lazy(() => import("./pages/admin/ApiKeyManagement"));
+const ApiDocumentation = lazy(() => import("./pages/admin/ApiDocumentation"));
+
 // Creator sub-pages
 const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
 const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWizard"));
@@ -74,6 +78,8 @@ const App = () => (
                 <Route path="/complete-setup" element={<CompleteSetup />} />
 
                 {/* Role-Based Dashboard Routes */}
+                <Route path="/dashboard/admin/api-keys" element={<ApiKeyManagement />} />
+                <Route path="/dashboard/admin/api-docs" element={<ApiDocumentation />} />
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
                 <Route path="/dashboard/creator/tools/voice-training" element={<VoiceTrainingWizard />} />

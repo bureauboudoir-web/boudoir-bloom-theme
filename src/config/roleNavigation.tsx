@@ -21,7 +21,8 @@ import {
   User,
   Sparkles,
   Mic,
-  Wrench
+  Wrench,
+  Key
 } from "lucide-react";
 
 export interface NavItem {
@@ -57,6 +58,8 @@ export const adminNavigation: NavSection[] = [
     title: "Operations",
     items: [
       { label: "Reports", icon: FileText, path: "/dashboard/admin/reports" },
+      { label: "API Keys", icon: Key, path: "/dashboard/admin/api-keys" },
+      { label: "API Documentation", icon: BookOpen, path: "/dashboard/admin/api-docs" },
       { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
     ]
   },
