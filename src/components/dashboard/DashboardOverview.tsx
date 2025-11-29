@@ -392,25 +392,25 @@ export const DashboardOverview = memo(function DashboardOverview({ userId, onNav
         {
           label: t('dashboardOverview.quickActions.manageCreators'),
           icon: Users,
-          action: () => onNavigate ? onNavigate('overview') : navigate('/manager'),
+          action: () => onNavigate('manager', 'overview'),
           variant: "default" as const,
         },
         {
           label: t('dashboardOverview.quickActions.reviewContent'),
           icon: FileCheck,
-          action: () => onNavigate ? onNavigate('review') : navigate('/manager'),
+          action: () => onNavigate('manager', 'review'),
           variant: "secondary" as const,
         },
         {
           label: t('dashboardOverview.quickActions.scheduleMeetings'),
           icon: Calendar,
-          action: () => onNavigate ? onNavigate('meetings') : navigate('/manager'),
+          action: () => onNavigate('meetings'),
           variant: "secondary" as const,
         },
         {
           label: t('dashboardOverview.quickActions.settings'),
           icon: Settings,
-          action: () => navigate('/settings'),
+          action: () => onNavigate('settings'),
           variant: "outline" as const,
         },
       ];
