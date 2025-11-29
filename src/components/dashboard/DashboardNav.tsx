@@ -15,11 +15,14 @@ import {
   Users,
   MessageSquare,
   TrendingUp,
-  Camera
+  Camera,
+  Wrench,
+  Mic,
+  Palette
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -192,6 +195,28 @@ export const DashboardNav = ({
 
   const hasTeamTools = teamToolsSection.items.length > 0;
 
+  // Add Creator Tools section for creators
+  const creatorToolsSection = isCreator ? {
+    title: "Creator Tools",
+    items: [
+      { 
+        id: "tools" as TabId, 
+        label: "Tools Overview", 
+        icon: <Wrench className="w-4 h-4" /> 
+      },
+      { 
+        id: "voice-training" as TabId, 
+        label: "Voice Training", 
+        icon: <Mic className="w-4 h-4" /> 
+      },
+      { 
+        id: "content-preferences" as TabId, 
+        label: "Content Preferences", 
+        icon: <Palette className="w-4 h-4" /> 
+      },
+    ]
+  } : null;
+
   return (
     <nav className="space-y-6">
       {filteredSections.map((section, idx) => (
@@ -256,6 +281,31 @@ export const DashboardNav = ({
           </h3>
           <div className="space-y-1">
             {teamToolsSection.items.map((item) => (
+              <Button
+                key={item.id}
+                variant={activeTab === item.id ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start h-11 px-3 transition-all",
+                  activeTab === item.id && "bg-primary text-primary-foreground shadow-sm"
+                )}
+                onClick={() => handleTabClick(item.id)}
+              >
+                <span className="mr-3">{item.icon}</span>
+                <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Creator Tools Section */}
+      {creatorToolsSection && (
+        <div className="pt-4 border-t border-border space-y-2">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
+            {creatorToolsSection.title}
+          </h3>
+          <div className="space-y-1">
+            {creatorToolsSection.items.map((item) => (
               <Button
                 key={item.id}
                 variant={activeTab === item.id ? "default" : "ghost"}
