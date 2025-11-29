@@ -12,6 +12,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Upload } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const COLOR_SWATCHES = [
   { name: "Rose", value: "#FF69B4" },
@@ -35,8 +37,13 @@ export default function ContentPreferencesWizard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { roles, loading } = useUserRole();
+  const { toast } = useToast();
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedVibe, setSelectedVibe] = useState<string>("");
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [existingUrls, setExistingUrls] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [preferencesId, setPreferencesId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user && !loading) {
@@ -48,6 +55,126 @@ export default function ContentPreferencesWizard() {
       navigate("/dashboard");
     }
   }, [user, roles, loading, navigate]);
+
+  // Load existing preferences
+  useEffect(() => {
+    const loadPreferences = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("creator_content_preferences")
+        .select("*")
+        .eq("creator_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading preferences:", error);
+        return;
+      }
+
+      if (data) {
+        setPreferencesId(data.id);
+        setSelectedColor(data.primary_color || "");
+        setSelectedVibe(data.vibe || "");
+        if (data.sample_image_urls) {
+          const urls = data.sample_image_urls.split(",").filter(Boolean);
+          setExistingUrls(urls);
+        }
+      }
+    };
+
+    if (user && !loading) {
+      loadPreferences();
+    }
+  }, [user, loading]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setUploadedFiles(Array.from(e.target.files));
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!user) return;
+
+    setSaving(true);
+    try {
+      // Upload new files to storage if any
+      let newUrls: string[] = [];
+      if (uploadedFiles.length > 0) {
+        for (const file of uploadedFiles) {
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("content-uploads")
+            .upload(fileName, file);
+
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            continue;
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("content-uploads")
+            .getPublicUrl(fileName);
+
+          newUrls.push(publicUrl);
+        }
+      }
+
+      // Combine existing and new URLs
+      const allUrls = [...existingUrls, ...newUrls];
+      const urlString = allUrls.join(",");
+
+      const preferencesData = {
+        creator_id: user.id,
+        primary_color: selectedColor || null,
+        secondary_color: null,
+        accent_color: null,
+        vibe: selectedVibe || null,
+        sample_image_urls: urlString || null,
+        notes: null,
+      };
+
+      if (preferencesId) {
+        // Update existing
+        const { error } = await supabase
+          .from("creator_content_preferences")
+          .update(preferencesData)
+          .eq("id", preferencesId);
+
+        if (error) throw error;
+      } else {
+        // Insert new
+        const { data, error } = await supabase
+          .from("creator_content_preferences")
+          .insert(preferencesData)
+          .select()
+          .single();
+
+        if (error) throw error;
+        if (data) setPreferencesId(data.id);
+      }
+
+      toast({
+        title: "Success",
+        description: "Preferences saved successfully",
+      });
+
+      setUploadedFiles([]);
+      setExistingUrls(allUrls);
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save preferences",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -134,12 +261,25 @@ export default function ContentPreferencesWizard() {
                   accept="image/jpeg,image/png,image/webp"
                   multiple
                   className="mt-4 cursor-pointer"
+                  onChange={handleFileChange}
                 />
+                {(uploadedFiles.length > 0 || existingUrls.length > 0) && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {uploadedFiles.length > 0 && `${uploadedFiles.length} new file(s) selected`}
+                    {uploadedFiles.length > 0 && existingUrls.length > 0 && " · "}
+                    {existingUrls.length > 0 && `${existingUrls.length} existing file(s)`}
+                  </p>
+                )}
               </div>
             </div>
 
-            <Button className="w-full" size="lg">
-              Submit
+            <Button 
+              className="w-full" 
+              size="lg" 
+              onClick={handleSubmit}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Submit"}
             </Button>
           </CardContent>
         </Card>
