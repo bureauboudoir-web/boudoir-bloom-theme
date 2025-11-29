@@ -11,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDebounce } from "@/hooks/useDebounce";
 import { format } from "date-fns";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CreatorStats {
   id: string;
@@ -36,6 +37,7 @@ export const CreatorOverview = () => {
   const [loading, setLoading] = useState(true);
   const [expandedCreators, setExpandedCreators] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   useEffect(() => {
@@ -148,13 +150,23 @@ export const CreatorOverview = () => {
   }
 
   const filteredCreators = creators.filter(creator => {
-    if (!debouncedSearch) return true;
-    const search = debouncedSearch.toLowerCase();
-    return (
-      creator.full_name?.toLowerCase().includes(search) ||
-      creator.email.toLowerCase().includes(search) ||
-      creator.assigned_manager_name?.toLowerCase().includes(search)
-    );
+    // Apply search filter
+    if (debouncedSearch) {
+      const search = debouncedSearch.toLowerCase();
+      const matchesSearch = (
+        creator.full_name?.toLowerCase().includes(search) ||
+        creator.email.toLowerCase().includes(search) ||
+        creator.assigned_manager_name?.toLowerCase().includes(search)
+      );
+      if (!matchesSearch) return false;
+    }
+    
+    // Apply status filter
+    if (statusFilter !== "all") {
+      return creator.creator_status === statusFilter;
+    }
+    
+    return true;
   });
 
   return (
@@ -164,15 +176,30 @@ export const CreatorOverview = () => {
         <h3 className="font-serif text-xl font-bold">Creator Overview</h3>
       </div>
 
-      {/* Search bar */}
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-        <Input
-          placeholder="Search by name, email, or manager..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
+      {/* Search and Filter */}
+      <div className="flex gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search by name, email, or manager..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="All Statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="applied">Applied</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
+            <SelectItem value="onboarding_in_progress">Onboarding In Progress</SelectItem>
+            <SelectItem value="onboarding_complete">Onboarding Complete</SelectItem>
+            <SelectItem value="full_access">Full Access</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <ScrollArea className="h-[700px] pr-4">

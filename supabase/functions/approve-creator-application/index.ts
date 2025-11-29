@@ -197,11 +197,12 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Access level already exists");
     }
 
-    // Update profile with assigned manager
+    // Update profile with assigned manager and set creator_status to approved
     const { error: profileUpdateError } = await supabaseAdmin
       .from("profiles")
       .update({
         assigned_manager_id: managerId,
+        creator_status: 'approved',
         updated_at: new Date().toISOString(),
       })
       .eq("id", userId);
