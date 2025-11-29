@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PageContainer } from "@/components/PageContainer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { z } from "zod";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string }>({});
@@ -44,7 +46,7 @@ const ForgotPassword = () => {
 
       if (error) throw error;
 
-      toast.success("Password reset link sent! Check your email.");
+      toast.success(t('forgotPassword.success'));
       setTimeout(() => navigate("/login"), 2000);
     } catch (error: any) {
       console.error("Error sending reset email:", error);
@@ -59,21 +61,21 @@ const ForgotPassword = () => {
       <div className="container mx-auto px-6 py-24 max-w-md">
         <Card className="border-border bg-secondary/20">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl text-[#d1ae94]">Reset Password</CardTitle>
+            <CardTitle className="text-3xl text-[#d1ae94]">{t('forgotPassword.title')}</CardTitle>
             <CardDescription>
-              Enter your email address and we'll send you a link to reset your password
+              {t('forgotPassword.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t('forgotPassword.emailLabel')}</Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  placeholder={t('forgotPassword.emailPlaceholder')}
                   className={errors.email ? "border-red-500" : ""}
                   required
                 />
@@ -87,7 +89,7 @@ const ForgotPassword = () => {
                 className="w-full glow-red bg-primary text-primary-foreground hover:bg-[#d1ae94] rounded-full"
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send Reset Link"}
+                {loading ? t('forgotPassword.sending') : t('forgotPassword.sendButton')}
               </Button>
 
               <div className="text-center">
@@ -96,7 +98,7 @@ const ForgotPassword = () => {
                   onClick={() => navigate("/login")}
                   className="text-sm text-[#d1ae94] hover:text-primary transition-colors"
                 >
-                  Back to Login
+                  {t('forgotPassword.backToLogin')}
                 </button>
               </div>
             </form>
