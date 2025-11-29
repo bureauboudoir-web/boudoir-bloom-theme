@@ -165,6 +165,20 @@ export const ApplicationsManagement = () => {
         throw new Error(data.error);
       }
 
+      // Update creator_status to 'approved' in profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', application.email)
+        .single();
+
+      if (profile) {
+        await supabase
+          .from('profiles')
+          .update({ creator_status: 'approved' })
+          .eq('id', profile.id);
+      }
+
       toast.success("Application approved! User account created and emails sent.");
       fetchApplications();
     } catch (error: any) {
