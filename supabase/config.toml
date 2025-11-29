@@ -6,6 +6,18 @@ project_id = "pohxtstwslymiqrxmlal"
 [functions.get-creator-data]
 verify_jwt = false  # Public endpoint protected by API key
 
+[functions.external-creators]
+verify_jwt = false  # Public endpoint protected by API key
+
+[functions.external-creator-data]
+verify_jwt = false  # Public endpoint protected by API key
+
+[functions.external-content-upload]
+verify_jwt = false  # Public endpoint protected by API key
+
+[functions.external-voice-upload]
+verify_jwt = false  # Public endpoint protected by API key
+
 [functions.upload-external-content]
 verify_jwt = false
 
