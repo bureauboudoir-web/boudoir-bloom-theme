@@ -1,25 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Key, Copy, Trash2, Plus } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { PageContainer } from "@/components/PageContainer";
+import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useNavigate } from "react-router-dom";
+import { Copy, Key, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { format } from "date-fns";
 
 export default function ApiKeyManagement() {
-  const [newKeyLabel, setNewKeyLabel] = useState("");
-  const [generatedKey, setGeneratedKey] = useState<string | null>(null);
-  const [showKeyDialog, setShowKeyDialog] = useState(false);
-  const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
+  const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { isAdmin, isSuperAdmin, rolesLoaded } = useUserRole();
+  const [label, setLabel] = useState("");
+  const [scope, setScope] = useState("full-access");
+  const [showDialog, setShowDialog] = useState(false);
+  const [generatedKey, setGeneratedKey] = useState<string | null>(null);
+  const [revokeKeyId, setRevokeKeyId] = useState<string | null>(null);
+  const [showFullKey, setShowFullKey] = useState(false);
 
-  // Fetch all API keys
+  // Redirect non-admins
+  useEffect(() => {
+    if (rolesLoaded && !isAdmin && !isSuperAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Only administrators can manage API keys.",
+        variant: "destructive",
+      });
+      navigate("/dashboard");
+    }
+  }, [rolesLoaded, isAdmin, isSuperAdmin, navigate, toast]);
+
+  // Fetch API keys
   const { data: apiKeys, isLoading } = useQuery({
     queryKey: ["external-api-keys"],
     queryFn: async () => {
@@ -31,69 +53,86 @@ export default function ApiKeyManagement() {
       if (error) throw error;
       return data;
     },
+    enabled: rolesLoaded && (isAdmin || isSuperAdmin),
   });
 
-  // Generate random API key
+  // Generate API key
   const generateApiKey = () => {
-    const array = new Uint8Array(36);
-    crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    const prefix = "sk";
+    const randomPart = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+    return `${prefix}_${randomPart}`;
   };
 
-  // Hash API key using SHA-256
+  // Hash API key
   const hashApiKey = async (key: string) => {
     const encoder = new TextEncoder();
     const data = encoder.encode(key);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
   };
 
-  // Create new API key mutation
+  // Generate key preview (first 4 + ... + last 4)
+  const generateKeyPreview = (key: string) => {
+    if (key.length < 12) return key;
+    return `${key.substring(0, 7)}...${key.substring(key.length - 4)}`;
+  };
+
+  // Create key mutation
   const createKeyMutation = useMutation({
-    mutationFn: async (label: string) => {
+    mutationFn: async () => {
       const rawKey = generateApiKey();
       const keyHash = await hashApiKey(rawKey);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const { data, error } = await supabase
-        .from("external_api_keys")
-        .insert({
-          key_hash: keyHash,
-          label,
-          created_by: user?.id,
-        })
-        .select()
-        .single();
+      const keyPreview = generateKeyPreview(rawKey);
+
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
+      const { error } = await supabase.from("external_api_keys").insert({
+        label,
+        key_hash: keyHash,
+        key_preview: keyPreview,
+        scope,
+        created_by: userData.user.id,
+      });
 
       if (error) throw error;
-      return { ...data, raw_key: rawKey };
+      return rawKey;
     },
-    onSuccess: (data) => {
+    onSuccess: (rawKey) => {
       queryClient.invalidateQueries({ queryKey: ["external-api-keys"] });
-      setGeneratedKey(data.raw_key);
-      setShowKeyDialog(true);
-      setNewKeyLabel("");
-      toast.success("API key generated successfully");
+      setGeneratedKey(rawKey);
+      setShowDialog(true);
+      setLabel("");
+      setScope("full-access");
+      toast({
+        title: "API Key Created",
+        description: "Your new API key has been generated. Make sure to copy it now.",
+      });
     },
     onError: (error) => {
-      toast.error("Failed to generate API key");
-      console.error(error);
+      toast({
+        title: "Error",
+        description: `Failed to create API key: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 
-  // Revoke API key mutation
+  // Revoke key mutation
   const revokeKeyMutation = useMutation({
     mutationFn: async (keyId: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Not authenticated");
+
       const { error } = await supabase
         .from("external_api_keys")
         .update({
           is_active: false,
           revoked_at: new Date().toISOString(),
-          revoked_by: user?.id,
+          revoked_by: userData.user.id,
         })
         .eq("id", keyId);
 
@@ -101,30 +140,55 @@ export default function ApiKeyManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["external-api-keys"] });
-      toast.success("API key revoked successfully");
-      setKeyToRevoke(null);
+      setRevokeKeyId(null);
+      toast({
+        title: "API Key Revoked",
+        description: "The API key has been revoked successfully.",
+      });
     },
     onError: (error) => {
-      toast.error("Failed to revoke API key");
-      console.error(error);
+      toast({
+        title: "Error",
+        description: `Failed to revoke API key: ${error.message}`,
+        variant: "destructive",
+      });
     },
   });
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast({
+      title: "Copied",
+      description: "API key copied to clipboard",
+    });
   };
+
+  const getScopeBadgeVariant = (scope: string) => {
+    switch (scope) {
+      case "full-access":
+        return "default";
+      case "read-only":
+        return "secondary";
+      case "content-upload-only":
+        return "outline";
+      default:
+        return "default";
+    }
+  };
+
+  if (!rolesLoaded || !(isAdmin || isSuperAdmin)) {
+    return null;
+  }
 
   return (
     <PageContainer>
-      <div className="space-y-6">
+      <div className="container mx-auto p-6 space-y-6">
         <div>
           <h1 className="text-3xl font-bold">API Key Management</h1>
           <p className="text-muted-foreground mt-2">
-            Generate and manage API keys for external integrations
+            Generate and manage external API keys for Content Generator and Voice Tool integrations
           </p>
         </div>
-
         {/* Generate New Key Card */}
         <Card>
           <CardHeader>
@@ -133,29 +197,43 @@ export default function ApiKeyManagement() {
               Generate New API Key
             </CardTitle>
             <CardDescription>
-              Create a new API key for external services. The key will only be shown once.
+              Create a new API key for external integrations
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <Label htmlFor="key-label">Key Label</Label>
-                <Input
-                  id="key-label"
-                  placeholder="e.g., Content Generator, Voice Tool"
-                  value={newKeyLabel}
-                  onChange={(e) => setNewKeyLabel(e.target.value)}
-                />
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="label">Label</Label>
+                  <Input
+                    id="label"
+                    placeholder="e.g., Content-Voice-Tool"
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="scope">Scope</Label>
+                  <Select value={scope} onValueChange={setScope}>
+                    <SelectTrigger id="scope">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="full-access">Full Access</SelectItem>
+                      <SelectItem value="read-only">Read Only</SelectItem>
+                      <SelectItem value="content-upload-only">Content Upload Only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="flex items-end">
-                <Button
-                  onClick={() => createKeyMutation.mutate(newKeyLabel)}
-                  disabled={!newKeyLabel.trim() || createKeyMutation.isPending}
-                >
-                  <Key className="h-4 w-4 mr-2" />
-                  Generate Key
-                </Button>
-              </div>
+              <Button
+                onClick={() => createKeyMutation.mutate()}
+                disabled={!label || createKeyMutation.isPending}
+                className="w-full md:w-auto"
+              >
+                <Key className="h-4 w-4 mr-2" />
+                Generate API Key
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -163,100 +241,164 @@ export default function ApiKeyManagement() {
         {/* API Keys List */}
         <Card>
           <CardHeader>
-            <CardTitle>Existing API Keys</CardTitle>
+            <CardTitle>Active API Keys</CardTitle>
             <CardDescription>
-              View and manage all generated API keys
+              Manage your existing API keys
             </CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <p className="text-muted-foreground">Loading...</p>
+              <div className="text-center py-8 text-muted-foreground">Loading...</div>
             ) : !apiKeys || apiKeys.length === 0 ? (
-              <p className="text-muted-foreground">No API keys generated yet</p>
+              <div className="text-center py-8 text-muted-foreground">
+                No API keys found. Create your first one above.
+              </div>
             ) : (
-              <div className="space-y-4">
-                {apiKeys.map((key) => (
-                  <div
-                    key={key.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold">{key.label}</h3>
-                        <Badge variant={key.is_active ? "default" : "secondary"}>
-                          {key.is_active ? "Active" : "Revoked"}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Created: {new Date(key.created_at).toLocaleString()}
-                      </p>
-                      {key.last_used_at && (
-                        <p className="text-sm text-muted-foreground">
-                          Last used: {new Date(key.last_used_at).toLocaleString()}
-                        </p>
-                      )}
-                    </div>
-                    {key.is_active && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setKeyToRevoke(key.id)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Revoke
-                      </Button>
-                    )}
-                  </div>
-                ))}
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Label</TableHead>
+                      <TableHead>Preview</TableHead>
+                      <TableHead>Scope</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Last Used</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {apiKeys.map((key) => (
+                      <TableRow key={key.id}>
+                        <TableCell className="font-medium">{key.label}</TableCell>
+                        <TableCell className="font-mono text-sm">
+                          {key.key_preview || "sk_xxxx...xxxx"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getScopeBadgeVariant(key.scope)}>
+                            {key.scope}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(key.created_at), "MMM d, yyyy")}
+                        </TableCell>
+                        <TableCell>
+                          {key.last_used_at
+                            ? format(new Date(key.last_used_at), "MMM d, yyyy")
+                            : "Never"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={key.is_active ? "default" : "destructive"}>
+                            {key.is_active ? "Active" : "Revoked"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {key.is_active && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setRevokeKeyId(key.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             )}
           </CardContent>
         </Card>
-
+      
         {/* Generated Key Dialog */}
-        <Dialog open={showKeyDialog} onOpenChange={setShowKeyDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>API Key Generated</DialogTitle>
-              <DialogDescription>
-                Save this key now. You won't be able to see it again.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg font-mono text-sm break-all">
-                {generatedKey}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Key className="h-5 w-5 text-primary" />
+              API Key Generated
+            </DialogTitle>
+            <DialogDescription>
+              <span className="text-destructive font-semibold">
+                ⚠️ This key will not be shown again!
+              </span>
+              <br />
+              Copy it now and store it securely.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Label htmlFor="api-key" className="sr-only">
+                  API Key
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="api-key"
+                    readOnly
+                    value={generatedKey || ""}
+                    type={showFullKey ? "text" : "password"}
+                    className="font-mono text-sm pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    onClick={() => setShowFullKey(!showFullKey)}
+                  >
+                    {showFullKey ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
               <Button
-                className="w-full"
+                type="button"
+                size="sm"
                 onClick={() => generatedKey && copyToClipboard(generatedKey)}
               >
-                <Copy className="h-4 w-4 mr-2" />
-                Copy to Clipboard
+                <Copy className="h-4 w-4" />
               </Button>
             </div>
-          </DialogContent>
-        </Dialog>
+            <div className="rounded-md bg-muted p-3 text-sm">
+              <p className="font-semibold mb-1">Usage:</p>
+              <code className="text-xs">
+                Authorization: Bearer {generatedKey ? generateKeyPreview(generatedKey) : "sk_xxxx...xxxx"}
+              </code>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowDialog(false)}>I've Saved My Key</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-        {/* Revoke Confirmation Dialog */}
-        <AlertDialog open={!!keyToRevoke} onOpenChange={() => setKeyToRevoke(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Revoke API Key</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to revoke this API key? This action cannot be undone and
-                any services using this key will lose access immediately.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => keyToRevoke && revokeKeyMutation.mutate(keyToRevoke)}
-              >
-                Revoke Key
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+      {/* Revoke Confirmation Dialog */}
+      <AlertDialog open={!!revokeKeyId} onOpenChange={() => setRevokeKeyId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Revoke API Key?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. Any applications using this API key will immediately
+              lose access. You'll need to generate a new key and update your applications.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => revokeKeyId && revokeKeyMutation.mutate(revokeKeyId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Revoke Key
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       </div>
     </PageContainer>
   );

@@ -1,46 +1,70 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { useEffect } from "react";
 import { PageContainer } from "@/components/PageContainer";
-
-const API_BASE_URL = "https://pohxtstwslymiqrxmlal.supabase.co/functions/v1";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useNavigate } from "react-router-dom";
+import { Copy, ExternalLink, Key, Shield } from "lucide-react";
 
 export default function ApiDocumentation() {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { isAdmin, isSuperAdmin, rolesLoaded } = useUserRole();
+  
+  // Redirect non-admins
+  useEffect(() => {
+    if (rolesLoaded && !isAdmin && !isSuperAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Only administrators can view API documentation.",
+        variant: "destructive",
+      });
+      navigate("/dashboard");
+    }
+  }, [rolesLoaded, isAdmin, isSuperAdmin, navigate, toast]);
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast({
+      title: "Copied",
+      description: "Copied to clipboard",
+    });
   };
+
+  const baseUrl = "https://pohxtstwslymiqrxmlal.supabase.co/functions/v1";
+
+  if (!rolesLoaded || !(isAdmin || isSuperAdmin)) {
+    return null;
+  }
 
   return (
     <PageContainer>
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <BookOpen className="h-8 w-8" />
-          <div>
-            <h1 className="text-3xl font-bold">API Documentation</h1>
-            <p className="text-muted-foreground mt-1">
-              External API reference for BB integrations
-            </p>
-          </div>
+      <div className="container mx-auto p-6 space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">API Documentation</h1>
+          <p className="text-muted-foreground mt-2">
+            External API documentation for Content Generator and Voice Tool integrations
+          </p>
         </div>
-
-        {/* Base URL */}
+        {/* Base URL Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Base URL</CardTitle>
-            <CardDescription>All API requests must use this base URL</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="h-5 w-5" />
+              Base URL
+            </CardTitle>
+            <CardDescription>All API endpoints use this base URL</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <code className="flex-1 p-3 bg-muted rounded-lg font-mono text-sm">
-                {API_BASE_URL}
+              <code className="flex-1 rounded-md bg-muted px-4 py-3 font-mono text-sm">
+                {baseUrl}
               </code>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(API_BASE_URL)}
+                onClick={() => copyToClipboard(baseUrl)}
               >
                 <Copy className="h-4 w-4" />
               </Button>
@@ -48,269 +72,297 @@ export default function ApiDocumentation() {
           </CardContent>
         </Card>
 
-        {/* Authentication */}
+        {/* Authentication Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Authentication</CardTitle>
-            <CardDescription>All endpoints require API key authentication</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Authentication
+            </CardTitle>
+            <CardDescription>
+              All API requests require authentication using API keys
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm">
-              Include your API key in the <code className="bg-muted px-1.5 py-0.5 rounded">x-api-key</code> header
-              with every request:
-            </p>
-            <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-              <code className="text-sm">{`x-api-key: your-api-key-here`}</code>
-            </pre>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm font-medium mb-2">Header Format:</p>
+              <code className="block rounded-md bg-muted px-4 py-3 font-mono text-sm">
+                x-api-key: YOUR_API_KEY
+              </code>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">Example cURL Request:</p>
+              <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`curl -X GET "${baseUrl}/external-creators" \\
+  -H "x-api-key: sk_your_api_key_here" \\
+  -H "Content-Type: application/json"`}
+              </pre>
+            </div>
+            <div className="rounded-md border border-primary/20 bg-primary/5 p-4">
+              <p className="text-sm flex items-start gap-2">
+                <Key className="h-4 w-4 mt-0.5 text-primary" />
+                <span>
+                  <strong>Note:</strong> Manage your API keys in the{" "}
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-primary"
+                    onClick={() => navigate("/dashboard/admin/api-keys")}
+                  >
+                    API Key Management
+                  </Button>{" "}
+                  section.
+                </span>
+              </p>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Endpoints */}
-        <div className="space-y-4">
-          {/* GET /external-creators */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline">GET</Badge>
-                  /external-creators
-                </CardTitle>
+        {/* Status Endpoint Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>API Status</CardTitle>
+            <CardDescription>Check API availability and version</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="rounded bg-green-100 dark:bg-green-900 px-2 py-1 text-xs font-semibold text-green-700 dark:text-green-300">
+                  GET
+                </span>
+                <code className="font-mono text-sm">/external-api-status</code>
               </div>
-              <CardDescription>Retrieve list of all creators</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground mb-3">
+                Returns the current API status and available endpoints. No authentication required.
+              </p>
               <div>
-                <h4 className="font-semibold mb-2">Request Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`curl -X GET \\
-  ${API_BASE_URL}/external-creators \\
-  -H "x-api-key: your-api-key"`}</code>
+                <p className="text-sm font-medium mb-2">Response Example:</p>
+                <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`{
+  "version": "1.0",
+  "status": "ok",
+  "documentation_url": "/dashboard/admin/api-docs",
+  "endpoints": {
+    "creators_list": "/external-creators",
+    "creator_data": "/external-creator-data",
+    "content_upload": "/external-content-upload",
+    "voice_upload": "/external-voice-upload"
+  }
+}`}
                 </pre>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Endpoints Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Endpoints</CardTitle>
+            <CardDescription>List of all available API endpoints</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Get All Creators */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-blue-100 dark:bg-blue-900 px-2 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300">
+                  GET
+                </span>
+                <code className="font-mono text-sm">/external-creators</code>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Retrieve a list of all creators with their basic information.
+              </p>
               <div>
-                <h4 className="font-semibold mb-2">Response Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
+                <p className="text-sm font-medium mb-2">Response Example:</p>
+                <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`{
   "creators": [
     {
       "id": "uuid",
-      "name": "Creator Name",
+      "full_name": "Creator Name",
       "email": "creator@example.com",
-      "profile_photo_url": "https://...",
-      "creator_status": "active"
+      "creator_status": "active",
+      "profile_picture_url": "https://..."
     }
   ]
-}`}</code>
+}`}
                 </pre>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* GET /external-creator-data */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline">GET</Badge>
-                  /external-creator-data
-                </CardTitle>
+            {/* Get Creator Data */}
+            <div className="space-y-3 border-t pt-6">
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-blue-100 dark:bg-blue-900 px-2 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300">
+                  GET
+                </span>
+                <code className="font-mono text-sm">/external-creator-data</code>
               </div>
-              <CardDescription>Retrieve complete profile for a specific creator</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Get detailed information about a specific creator.
+              </p>
               <div>
-                <h4 className="font-semibold mb-2">Query Parameters</h4>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li><code className="bg-muted px-1.5 py-0.5 rounded">creator_id</code> (required) - UUID of the creator</li>
+                <p className="text-sm font-medium mb-2">Query Parameters:</p>
+                <ul className="text-sm text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li>
+                    <code className="font-mono text-xs">creator_id</code> (required) - UUID of the creator
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Request Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`curl -X GET \\
-  "${API_BASE_URL}/external-creator-data?creator_id=uuid" \\
-  -H "x-api-key: your-api-key"`}</code>
+                <p className="text-sm font-medium mb-2">Response Example:</p>
+                <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`{
+  "profile": { ... },
+  "onboarding_data": { ... },
+  "content_preferences": { ... }
+}`}
                 </pre>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2">Response Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
-  "creator": {
-    "profile": { "id", "name", "email", ... },
-    "onboarding": { ... },
-    "persona": { "stage_name", "description", ... },
-    "boundaries": { "hard_limits", "soft_limits", ... },
-    "style_preferences": { ... },
-    "content_preferences": [ ... ],
-    "voice_files": [ ... ]
-  }
-}`}</code>
-                </pre>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* POST /external-content-upload */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline">POST</Badge>
-                  /external-content-upload
-                </CardTitle>
+            {/* Upload Content */}
+            <div className="space-y-3 border-t pt-6">
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-green-100 dark:bg-green-900 px-2 py-1 text-xs font-semibold text-green-700 dark:text-green-300">
+                  POST
+                </span>
+                <code className="font-mono text-sm">/external-content-upload</code>
               </div>
-              <CardDescription>Upload content to creator's library</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Upload content files for a creator.
+              </p>
               <div>
-                <h4 className="font-semibold mb-2">Request Body</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
+                <p className="text-sm font-medium mb-2">Request Body:</p>
+                <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`{
   "creator_id": "uuid",
-  "type": "text|caption|image|video|script|hook",
-  "content": "content string or URL",
-  "metadata": {
-    "title": "Optional title",
-    "description": "Optional description"
-  }
-}`}</code>
+  "file_name": "content.mp4",
+  "file_url": "https://...",
+  "content_type": "video",
+  "description": "Content description"
+}`}
                 </pre>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2">Request Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`curl -X POST \\
-  ${API_BASE_URL}/external-content-upload \\
-  -H "x-api-key: your-api-key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "creator_id": "uuid",
-    "type": "text",
-    "content": "Sample content"
-  }'`}</code>
-                </pre>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Response Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
-  "success": true,
-  "id": "uuid",
-  "message": "Content uploaded successfully"
-}`}</code>
-                </pre>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* POST /external-voice-upload */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="outline">POST</Badge>
-                  /external-voice-upload
-                </CardTitle>
+            {/* Upload Voice */}
+            <div className="space-y-3 border-t pt-6">
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-green-100 dark:bg-green-900 px-2 py-1 text-xs font-semibold text-green-700 dark:text-green-300">
+                  POST
+                </span>
+                <code className="font-mono text-sm">/external-voice-upload</code>
               </div>
-              <CardDescription>Upload voice samples or models</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Upload voice training data for a creator.
+              </p>
               <div>
-                <h4 className="font-semibold mb-2">Request Body</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
+                <p className="text-sm font-medium mb-2">Request Body:</p>
+                <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs overflow-x-auto">
+{`{
   "creator_id": "uuid",
+  "file_name": "voice_sample.mp3",
   "file_url": "https://...",
-  "type": "raw_sample|approved_sample|final_model",
-  "metadata": {
-    "title": "Optional title",
-    "description": "Optional description",
-    "file_name": "Optional file name"
-  }
-}`}</code>
+  "description": "Voice sample description"
+}`}
                 </pre>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2">Request Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`curl -X POST \\
-  ${API_BASE_URL}/external-voice-upload \\
-  -H "x-api-key: your-api-key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "creator_id": "uuid",
-    "file_url": "https://...",
-    "type": "raw_sample"
-  }'`}</code>
-                </pre>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Response Example</h4>
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto">
-                  <code className="text-sm">{`{
-  "success": true,
-  "id": "uuid",
-  "file_url": "https://...",
-  "message": "Voice file uploaded successfully"
-}`}</code>
-                </pre>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Error Responses */}
+        {/* Error Responses Card */}
         <Card>
           <CardHeader>
             <CardTitle>Error Responses</CardTitle>
-            <CardDescription>Standard error format for all endpoints</CardDescription>
+            <CardDescription>Common error codes and their meanings</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <Badge variant="destructive">401 Unauthorized</Badge>
-              <pre className="mt-2 p-3 bg-muted rounded-lg">
-                <code className="text-sm">{`{ "error": "Invalid API key", "status": 401 }`}</code>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <code className="rounded bg-red-100 dark:bg-red-900 px-2 py-1 text-xs font-semibold text-red-700 dark:text-red-300">
+                  401
+                </code>
+                <span className="text-sm font-medium">Unauthorized</span>
+              </div>
+              <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs">
+{`{ "error": "Invalid API key" }`}
               </pre>
             </div>
-            <div>
-              <Badge variant="destructive">404 Not Found</Badge>
-              <pre className="mt-2 p-3 bg-muted rounded-lg">
-                <code className="text-sm">{`{ "error": "Creator not found", "status": 404 }`}</code>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <code className="rounded bg-red-100 dark:bg-red-900 px-2 py-1 text-xs font-semibold text-red-700 dark:text-red-300">
+                  403
+                </code>
+                <span className="text-sm font-medium">Forbidden</span>
+              </div>
+              <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs">
+{`{ "error": "Insufficient permissions" }`}
               </pre>
             </div>
-            <div>
-              <Badge variant="destructive">400 Bad Request</Badge>
-              <pre className="mt-2 p-3 bg-muted rounded-lg">
-                <code className="text-sm">{`{ "error": "Missing required fields", "status": 400 }`}</code>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <code className="rounded bg-red-100 dark:bg-red-900 px-2 py-1 text-xs font-semibold text-red-700 dark:text-red-300">
+                  404
+                </code>
+                <span className="text-sm font-medium">Not Found</span>
+              </div>
+              <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs">
+{`{ "error": "Resource not found" }`}
+              </pre>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <code className="rounded bg-red-100 dark:bg-red-900 px-2 py-1 text-xs font-semibold text-red-700 dark:text-red-300">
+                  500
+                </code>
+                <span className="text-sm font-medium">Internal Server Error</span>
+              </div>
+              <pre className="rounded-md bg-muted px-4 py-3 font-mono text-xs">
+{`{ "error": "Internal server error" }`}
               </pre>
             </div>
           </CardContent>
         </Card>
 
-        {/* Key Management */}
+        {/* Key Management Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Key Management</CardTitle>
-            <CardDescription>How to manage and rotate API keys</CardDescription>
+            <CardTitle>API Key Management</CardTitle>
+            <CardDescription>How to manage your API keys</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div>
-              <h4 className="font-semibold mb-1">Generating Keys</h4>
-              <p>Generate new API keys in the <a href="/dashboard/admin/api-keys" className="text-primary hover:underline">API Key Management</a> page. Each key is shown only once upon creation.</p>
+          <CardContent className="space-y-3">
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold">Generating Keys</h4>
+              <p className="text-sm text-muted-foreground">
+                Navigate to the{" "}
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-primary"
+                  onClick={() => navigate("/dashboard/admin/api-keys")}
+                >
+                  API Key Management
+                </Button>{" "}
+                page to generate new API keys. Each key will be shown only once upon creation.
+              </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-1">Revoking Keys</h4>
-              <p>Revoke compromised keys immediately. Revoked keys cannot be reactivated.</p>
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold">Revoking Keys</h4>
+              <p className="text-sm text-muted-foreground">
+                If a key is compromised, immediately revoke it from the API Key Management page.
+                Applications using the revoked key will lose access immediately.
+              </p>
             </div>
-            <div>
-              <h4 className="font-semibold mb-1">Key Rotation</h4>
-              <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li>Generate a new API key</li>
-                <li>Update all services to use the new key</li>
-                <li>Monitor usage to ensure old key is no longer used</li>
-                <li>Revoke the old key</li>
-              </ol>
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold">Key Rotation</h4>
+              <p className="text-sm text-muted-foreground">
+                For security best practices, rotate your API keys periodically. Generate a new key,
+                update your applications, then revoke the old key.
+              </p>
             </div>
           </CardContent>
         </Card>

@@ -828,10 +828,12 @@ export type Database = {
           id: string
           is_active: boolean | null
           key_hash: string
+          key_preview: string | null
           label: string
           last_used_at: string | null
           revoked_at: string | null
           revoked_by: string | null
+          scope: string | null
         }
         Insert: {
           created_at?: string | null
@@ -839,10 +841,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           key_hash: string
+          key_preview?: string | null
           label: string
           last_used_at?: string | null
           revoked_at?: string | null
           revoked_by?: string | null
+          scope?: string | null
         }
         Update: {
           created_at?: string | null
@@ -850,10 +854,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           key_hash?: string
+          key_preview?: string | null
           label?: string
           last_used_at?: string | null
           revoked_at?: string | null
           revoked_by?: string | null
+          scope?: string | null
         }
         Relationships: [
           {
