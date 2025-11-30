@@ -18,7 +18,8 @@ import {
   Camera,
   Wrench,
   Mic,
-  Palette
+  Palette,
+  Key
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -168,6 +169,13 @@ export const DashboardNav = ({
         label: t('dashboard.nav.managerControls'), 
         icon: <Shield className="w-4 h-4" /> 
       }] : []),
+      ...(isAdmin || isSuperAdmin ? [{ 
+        id: "api-keys" as TabId, 
+        label: "API Keys", 
+        icon: <Key className="w-4 h-4" />,
+        isExternalRoute: true,
+        route: "/dashboard/admin/api-keys"
+      }] : []),
     ]
   } : null;
 
@@ -263,7 +271,13 @@ export const DashboardNav = ({
                   "w-full justify-start h-11 px-3 transition-all",
                   activeTab === item.id && "bg-primary text-primary-foreground shadow-sm"
                 )}
-                onClick={() => handleTabClick(item.id)}
+                onClick={() => {
+                  if ('isExternalRoute' in item && item.isExternalRoute && 'route' in item) {
+                    window.location.href = item.route as string;
+                  } else {
+                    handleTabClick(item.id);
+                  }
+                }}
               >
                 <span className="mr-3">{item.icon}</span>
                 <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
