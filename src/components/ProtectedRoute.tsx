@@ -18,7 +18,7 @@ export const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { roles, loading } = useUserRole();
+  const { roles, loading, rolesLoaded } = useUserRole();
 
   useEffect(() => {
     // If authentication is required but user is not logged in
@@ -28,7 +28,7 @@ export const ProtectedRoute = ({
     }
 
     // If specific roles are required, check if user has any of them
-    if (allowedRoles && allowedRoles.length > 0 && !loading) {
+    if (allowedRoles && allowedRoles.length > 0 && !loading && rolesLoaded) {
       const hasAllowedRole = roles.some(role => 
         allowedRoles.includes(role) || 
         role === 'admin' || 
@@ -45,7 +45,7 @@ export const ProtectedRoute = ({
   }, [user, roles, loading, allowedRoles, requireAuth, navigate]);
 
   // Show loading spinner while checking authentication
-  if (loading) {
+  if (loading || !rolesLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner size="lg" />
@@ -59,7 +59,7 @@ export const ProtectedRoute = ({
   }
 
   // If specific roles are required and user doesn't have them, don't render
-  if (allowedRoles && allowedRoles.length > 0) {
+  if (allowedRoles && allowedRoles.length > 0 && rolesLoaded) {
     const hasAllowedRole = roles.some(role => 
       allowedRoles.includes(role) || 
       role === 'admin' || 
