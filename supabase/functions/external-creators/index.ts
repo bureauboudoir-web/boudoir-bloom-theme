@@ -1,5 +1,4 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.83.0';
-import { validateApiKey } from '../_shared/apiKeyValidator.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,17 +12,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Validate API key
-    const apiKey = req.headers.get('x-api-key');
-    const validation = await validateApiKey(apiKey);
-    
-    if (!validation.valid) {
-      return new Response(
-        JSON.stringify({ error: "Invalid API key", status: 401 }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     // Create service role client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -70,10 +58,8 @@ Deno.serve(async (req) => {
     // Format response
     const creators = profiles.map(p => ({
       id: p.id,
-      name: p.full_name,
-      email: p.email,
-      profile_photo_url: p.profile_picture_url,
-      creator_status: p.creator_status
+      name: p.full_name || 'Unnamed Creator',
+      avatar: p.profile_picture_url
     }));
 
     return new Response(

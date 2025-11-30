@@ -15,8 +15,9 @@ serve(async (req) => {
     console.log('External API status check requested');
 
     const statusResponse = {
-      version: "1.0",
       status: "ok",
+      timestamp: new Date().toISOString(),
+      version: "1.0",
       documentation_url: "/dashboard/admin/api-docs",
       endpoints: {
         creators_list: "/external-creators",
