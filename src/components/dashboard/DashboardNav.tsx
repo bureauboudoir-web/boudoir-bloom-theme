@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -65,6 +66,7 @@ export const DashboardNav = ({
   accessLevel = 'full_access',
 }: DashboardNavProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
@@ -273,7 +275,7 @@ export const DashboardNav = ({
                 )}
                 onClick={() => {
                   if ('isExternalRoute' in item && item.isExternalRoute && 'route' in item) {
-                    window.location.href = item.route as string;
+                    navigate(item.route as string);
                   } else {
                     handleTabClick(item.id);
                   }
