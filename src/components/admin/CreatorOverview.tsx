@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { Users, CheckCircle, Clock, XCircle, ChevronDown, ShieldCheck, Calendar as CalendarIcon, User as UserIcon, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -234,13 +235,17 @@ export const CreatorOverview = () => {
                           {/* Onboarding Progress Badge */}
                           {creator.onboarding_complete ? (
                             <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-                              100% Complete
+                              ✓ 16/16 Complete
                             </Badge>
                           ) : creator.onboarding_completion > 0 ? (
                             <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20">
-                              {creator.onboarding_completion}% Onboarding
+                              {Math.floor((creator.onboarding_completion / 100) * 16)}/16 Sections
                             </Badge>
-                          ) : null}
+                          ) : (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              0/16 Sections
+                            </Badge>
+                          )}
                           
                           {/* Creator Status Badge */}
                           {creator.creator_status === 'full_access' && (
@@ -307,6 +312,22 @@ export const CreatorOverview = () => {
 
                 <CollapsibleContent>
                   <div className="px-4 pb-4 pt-2 border-t border-border/50">
+                    {/* Onboarding Progress Bar */}
+                    {!creator.onboarding_complete && creator.onboarding_completion > 0 && (
+                      <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs font-medium text-muted-foreground">Onboarding Progress</p>
+                          <span className="text-xs font-semibold">{creator.onboarding_completion}%</span>
+                        </div>
+                        <Progress value={creator.onboarding_completion} className="h-2" />
+                        {creator.onboarding_completion < 100 && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Missing: {16 - Math.floor((creator.onboarding_completion / 100) * 16)} sections
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-muted-foreground font-medium mb-2">Commitments</p>
