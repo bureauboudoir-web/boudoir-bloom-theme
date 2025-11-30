@@ -171,6 +171,10 @@ export default function ApiKeyManagement() {
         return "secondary";
       case "content-upload-only":
         return "outline";
+      case "starterpack-write":
+        return "outline";
+      case "voice-upload":
+        return "outline";
       default:
         return "default";
     }
@@ -222,6 +226,8 @@ export default function ApiKeyManagement() {
                       <SelectItem value="full-access">Full Access</SelectItem>
                       <SelectItem value="read-only">Read Only</SelectItem>
                       <SelectItem value="content-upload-only">Content Upload Only</SelectItem>
+                      <SelectItem value="starterpack-write">Starter Pack Write</SelectItem>
+                      <SelectItem value="voice-upload">Voice Upload</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio';
+export type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio' | 'chat_team' | 'marketing_team' | 'studio_team';
 
 interface UserRoleContextType {
   roles: AppRole[];
@@ -16,6 +16,9 @@ interface UserRoleContextType {
   isChatter: boolean;
   isMarketing: boolean;
   isStudio: boolean;
+  isChatTeam: boolean;
+  isMarketingTeam: boolean;
+  isStudioTeam: boolean;
   isAdminOrManager: boolean;
 }
 
@@ -89,6 +92,9 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
   const isChatter = hasRole('chatter');
   const isMarketing = hasRole('marketing');
   const isStudio = hasRole('studio');
+  const isChatTeam = hasRole('chat_team');
+  const isMarketingTeam = hasRole('marketing_team');
+  const isStudioTeam = hasRole('studio_team');
   const isAdminOrManager = isSuperAdmin || isAdmin || isManager;
 
   return (
@@ -104,6 +110,9 @@ export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
       isChatter,
       isMarketing,
       isStudio,
+      isChatTeam,
+      isMarketingTeam,
+      isStudioTeam,
       isAdminOrManager
     }}>
       {children}

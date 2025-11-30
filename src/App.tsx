@@ -29,6 +29,9 @@ const CreatorDashboard = lazy(() => import("./pages/dashboard/CreatorDashboard")
 const ChatDashboard = lazy(() => import("./pages/dashboard/ChatDashboard"));
 const MarketingDashboard = lazy(() => import("./pages/dashboard/MarketingDashboard"));
 const StudioDashboard = lazy(() => import("./pages/dashboard/StudioDashboard"));
+const ChatTeamDashboard = lazy(() => import("./pages/dashboard/ChatTeamDashboard"));
+const MarketingTeamDashboard = lazy(() => import("./pages/dashboard/MarketingTeamDashboard"));
+const StudioTeamDashboard = lazy(() => import("./pages/dashboard/StudioTeamDashboard"));
 
 // Admin sub-pages
 const ApiKeyManagement = lazy(() => import("./pages/admin/ApiKeyManagement"));
@@ -101,6 +104,21 @@ const App = () => (
                 <Route path="/dashboard/chat/*" element={<ChatDashboard />} />
                 <Route path="/dashboard/marketing/*" element={<MarketingDashboard />} />
                 <Route path="/dashboard/studio/*" element={<StudioDashboard />} />
+                <Route path="/dashboard/chat-team/*" element={
+                  <ProtectedRoute allowedRoles={['chat_team', 'admin', 'super_admin', 'manager']}>
+                    <ChatTeamDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard/marketing-team/*" element={
+                  <ProtectedRoute allowedRoles={['marketing_team', 'admin', 'super_admin', 'manager']}>
+                    <MarketingTeamDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard/studio-team/*" element={
+                  <ProtectedRoute allowedRoles={['studio_team', 'admin', 'super_admin', 'manager']}>
+                    <StudioTeamDashboard />
+                  </ProtectedRoute>
+                } />
 
                 {/* Legacy Routes (for backward compatibility) */}
                 <Route path="/dashboard" element={<Dashboard />} />

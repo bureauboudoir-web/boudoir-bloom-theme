@@ -98,3 +98,9 @@ verify_jwt = false  # Scheduled function, no user auth needed
 
 [functions.external-api-status]
 verify_jwt = false  # Public status endpoint
+
+[functions.external-creator-profile]
+verify_jwt = false  # Public endpoint protected by API key
+
+[functions.external-starterpack-save]
+verify_jwt = false  # Public endpoint protected by API key

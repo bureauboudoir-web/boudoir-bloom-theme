@@ -2278,6 +2278,9 @@ export type Database = {
         | "chatter"
         | "marketing"
         | "studio"
+        | "chat_team"
+        | "marketing_team"
+        | "studio_team"
       support_ticket_status: "open" | "in_progress" | "resolved"
     }
     CompositeTypes: {
@@ -2414,6 +2417,9 @@ export const Constants = {
         "chatter",
         "marketing",
         "studio",
+        "chat_team",
+        "marketing_team",
+        "studio_team",
       ],
       support_ticket_status: ["open", "in_progress", "resolved"],
     },
