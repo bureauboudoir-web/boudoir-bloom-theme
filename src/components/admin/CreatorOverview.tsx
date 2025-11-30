@@ -28,6 +28,8 @@ interface CreatorStats {
   meeting_date: string | null;
   assigned_manager_name: string | null;
   creator_status: string | null;
+  onboarding_completion: number;
+  onboarding_complete: boolean;
 }
 
 export const CreatorOverview = () => {
@@ -72,7 +74,7 @@ export const CreatorOverview = () => {
       const managerMap = new Map(managers?.map(m => [m.id, m.full_name]) || []);
 
       const statsPromises = (profiles || []).map(async (profile) => {
-        const [commitments, shoots, accessLevel, meeting] = await Promise.all([
+        const [commitments, shoots, accessLevel, meeting, onboarding] = await Promise.all([
           supabase
             .from('weekly_commitments')
             .select('status')
@@ -92,11 +94,18 @@ export const CreatorOverview = () => {
             .eq('user_id', profile.id)
             .order('created_at', { ascending: false })
             .limit(1)
+            .maybeSingle(),
+          supabase
+            .from('onboarding_data')
+            .select('completed_steps, is_completed')
+            .eq('user_id', profile.id)
             .maybeSingle()
         ]);
 
         const commitmentsData = commitments.data || [];
         const shootsData = shoots.data || [];
+        const onboardingData = onboarding.data;
+        const completionPercentage = onboardingData ? Math.round(((onboardingData.completed_steps?.length || 0) / 16) * 100) : 0;
 
         return {
           ...profile,
@@ -111,6 +120,8 @@ export const CreatorOverview = () => {
           meeting_date: meeting.data?.meeting_date || null,
           assigned_manager_name: profile.assigned_manager_id ? managerMap.get(profile.assigned_manager_id) || null : null,
           creator_status: profile.creator_status || 'applied',
+          onboarding_completion: completionPercentage,
+          onboarding_complete: onboardingData?.is_completed || false,
         };
       });
 
@@ -219,6 +230,17 @@ export const CreatorOverview = () => {
                       <div className="text-left flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold">{creator.full_name || 'Unnamed Creator'}</h4>
+                          
+                          {/* Onboarding Progress Badge */}
+                          {creator.onboarding_complete ? (
+                            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                              100% Complete
+                            </Badge>
+                          ) : creator.onboarding_completion > 0 ? (
+                            <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                              {creator.onboarding_completion}% Onboarding
+                            </Badge>
+                          ) : null}
                           
                           {/* Creator Status Badge */}
                           {creator.creator_status === 'full_access' && (

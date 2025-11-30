@@ -120,7 +120,7 @@ export const useOnboarding = (userId: string | undefined) => {
       ...stepData,
       completed_steps: completedSteps,
       current_step: step + 1,
-      is_completed: step === 10
+      is_completed: step === 16 // Changed from 10 to 16
     };
 
     return await updateOnboarding(updates);
