@@ -15,7 +15,7 @@ const CreatorDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { isAdmin, isManager, isChatter, isMarketing, isStudio, loading: rolesLoading } = useUserRole();
+  const { isAdmin, isManager, isSuperAdmin, isChatter, isMarketing, isStudio, loading: rolesLoading, rolesLoaded } = useUserRole();
   const [creator, setCreator] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -24,15 +24,15 @@ const CreatorDetail = () => {
   const visibleTabs = useMemo(() => {
     const tabs = {
       overview: true,
-      profile: isAdmin || isManager,
-      aiVoice: isAdmin || isManager,
-      aiScripts: isAdmin || isManager || isChatter || isMarketing,
-      aiPlanner: isAdmin || isManager || isMarketing || isStudio,
-      contracts: isAdmin || isManager,
-      meetings: isAdmin || isManager,
+      profile: isAdmin || isManager || isSuperAdmin,
+      aiVoice: isAdmin || isManager || isSuperAdmin,
+      aiScripts: isAdmin || isManager || isSuperAdmin || isChatter || isMarketing,
+      aiPlanner: isAdmin || isManager || isSuperAdmin || isMarketing || isStudio,
+      contracts: isAdmin || isManager || isSuperAdmin,
+      meetings: isAdmin || isManager || isSuperAdmin,
     };
     return tabs;
-  }, [isAdmin, isManager, isChatter, isMarketing, isStudio]);
+  }, [isAdmin, isManager, isSuperAdmin, isChatter, isMarketing, isStudio]);
 
   useEffect(() => {
     if (!user) {
@@ -40,7 +40,12 @@ const CreatorDetail = () => {
       return;
     }
 
-    if (!rolesLoading && !isAdmin && !isManager) {
+    // Wait for roles to be fully loaded before checking access
+    if (!rolesLoaded) {
+      return; // Don't make access decisions until roles are loaded
+    }
+
+    if (!isAdmin && !isManager && !isSuperAdmin) {
       toast.error("Access denied. Admin or Manager role required.");
       navigate("/dashboard");
       return;
@@ -67,9 +72,9 @@ const CreatorDetail = () => {
     };
 
     fetchCreator();
-  }, [id, user, isAdmin, isManager, rolesLoading, navigate]);
+  }, [id, user, isAdmin, isManager, isSuperAdmin, rolesLoaded, navigate]);
 
-  if (loading || rolesLoading) {
+  if (loading || !rolesLoaded) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <LoadingSpinner />
