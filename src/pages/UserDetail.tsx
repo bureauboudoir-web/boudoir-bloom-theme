@@ -18,7 +18,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-type AppRole = 'admin' | 'manager' | 'chatter' | 'marketing' | 'studio' | 'creator';
+type AppRole = 'admin' | 'manager' | 'chatter' | 'marketing' | 'studio' | 'creator' | 'chat_team' | 'marketing_team' | 'studio_team';
 
 const AVAILABLE_ROLES: { value: AppRole; label: string; description: string }[] = [
   { value: 'admin', label: 'Admin', description: 'Full system access' },
@@ -27,6 +27,9 @@ const AVAILABLE_ROLES: { value: AppRole; label: string; description: string }[] 
   { value: 'marketing', label: 'Marketing', description: 'Marketing and content planning' },
   { value: 'studio', label: 'Studio', description: 'Studio uploads and shoots' },
   { value: 'creator', label: 'Creator', description: 'Content creator account' },
+  { value: 'chat_team', label: 'Chat Team', description: 'Chat team with read access to creator data and scripts' },
+  { value: 'marketing_team', label: 'Marketing Team', description: 'Marketing team with content planning access' },
+  { value: 'studio_team', label: 'Studio Team', description: 'Studio team with upload access' },
 ];
 
 const UserDetail = () => {

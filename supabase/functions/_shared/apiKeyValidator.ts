@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.83.0';
 
 export async function validateApiKey(
   apiKey: string | null
-): Promise<{ valid: boolean; keyId?: string; error?: string }> {
+): Promise<{ valid: boolean; keyId?: string; scope?: string; error?: string }> {
   if (!apiKey) {
     return { valid: false, error: "Missing API key" };
   }
@@ -23,7 +23,7 @@ export async function validateApiKey(
   // Query for matching active key
   const { data: keyRecord, error } = await supabaseClient
     .from('external_api_keys')
-    .select('id')
+    .select('id, scope')
     .eq('key_hash', keyHash)
     .eq('is_active', true)
     .maybeSingle();
@@ -39,5 +39,5 @@ export async function validateApiKey(
     .update({ last_used_at: new Date().toISOString() })
     .eq('id', keyRecord.id);
     
-  return { valid: true, keyId: keyRecord.id };
+  return { valid: true, keyId: keyRecord.id, scope: keyRecord.scope || 'full-access' };
 }

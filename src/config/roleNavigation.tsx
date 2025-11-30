@@ -266,6 +266,94 @@ export const creatorNavigation: NavSection[] = [
   }
 ];
 
+// Chat Team Navigation
+export const chatTeamNavigation: NavSection[] = [
+  {
+    title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
+    items: [
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/chat-team" },
+    ]
+  },
+  {
+    title: "Chat Operations",
+    titleKey: "dashboard.sections.management",
+    items: [
+      { label: "Inbox", icon: MessageCircle, path: "/dashboard/chat-team/inbox" },
+      { label: "Creator List", icon: Users, path: "/dashboard/chat-team/creators" },
+      { label: "Voice Tools", icon: Mic, path: "/dashboard/chat-team/voice" },
+      { label: "Scripts Library", icon: FileText, path: "/dashboard/chat-team/scripts" },
+      { label: "Content Library", icon: BookOpen, path: "/dashboard/chat-team/content" },
+    ]
+  },
+  {
+    title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
+    items: [
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/chat-team/meetings" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/chat-team/contact" },
+    ]
+  }
+];
+
+// Marketing Team Navigation
+export const marketingTeamNavigation: NavSection[] = [
+  {
+    title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
+    items: [
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/marketing-team" },
+    ]
+  },
+  {
+    title: "Marketing Operations",
+    titleKey: "dashboard.sections.management",
+    items: [
+      { label: "Posting Calendar", icon: CalendarRange, path: "/dashboard/marketing-team/calendar" },
+      { label: "Content Planner", icon: TrendingUp, path: "/dashboard/marketing-team/planner" },
+      { label: "Captions Library", icon: FileText, path: "/dashboard/marketing-team/captions" },
+      { label: "Creator Profiles", icon: User, path: "/dashboard/marketing-team/creators" },
+    ]
+  },
+  {
+    title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
+    items: [
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/marketing-team/meetings" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/marketing-team/contact" },
+    ]
+  }
+];
+
+// Studio Team Navigation
+export const studioTeamNavigation: NavSection[] = [
+  {
+    title: "Dashboard",
+    titleKey: "dashboard.sections.dashboard",
+    items: [
+      { label: "Overview", labelKey: "dashboard.nav.overview", icon: LayoutDashboard, path: "/dashboard/studio-team" },
+    ]
+  },
+  {
+    title: "Studio Operations",
+    titleKey: "dashboard.sections.management",
+    items: [
+      { label: "Studio Schedule", icon: Calendar, path: "/dashboard/studio-team/schedule" },
+      { label: "Shoot List", icon: CheckSquare, path: "/dashboard/studio-team/shoots" },
+      { label: "Upload Content", icon: Upload, path: "/dashboard/studio-team/upload" },
+      { label: "Commitments", icon: CalendarRange, path: "/dashboard/studio-team/commitments" },
+    ]
+  },
+  {
+    title: "Personal",
+    titleKey: "dashboard.sections.profileSetup",
+    items: [
+      { label: "My Meetings", labelKey: "dashboard.nav.meetings", icon: Calendar, path: "/dashboard/studio-team/meetings" },
+      { label: "Contact Us", labelKey: "dashboard.nav.contact", icon: Phone, path: "/dashboard/studio-team/contact" },
+    ]
+  }
+];
+
 export const getRoleNavigation = (role: string): NavSection[] => {
   switch (role) {
     case 'admin':
@@ -279,6 +367,12 @@ export const getRoleNavigation = (role: string): NavSection[] => {
       return marketingNavigation;
     case 'studio':
       return studioNavigation;
+    case 'chat_team':
+      return chatTeamNavigation;
+    case 'marketing_team':
+      return marketingTeamNavigation;
+    case 'studio_team':
+      return studioTeamNavigation;
     case 'creator':
       return creatorNavigation;
     default:
@@ -299,6 +393,12 @@ export const getRoleDashboardPath = (role: string): string => {
       return '/dashboard/marketing';
     case 'studio':
       return '/dashboard/studio';
+    case 'chat_team':
+      return '/dashboard/chat-team';
+    case 'marketing_team':
+      return '/dashboard/marketing-team';
+    case 'studio_team':
+      return '/dashboard/studio-team';
     case 'creator':
       return '/dashboard/creator';
     default:
