@@ -91,6 +91,15 @@ export const useAuth = () => {
         case 'studio':
           dashboardPath = '/dashboard/studio';
           break;
+        case 'chat_team':
+          dashboardPath = '/dashboard/chat-team';
+          break;
+        case 'marketing_team':
+          dashboardPath = '/dashboard/marketing-team';
+          break;
+        case 'studio_team':
+          dashboardPath = '/dashboard/studio-team';
+          break;
         case 'creator':
         default:
           dashboardPath = '/dashboard/creator';
