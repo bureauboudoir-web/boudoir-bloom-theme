@@ -16,6 +16,7 @@ interface SectionEditorProps {
   isComplete?: boolean;
   onSave: () => Promise<void>;
   className?: string;
+  saveDisabled?: boolean;
 }
 
 export const SectionEditor = ({
@@ -27,7 +28,8 @@ export const SectionEditor = ({
   isLocked = false,
   isComplete = false,
   onSave,
-  className
+  className,
+  saveDisabled = false
 }: SectionEditorProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -104,7 +106,7 @@ export const SectionEditor = ({
             
             <Button 
               onClick={handleSave} 
-              disabled={isSaving || isLocked}
+              disabled={isSaving || isLocked || saveDisabled}
               className="w-full glow-red"
             >
               {isSaving ? (

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, MapPin, Shield, DollarSign, Theater, MessageSquare, Camera, Palette, BookOpen, Target, Tag, MessageCircle, TrendingUp, Users, Lock as LockIcon } from "lucide-react";
+import { User, Heart, MapPin, Shield, DollarSign, Theater, MessageSquare, Camera, Palette, BookOpen, Target, Tag, MessageCircle, TrendingUp, Users, CheckSquare } from "lucide-react";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 import { AccessLevel } from "@/hooks/useAccessLevel";
 import { toast } from "sonner";
@@ -26,7 +26,7 @@ import { FetishInterestsForm } from "@/components/onboarding/sections/FetishInte
 import { EngagementStyleForm } from "@/components/onboarding/sections/EngagementStyleForm";
 import { MarketPositioningForm } from "@/components/onboarding/sections/MarketPositioningForm";
 import { FanExpectationsForm } from "@/components/onboarding/sections/FanExpectationsForm";
-import { CreativeBoundariesForm } from "@/components/onboarding/sections/CreativeBoundariesForm";
+import { CommitmentsForm } from "@/components/onboarding/sections/CommitmentsForm";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -48,6 +48,7 @@ export const CreatorProfile = ({
   onSaveSection
 }: CreatorProfileProps) => {
   const [sectionData, setSectionData] = useState<Record<number, any>>({});
+  const [sectionValidity, setSectionValidity] = useState<Record<number, boolean>>({});
 
   const isSectionLocked = (sectionIndex: number) => {
     if (sectionIndex <= 2) return false;
@@ -64,8 +65,11 @@ export const CreatorProfile = ({
     return <ProfileSkeleton />;
   }
 
-  const handleSectionChange = (sectionId: number, data: any) => {
+  const handleSectionChange = (sectionId: number, data: any, isValid?: boolean) => {
     setSectionData(prev => ({ ...prev, [sectionId]: data }));
+    if (isValid !== undefined) {
+      setSectionValidity(prev => ({ ...prev, [sectionId]: isValid }));
+    }
   };
 
   const handleSectionSave = async (sectionId: number) => {
@@ -467,21 +471,22 @@ export const CreatorProfile = ({
           </AccordionTrigger>
         </AccordionItem>
 
-        {/* Section 16: Creative Boundaries */}
+        {/* Section 16: Commitments */}
         <AccordionItem value="section-16" className="border-none">
           <AccordionTrigger className="hover:no-underline p-0">
             <SectionEditor
               sectionId={16}
-              title="Creative Boundaries"
-              icon={<LockIcon className="h-5 w-5" />}
-              description="Your creative control preferences"
+              title="Commitments"
+              icon={<CheckSquare className="h-5 w-5" />}
+              description="Final sign-off to complete onboarding"
               isLocked={isSectionLocked(16)}
               isComplete={completedSteps.includes(16)}
               onSave={() => handleSectionSave(16)}
+              saveDisabled={!sectionValidity[16]}
             >
-              <CreativeBoundariesForm
+              <CommitmentsForm
                 initialData={onboardingData.section_creative_boundaries}
-                onChange={(data) => handleSectionChange(16, data)}
+                onChange={(data, isValid) => handleSectionChange(16, data, isValid)}
               />
             </SectionEditor>
           </AccordionTrigger>

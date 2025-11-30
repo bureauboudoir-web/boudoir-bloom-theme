@@ -40,7 +40,7 @@ export const ONBOARDING_STEP_NAMES = {
   13: "Engagement Style",
   14: "Market Positioning",
   15: "Fan Expectations",
-  16: "Creative Boundaries",
+  16: "Commitments",
 } as const;
 
 export const TOTAL_STEPS = 16;

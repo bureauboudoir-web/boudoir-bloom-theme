@@ -131,11 +131,11 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
   },
   {
     id: 16,
-    label: "Creative Boundaries",
+    label: "Commitments",
     stage: "post-meeting",
-    description: "Content limits and collaboration rules",
-    icon: "Lock",
-    required: false,
+    description: "Final sign-off and agreement confirmation",
+    icon: "CheckSquare",
+    required: true,
   },
 ];
 
