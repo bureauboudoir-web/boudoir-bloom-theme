@@ -17,18 +17,21 @@ export const ProtectedRoute = ({
   requireAuth = true 
 }: ProtectedRouteProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { roles, loading, rolesLoaded } = useUserRole();
+  const { user, loading: authLoading } = useAuth();
+  const { roles, loading: rolesLoading, rolesLoaded } = useUserRole();
 
   useEffect(() => {
+    // Don't make any decisions until auth is loaded
+    if (authLoading) return;
+
     // If authentication is required but user is not logged in
-    if (requireAuth && !user && !loading) {
+    if (requireAuth && !user) {
       navigate("/login");
       return;
     }
 
     // If specific roles are required, check if user has any of them
-    if (allowedRoles && allowedRoles.length > 0 && !loading && rolesLoaded) {
+    if (allowedRoles && allowedRoles.length > 0 && !rolesLoading && rolesLoaded) {
       const hasAllowedRole = roles.some(role => 
         allowedRoles.includes(role) || 
         role === 'admin' || 
@@ -42,10 +45,10 @@ export const ProtectedRoute = ({
         navigate(dashboardPath);
       }
     }
-  }, [user, roles, loading, allowedRoles, requireAuth, navigate]);
+  }, [user, roles, authLoading, rolesLoading, allowedRoles, requireAuth, navigate, rolesLoaded]);
 
   // Show loading spinner while checking authentication
-  if (loading || !rolesLoaded) {
+  if (authLoading || rolesLoading || !rolesLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner size="lg" />
