@@ -29,18 +29,6 @@ export default function ApiKeyManagement() {
   const [revokeKeyId, setRevokeKeyId] = useState<string | null>(null);
   const [showFullKey, setShowFullKey] = useState(false);
 
-  // Redirect non-admins
-  useEffect(() => {
-    if (rolesLoaded && !isAdmin && !isSuperAdmin) {
-      toast({
-        title: "Access Denied",
-        description: "Only administrators can manage API keys.",
-        variant: "destructive",
-      });
-      navigate("/dashboard");
-    }
-  }, [rolesLoaded, isAdmin, isSuperAdmin, navigate, toast]);
-
   // Fetch API keys
   const { data: apiKeys, isLoading } = useQuery({
     queryKey: ["external-api-keys"],
