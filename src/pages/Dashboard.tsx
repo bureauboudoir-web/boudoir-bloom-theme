@@ -82,7 +82,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
   const { accessLevel, loading: accessLoading } = useAccessLevel();
-  const { onboardingData, loading: onboardingLoading, completeStep } = useOnboarding(user?.id);
+  const { onboardingData, loading: onboardingLoading, completeStep, saveSection } = useOnboarding(user?.id);
   const { isAdmin, isSuperAdmin, isManagerOnly, isCreator, isManager, isChatter, isMarketing, isStudio, roles, loading: rolesLoading } = useUserRole();
   const { pendingCommitments, newInvoices, newSupportResponses, timelineNotifications, totalNotifications } = useNotifications(user?.id);
   const { data: meetingStatus } = useMeetingStatus();
@@ -540,12 +540,11 @@ const Dashboard = () => {
                 userId={user.id}
                 userName={user.email || undefined}
                 profilePictureUrl={profilePictureUrl}
-                onNavigateToOnboarding={(step) => {
-                  setCurrentStep(step);
-                  setActiveTab("onboarding");
-                }}
                 accessLevel={accessLevel}
                 meetingCompleted={meetingStatus?.meetingCompleted}
+                onSaveSection={async (sectionId, sectionData) => {
+                  await saveSection(sectionId, sectionData);
+                }}
               />
             )}
 

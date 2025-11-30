@@ -126,11 +126,37 @@ export const useOnboarding = (userId: string | undefined) => {
     return await updateOnboarding(updates);
   };
 
+  const saveSection = async (sectionId: number, sectionData: any) => {
+    if (!userId) return { error: new Error('No user ID') };
+
+    try {
+      const { data, error } = await supabase.functions.invoke('update-onboarding-section', {
+        body: { 
+          section_id: sectionId, 
+          data: sectionData,
+          user_id: userId 
+        }
+      });
+
+      if (error) throw error;
+
+      // Refresh onboarding data after successful save
+      await fetchOnboardingData();
+      
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('Error saving section:', error);
+      toast.error('Failed to save section');
+      return { data: null, error };
+    }
+  };
+
   return {
     onboardingData,
     loading,
     updateOnboarding,
     completeStep,
+    saveSection,
     refetch: fetchOnboardingData
   };
 };
