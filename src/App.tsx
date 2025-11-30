@@ -8,6 +8,7 @@ import { UserRoleProvider } from "@/contexts/UserRoleContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SessionTimeoutWarning } from "@/components/SessionTimeoutWarning";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Lazy load pages for better performance
 const Home = lazy(() => import("./pages/Home"));
@@ -78,8 +79,16 @@ const App = () => (
                 <Route path="/complete-setup" element={<CompleteSetup />} />
 
                 {/* Role-Based Dashboard Routes */}
-                <Route path="/dashboard/admin/api-keys" element={<ApiKeyManagement />} />
-                <Route path="/dashboard/admin/api-docs" element={<ApiDocumentation />} />
+                <Route path="/dashboard/admin/api-keys" element={
+                  <ProtectedRoute allowedRoles={['admin', 'super_admin']}>
+                    <ApiKeyManagement />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard/admin/api-docs" element={
+                  <ProtectedRoute allowedRoles={['admin', 'super_admin']}>
+                    <ApiDocumentation />
+                  </ProtectedRoute>
+                } />
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
                 <Route path="/dashboard/creator/tools/voice-training" element={<VoiceTrainingWizard />} />

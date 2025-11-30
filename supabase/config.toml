@@ -95,3 +95,6 @@ verify_jwt = true  # Requires admin authentication
 
 [functions.check-contract-expiry]
 verify_jwt = false  # Scheduled function, no user auth needed
+
+[functions.external-api-status]
+verify_jwt = false  # Public status endpoint
