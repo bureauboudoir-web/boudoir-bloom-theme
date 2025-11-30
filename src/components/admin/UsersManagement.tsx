@@ -142,7 +142,7 @@ export const UsersManagement = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => navigate(`/user/${user.id}`)}
+                    onClick={() => navigate(`/users/${user.id}`)}
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit Roles

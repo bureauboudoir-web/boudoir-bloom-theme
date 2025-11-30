@@ -34,20 +34,27 @@ const CreatorDetail = () => {
     return tabs;
   }, [isAdmin, isManager, isSuperAdmin, isChatter, isMarketing, isStudio]);
 
+  // Separate useEffect for access control - only redirects after roles are loaded
   useEffect(() => {
     if (!user) {
       navigate("/login");
       return;
     }
 
-    // Wait for roles to be fully loaded before checking access
-    if (!rolesLoaded) {
-      return; // Don't make access decisions until roles are loaded
-    }
-
-    if (!isAdmin && !isManager && !isSuperAdmin) {
+    if (rolesLoaded && !isAdmin && !isManager && !isSuperAdmin) {
       toast.error("Access denied. Admin or Manager role required.");
       navigate("/dashboard");
+    }
+  }, [user, rolesLoaded, isAdmin, isManager, isSuperAdmin, navigate]);
+
+  // Separate useEffect for fetching creator data
+  useEffect(() => {
+    if (!user || !rolesLoaded) {
+      return;
+    }
+
+    // Only fetch if user has access
+    if (!isAdmin && !isManager && !isSuperAdmin) {
       return;
     }
 
@@ -72,7 +79,7 @@ const CreatorDetail = () => {
     };
 
     fetchCreator();
-  }, [id, user, isAdmin, isManager, isSuperAdmin, rolesLoaded, navigate]);
+  }, [id, user, rolesLoaded, isAdmin, isManager, isSuperAdmin]);
 
   if (loading || !rolesLoaded) {
     return (
