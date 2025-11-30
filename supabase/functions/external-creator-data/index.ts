@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
       .eq('creator_id', creatorId)
       .maybeSingle();
 
-    // Build comprehensive response
+    // Build comprehensive response with all 16 sections (clean JSON for Content Generator)
     const creator = {
       profile: {
         id: profile.id,
@@ -91,23 +91,74 @@ Deno.serve(async (req) => {
         profile_photo_url: profile.profile_picture_url,
         creator_status: profile.creator_status
       },
-      onboarding: onboarding || {},
-      persona: onboarding ? {
-        stage_name: onboarding.persona_stage_name,
-        description: onboarding.persona_description,
-        backstory: onboarding.persona_backstory,
-        personality: onboarding.persona_personality,
-        interests: onboarding.persona_interests,
-        fantasy: onboarding.persona_fantasy
-      } : {},
-      boundaries: onboarding ? {
-        hard_limits: onboarding.boundaries_hard_limits,
-        soft_limits: onboarding.boundaries_soft_limits,
-        comfortable_with: onboarding.boundaries_comfortable_with,
-        additional_notes: onboarding.boundaries_additional_notes
-      } : {},
+      sections: {
+        personal_info: onboarding ? {
+          full_name: onboarding.personal_full_name,
+          date_of_birth: onboarding.personal_date_of_birth,
+          nationality: onboarding.personal_nationality,
+          location: onboarding.personal_location,
+          phone_number: onboarding.personal_phone_number,
+          email: onboarding.personal_email
+        } : {},
+        physical_description: onboarding ? {
+          height: onboarding.body_height,
+          weight: onboarding.body_weight,
+          body_type: onboarding.body_type,
+          hair_color: onboarding.body_hair_color,
+          eye_color: onboarding.body_eye_color,
+          tattoos: onboarding.body_tattoos,
+          piercings: onboarding.body_piercings
+        } : {},
+        amsterdam_story: onboarding ? {
+          years_in_amsterdam: onboarding.backstory_years_in_amsterdam,
+          neighborhood: onboarding.backstory_neighborhood,
+          what_you_love: onboarding.backstory_what_you_love,
+          alter_ego: onboarding.backstory_alter_ego,
+          colors: onboarding.backstory_colors
+        } : {},
+        boundaries: onboarding ? {
+          hard_limits: onboarding.boundaries_hard_limits,
+          soft_limits: onboarding.boundaries_soft_limits,
+          comfortable_with: onboarding.boundaries_comfortable_with
+        } : {},
+        pricing: onboarding ? {
+          subscription: onboarding.pricing_subscription,
+          ppv_photo: onboarding.pricing_ppv_photo,
+          ppv_video: onboarding.pricing_ppv_video,
+          custom_content: onboarding.pricing_custom_content
+        } : {},
+        persona: onboarding ? {
+          stage_name: onboarding.persona_stage_name,
+          description: onboarding.persona_description,
+          backstory: onboarding.persona_backstory,
+          personality: onboarding.persona_personality,
+          interests: onboarding.persona_interests,
+          fantasy: onboarding.persona_fantasy
+        } : {},
+        scripts: onboarding ? {
+          greeting: onboarding.scripts_greeting,
+          ppv: onboarding.scripts_ppv,
+          sexting: onboarding.scripts_sexting,
+          renewal: onboarding.scripts_renewal
+        } : {},
+        content_preferences: onboarding ? {
+          themes: onboarding.content_themes,
+          photo_count: onboarding.content_photo_count,
+          video_count: onboarding.content_video_count,
+          shooting_preferences: onboarding.content_shooting_preferences
+        } : {},
+        visual_identity: onboarding?.section_visual_identity || {},
+        creator_story: onboarding?.section_creator_story || {},
+        brand_alignment: onboarding?.section_brand_alignment || {},
+        fetish_interests: onboarding?.section_fetish_interests || {},
+        engagement_style: onboarding?.section_engagement_style || {},
+        market_positioning: onboarding?.section_market_positioning || {},
+        fan_expectations: onboarding?.section_fan_expectations || {},
+        creative_boundaries: onboarding?.section_creative_boundaries || {}
+      },
+      completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 16) * 100),
       style_preferences: contentPrefs || {},
-      content_preferences: contentLibrary || [],
+      content_library: contentLibrary || [],
       voice_files: voiceFiles || []
     };
 

@@ -1298,6 +1298,14 @@ export type Database = {
           scripts_ppv: string | null
           scripts_renewal: string | null
           scripts_sexting: string | null
+          section_brand_alignment: Json | null
+          section_creative_boundaries: Json | null
+          section_creator_story: Json | null
+          section_engagement_style: Json | null
+          section_fan_expectations: Json | null
+          section_fetish_interests: Json | null
+          section_market_positioning: Json | null
+          section_visual_identity: Json | null
           social_instagram: string | null
           social_telegram: string | null
           social_tiktok: string | null
@@ -1382,6 +1390,14 @@ export type Database = {
           scripts_ppv?: string | null
           scripts_renewal?: string | null
           scripts_sexting?: string | null
+          section_brand_alignment?: Json | null
+          section_creative_boundaries?: Json | null
+          section_creator_story?: Json | null
+          section_engagement_style?: Json | null
+          section_fan_expectations?: Json | null
+          section_fetish_interests?: Json | null
+          section_market_positioning?: Json | null
+          section_visual_identity?: Json | null
           social_instagram?: string | null
           social_telegram?: string | null
           social_tiktok?: string | null
@@ -1466,6 +1482,14 @@ export type Database = {
           scripts_ppv?: string | null
           scripts_renewal?: string | null
           scripts_sexting?: string | null
+          section_brand_alignment?: Json | null
+          section_creative_boundaries?: Json | null
+          section_creator_story?: Json | null
+          section_engagement_style?: Json | null
+          section_fan_expectations?: Json | null
+          section_fetish_interests?: Json | null
+          section_market_positioning?: Json | null
+          section_visual_identity?: Json | null
           social_instagram?: string | null
           social_telegram?: string | null
           social_tiktok?: string | null

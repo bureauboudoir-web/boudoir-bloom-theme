@@ -51,7 +51,7 @@ export const CreatorProfile = ({
   const isCompleted = onboardingData?.is_completed || false;
   const isOnboardingComplete = isCompleted;
   const completedSteps = onboardingData?.completed_steps?.length || 0;
-  const totalSteps = 9;
+  const totalSteps = 16; // Updated to 16 sections
   const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
   const formatValue = (value: any, minLength: number = 2) => {
@@ -933,6 +933,218 @@ export const CreatorProfile = ({
                 <p className="text-sm italic text-muted-foreground/70">Add your equipment needs</p>
               </div>
             )}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 9: Visual Identity */}
+        <AccordionItem value="visual-identity" className="border rounded-lg px-4" disabled={isSectionLocked(9)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(9) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Visual Identity</span>
+              {isSectionLocked(9) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Brand colors, aesthetic, and visual style preferences</p>
+            <div className="text-sm">
+              {onboardingData.section_visual_identity && Object.keys(onboardingData.section_visual_identity).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_visual_identity.primary_color && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded border" style={{ backgroundColor: onboardingData.section_visual_identity.primary_color }} />
+                      <span>Primary: {onboardingData.section_visual_identity.primary_color}</span>
+                    </div>
+                  )}
+                  {onboardingData.section_visual_identity.aesthetic && <p>Aesthetic: {onboardingData.section_visual_identity.aesthetic}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(9)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Add visual identity details</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 10: Creator Story */}
+        <AccordionItem value="creator-story" className="border rounded-lg px-4" disabled={isSectionLocked(10)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(10) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <Briefcase className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Creator Story</span>
+              {isSectionLocked(10) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Your journey, milestones, and future goals</p>
+            <div className="text-sm">
+              {onboardingData.section_creator_story && Object.keys(onboardingData.section_creator_story).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_creator_story.origin && <p className="whitespace-pre-wrap">{onboardingData.section_creator_story.origin}</p>}
+                  {onboardingData.section_creator_story.future_goals && <p><strong>Future Goals:</strong> {onboardingData.section_creator_story.future_goals}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(10)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Share your creator story</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 11: Brand Alignment */}
+        <AccordionItem value="brand-alignment" className="border rounded-lg px-4" disabled={isSectionLocked(11)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(11) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Brand Alignment</span>
+              {isSectionLocked(11) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Brand voice, target audience, and positioning</p>
+            <div className="text-sm">
+              {onboardingData.section_brand_alignment && Object.keys(onboardingData.section_brand_alignment).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_brand_alignment.brand_voice && <p><strong>Brand Voice:</strong> {onboardingData.section_brand_alignment.brand_voice}</p>}
+                  {onboardingData.section_brand_alignment.positioning_statement && <p className="whitespace-pre-wrap">{onboardingData.section_brand_alignment.positioning_statement}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(11)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Define brand alignment</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 12: Fetish/Special Interests */}
+        <AccordionItem value="fetish-interests" className="border rounded-lg px-4" disabled={isSectionLocked(12)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(12) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Special Interests</span>
+              {isSectionLocked(12) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Content categories (staff-use filtering)</p>
+            <div className="text-sm">
+              {onboardingData.section_fetish_interests && Object.keys(onboardingData.section_fetish_interests).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_fetish_interests.categories && formatArray(onboardingData.section_fetish_interests.categories)}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(12)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Add special interests</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 13: Engagement Style */}
+        <AccordionItem value="engagement-style" className="border rounded-lg px-4" disabled={isSectionLocked(13)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(13) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Engagement Style</span>
+              {isSectionLocked(13) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Communication and fan interaction preferences</p>
+            <div className="text-sm">
+              {onboardingData.section_engagement_style && Object.keys(onboardingData.section_engagement_style).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_engagement_style.communication_style && <p><strong>Style:</strong> {onboardingData.section_engagement_style.communication_style}</p>}
+                  {onboardingData.section_engagement_style.response_time && <p><strong>Response Time:</strong> {onboardingData.section_engagement_style.response_time}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(13)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Define engagement style</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 14: Market Positioning */}
+        <AccordionItem value="market-positioning" className="border rounded-lg px-4" disabled={isSectionLocked(14)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(14) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <Camera className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Market Positioning</span>
+              {isSectionLocked(14) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Niche, competitors, and market strategy</p>
+            <div className="text-sm">
+              {onboardingData.section_market_positioning && Object.keys(onboardingData.section_market_positioning).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_market_positioning.niche && <p><strong>Niche:</strong> {onboardingData.section_market_positioning.niche}</p>}
+                  {onboardingData.section_market_positioning.price_tier && <p><strong>Price Tier:</strong> {onboardingData.section_market_positioning.price_tier}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(14)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Define market positioning</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 15: Fan Expectations */}
+        <AccordionItem value="fan-expectations" className="border rounded-lg px-4" disabled={isSectionLocked(15)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(15) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <User className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Fan Expectations</span>
+              {isSectionLocked(15) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Content frequency and interaction commitments</p>
+            <div className="text-sm">
+              {onboardingData.section_fan_expectations && Object.keys(onboardingData.section_fan_expectations).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_fan_expectations.content_frequency && <p><strong>Frequency:</strong> {onboardingData.section_fan_expectations.content_frequency}</p>}
+                  {onboardingData.section_fan_expectations.value_proposition && <p className="whitespace-pre-wrap">{onboardingData.section_fan_expectations.value_proposition}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(15)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Define fan expectations</p>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 16: Creative Boundaries */}
+        <AccordionItem value="creative-boundaries" className="border rounded-lg px-4" disabled={isSectionLocked(16)}>
+          <AccordionTrigger className={cn("hover:no-underline", isSectionLocked(16) && "cursor-not-allowed opacity-60")}>
+            <div className="flex items-center gap-2">
+              <Lock className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Creative Boundaries</span>
+              {isSectionLocked(16) && <Lock className="h-4 w-4 text-muted-foreground ml-auto" />}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">Content limits and collaboration rules</p>
+            <div className="text-sm">
+              {onboardingData.section_creative_boundaries && Object.keys(onboardingData.section_creative_boundaries).length > 0 ? (
+                <div className="space-y-2">
+                  {onboardingData.section_creative_boundaries.content_limits && formatArray(onboardingData.section_creative_boundaries.content_limits)}
+                  {onboardingData.section_creative_boundaries.creative_control && <p className="whitespace-pre-wrap">{onboardingData.section_creative_boundaries.creative_control}</p>}
+                </div>
+              ) : (
+                <div onClick={() => onNavigateToOnboarding?.(16)} className="cursor-pointer hover:bg-muted/50 p-3 rounded border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 transition-all">
+                  <p className="italic text-muted-foreground/70">Define creative boundaries</p>
+                </div>
+              )}
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
