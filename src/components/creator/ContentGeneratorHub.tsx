@@ -167,13 +167,28 @@ export const ContentGeneratorHub = ({ userId, onboardingData }: ContentGenerator
               </CardHeader>
               <CardContent className="space-y-4">
                 {starterPackStatus === "not_generated" ? (
-                  <div className="text-center py-6">
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Your starter pack will be generated after completing onboarding
+                  <div className="text-center py-6 space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      {completionPercentage === 100 
+                        ? "Your profile has been sent to our marketing team for review"
+                        : "Complete onboarding to have your profile reviewed by our marketing team"}
                     </p>
-                    <Button disabled={completionPercentage < 100}>
-                      Generate Starter Pack
-                    </Button>
+                    {completionPercentage === 100 && (
+                      <Badge variant="secondary" className="gap-1">
+                        <Clock className="w-3 h-3" />
+                        Awaiting Marketing Review
+                      </Badge>
+                    )}
+                  </div>
+                ) : starterPackStatus === "pending" ? (
+                  <div className="text-center py-6 space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Our marketing team is creating your starter pack
+                    </p>
+                    <Badge variant="secondary" className="gap-1">
+                      <Clock className="w-3 h-3" />
+                      In Progress
+                    </Badge>
                   </div>
                 ) : (
                   <>
