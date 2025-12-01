@@ -53,7 +53,7 @@ export const Step4PersonaForm = ({ initialData, onChange }: Step4PersonaFormProp
             Personality Traits
           </Label>
           <ChipInput
-            value={formData.personality_traits || []}
+            value={Array.isArray(formData.personality_traits) ? formData.personality_traits : []}
             onChange={(chips) => handleChange('personality_traits', chips)}
             placeholder="e.g., confident, playful, mysterious, flirty"
             helperText="Keywords that describe your character's personality"
