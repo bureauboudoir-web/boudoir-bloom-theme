@@ -1,124 +1,116 @@
-// Comprehensive BB Creator Onboarding Types - 10 Steps
+// Comprehensive BB Creator Onboarding Types - 11 Steps (FINAL MODEL)
 
-// Step 1 - Personal Information (PRIVATE - Admin/Manager only)
-export interface OnboardingStep1 {
-  full_name?: string;
-  personal_email?: string;
-  personal_phone?: string;
-  home_address?: string;
+// Step 1 - Private Information (ADMIN-ONLY, NEVER EXPOSED TO EXTERNAL APIs)
+export interface Step1PrivateInfo {
+  full_legal_name?: string;
   dob?: string;
   nationality?: string;
+  home_city_country?: string;
+  personal_email?: string;
+  personal_phone?: string;
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
-  legal_id_verified?: boolean;
 }
 
 // Step 2 - Brand & Character Identity
-export interface OnboardingStep2 {
+export interface Step2BrandIdentity {
   stage_name?: string;
   character_email?: string;
   character_phone?: string;
-  brand_color_palette?: string[]; // 3-color preset
+  short_bio?: string;
+  persona_keywords?: string[];
+  brand_color_palette?: string[];
   banner_style?: string;
-  personality_keywords?: string[];
-  character_vibe_summary?: string;
 }
 
-// Step 3 - Physical Description
-export interface OnboardingStep3 {
-  hair?: string;
-  eyes?: string;
-  body_type?: string;
-  skin_tone?: string;
-  tattoos?: string;
-  distinctive_features?: string;
-  aesthetic_style?: string;
+// Step 3 - Amsterdam Story
+export interface Step3AmsterdamStory {
+  amsterdam_origin_story?: string;
+  what_amsterdam_means_to_them?: string;
+  how_they_see_themselves_in_RLD?: string;
+  story_hooks_optional?: string;
 }
 
-// Step 4 - Amsterdam Story / Origin Story
-export interface OnboardingStep4 {
-  origin_story_long?: string;
-  cultural_background?: string;
-  persona_inspiration?: string;
-  amsterdam_story_summary?: string;
+// Step 4 - Persona & Character Personality (NO physical description)
+export interface Step4PersonaPersonality {
+  persona_archetype?: string;
+  tone_of_voice?: string;
+  fan_interaction_style?: string;
+  emoji_style?: string;
+  liked_words?: string[];
+  disliked_words?: string[];
 }
 
 // Step 5 - Boundaries & Comfort Levels
-export interface OnboardingStep5 {
+export interface Step5Boundaries {
   hard_limits?: string[];
   soft_limits?: string[];
-  do_not_discuss?: string[];
-  confidence_level?: string;
-  safety_notes?: string;
+  do_not_discuss_topics?: string[];
+  comfort_level?: string;
+  safety_notes_internal?: string;
 }
 
-// Step 6 - Services & Pricing Structure
-export interface OnboardingStep6 {
-  expected_subscription_price?: number;
+// Step 6 - Pricing Strategy
+export interface Step6PricingStrategy {
+  expected_sub_price_optional?: number;
   min_ppv_price?: number;
-  max_ppv_price?: number;
-  preferred_ppv_themes?: string[];
-  shoot_availability?: string;
-  live_platform_preference?: string;
-  livestream_comfort_level?: string;
+  custom_content_min_price?: number;
+  bundle_or_upsell_notes?: string;
+  never_go_below_rules?: string;
 }
 
-// Step 7 - Messaging Preferences (Simplified)
-export interface OnboardingStep7 {
+// Step 7 - Scripts & Messaging Style (preferences only, NO full templates)
+export interface Step7MessagingStyle {
   messaging_tone?: string;
-  emoji_preference?: 'low' | 'medium' | 'high';
-  language_preference?: string;
+  greeting_style?: string;
+  reactivation_style?: string;
   forbidden_phrases?: string[];
 }
 
 // Step 8 - Socials & Platforms
-export interface OnboardingStep8 {
-  // Social links
+export interface Step8SocialsPlatforms {
   instagram?: string;
   tiktok?: string;
-  twitter?: string;
-  snapchat?: string;
-  reddit?: string;
+  twitter_x?: string;
   onlyfans?: string;
+  snapchat?: string;
   fansly?: string;
-  website_linktree?: string;
+  website_or_linktree?: string;
   other_links?: string[];
-  // Platform preferences
   posting_platforms?: string[];
   live_platforms?: string[];
-  posting_frequency?: string;
-  best_posting_times?: string[];
 }
 
-// Step 9 - Content Preferences & Positioning (Merged)
-export interface OnboardingStep9 {
-  // Content Style
-  photo_style?: string;
-  video_style?: string;
-  lighting_preferences?: string;
-  aesthetic_themes?: string[];
-  // Market Positioning
+// Step 9 - Content Preferences (SEPARATE from Market Positioning)
+export interface Step9ContentPreferences {
+  posting_frequency?: string;
+  best_posting_times?: string;
+  preferred_video_styles?: string[];
+  preferred_photo_styles?: string[];
+  themes_they_enjoy_creating?: string[];
+  things_they_never_want_in_content?: string[];
+  lifestyle_tags?: string[];
+}
+
+// Step 10 - Market Positioning (SEPARATE from Content)
+export interface Step10MarketPositioning {
   niche_description?: string;
   target_audience?: string;
-  fan_expectation_keywords?: string[];
-  competitive_edge?: string;
-  // Lifestyle & Authentic Interests
-  daily_routine_highlights?: string;
-  lifestyle_interests?: string[];
-  natural_environments?: string[];
-  content_they_love_creating?: string;
-  content_they_never_want_to_create?: string;
-  // Keywords
-  style_keywords?: string[];
-  personality_keywords?: string[];
-  environment_keywords?: string[];
+  fan_expectations?: string;
+  unique_angle?: string;
 }
 
-// Step 10 - Commitments & Final Sign-Off
-export interface OnboardingStep10 {
-  commitments?: Record<string, boolean>;
+// Step 11 - Requirements & Commitments (ADMIN-ONLY visibility, NEVER exposed to external APIs)
+export interface Step11Commitments {
+  understands_revenue_split?: boolean;
+  understands_boundaries_recorded?: boolean;
+  understands_payments_and_invoices?: boolean;
+  agrees_to_posting_expectations?: boolean;
+  agrees_to_communication_with_staff?: boolean;
+  agrees_to_attend_shoots?: boolean;
+  agrees_to_complete_onboarding?: boolean;
   final_confirmation?: boolean;
-  digital_signature?: string;
+  optional_questions_or_concerns?: string;
 }
 
 export interface ProfileMetadata {
@@ -141,27 +133,38 @@ export interface CompletionTracking {
   last_updated?: string;
 }
 
-export interface OnboardingData {
-  step1_private_info: OnboardingStep1;
-  step2_brand_identity: OnboardingStep2;
-  step3_amsterdam_story: OnboardingStep3;
-  step4_persona: OnboardingStep4;
-  step5_boundaries: OnboardingStep5;
-  step6_pricing: OnboardingStep6;
-  step7_messaging: OnboardingStep7;
-  step8_content_preferences: OnboardingStep8;
-  step9_market_positioning: OnboardingStep9;
-  step10_commitments: OnboardingStep10;
+// Combined onboarding data structure (11 steps)
+export interface BBCreatorOnboarding {
+  step1_private_info: Step1PrivateInfo;
+  step2_brand_identity: Step2BrandIdentity;
+  step3_amsterdam_story: Step3AmsterdamStory;
+  step4_persona_personality: Step4PersonaPersonality;
+  step5_boundaries: Step5Boundaries;
+  step6_pricing_strategy: Step6PricingStrategy;
+  step7_messaging_style: Step7MessagingStyle;
+  step8_socials_platforms: Step8SocialsPlatforms;
+  step9_content_preferences: Step9ContentPreferences;
+  step10_market_positioning: Step10MarketPositioning;
+  step11_commitments: Step11Commitments;
   current_step: number;
   completed_steps: number[];
   is_completed: boolean;
+}
+
+export interface OnboardingData extends BBCreatorOnboarding {
+  id?: string;
+  user_id?: string;
+  created_at?: string;
+  updated_at?: string;
+  // Keep old property names for backwards compatibility
+  [key: string]: any;
 }
 
 export interface BBCreatorFull {
   id: string;
   user_id: string;
   profile: ProfileMetadata;
-  sections: OnboardingData;
+  sections: BBCreatorOnboarding;
   completion: CompletionTracking;
 }
 
@@ -172,7 +175,7 @@ export const calculateSectionCompletion = (section: any): boolean => {
   return values.some(v => v !== null && v !== undefined && v !== '' && (!Array.isArray(v) || v.length > 0));
 };
 
-// Helper function to get completion percentage
+// Helper function to get completion percentage (11 steps)
 export const getCompletionPercentage = (completedSteps: number[]): number => {
-  return Math.round((completedSteps.length / 10) * 100);
+  return Math.round((completedSteps.length / 11) * 100);
 };

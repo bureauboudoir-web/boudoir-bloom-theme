@@ -82,9 +82,9 @@ Deno.serve(async (req) => {
       .eq('creator_id', creatorId)
       .maybeSingle();
 
-    // Build comprehensive response with new 10-step structure
+    // Build comprehensive response with new 11-step structure
     // CRITICAL: step1_private_info is NEVER exposed to external APIs
-    // CRITICAL: step10_commitments is NEVER exposed to external APIs
+    // CRITICAL: step11_commitments is NEVER exposed to external APIs
     const creator = {
       profile: {
         id: profile.id,
@@ -97,15 +97,16 @@ Deno.serve(async (req) => {
         // Step 1 (private_info) - EXCLUDED for security
         brand_identity: onboarding?.step2_brand_identity || {},
         amsterdam_story: onboarding?.step3_amsterdam_story || {},
-        persona: onboarding?.step4_persona || {},
+        persona_personality: onboarding?.step4_persona || {},
         boundaries: onboarding?.step5_boundaries || {},
-        pricing: onboarding?.step6_pricing || {},
-        messaging: onboarding?.step7_messaging || {},
-        content_preferences: onboarding?.step8_content_preferences || {},
-        market_positioning: onboarding?.step9_market_positioning || {},
-        // Step 10 (commitments) - EXCLUDED from external APIs
+        pricing_strategy: onboarding?.step6_pricing || {},
+        messaging_style: onboarding?.step7_messaging || {},
+        socials_platforms: onboarding?.step8_content_preferences || {},
+        content_preferences: onboarding?.step9_market_positioning || {},
+        market_positioning: onboarding?.step10_commitments || {},
+        // Step 11 (commitments) - EXCLUDED from external APIs
       },
-      completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 10) * 100),
+      completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 11) * 100),
       style_preferences: contentPrefs || {},
       content_library: contentLibrary || [],
       voice_files: voiceFiles || []

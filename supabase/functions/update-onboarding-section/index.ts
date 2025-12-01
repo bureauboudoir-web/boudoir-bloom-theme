@@ -28,7 +28,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Map section_id to database column (10 steps)
+    // Map section_id to database column (11 steps)
     const sectionMapping: Record<number, string> = {
       1: 'step1_private_info',
       2: 'step2_brand_identity',
@@ -40,12 +40,13 @@ serve(async (req) => {
       8: 'step8_content_preferences',
       9: 'step9_market_positioning',
       10: 'step10_commitments',
+      11: 'step11_commitments',
     };
 
     const sectionColumn = sectionMapping[section_id];
     if (!sectionColumn) {
       return new Response(
-        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-10.` }),
+        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-11.` }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -78,13 +79,13 @@ serve(async (req) => {
     }
     updateData.completed_steps = completedSteps;
 
-    // Check if all 10 sections are complete
-    const allSectionsComplete = completedSteps.length >= 10;
+    // Check if all 11 sections are complete
+    const allSectionsComplete = completedSteps.length >= 11;
     updateData.is_completed = allSectionsComplete;
 
     // Update current_step if needed
     if (section_id >= (existing?.current_step || 1)) {
-      updateData.current_step = Math.min(section_id + 1, 10);
+      updateData.current_step = Math.min(section_id + 1, 11);
     }
 
     // Perform update
@@ -104,7 +105,7 @@ serve(async (req) => {
     }
 
     // Calculate completion percentage
-    const completionPercentage = Math.round((completedSteps.length / 10) * 100);
+    const completionPercentage = Math.round((completedSteps.length / 11) * 100);
 
     return new Response(
       JSON.stringify({
@@ -112,7 +113,7 @@ serve(async (req) => {
         data: updated,
         completion: {
           completed_steps: completedSteps,
-          total_sections: 10,
+          total_sections: 11,
           completion_percentage: completionPercentage,
           is_completed: allSectionsComplete
         }
