@@ -145,24 +145,35 @@ export const ContentGeneratorHub = ({ userId, onboardingData }: ContentGenerator
                     <Package className="w-5 h-5 text-primary" />
                     <h3 className="font-semibold">Starter Pack</h3>
                   </div>
-                  {starterPackStatus === "ready" && (
-                    <Badge variant="default" className="gap-1">
-                      <CheckCircle className="w-3 h-3" />
-                      Ready
-                    </Badge>
-                  )}
-                  {starterPackStatus === "pending" && (
-                    <Badge variant="secondary" className="gap-1">
-                      <Clock className="w-3 h-3" />
-                      Pending
-                    </Badge>
-                  )}
-                  {starterPackStatus === "not_generated" && (
-                    <Badge variant="outline" className="gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      Not Generated
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {starterPackStatus === "ready" && (
+                      <Badge variant="default" className="gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Ready
+                      </Badge>
+                    )}
+                    {starterPackStatus === "pending" && (
+                      <Badge variant="secondary" className="gap-1">
+                        <Clock className="w-3 h-3" />
+                        Pending
+                      </Badge>
+                    )}
+                    {starterPackStatus === "not_generated" && (
+                      <Badge variant="outline" className="gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        Not Generated
+                      </Badge>
+                    )}
+                    <Button 
+                      onClick={handleRefreshStats} 
+                      variant="ghost"
+                      size="sm"
+                      disabled={isRefreshing}
+                      className="gap-1 h-8 px-2"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -284,35 +295,6 @@ export const ContentGeneratorHub = ({ userId, onboardingData }: ContentGenerator
               </CardContent>
             </Card>
           </div>
-
-          {/* Quick Actions */}
-          <Card className="mt-6 border-muted/50">
-            <CardHeader className="pb-3">
-              <h3 className="font-semibold">Quick Actions</h3>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={handleSyncProfile} variant="default">
-                  Sync Profile to Content Tool
-                </Button>
-                <Button 
-                  onClick={handleRefreshStats} 
-                  variant="outline"
-                  disabled={isRefreshing}
-                  className="gap-2"
-                >
-                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  Refresh Stats
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => window.location.hash = '#account'}
-                >
-                  View Onboarding Data
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </CardContent>
       </Card>
     </div>
