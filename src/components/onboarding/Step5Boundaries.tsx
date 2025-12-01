@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { Shield, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step5BoundariesProps {
+interface Step6BoundariesProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step5BoundariesProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step5Boundaries = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step5BoundariesProps) => {
+export const Step6Boundaries = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step6BoundariesProps) => {
   const [formData, setFormData] = useState(onboardingData?.step5_boundaries || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(5, formData);
+      await onSaveSection(6, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

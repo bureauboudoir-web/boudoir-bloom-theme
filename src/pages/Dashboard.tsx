@@ -278,7 +278,7 @@ const Dashboard = () => {
           );
         case 2:
           return (
-            <Step2BrandIdentity
+            <Step2BodyInfo
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => {
@@ -296,7 +296,7 @@ const Dashboard = () => {
           );
         case 3:
           return (
-            <Step3AmsterdamStory
+            <Step3BrandIdentity
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(4)}
@@ -306,7 +306,7 @@ const Dashboard = () => {
           );
         case 4:
           return (
-            <Step4Persona
+            <Step4AmsterdamStory
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(5)}
@@ -316,7 +316,7 @@ const Dashboard = () => {
           );
         case 5:
           return (
-            <Step5Boundaries
+            <Step5Persona
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(6)}
@@ -326,7 +326,7 @@ const Dashboard = () => {
           );
         case 6:
           return (
-            <Step6Pricing
+            <Step6Boundaries
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(7)}
@@ -336,7 +336,7 @@ const Dashboard = () => {
           );
         case 7:
           return (
-            <Step7Messaging
+            <Step7Pricing
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(8)}
@@ -346,7 +346,7 @@ const Dashboard = () => {
           );
         case 8:
           return (
-            <Step8SocialsPlatforms
+            <Step8Messaging
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(9)}
@@ -356,7 +356,7 @@ const Dashboard = () => {
           );
         case 9:
           return (
-            <Step9ContentPreferences
+            <Step9SocialsPlatforms
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(10)}
@@ -366,7 +366,7 @@ const Dashboard = () => {
           );
         case 10:
           return (
-            <Step10MarketPositioning
+            <Step10ContentPreferences
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(11)}
@@ -376,20 +376,30 @@ const Dashboard = () => {
           );
         case 11:
           return (
-            <Step11Commitments
+            <Step11MarketPositioning
               userId={user?.id || ''}
               onboardingData={onboardingData}
+              onNext={() => setCurrentStep(12)}
               onBack={() => setCurrentStep(10)}
+              onSaveSection={saveSection}
+            />
+          );
+        case 12:
+          return (
+            <Step12Commitments
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onBack={() => setCurrentStep(11)}
               onSaveSection={saveSection}
             />
           );
         default:
           return (
-            <Step2BrandIdentity
+            <Step3BrandIdentity
               userId={user?.id || ''}
               onboardingData={onboardingData}
-              onNext={() => setCurrentStep(3)}
-              onBack={() => canViewStep1 ? setCurrentStep(1) : null}
+              onNext={() => setCurrentStep(4)}
+              onBack={() => setCurrentStep(2)}
               onSaveSection={saveSection}
             />
           );

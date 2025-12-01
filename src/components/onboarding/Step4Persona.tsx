@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { Theater, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step4PersonaProps {
+interface Step5PersonaProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step4PersonaProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step4Persona = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step4PersonaProps) => {
+export const Step5Persona = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step5PersonaProps) => {
   const [formData, setFormData] = useState(onboardingData?.step4_persona || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(4, formData);
+      await onSaveSection(5, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

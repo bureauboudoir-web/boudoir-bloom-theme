@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { Camera, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step9ContentPreferencesProps {
+interface Step10ContentPreferencesProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step9ContentPreferencesProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step9ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9ContentPreferencesProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step9_market_positioning || {});
+export const Step10ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step10ContentPreferencesProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step9_content_preferences || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(9, formData);
+      await onSaveSection(10, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

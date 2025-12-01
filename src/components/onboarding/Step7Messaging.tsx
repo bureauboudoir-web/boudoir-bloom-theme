@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { MessageSquare, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step7MessagingProps {
+interface Step8MessagingProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step7MessagingProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step7Messaging = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step7MessagingProps) => {
+export const Step8Messaging = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step8MessagingProps) => {
   const [formData, setFormData] = useState(onboardingData?.step7_messaging || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(7, formData);
+      await onSaveSection(8, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

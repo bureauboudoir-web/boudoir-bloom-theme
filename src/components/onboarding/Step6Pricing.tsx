@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { DollarSign, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step6PricingProps {
+interface Step7PricingProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step6PricingProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step6Pricing = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step6PricingProps) => {
+export const Step7Pricing = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step7PricingProps) => {
   const [formData, setFormData] = useState(onboardingData?.step6_pricing || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(6, formData);
+      await onSaveSection(7, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step3BrandIdentityForm } from "./sections/Step3BrandIdentityForm";
+import { Step2BrandIdentityForm } from "./sections/Step2BrandIdentityForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { Palette, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -49,7 +49,7 @@ export const Step3BrandIdentity = ({ userId, onboardingData, onNext, onBack, onS
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-8">
-        <Step3BrandIdentityForm
+        <Step2BrandIdentityForm
           initialData={formData}
           onChange={setFormData}
         />
