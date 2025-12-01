@@ -21,10 +21,10 @@ export const Step3AmsterdamStory = ({ userId, onboardingData, onNext, onBack, on
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(3, { step3_amsterdam_story: formData });
-      toast.success("Amsterdam story saved");
+      await onSaveSection(3, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save Amsterdam story");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

@@ -21,10 +21,10 @@ export const Step7Messaging = ({ userId, onboardingData, onNext, onBack, onSaveS
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(7, { step7_messaging: formData });
-      toast.success("Scripts & messaging saved");
+      await onSaveSection(7, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save scripts & messaging");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

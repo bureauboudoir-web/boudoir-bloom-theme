@@ -20,10 +20,10 @@ export const Step1PrivateInfo = ({ userId, onboardingData, onNext, onSaveSection
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(1, { step1_private_info: formData });
-      toast.success("Private information saved");
+      await onSaveSection(1, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save private information");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

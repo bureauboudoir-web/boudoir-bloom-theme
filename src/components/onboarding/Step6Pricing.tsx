@@ -21,10 +21,10 @@ export const Step6Pricing = ({ userId, onboardingData, onNext, onBack, onSaveSec
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(6, { step6_pricing: formData });
-      toast.success("Pricing structure saved");
+      await onSaveSection(6, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save pricing structure");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

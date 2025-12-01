@@ -21,10 +21,10 @@ export const Step5Boundaries = ({ userId, onboardingData, onNext, onBack, onSave
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(5, { step5_boundaries: formData });
-      toast.success("Boundaries saved");
+      await onSaveSection(5, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save boundaries");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

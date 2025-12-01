@@ -21,10 +21,10 @@ export const Step4Persona = ({ userId, onboardingData, onNext, onBack, onSaveSec
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(4, { step4_persona: formData });
-      toast.success("Persona saved");
+      await onSaveSection(4, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save persona");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }
