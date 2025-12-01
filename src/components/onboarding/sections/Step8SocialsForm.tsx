@@ -10,18 +10,15 @@ import { Card } from "@/components/ui/card";
 interface Step8SocialsData {
   instagram?: string;
   tiktok?: string;
-  twitter?: string;
+  twitter_x?: string;
   snapchat?: string;
   reddit?: string;
   onlyfans?: string;
   fansly?: string;
-  website_linktree?: string;
+  website_or_linktree?: string;
   other_links?: string[];
   posting_platforms?: string[];
   live_platforms?: string[];
-  posting_frequency?: string;
-  best_posting_times?: string[];
-  lifestyle_interests?: string[];
 }
 
 interface Step8SocialsFormProps {
@@ -51,7 +48,7 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
     const urlMap: Record<string, string> = {
       instagram: `https://instagram.com/${username}`,
       tiktok: `https://tiktok.com/@${username}`,
-      twitter: `https://twitter.com/${username}`,
+      twitter_x: `https://twitter.com/${username}`,
       snapchat: `https://snapchat.com/add/${username}`,
       reddit: `https://reddit.com/u/${username}`,
       onlyfans: `https://onlyfans.com/${username}`,
@@ -127,15 +124,15 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
           </div>
 
           <div>
-            <Label htmlFor="twitter" className="flex items-center gap-2 mb-2">
+            <Label htmlFor="twitter_x" className="flex items-center gap-2 mb-2">
               <Hash className="h-4 w-4 text-primary" />
               Twitter/X
             </Label>
             <PremiumInput
-              id="twitter"
-              value={formData.twitter || ''}
-              onChange={(e) => handleChange('twitter', e.target.value)}
-              onBlur={() => handleSocialBlur('twitter')}
+              id="twitter_x"
+              value={formData.twitter_x || ''}
+              onChange={(e) => handleChange('twitter_x', e.target.value)}
+              onBlur={() => handleSocialBlur('twitter_x')}
               placeholder="@username or URL"
               helperText="Your Twitter profile"
             />
@@ -202,14 +199,14 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
           </div>
 
           <div>
-            <Label htmlFor="website_linktree" className="flex items-center gap-2 mb-2">
+            <Label htmlFor="website_or_linktree" className="flex items-center gap-2 mb-2">
               <Globe className="h-4 w-4 text-primary" />
               Website/Linktree
             </Label>
             <PremiumInput
-              id="website_linktree"
-              value={formData.website_linktree || ''}
-              onChange={(e) => handleChange('website_linktree', e.target.value)}
+              id="website_or_linktree"
+              value={formData.website_or_linktree || ''}
+              onChange={(e) => handleChange('website_or_linktree', e.target.value)}
               placeholder="Full URL"
               helperText="Your personal site or Linktree"
             />
@@ -289,46 +286,8 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
             </div>
             <p className="text-xs text-muted-foreground mt-2">Platforms you use for live streaming</p>
           </div>
-
-          <div>
-            <Label htmlFor="posting_frequency" className="mb-2 block">
-              Posting Frequency
-            </Label>
-            <PremiumInput
-              id="posting_frequency"
-              value={formData.posting_frequency || ''}
-              onChange={(e) => handleChange('posting_frequency', e.target.value)}
-              placeholder="e.g., Daily, 3-4 times per week"
-              helperText="How often you plan to post content"
-            />
-          </div>
-
-          <div>
-            <Label className="flex items-center gap-2 mb-3">
-              Best Posting Times
-            </Label>
-            <ChipInput
-              value={Array.isArray(formData.best_posting_times) ? formData.best_posting_times : []}
-              onChange={(value) => handleChange('best_posting_times', value)}
-              placeholder="e.g., Morning 9am, Evening 8pm"
-              helperText="When your audience is most active"
-            />
-          </div>
         </div>
       </Card>
-
-      {/* Lifestyle Interests */}
-      <div>
-        <Label className="flex items-center gap-2 mb-3 text-base">
-          <Twitch className="h-5 w-5 text-primary" />
-          Lifestyle Interests
-        </Label>
-        <LifestyleChip
-          value={formData.lifestyle_interests || []}
-          onChange={(value) => handleChange('lifestyle_interests', value)}
-          helperText="Select your real-world interests and hobbies"
-        />
-      </div>
     </div>
   );
 };

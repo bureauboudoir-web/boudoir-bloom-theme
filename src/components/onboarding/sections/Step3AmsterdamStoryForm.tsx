@@ -4,10 +4,10 @@ import { PremiumTextarea } from "@/components/ui/premium-textarea";
 import { BookOpen, MapPin, Lightbulb, FileText } from "lucide-react";
 
 interface Step3AmsterdamStoryData {
-  origin_story_long?: string;
-  cultural_background?: string;
-  persona_inspiration?: string;
-  amsterdam_story_summary?: string;
+  amsterdam_origin_story?: string;
+  what_amsterdam_means_to_them?: string;
+  how_they_see_themselves_in_RLD?: string;
+  story_hooks_optional?: string;
 }
 
 interface Step3AmsterdamStoryFormProps {
@@ -29,63 +29,63 @@ export const Step3AmsterdamStoryForm = ({ initialData, onChange }: Step3Amsterda
   return (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="origin_story_long" className="flex items-center gap-2 mb-2">
+        <Label htmlFor="amsterdam_origin_story" className="flex items-center gap-2 mb-2">
           <BookOpen className="h-4 w-4 text-primary" />
-          Your Full Origin Story
+          Amsterdam Origin Story
         </Label>
         <PremiumTextarea
-          id="origin_story_long"
-          value={formData.origin_story_long || ''}
-          onChange={(e) => handleChange('origin_story_long', e.target.value)}
-          placeholder="Tell your full story... Where did you come from? What brought you here? What's your journey?"
+          id="amsterdam_origin_story"
+          value={formData.amsterdam_origin_story || ''}
+          onChange={(e) => handleChange('amsterdam_origin_story', e.target.value)}
+          placeholder="How did you come to Amsterdam? What's your story?"
           rows={6}
           showCharCount
-          helperText="Your complete backstory - be as detailed as you'd like"
+          helperText="Your journey to Amsterdam"
         />
       </div>
 
       <div>
-        <Label htmlFor="cultural_background" className="flex items-center gap-2 mb-2">
+        <Label htmlFor="what_amsterdam_means_to_them" className="flex items-center gap-2 mb-2">
           <MapPin className="h-4 w-4 text-primary" />
-          Cultural Background
+          What Amsterdam Means to You
         </Label>
         <PremiumTextarea
-          id="cultural_background"
-          value={formData.cultural_background || ''}
-          onChange={(e) => handleChange('cultural_background', e.target.value)}
-          placeholder="Describe your cultural roots, heritage, upbringing..."
+          id="what_amsterdam_means_to_them"
+          value={formData.what_amsterdam_means_to_them || ''}
+          onChange={(e) => handleChange('what_amsterdam_means_to_them', e.target.value)}
+          placeholder="What does Amsterdam represent for you? Why is it special?"
           rows={4}
-          helperText="Your cultural identity and influences"
+          helperText="Your connection to Amsterdam"
         />
       </div>
 
       <div>
-        <Label htmlFor="persona_inspiration" className="flex items-center gap-2 mb-2">
+        <Label htmlFor="how_they_see_themselves_in_RLD" className="flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          Persona Inspiration
+          How You See Yourself in the RLD
         </Label>
         <PremiumTextarea
-          id="persona_inspiration"
-          value={formData.persona_inspiration || ''}
-          onChange={(e) => handleChange('persona_inspiration', e.target.value)}
-          placeholder="What inspired this character? Movies, books, real experiences?"
+          id="how_they_see_themselves_in_RLD"
+          value={formData.how_they_see_themselves_in_RLD || ''}
+          onChange={(e) => handleChange('how_they_see_themselves_in_RLD', e.target.value)}
+          placeholder="How do you see yourself fitting into the Red Light District culture?"
           rows={4}
-          helperText="What influenced the creation of your persona"
+          helperText="Your role in the RLD"
         />
       </div>
 
       <div>
-        <Label htmlFor="amsterdam_story_summary" className="flex items-center gap-2 mb-2">
+        <Label htmlFor="story_hooks_optional" className="flex items-center gap-2 mb-2">
           <FileText className="h-4 w-4 text-primary" />
-          Amsterdam Story Summary
+          Story Hooks (Optional)
         </Label>
         <PremiumTextarea
-          id="amsterdam_story_summary"
-          value={formData.amsterdam_story_summary || ''}
-          onChange={(e) => handleChange('amsterdam_story_summary', e.target.value)}
-          placeholder="In 2-3 sentences, summarize your connection to Amsterdam..."
+          id="story_hooks_optional"
+          value={formData.story_hooks_optional || ''}
+          onChange={(e) => handleChange('story_hooks_optional', e.target.value)}
+          placeholder="Any interesting story angles or hooks for your narrative..."
           rows={3}
-          helperText="A brief summary of your Amsterdam connection"
+          helperText="Story ideas and narrative hooks"
         />
       </div>
     </div>

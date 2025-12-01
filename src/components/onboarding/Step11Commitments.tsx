@@ -1,32 +1,43 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step10CommitmentsForm } from "./sections/Step10CommitmentsForm";
+import { Step11CommitmentsForm } from "./sections/Step11CommitmentsForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { CheckSquare, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step10CommitmentsProps {
+interface Step11CommitmentsProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onBack: () => void;
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step10Commitments = ({ userId, onboardingData, onBack, onSaveSection }: Step10CommitmentsProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step10_commitments || {});
+export const Step11Commitments = ({ userId, onboardingData, onBack, onSaveSection }: Step11CommitmentsProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step11_commitments || {});
   const [allChecked, setAllChecked] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleChange = (data: any, checked: boolean) => {
+  const handleChange = (data: any) => {
     setFormData(data);
-    setAllChecked(checked);
+    // Check if all required fields are checked
+    const allChecked = !!(
+      data.understands_revenue_split &&
+      data.understands_boundaries_recorded &&
+      data.understands_payments_and_invoices &&
+      data.agrees_to_posting_expectations &&
+      data.agrees_to_communication_with_staff &&
+      data.agrees_to_attend_shoots &&
+      data.agrees_to_complete_onboarding &&
+      data.final_confirmation
+    );
+    setAllChecked(allChecked);
   };
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(10, { step10_commitments: formData });
+      await onSaveSection(11, { step11_commitments: formData });
       toast.success("Commitments saved");
     } catch (error) {
       toast.error("Failed to save commitments");
@@ -51,13 +62,13 @@ export const Step10Commitments = ({ userId, onboardingData, onBack, onSaveSectio
         <div className="flex items-center gap-3">
           <CheckSquare className="h-6 w-6 text-primary" />
           <div>
-            <CardTitle>Step 10: Requirements & Commitments</CardTitle>
+            <CardTitle>Step 11: Requirements & Commitments</CardTitle>
             <CardDescription>Final agreements to complete your onboarding</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step10CommitmentsForm
+        <Step11CommitmentsForm
           initialData={formData}
           onChange={handleChange}
         />

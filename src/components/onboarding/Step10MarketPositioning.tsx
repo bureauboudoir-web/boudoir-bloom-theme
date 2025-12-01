@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step9ContentPositioningForm } from "./sections/Step9ContentPositioningForm";
+import { Step10MarketPositioningForm } from "./sections/Step10MarketPositioningForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { TrendingUp, Save } from "lucide-react";
+import { Target, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step9MarketPositioningProps {
+interface Step10MarketPositioningProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step9MarketPositioningProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step9MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9MarketPositioningProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step9_market_positioning || {});
+export const Step10MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step10MarketPositioningProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step10_market_positioning || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(9, { step9_market_positioning: formData });
+      await onSaveSection(10, { step10_market_positioning: formData });
       toast.success("Market positioning saved");
     } catch (error) {
       toast.error("Failed to save market positioning");
@@ -39,15 +39,15 @@ export const Step9MarketPositioning = ({ userId, onboardingData, onNext, onBack,
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <TrendingUp className="h-6 w-6 text-primary" />
+          <Target className="h-6 w-6 text-primary" />
           <div>
-            <CardTitle>Step 9: Market Positioning</CardTitle>
-            <CardDescription>Define your niche and competitive advantage</CardDescription>
+            <CardTitle>Step 10: Market Positioning</CardTitle>
+            <CardDescription>Your niche and target audience</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step9ContentPositioningForm
+        <Step10MarketPositioningForm
           initialData={formData}
           onChange={setFormData}
         />
