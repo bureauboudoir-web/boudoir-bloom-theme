@@ -19,8 +19,7 @@ import {
   History,
   Calendar,
   ChevronDown,
-  ChevronUp,
-  Mic
+  ChevronUp
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreatorsOnboardingOverview } from "@/components/dashboard/CreatorsOnboardingOverview";
@@ -31,7 +30,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { TestDataGenerator } from "./TestDataGenerator";
 import { useCollapsibleSection } from "@/hooks/useCollapsibleSection";
-import { VoiceToolDebug } from "./VoiceToolDebug";
 
 interface AdminControlsOverviewProps {
   onNavigate: (tab: string) => void;
@@ -65,7 +63,6 @@ export const AdminControlsOverview = memo(function AdminControlsOverview({ onNav
   const { isOpen: isSystemHealthOpen, toggle: toggleSystemHealth } = useCollapsibleSection('admin-system-health-collapsed', true);
   const { isOpen: isTestDataOpen, toggle: toggleTestData } = useCollapsibleSection('admin-test-data', false);
   const { isOpen: isOnboardingOverviewOpen, toggle: toggleOnboardingOverview } = useCollapsibleSection('admin-onboarding-overview', true);
-  const { isOpen: isVoiceToolOpen, toggle: toggleVoiceTool } = useCollapsibleSection('admin-voice-tool', false);
 
   useEffect(() => {
     fetchAdminStats();
@@ -443,32 +440,6 @@ export const AdminControlsOverview = memo(function AdminControlsOverview({ onNav
           <CollapsibleContent>
             <CardContent>
               <TestDataGenerator />
-            </CardContent>
-          </CollapsibleContent>
-        </Card>
-      </Collapsible>
-
-      {/* Voice Tool Integration - Collapsible */}
-      <Collapsible open={isVoiceToolOpen} onOpenChange={toggleVoiceTool}>
-        <Card>
-          <CollapsibleTrigger className="w-full">
-            <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Mic className="w-5 h-5" />
-                  Voice Tool Integration
-                </CardTitle>
-                {isVoiceToolOpen ? (
-                  <ChevronUp className="w-5 h-5 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                )}
-              </div>
-            </CardHeader>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <CardContent>
-              <VoiceToolDebug />
             </CardContent>
           </CollapsibleContent>
         </Card>

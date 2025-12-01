@@ -16,6 +16,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
 import { Copy, Key, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 import { format } from "date-fns";
+import { VoiceToolDebug } from "@/components/admin/VoiceToolDebug";
 
 export default function ApiKeyManagement() {
   const { toast } = useToast();
@@ -176,24 +177,29 @@ export default function ApiKeyManagement() {
     <PageContainer>
       <div className="container mx-auto p-6 space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">API Key Management</h1>
+          <h1 className="text-3xl font-bold">API & Integration Settings</h1>
           <p className="text-muted-foreground mt-2">
-            Generate and manage external API keys for Content Generator and Voice Tool integrations
+            Manage API keys and external tool integrations
           </p>
         </div>
-        {/* Generate New Key Card */}
+        {/* API Keys Section */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Plus className="h-5 w-5" />
-              Generate New API Key
+              <Key className="h-5 w-5" />
+              API Keys
             </CardTitle>
             <CardDescription>
-              Create a new API key for external integrations
+              Generate and manage API keys for external integrations
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
+            {/* Generate New Key */}
             <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Plus className="h-5 w-5" />
+                Generate New API Key
+              </h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="label">Label</Label>
@@ -229,80 +235,86 @@ export default function ApiKeyManagement() {
                 Generate API Key
               </Button>
             </div>
+
+            {/* API Keys List */}
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold">Active API Keys</h3>
+              {isLoading ? (
+                <div className="text-center py-8 text-muted-foreground">Loading...</div>
+              ) : !apiKeys || apiKeys.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No API keys found. Create your first one above.
+                </div>
+              ) : (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Label</TableHead>
+                        <TableHead>Preview</TableHead>
+                        <TableHead>Scope</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Last Used</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {apiKeys.map((key) => (
+                        <TableRow key={key.id}>
+                          <TableCell className="font-medium">{key.label}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            {key.key_preview || "sk_xxxx...xxxx"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={getScopeBadgeVariant(key.scope)}>
+                              {key.scope}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {format(new Date(key.created_at), "MMM d, yyyy")}
+                          </TableCell>
+                          <TableCell>
+                            {key.last_used_at
+                              ? format(new Date(key.last_used_at), "MMM d, yyyy")
+                              : "Never"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={key.is_active ? "default" : "destructive"}>
+                              {key.is_active ? "Active" : "Revoked"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {key.is_active && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setRevokeKeyId(key.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
-        {/* API Keys List */}
+        {/* Voice Tool Integration Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Active API Keys</CardTitle>
+            <CardTitle>Voice Tool Integration</CardTitle>
             <CardDescription>
-              Manage your existing API keys
+              Configure and test external Voice Tool API connection
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
-              <div className="text-center py-8 text-muted-foreground">Loading...</div>
-            ) : !apiKeys || apiKeys.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No API keys found. Create your first one above.
-              </div>
-            ) : (
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Label</TableHead>
-                      <TableHead>Preview</TableHead>
-                      <TableHead>Scope</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Last Used</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {apiKeys.map((key) => (
-                      <TableRow key={key.id}>
-                        <TableCell className="font-medium">{key.label}</TableCell>
-                        <TableCell className="font-mono text-sm">
-                          {key.key_preview || "sk_xxxx...xxxx"}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={getScopeBadgeVariant(key.scope)}>
-                            {key.scope}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {format(new Date(key.created_at), "MMM d, yyyy")}
-                        </TableCell>
-                        <TableCell>
-                          {key.last_used_at
-                            ? format(new Date(key.last_used_at), "MMM d, yyyy")
-                            : "Never"}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={key.is_active ? "default" : "destructive"}>
-                            {key.is_active ? "Active" : "Revoked"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {key.is_active && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setRevokeKeyId(key.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+            <VoiceToolDebug />
           </CardContent>
         </Card>
       
