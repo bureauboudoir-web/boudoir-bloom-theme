@@ -1,139 +1,104 @@
-// Onboarding step configuration - 16 Sections
+// Onboarding step configuration - 10 Steps
 export interface OnboardingStepConfig {
   id: number;
   label: string;
+  short: string;
   stage: "pre-meeting" | "post-meeting";
   description: string;
-  icon?: string;
-  required?: boolean;
+  icon: string;
+  required: boolean;
+  adminOnly?: boolean;
 }
 
 export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
   {
     id: 1,
-    label: "Personal Information",
+    label: "Private Information",
+    short: "Private Info",
     stage: "pre-meeting",
-    description: "Basic contact and personal details",
+    description: "Real identity and emergency contacts (Admin/Manager only)",
     icon: "User",
     required: true,
+    adminOnly: true,
   },
   {
     id: 2,
-    label: "Physical Description",
-    stage: "pre-meeting",
-    description: "Body type, features, and appearance",
-    icon: "Heart",
+    label: "Brand & Character Identity",
+    short: "Brand",
+    stage: "post-meeting",
+    description: "Stage name, character contact info, bio, brand colors",
+    icon: "Palette",
     required: true,
   },
   {
     id: 3,
     label: "Amsterdam Story",
+    short: "Backstory",
     stage: "post-meeting",
-    description: "Your Amsterdam journey and Red Light District story",
+    description: "Your Amsterdam journey and Red Light District connection",
     icon: "MapPin",
     required: true,
   },
   {
     id: 4,
-    label: "Boundaries & Comfort Levels",
+    label: "Persona",
+    short: "Persona",
     stage: "post-meeting",
-    description: "Content boundaries and comfort preferences",
-    icon: "Shield",
+    description: "Tone of voice, keywords, personality traits, character rules",
+    icon: "Theater",
     required: true,
   },
   {
     id: 5,
-    label: "Pricing Structure",
+    label: "Boundaries",
+    short: "Boundaries",
     stage: "post-meeting",
-    description: "Set your pricing for various services",
-    icon: "DollarSign",
+    description: "Content boundaries, comfort levels, do-not-discuss topics",
+    icon: "Shield",
     required: true,
   },
   {
     id: 6,
-    label: "Persona & Character",
+    label: "Pricing Structure",
+    short: "Pricing",
     stage: "post-meeting",
-    description: "Your stage name and character development",
-    icon: "Theater",
+    description: "Menu items, PPV ranges, bundle pricing",
+    icon: "DollarSign",
     required: true,
   },
   {
     id: 7,
     label: "Scripts & Messaging",
+    short: "Messaging",
     stage: "post-meeting",
-    description: "Message templates and communication scripts",
+    description: "Intro messages, welcome scripts, reactivation styles",
     icon: "MessageSquare",
     required: true,
   },
   {
     id: 8,
     label: "Content Preferences",
+    short: "Content Prefs",
     stage: "post-meeting",
-    description: "Content types and shooting preferences",
+    description: "Platforms, content style, posting frequency, video/photo preferences",
     icon: "Camera",
     required: true,
   },
   {
     id: 9,
-    label: "Visual Identity",
+    label: "Market Positioning",
+    short: "Positioning",
     stage: "post-meeting",
-    description: "Colors, aesthetic, fonts, and brand visuals",
-    icon: "Palette",
-    required: false,
+    description: "Niche, target audience, fan expectations, competitive edge",
+    icon: "TrendingUp",
+    required: true,
   },
   {
     id: 10,
-    label: "Creator Story",
+    label: "Requirements & Commitments",
+    short: "Commitments",
     stage: "post-meeting",
-    description: "Your journey, milestones, and future goals",
-    icon: "BookOpen",
-    required: false,
-  },
-  {
-    id: 11,
-    label: "Brand Alignment",
-    stage: "post-meeting",
-    description: "Brand voice, target audience, unique value",
-    icon: "Target",
-    required: false,
-  },
-  {
-    id: 12,
-    label: "Fetish / Special Interests",
-    stage: "post-meeting",
-    description: "Categories and specializations (staff filtering)",
-    icon: "Tag",
-    required: false,
-  },
-  {
-    id: 13,
-    label: "Engagement Style",
-    stage: "post-meeting",
-    description: "Communication style and fan interactions",
-    icon: "MessageCircle",
-    required: false,
-  },
-  {
-    id: 14,
-    label: "Market Positioning",
-    stage: "post-meeting",
-    description: "Niche, competitors, and differentiators",
-    icon: "TrendingUp",
-    required: false,
-  },
-  {
-    id: 15,
-    label: "Fan Expectations",
-    stage: "post-meeting",
-    description: "Content frequency and interaction commitments",
-    icon: "Users",
-    required: false,
-  },
-  {
-    id: 16,
-    label: "Commitments",
-    stage: "post-meeting",
-    description: "Final sign-off and agreement confirmation",
+    description: "Final agreements and commitment confirmations",
     icon: "CheckSquare",
     required: true,
   },
@@ -157,9 +122,9 @@ export const isPostMeetingStep = (stepNumber: number): boolean => {
 };
 
 export const getFirstPostMeetingStep = (): number => {
-  return POST_MEETING_STEPS[0]?.id || 4;
+  return POST_MEETING_STEPS[0]?.id || 2;
 };
 
 export const getLastPreMeetingStep = (): number => {
-  return PRE_MEETING_STEPS[PRE_MEETING_STEPS.length - 1]?.id || 3;
+  return PRE_MEETING_STEPS[PRE_MEETING_STEPS.length - 1]?.id || 1;
 };

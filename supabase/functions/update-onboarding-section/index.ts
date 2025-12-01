@@ -28,30 +28,24 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Map section_id to database column
+    // Map section_id to database column (10 steps)
     const sectionMapping: Record<number, string> = {
-      1: 'personal_info',
-      2: 'physical_description',
-      3: 'amsterdam_story',
-      4: 'boundaries',
-      5: 'pricing',
-      6: 'persona',
-      7: 'scripts',
-      8: 'content_preferences',
-      9: 'section_visual_identity',
-      10: 'section_creator_story',
-      11: 'section_brand_alignment',
-      12: 'section_fetish_interests',
-      13: 'section_engagement_style',
-      14: 'section_market_positioning',
-      15: 'section_fan_expectations',
-      16: 'section_creative_boundaries',
+      1: 'step1_private_info',
+      2: 'step2_brand_identity',
+      3: 'step3_amsterdam_story',
+      4: 'step4_persona',
+      5: 'step5_boundaries',
+      6: 'step6_pricing',
+      7: 'step7_messaging',
+      8: 'step8_content_preferences',
+      9: 'step9_market_positioning',
+      10: 'step10_commitments',
     };
 
     const sectionColumn = sectionMapping[section_id];
     if (!sectionColumn) {
       return new Response(
-        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-16.` }),
+        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-10.` }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -71,18 +65,11 @@ serve(async (req) => {
       );
     }
 
-    // Prepare update object - merge with existing data for JSONB fields (sections 9-16)
-    const isJsonbSection = section_id >= 9;
-    let updateData: any = {};
-
-    if (isJsonbSection) {
-      // For JSONB sections, merge with existing data
-      const existingData = existing?.[sectionColumn] || {};
-      updateData[sectionColumn] = { ...existingData, ...data };
-    } else {
-      // For regular columns, flatten the data object
-      updateData = { ...data };
-    }
+    // All sections are JSONB, merge with existing data
+    const existingData = existing?.[sectionColumn] || {};
+    const updateData: any = {
+      [sectionColumn]: { ...existingData, ...data }
+    };
 
     // Update completed_steps array
     const completedSteps = existing?.completed_steps || [];
@@ -91,13 +78,13 @@ serve(async (req) => {
     }
     updateData.completed_steps = completedSteps;
 
-    // Check if all 16 sections are complete
-    const allSectionsComplete = completedSteps.length >= 16;
+    // Check if all 10 sections are complete
+    const allSectionsComplete = completedSteps.length >= 10;
     updateData.is_completed = allSectionsComplete;
 
     // Update current_step if needed
     if (section_id >= (existing?.current_step || 1)) {
-      updateData.current_step = Math.min(section_id + 1, 16);
+      updateData.current_step = Math.min(section_id + 1, 10);
     }
 
     // Perform update
@@ -117,7 +104,7 @@ serve(async (req) => {
     }
 
     // Calculate completion percentage
-    const completionPercentage = Math.round((completedSteps.length / 16) * 100);
+    const completionPercentage = Math.round((completedSteps.length / 10) * 100);
 
     return new Response(
       JSON.stringify({
@@ -125,7 +112,7 @@ serve(async (req) => {
         data: updated,
         completion: {
           completed_steps: completedSteps,
-          total_sections: 16,
+          total_sections: 10,
           completion_percentage: completionPercentage,
           is_completed: allSectionsComplete
         }
