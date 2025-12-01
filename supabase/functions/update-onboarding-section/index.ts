@@ -28,25 +28,26 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Map section_id to database column (11 steps)
+    // Map section_id to database column (12 steps)
     const sectionMapping: Record<number, string> = {
       1: 'step1_private_info',
-      2: 'step2_brand_identity',
-      3: 'step3_amsterdam_story',
-      4: 'step4_persona',
-      5: 'step5_boundaries',
-      6: 'step6_pricing',
-      7: 'step7_messaging',
-      8: 'step8_content_preferences',
-      9: 'step9_market_positioning',
-      10: 'step10_commitments',
-      11: 'step11_commitments',
+      2: 'step2_body_info',
+      3: 'step2_brand_identity',
+      4: 'step3_amsterdam_story',
+      5: 'step4_persona',
+      6: 'step5_boundaries',
+      7: 'step6_pricing',
+      8: 'step7_messaging',
+      9: 'step8_socials_platforms',
+      10: 'step9_content_preferences',
+      11: 'step10_market_positioning',
+      12: 'step11_commitments',
     };
 
     const sectionColumn = sectionMapping[section_id];
     if (!sectionColumn) {
       return new Response(
-        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-11.` }),
+        JSON.stringify({ error: `Invalid section_id: ${section_id}. Must be between 1-12.` }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -79,13 +80,13 @@ serve(async (req) => {
     }
     updateData.completed_steps = completedSteps;
 
-    // Check if all 11 sections are complete
-    const allSectionsComplete = completedSteps.length >= 11;
+    // Check if all 12 sections are complete
+    const allSectionsComplete = completedSteps.length >= 12;
     updateData.is_completed = allSectionsComplete;
 
     // Update current_step if needed
     if (section_id >= (existing?.current_step || 1)) {
-      updateData.current_step = Math.min(section_id + 1, 11);
+      updateData.current_step = Math.min(section_id + 1, 12);
     }
 
     // Perform update
@@ -105,7 +106,7 @@ serve(async (req) => {
     }
 
     // Calculate completion percentage
-    const completionPercentage = Math.round((completedSteps.length / 11) * 100);
+    const completionPercentage = Math.round((completedSteps.length / 12) * 100);
 
     return new Response(
       JSON.stringify({
@@ -113,7 +114,7 @@ serve(async (req) => {
         data: updated,
         completion: {
           completed_steps: completedSteps,
-          total_sections: 11,
+          total_sections: 12,
           completion_percentage: completionPercentage,
           is_completed: allSectionsComplete
         }

@@ -23,6 +23,16 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
   },
   {
     id: 2,
+    label: "Body Information",
+    short: "Body",
+    stage: "pre-meeting",
+    description: "Physical characteristics and distinctive features",
+    icon: "User",
+    required: true,
+    adminOnly: true,
+  },
+  {
+    id: 3,
     label: "Brand & Character Identity",
     short: "Brand",
     stage: "post-meeting",
@@ -31,7 +41,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 3,
+    id: 4,
     label: "Amsterdam Story",
     short: "Amsterdam",
     stage: "post-meeting",
@@ -40,7 +50,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 4,
+    id: 5,
     label: "Persona & Character Personality",
     short: "Persona",
     stage: "post-meeting",
@@ -49,7 +59,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 5,
+    id: 6,
     label: "Boundaries & Comfort Levels",
     short: "Boundaries",
     stage: "post-meeting",
@@ -58,7 +68,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 6,
+    id: 7,
     label: "Pricing Strategy",
     short: "Pricing",
     stage: "post-meeting",
@@ -67,7 +77,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 7,
+    id: 8,
     label: "Scripts & Messaging Style",
     short: "Messaging",
     stage: "post-meeting",
@@ -76,7 +86,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 8,
+    id: 9,
     label: "Socials & Platforms",
     short: "Socials",
     stage: "post-meeting",
@@ -85,7 +95,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 9,
+    id: 10,
     label: "Content Preferences",
     short: "Content",
     stage: "post-meeting",
@@ -94,7 +104,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 10,
+    id: 11,
     label: "Market Positioning",
     short: "Market",
     stage: "post-meeting",
@@ -103,7 +113,7 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     required: true,
   },
   {
-    id: 11,
+    id: 12,
     label: "Requirements & Commitments",
     short: "Sign-Off",
     stage: "post-meeting",

@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step11CommitmentsForm } from "./sections/Step11CommitmentsForm";
+import { Step12CommitmentsForm } from "./sections/Step12CommitmentsForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { CheckSquare, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step11CommitmentsProps {
+interface Step12CommitmentsProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onBack: () => void;
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step11Commitments = ({ userId, onboardingData, onBack, onSaveSection }: Step11CommitmentsProps) => {
+export const Step12Commitments = ({ userId, onboardingData, onBack, onSaveSection }: Step12CommitmentsProps) => {
   const [formData, setFormData] = useState(onboardingData?.step11_commitments || {});
   const [allChecked, setAllChecked] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -37,7 +37,7 @@ export const Step11Commitments = ({ userId, onboardingData, onBack, onSaveSectio
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(11, formData);
+      await onSaveSection(12, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");
@@ -64,13 +64,13 @@ export const Step11Commitments = ({ userId, onboardingData, onBack, onSaveSectio
             <CheckSquare className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-xl">Step 11: Requirements & Commitments</CardTitle>
+            <CardTitle className="text-xl">Step 12: Requirements & Commitments</CardTitle>
             <CardDescription>Final agreements to complete your onboarding</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-8">
-        <Step11CommitmentsForm
+        <Step12CommitmentsForm
           initialData={formData}
           onChange={handleChange}
         />

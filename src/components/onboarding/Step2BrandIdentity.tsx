@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step2BrandIdentityForm } from "./sections/Step2BrandIdentityForm";
+import { Step3BrandIdentityForm } from "./sections/Step3BrandIdentityForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { Palette, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step2BrandIdentityProps {
+interface Step3BrandIdentityProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step2BrandIdentityProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step2BrandIdentity = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step2BrandIdentityProps) => {
+export const Step3BrandIdentity = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step3BrandIdentityProps) => {
   const [formData, setFormData] = useState(onboardingData?.step2_brand_identity || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(2, formData);
+      await onSaveSection(3, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");
@@ -43,13 +43,13 @@ export const Step2BrandIdentity = ({ userId, onboardingData, onNext, onBack, onS
             <Palette className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-xl">Step 2: Brand Identity</CardTitle>
+            <CardTitle className="text-xl">Step 3: Brand Identity</CardTitle>
             <CardDescription className="text-muted-foreground">Define your brand and character identity</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-8">
-        <Step2BrandIdentityForm
+        <Step3BrandIdentityForm
           initialData={formData}
           onChange={setFormData}
         />

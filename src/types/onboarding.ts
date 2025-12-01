@@ -12,8 +12,20 @@ export interface Step1PrivateInfo {
   emergency_contact_phone?: string;
 }
 
-// Step 2 - Brand & Character Identity
-export interface Step2BrandIdentity {
+// Step 2 - Body Information (ADMIN-ONLY, PRE-MEETING)
+export interface Step2BodyInfo {
+  body_height?: string;
+  body_weight?: string;
+  body_type?: string;
+  body_hair_color?: string;
+  body_eye_color?: string;
+  body_tattoos?: string;
+  body_piercings?: string;
+  body_distinctive_features?: string;
+}
+
+// Step 3 - Brand & Character Identity
+export interface Step3BrandIdentity {
   stage_name?: string;
   character_email?: string;
   character_phone?: string;
@@ -23,16 +35,16 @@ export interface Step2BrandIdentity {
   banner_style?: string;
 }
 
-// Step 3 - Amsterdam Story
-export interface Step3AmsterdamStory {
+// Step 4 - Amsterdam Story
+export interface Step4AmsterdamStory {
   amsterdam_origin_story?: string;
   what_amsterdam_means_to_them?: string;
   how_they_see_themselves_in_RLD?: string;
   story_hooks_optional?: string;
 }
 
-// Step 4 - Persona & Character Personality (NO physical description)
-export interface Step4PersonaPersonality {
+// Step 5 - Persona & Character Personality (NO physical description)
+export interface Step5PersonaPersonality {
   persona_archetype?: string;
   tone_of_voice?: string;
   fan_interaction_style?: string;
@@ -41,8 +53,8 @@ export interface Step4PersonaPersonality {
   disliked_words?: string[];
 }
 
-// Step 5 - Boundaries & Comfort Levels
-export interface Step5Boundaries {
+// Step 6 - Boundaries & Comfort Levels
+export interface Step6Boundaries {
   hard_limits?: string[];
   soft_limits?: string[];
   do_not_discuss_topics?: string[];
@@ -50,8 +62,8 @@ export interface Step5Boundaries {
   safety_notes_internal?: string;
 }
 
-// Step 6 - Pricing Strategy
-export interface Step6PricingStrategy {
+// Step 7 - Pricing Strategy
+export interface Step7PricingStrategy {
   expected_sub_price_optional?: number;
   min_ppv_price?: number;
   custom_content_min_price?: number;
@@ -59,16 +71,16 @@ export interface Step6PricingStrategy {
   never_go_below_rules?: string;
 }
 
-// Step 7 - Scripts & Messaging Style (preferences only, NO full templates)
-export interface Step7MessagingStyle {
+// Step 8 - Scripts & Messaging Style (preferences only, NO full templates)
+export interface Step8MessagingStyle {
   messaging_tone?: string;
   greeting_style?: string;
   reactivation_style?: string;
   forbidden_phrases?: string[];
 }
 
-// Step 8 - Socials & Platforms
-export interface Step8SocialsPlatforms {
+// Step 9 - Socials & Platforms
+export interface Step9SocialsPlatforms {
   instagram?: string;
   tiktok?: string;
   twitter_x?: string;
@@ -81,8 +93,8 @@ export interface Step8SocialsPlatforms {
   live_platforms?: string[];
 }
 
-// Step 9 - Content Preferences (SEPARATE from Market Positioning)
-export interface Step9ContentPreferences {
+// Step 10 - Content Preferences (SEPARATE from Market Positioning)
+export interface Step10ContentPreferences {
   posting_frequency?: string;
   best_posting_times?: string;
   preferred_video_styles?: string[];
@@ -92,16 +104,16 @@ export interface Step9ContentPreferences {
   lifestyle_tags?: string[];
 }
 
-// Step 10 - Market Positioning (SEPARATE from Content)
-export interface Step10MarketPositioning {
+// Step 11 - Market Positioning (SEPARATE from Content)
+export interface Step11MarketPositioning {
   niche_description?: string;
   target_audience?: string;
   fan_expectations?: string;
   unique_angle?: string;
 }
 
-// Step 11 - Requirements & Commitments (ADMIN-ONLY visibility, NEVER exposed to external APIs)
-export interface Step11Commitments {
+// Step 12 - Requirements & Commitments (ADMIN-ONLY visibility, NEVER exposed to external APIs)
+export interface Step12Commitments {
   understands_revenue_split?: boolean;
   understands_boundaries_recorded?: boolean;
   understands_payments_and_invoices?: boolean;
@@ -133,19 +145,20 @@ export interface CompletionTracking {
   last_updated?: string;
 }
 
-// Combined onboarding data structure (11 steps)
+// Combined onboarding data structure (12 steps)
 export interface BBCreatorOnboarding {
   step1_private_info: Step1PrivateInfo;
-  step2_brand_identity: Step2BrandIdentity;
-  step3_amsterdam_story: Step3AmsterdamStory;
-  step4_persona_personality: Step4PersonaPersonality;
-  step5_boundaries: Step5Boundaries;
-  step6_pricing_strategy: Step6PricingStrategy;
-  step7_messaging_style: Step7MessagingStyle;
-  step8_socials_platforms: Step8SocialsPlatforms;
-  step9_content_preferences: Step9ContentPreferences;
-  step10_market_positioning: Step10MarketPositioning;
-  step11_commitments: Step11Commitments;
+  step2_body_info: Step2BodyInfo;
+  step3_brand_identity: Step3BrandIdentity;
+  step4_amsterdam_story: Step4AmsterdamStory;
+  step5_persona_personality: Step5PersonaPersonality;
+  step6_boundaries: Step6Boundaries;
+  step7_pricing_strategy: Step7PricingStrategy;
+  step8_messaging_style: Step8MessagingStyle;
+  step9_socials_platforms: Step9SocialsPlatforms;
+  step10_content_preferences: Step10ContentPreferences;
+  step11_market_positioning: Step11MarketPositioning;
+  step12_commitments: Step12Commitments;
   current_step: number;
   completed_steps: number[];
   is_completed: boolean;
@@ -175,7 +188,7 @@ export const calculateSectionCompletion = (section: any): boolean => {
   return values.some(v => v !== null && v !== undefined && v !== '' && (!Array.isArray(v) || v.length > 0));
 };
 
-// Helper function to get completion percentage (11 steps)
+// Helper function to get completion percentage (12 steps)
 export const getCompletionPercentage = (completedSteps: number[]): number => {
-  return Math.round((completedSteps.length / 11) * 100);
+  return Math.round((completedSteps.length / 12) * 100);
 };

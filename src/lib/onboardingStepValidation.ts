@@ -7,33 +7,35 @@
 
 export const ONBOARDING_STEP_MAPPING = {
   private_info: 1,
-  brand_identity: 2,
-  amsterdam_story: 3,
-  persona_personality: 4,
-  boundaries: 5,
-  pricing_strategy: 6,
-  messaging_style: 7,
-  socials_platforms: 8,
-  content_preferences: 9,
-  market_positioning: 10,
-  commitments: 11,
+  body_info: 2,
+  brand_identity: 3,
+  amsterdam_story: 4,
+  persona_personality: 5,
+  boundaries: 6,
+  pricing_strategy: 7,
+  messaging_style: 8,
+  socials_platforms: 9,
+  content_preferences: 10,
+  market_positioning: 11,
+  commitments: 12,
 } as const;
 
 export const ONBOARDING_STEP_NAMES = {
   1: "Private Information",
-  2: "Brand & Character Identity",
-  3: "Amsterdam Story",
-  4: "Persona & Character Personality",
-  5: "Boundaries & Comfort Levels",
-  6: "Pricing Strategy",
-  7: "Scripts & Messaging Style",
-  8: "Socials & Platforms",
-  9: "Content Preferences",
-  10: "Market Positioning",
-  11: "Requirements & Commitments",
+  2: "Body Information",
+  3: "Brand & Character Identity",
+  4: "Amsterdam Story",
+  5: "Persona & Character Personality",
+  6: "Boundaries & Comfort Levels",
+  7: "Pricing Strategy",
+  8: "Scripts & Messaging Style",
+  9: "Socials & Platforms",
+  10: "Content Preferences",
+  11: "Market Positioning",
+  12: "Requirements & Commitments",
 } as const;
 
-export const TOTAL_STEPS = 11;
+export const TOTAL_STEPS = 12;
 
 /**
  * Validates that a step number is within the valid range
