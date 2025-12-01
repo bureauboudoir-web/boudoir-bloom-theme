@@ -98,10 +98,7 @@ export const DashboardNav = ({
         ...(isCreator ? [
           { id: "account" as TabId, label: t('dashboard.nav.account'), icon: <User className="w-4 h-4" /> }
         ] : []),
-        { id: "settings" as TabId, label: t('dashboard.nav.settings'), icon: <Settings className="w-4 h-4" /> },
         { id: "meetings" as TabId, label: t('dashboard.nav.meetings'), icon: <Calendar className="w-4 h-4" /> },
-        { id: "upload" as TabId, label: t('dashboard.nav.upload'), icon: <Upload className="w-4 h-4" /> },
-        { id: "library" as TabId, label: t('dashboard.nav.library'), icon: <FolderOpen className="w-4 h-4" /> },
       ]
     },
     {
@@ -129,12 +126,15 @@ export const DashboardNav = ({
           badgeVariant: "destructive" as const
         },
         { id: "contract" as TabId, label: t('dashboard.nav.contract'), icon: <FileText className="w-4 h-4" /> },
+        { id: "upload" as TabId, label: t('dashboard.nav.upload'), icon: <Upload className="w-4 h-4" /> },
+        { id: "library" as TabId, label: t('dashboard.nav.library'), icon: <FolderOpen className="w-4 h-4" /> },
       ]
     },
     {
       title: t('dashboard.sections.supportAdmin'),
       items: [
         { id: "support" as TabId, label: t('dashboard.nav.support'), icon: <Mail className="w-4 h-4" /> },
+        { id: "settings" as TabId, label: t('dashboard.nav.settings'), icon: <Settings className="w-4 h-4" /> },
       ]
     }
   ];
