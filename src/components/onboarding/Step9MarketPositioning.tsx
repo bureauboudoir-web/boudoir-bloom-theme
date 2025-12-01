@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step9MarketPositioningForm } from "./sections/Step9MarketPositioningForm";
+import { Step9ContentPositioningForm } from "./sections/Step9ContentPositioningForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { TrendingUp, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ export const Step9MarketPositioning = ({ userId, onboardingData, onNext, onBack,
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step9MarketPositioningForm
+        <Step9ContentPositioningForm
           initialData={formData}
           onChange={setFormData}
         />
