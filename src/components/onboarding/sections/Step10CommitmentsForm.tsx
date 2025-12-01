@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertCircle, DollarSign, Calendar, MessageCircle, Shield, FileCheck, Camera, User, Check } from "lucide-react";
 
 interface Step10CommitmentsData {
   understand_split?: boolean;
@@ -54,14 +54,16 @@ export const Step10CommitmentsForm = ({ initialData, onChange }: Step10Commitmen
       <div className="space-y-4 p-4 border rounded-lg bg-card">
         <h3 className="font-semibold text-lg mb-4">Agency Commitments</h3>
         
-        <div className="flex items-start space-x-3">
+        <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-muted/50 transition-all duration-200">
           <Checkbox
             id="understand_split"
             checked={formData.understand_split || false}
             onCheckedChange={(checked) => handleCheckboxChange('understand_split', checked as boolean)}
+            className="mt-1 data-[state=checked]:animate-in data-[state=checked]:zoom-in-50"
           />
           <div className="flex-1">
-            <Label htmlFor="understand_split" className="cursor-pointer font-medium">
+            <Label htmlFor="understand_split" className="cursor-pointer font-medium flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-primary" />
               I understand the revenue split arrangement
             </Label>
             <p className="text-sm text-muted-foreground mt-1">

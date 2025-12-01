@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { PremiumInput } from "@/components/ui/premium-input";
+import { ChipInput } from "@/components/ui/chip-input";
+import { LifestyleChip } from "@/components/ui/lifestyle-chip";
+import { Instagram, Hash, Globe } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Card } from "@/components/ui/card";
 
 interface Step8SocialsData {
   instagram?: string;
@@ -20,6 +21,7 @@ interface Step8SocialsData {
   live_platforms?: string[];
   posting_frequency?: string;
   best_posting_times?: string[];
+  lifestyle_interests?: string[];
 }
 
 interface Step8SocialsFormProps {
@@ -32,8 +34,6 @@ const LIVE_PLATFORM_OPTIONS = ["OnlyFans Live", "Chaturbate", "Stripchat", "CamS
 
 export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProps) => {
   const [formData, setFormData] = useState<Step8SocialsData>(initialData || {});
-  const [otherLinkInput, setOtherLinkInput] = useState("");
-  const [timeInput, setTimeInput] = useState("");
 
   useEffect(() => {
     onChange(formData);
@@ -87,31 +87,6 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
     }
   };
 
-  const addOtherLink = () => {
-    if (otherLinkInput.trim()) {
-      const links = formData.other_links || [];
-      handleChange('other_links', [...links, otherLinkInput.trim()]);
-      setOtherLinkInput("");
-    }
-  };
-
-  const removeOtherLink = (index: number) => {
-    const links = formData.other_links || [];
-    handleChange('other_links', links.filter((_, i) => i !== index));
-  };
-
-  const addTime = () => {
-    if (timeInput.trim()) {
-      const times = formData.best_posting_times || [];
-      handleChange('best_posting_times', [...times, timeInput.trim()]);
-      setTimeInput("");
-    }
-  };
-
-  const removeTime = (index: number) => {
-    const times = formData.best_posting_times || [];
-    handleChange('best_posting_times', times.filter((_, i) => i !== index));
-  };
 
   return (
     <div className="space-y-6">

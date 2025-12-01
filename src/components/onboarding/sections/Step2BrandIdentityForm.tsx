@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { PremiumInput } from "@/components/ui/premium-input";
+import { PremiumTextarea } from "@/components/ui/premium-textarea";
+import { ChipInput } from "@/components/ui/chip-input";
+import { ColorPalettePicker } from "@/components/ui/color-palette-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { User, Mail, Instagram, Image, Sparkles } from "lucide-react";
 
 interface Step2BrandIdentityData {
   stage_name?: string;
@@ -23,171 +24,124 @@ interface Step2BrandIdentityFormProps {
 
 export const Step2BrandIdentityForm = ({ initialData, onChange }: Step2BrandIdentityFormProps) => {
   const [formData, setFormData] = useState<Step2BrandIdentityData>(initialData || {});
-  const [keywordInput, setKeywordInput] = useState("");
-  const [colorInput, setColorInput] = useState("#000000");
 
   useEffect(() => {
     onChange(formData);
-  }, [formData]);
+  }, [formData, onChange]);
 
   const handleChange = (field: keyof Step2BrandIdentityData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const addKeyword = () => {
-    if (keywordInput.trim()) {
-      const keywords = formData.persona_keywords || [];
-      handleChange('persona_keywords', [...keywords, keywordInput.trim()]);
-      setKeywordInput("");
-    }
-  };
-
-  const removeKeyword = (index: number) => {
-    const keywords = formData.persona_keywords || [];
-    handleChange('persona_keywords', keywords.filter((_, i) => i !== index));
-  };
-
-  const addColor = () => {
-    const colors = formData.brand_color_palette || [];
-    if (!colors.includes(colorInput)) {
-      handleChange('brand_color_palette', [...colors, colorInput]);
-    }
-  };
-
-  const removeColor = (index: number) => {
-    const colors = formData.brand_color_palette || [];
-    handleChange('brand_color_palette', colors.filter((_, i) => i !== index));
-  };
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
-        <Label htmlFor="stage_name">Stage Name / Persona Name *</Label>
-        <Input
+        <Label htmlFor="stage_name" className="flex items-center gap-2 mb-2">
+          <User className="h-4 w-4 text-primary" />
+          Stage Name / Persona Name *
+        </Label>
+        <PremiumInput
           id="stage_name"
           value={formData.stage_name || ''}
           onChange={(e) => handleChange('stage_name', e.target.value)}
           placeholder="Your public creator name"
+          helperText="The name your audience will know you by"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <Label htmlFor="character_phone">Character Phone</Label>
-          <Input
-            id="character_phone"
-            type="tel"
-            value={formData.character_phone || ''}
-            onChange={(e) => handleChange('character_phone', e.target.value)}
-            placeholder="Public business number"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="character_email">Character Email</Label>
-          <Input
+          <Label htmlFor="character_email" className="flex items-center gap-2 mb-2">
+            <Mail className="h-4 w-4 text-primary" />
+            Character Email
+          </Label>
+          <PremiumInput
             id="character_email"
             type="email"
             value={formData.character_email || ''}
             onChange={(e) => handleChange('character_email', e.target.value)}
-            placeholder="Public business email"
+            placeholder="your@email.com"
+            helperText="Public business email"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="character_phone" className="flex items-center gap-2 mb-2">
+            <Instagram className="h-4 w-4 text-primary" />
+            Character Phone
+          </Label>
+          <PremiumInput
+            id="character_phone"
+            type="tel"
+            value={formData.character_phone || ''}
+            onChange={(e) => handleChange('character_phone', e.target.value)}
+            placeholder="+31 6 12345678"
+            helperText="Public business number"
           />
         </div>
       </div>
 
       <div>
-        <Label htmlFor="bio_short">Short Bio (150 chars)</Label>
-        <Textarea
+        <Label htmlFor="bio_short" className="flex items-center gap-2 mb-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          Short Bio
+        </Label>
+        <PremiumTextarea
           id="bio_short"
           value={formData.bio_short || ''}
           onChange={(e) => handleChange('bio_short', e.target.value)}
           placeholder="Your catchy bio for profiles..."
           rows={3}
-          maxLength={150}
+          showCharCount
+          maxChars={150}
+          helperText="Describe your persona and content style"
         />
-        <p className="text-xs text-muted-foreground mt-1">
-          {formData.bio_short?.length || 0}/150 characters
-        </p>
       </div>
 
       <div>
-        <Label htmlFor="persona_keywords">Persona Keywords</Label>
-        <div className="flex gap-2 mb-2">
-          <Input
-            id="persona_keywords"
-            value={keywordInput}
-            onChange={(e) => setKeywordInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addKeyword())}
-            placeholder="Add keywords (e.g., mysterious, playful)"
-          />
-          <button
-            type="button"
-            onClick={addKeyword}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Add
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {formData.persona_keywords?.map((keyword, index) => (
-            <Badge key={index} variant="secondary" className="gap-1">
-              {keyword}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => removeKeyword(index)} />
-            </Badge>
-          ))}
-        </div>
+        <ChipInput
+          value={formData.persona_keywords || []}
+          onChange={(value) => handleChange('persona_keywords', value)}
+          placeholder="Add a keyword (e.g., 'playful', 'mysterious')"
+          helperText="Brand keywords that describe your style and vibe"
+          maxItems={10}
+        />
       </div>
 
       <div>
-        <Label htmlFor="brand_colors">Brand Color Palette</Label>
-        <div className="flex gap-2 mb-2">
-          <Input
-            id="brand_colors"
-            type="color"
-            value={colorInput}
-            onChange={(e) => setColorInput(e.target.value)}
-            className="w-20 h-10"
-          />
-          <Input
-            value={colorInput}
-            onChange={(e) => setColorInput(e.target.value)}
-            placeholder="#000000"
-            className="flex-1"
-          />
-          <button
-            type="button"
-            onClick={addColor}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Add
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {formData.brand_color_palette?.map((color, index) => (
-            <Badge key={index} variant="outline" className="gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: color }} />
-              {color}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => removeColor(index)} />
-            </Badge>
-          ))}
-        </div>
+        <ColorPalettePicker
+          value={formData.brand_color_palette || []}
+          onChange={(value) => handleChange('brand_color_palette', value)}
+          helperText="Choose 3 colors that represent your brand aesthetic"
+        />
       </div>
 
       <div>
-        <Label htmlFor="banner_style">Banner Style Preference</Label>
-        <Select value={formData.banner_style_option || ''} onValueChange={(v) => handleChange('banner_style_option', v)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a style" />
+        <Label htmlFor="banner_style" className="flex items-center gap-2 mb-2">
+          <Image className="h-4 w-4 text-primary" />
+          Banner & Visual Style
+        </Label>
+        <Select
+          value={formData.banner_style_option || ''}
+          onValueChange={(value) => handleChange('banner_style_option', value)}
+        >
+          <SelectTrigger className="rounded-xl">
+            <SelectValue placeholder="Select your preferred visual style" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="minimalist">Minimalist & Clean</SelectItem>
-            <SelectItem value="bold">Bold & Colorful</SelectItem>
-            <SelectItem value="dark">Dark & Moody</SelectItem>
-            <SelectItem value="luxury">Luxury & Elegant</SelectItem>
+            <SelectItem value="bold">Bold & Vibrant</SelectItem>
+            <SelectItem value="elegant">Elegant & Luxurious</SelectItem>
             <SelectItem value="playful">Playful & Fun</SelectItem>
-            <SelectItem value="artistic">Artistic & Creative</SelectItem>
+            <SelectItem value="dark">Dark & Moody</SelectItem>
+            <SelectItem value="natural">Natural & Organic</SelectItem>
+            <SelectItem value="retro">Retro & Vintage</SelectItem>
+            <SelectItem value="futuristic">Futuristic & Modern</SelectItem>
           </SelectContent>
         </Select>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          The overall aesthetic for your banners and promotional materials
+        </p>
       </div>
     </div>
   );

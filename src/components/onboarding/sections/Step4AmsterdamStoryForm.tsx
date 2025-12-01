@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { PremiumTextarea } from "@/components/ui/premium-textarea";
+import { BookOpen, MapPin, Lightbulb, FileText } from "lucide-react";
 
 interface Step4AmsterdamStoryData {
   origin_story_long?: string;
@@ -28,59 +29,64 @@ export const Step4AmsterdamStoryForm = ({ initialData, onChange }: Step4Amsterda
   return (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="origin_story_long">Your Full Origin Story</Label>
-        <Textarea
+        <Label htmlFor="origin_story_long" className="flex items-center gap-2 mb-2">
+          <BookOpen className="h-4 w-4 text-primary" />
+          Your Full Origin Story
+        </Label>
+        <PremiumTextarea
           id="origin_story_long"
           value={formData.origin_story_long || ''}
           onChange={(e) => handleChange('origin_story_long', e.target.value)}
-          onBlur={() => onChange(formData)}
           placeholder="Tell your full story... Where did you come from? What brought you here? What's your journey?"
           rows={6}
-          className="mt-1"
+          showCharCount
+          helperText="Your complete backstory - be as detailed as you'd like"
         />
-        <p className="text-xs text-muted-foreground mt-1">Your complete backstory - be as detailed as you'd like</p>
       </div>
 
       <div>
-        <Label htmlFor="cultural_background">Cultural Background</Label>
-        <Textarea
+        <Label htmlFor="cultural_background" className="flex items-center gap-2 mb-2">
+          <MapPin className="h-4 w-4 text-primary" />
+          Cultural Background
+        </Label>
+        <PremiumTextarea
           id="cultural_background"
           value={formData.cultural_background || ''}
           onChange={(e) => handleChange('cultural_background', e.target.value)}
-          onBlur={() => onChange(formData)}
           placeholder="Describe your cultural roots, heritage, upbringing..."
           rows={4}
-          className="mt-1"
+          helperText="Your cultural identity and influences"
         />
-        <p className="text-xs text-muted-foreground mt-1">Your cultural identity and influences</p>
       </div>
 
       <div>
-        <Label htmlFor="persona_inspiration">Persona Inspiration</Label>
-        <Textarea
+        <Label htmlFor="persona_inspiration" className="flex items-center gap-2 mb-2">
+          <Lightbulb className="h-4 w-4 text-primary" />
+          Persona Inspiration
+        </Label>
+        <PremiumTextarea
           id="persona_inspiration"
           value={formData.persona_inspiration || ''}
           onChange={(e) => handleChange('persona_inspiration', e.target.value)}
-          onBlur={() => onChange(formData)}
           placeholder="What inspired this character? Movies, books, real experiences?"
           rows={4}
-          className="mt-1"
+          helperText="What influenced the creation of your persona"
         />
-        <p className="text-xs text-muted-foreground mt-1">What influenced the creation of your persona</p>
       </div>
 
       <div>
-        <Label htmlFor="amsterdam_story_summary">Amsterdam Story Summary</Label>
-        <Textarea
+        <Label htmlFor="amsterdam_story_summary" className="flex items-center gap-2 mb-2">
+          <FileText className="h-4 w-4 text-primary" />
+          Amsterdam Story Summary
+        </Label>
+        <PremiumTextarea
           id="amsterdam_story_summary"
           value={formData.amsterdam_story_summary || ''}
           onChange={(e) => handleChange('amsterdam_story_summary', e.target.value)}
-          onBlur={() => onChange(formData)}
           placeholder="In 2-3 sentences, summarize your connection to Amsterdam..."
           rows={3}
-          className="mt-1"
+          helperText="A brief summary of your Amsterdam connection"
         />
-        <p className="text-xs text-muted-foreground mt-1">A brief summary of your Amsterdam connection</p>
       </div>
     </div>
   );
