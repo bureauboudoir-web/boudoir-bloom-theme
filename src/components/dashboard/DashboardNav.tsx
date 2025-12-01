@@ -17,14 +17,13 @@ import {
   MessageSquare,
   TrendingUp,
   Camera,
-  Wrench,
   Mic,
   Zap,
   Key
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-generator" | "api-keys";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "voice-training" | "content-generator" | "api-keys";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -207,11 +206,6 @@ export const DashboardNav = ({
   const creatorToolsSection = isCreator ? {
     title: "Creator Tools",
     items: [
-      { 
-        id: "tools" as TabId, 
-        label: "Tools Overview", 
-        icon: <Wrench className="w-4 h-4" /> 
-      },
       { 
         id: "voice-training" as TabId, 
         label: "Voice Training", 

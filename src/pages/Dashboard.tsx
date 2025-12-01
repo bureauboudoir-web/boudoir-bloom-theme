@@ -99,7 +99,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-generator" | "api-keys">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "voice-training" | "content-generator" | "api-keys">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -984,60 +984,11 @@ const Dashboard = () => {
               </div>
             )}
 
-            {/* Creator Tools */}
-            {activeTab === "tools" && isCreator && (
-              <div className="space-y-6">
-                <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-                  <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-                    <div>
-                      <h2 className="text-3xl font-bold font-serif tracking-tight">Creator Tools</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Access your specialized creator tools</p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setActiveTab("voice-training")}>
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-lg">
-                              <Mic className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">Voice Training</h3>
-                              <p className="text-sm text-muted-foreground">Train your AI voice</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setActiveTab("content-generator")}>
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-lg">
-                              <Zap className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">Content Generator</h3>
-                              <p className="text-sm text-muted-foreground">AI content generation hub</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
             {activeTab === "voice-training" && isCreator && (
               <div className="space-y-6">
                 <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
                   <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-                    <div className="flex items-center gap-3">
-                      <Button variant="ghost" size="sm" onClick={() => setActiveTab("tools")} className="gap-2">
-                        ← Back to Tools
-                      </Button>
-                    </div>
-                    <div className="mt-4">
+                    <div>
                       <h2 className="text-3xl font-bold font-serif tracking-tight">Voice Training</h2>
                       <p className="text-sm text-muted-foreground mt-2">Upload audio samples to train your AI voice</p>
                     </div>
