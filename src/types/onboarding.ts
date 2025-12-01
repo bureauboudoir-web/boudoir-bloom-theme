@@ -1,4 +1,4 @@
-// Comprehensive BB Creator Onboarding Types - 11 Steps (FINAL MODEL)
+// Comprehensive BB Creator Onboarding Types - 12 Steps (FINAL MODEL)
 
 // Step 1 - Private Information (ADMIN-ONLY, NEVER EXPOSED TO EXTERNAL APIs)
 export interface Step1PrivateInfo {

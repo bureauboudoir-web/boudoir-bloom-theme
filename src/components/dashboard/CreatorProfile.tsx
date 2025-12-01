@@ -60,7 +60,9 @@ export const CreatorProfile = ({
   };
 
   const completedSteps = onboardingData?.completed_steps || [];
-  const totalSteps = 12;
+  // Creators see 10 sections (excluding 1, 2, and 12 which are admin-only)
+  // Admins/Managers see all 12 sections
+  const totalSteps = canViewPrivateInfo ? 12 : 10;
   const completionPercentage = Math.round((completedSteps.length / totalSteps) * 100);
 
   if (!onboardingData) {
@@ -575,44 +577,40 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 12: Requirements & Commitments */}
-        <AccordionItem value="section-12" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <CheckSquare className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Requirements & Commitments</h3>
-                <p className="text-sm text-muted-foreground">Agreements and expectations</p>
+        {/* Section 12: Requirements & Commitments (Admin/Manager Only) */}
+        {canViewPrivateInfo && (
+          <AccordionItem value="section-12" className="border-none">
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex items-center gap-3 w-full">
+                <CheckSquare className="h-5 w-5 text-primary" />
+                <div className="flex-1 text-left">
+                  <h3 className="font-semibold">Requirements & Commitments (Private)</h3>
+                  <p className="text-sm text-muted-foreground">Admin/Manager only</p>
+                </div>
+                {completedSteps.includes(12) && (
+                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                    Complete
+                  </Badge>
+                )}
               </div>
-              {completedSteps.includes(12) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(12) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={12}
-              title="Requirements & Commitments"
-              icon={<CheckSquare className="h-5 w-5" />}
-              description="Review and accept commitments"
-              isLocked={isSectionLocked(12)}
-              isComplete={completedSteps.includes(12)}
-              onSave={() => handleSectionSave(12)}
-            >
-              <Step11CommitmentsForm
-                initialData={onboardingData.step11_commitments || {}}
-                onChange={(data) => handleSectionChange(12, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
+            </AccordionTrigger>
+            <AccordionContent>
+              <SectionEditor
+                sectionId={12}
+                title="Requirements & Commitments"
+                icon={<CheckSquare className="h-5 w-5" />}
+                description="Review and accept commitments"
+                isComplete={completedSteps.includes(12)}
+                onSave={() => handleSectionSave(12)}
+              >
+                <Step11CommitmentsForm
+                  initialData={onboardingData.step11_commitments || {}}
+                  onChange={(data) => handleSectionChange(12, data)}
+                />
+              </SectionEditor>
+            </AccordionContent>
+          </AccordionItem>
+        )}
       </Accordion>
     </div>
   );
