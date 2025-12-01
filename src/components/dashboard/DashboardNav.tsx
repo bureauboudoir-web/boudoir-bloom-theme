@@ -19,12 +19,12 @@ import {
   Camera,
   Wrench,
   Mic,
-  Palette,
+  Zap,
   Key
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences" | "api-keys";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-generator" | "api-keys";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -218,9 +218,9 @@ export const DashboardNav = ({
         icon: <Mic className="w-4 h-4" /> 
       },
       { 
-        id: "content-preferences" as TabId, 
-        label: "Content Preferences", 
-        icon: <Palette className="w-4 h-4" /> 
+        id: "content-generator" as TabId, 
+        label: "Content Generator", 
+        icon: <Zap className="w-4 h-4" /> 
       },
     ]
   } : null;

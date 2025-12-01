@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu, Clock, Lock as LockIcon, Lightbulb, Mic, Palette } from "lucide-react";
+import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu, Clock, Lock as LockIcon, Lightbulb, Mic, Zap } from "lucide-react";
 import { Step1PrivateInfo } from "@/components/onboarding/Step1PrivateInfo";
 import { Step2BodyInfo } from "@/components/onboarding/Step2BodyInfo";
 import { Step3BrandIdentity } from "@/components/onboarding/Step2BrandIdentity";
@@ -79,6 +79,7 @@ import { ChatDashboardContent } from "@/components/dashboard/ChatDashboardConten
 import { MarketingDashboardContent } from "@/components/dashboard/MarketingDashboardContent";
 import { StudioDashboardContent } from "@/components/dashboard/StudioDashboardContent";
 import { ApiKeysManagement } from "@/components/admin/ApiKeysManagement";
+import { ContentGeneratorHub } from "@/components/creator/ContentGeneratorHub";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -98,7 +99,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences" | "api-keys">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-generator" | "api-keys">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -1008,15 +1009,15 @@ const Dashboard = () => {
                           </div>
                         </CardContent>
                       </Card>
-                      <Card className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setActiveTab("content-preferences")}>
+                      <Card className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setActiveTab("content-generator")}>
                         <CardContent className="p-6">
                           <div className="flex items-center gap-4">
                             <div className="p-3 bg-primary/10 rounded-lg">
-                              <Palette className="w-6 h-6 text-primary" />
+                              <Zap className="w-6 h-6 text-primary" />
                             </div>
                             <div>
-                              <h3 className="font-semibold">Content Preferences</h3>
-                              <p className="text-sm text-muted-foreground">Customize your starter pack</p>
+                              <h3 className="font-semibold">Content Generator</h3>
+                              <p className="text-sm text-muted-foreground">AI content generation hub</p>
                             </div>
                           </div>
                         </CardContent>
@@ -1071,77 +1072,8 @@ const Dashboard = () => {
               </div>
             )}
 
-            {activeTab === "content-preferences" && isCreator && (
-              <div className="space-y-6">
-                <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-                  <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-                    <div className="flex items-center gap-3">
-                      <Button variant="ghost" size="sm" onClick={() => setActiveTab("tools")} className="gap-2">
-                        ← Back to Tools
-                      </Button>
-                    </div>
-                    <div className="mt-4">
-                      <h2 className="text-3xl font-bold font-serif tracking-tight">Content Preferences</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Customize your starter pack preferences</p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {/* Color Selection */}
-                      <div>
-                        <h3 className="font-semibold mb-3">Preferred Colors</h3>
-                        <div className="grid grid-cols-4 gap-3">
-                          {['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9', '#74B9FF', '#A29BFE'].map((color) => (
-                            <button
-                              key={color}
-                              className="w-full aspect-square rounded-lg border-2 border-transparent hover:border-primary transition-colors"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Content Vibe */}
-                      <div>
-                        <h3 className="font-semibold mb-3">Content Vibe</h3>
-                        <div className="space-y-2">
-                          {['Playful', 'Elegant', 'Bold', 'Minimal'].map((vibe) => (
-                            <label key={vibe} className="flex items-center gap-2 p-3 border border-border rounded-lg hover:border-primary cursor-pointer transition-colors">
-                              <input type="radio" name="vibe" value={vibe.toLowerCase()} className="text-primary" />
-                              <span>{vibe}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Sample Photos */}
-                      <div>
-                        <h3 className="font-semibold mb-3">Sample Photos</h3>
-                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
-                          <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground mb-4">Upload sample images for your starter pack</p>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            className="hidden"
-                            id="sample-photos"
-                          />
-                          <label htmlFor="sample-photos">
-                            <Button variant="outline" asChild>
-                              <span>Choose Photos</span>
-                            </Button>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end">
-                        <Button>Save Preferences</Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+            {activeTab === "content-generator" && isCreator && (
+              <ContentGeneratorHub userId={user?.id} onboardingData={onboardingData} />
             )}
           </div>
         </div>
