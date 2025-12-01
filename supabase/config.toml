@@ -107,3 +107,6 @@ verify_jwt = false  # Public endpoint protected by API key
 
 [functions.create-custom-test-creator]
 verify_jwt = false  # Public function for creating test accounts
+
+[functions.sync-voice-to-tool]
+verify_jwt = true  # Requires authentication
