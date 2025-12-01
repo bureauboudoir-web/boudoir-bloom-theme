@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Copy, Key, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 import { format } from "date-fns";
+import { VoiceToolDebug } from "@/components/admin/VoiceToolDebug";
 
 export function ApiKeysManagement() {
   const { toast } = useToast();
@@ -172,7 +173,7 @@ export function ApiKeysManagement() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold">API Key Management</h2>
+        <h2 className="text-3xl font-bold">API & Integration Settings</h2>
         <p className="text-muted-foreground mt-2">
           Generate and manage external API keys for Content Generator and Voice Tool integrations
         </p>
@@ -300,6 +301,19 @@ export function ApiKeysManagement() {
               </Table>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Voice Tool Integration */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Voice Tool Integration</CardTitle>
+          <CardDescription>
+            Configure and test external Voice Tool API connection
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <VoiceToolDebug />
         </CardContent>
       </Card>
     
