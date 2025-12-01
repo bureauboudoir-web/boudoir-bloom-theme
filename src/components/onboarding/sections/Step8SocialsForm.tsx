@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { PremiumInput } from "@/components/ui/premium-input";
 import { ChipInput } from "@/components/ui/chip-input";
 import { LifestyleChip } from "@/components/ui/lifestyle-chip";
-import { Instagram, Hash, Globe } from "lucide-react";
+import { Instagram, Hash, Globe, Twitch, MessageCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 
@@ -37,7 +37,7 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
 
   useEffect(() => {
     onChange(formData);
-  }, [formData]);
+  }, [formData, onChange]);
 
   const handleChange = (field: keyof Step8SocialsData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -66,7 +66,6 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
     if (value) {
       handleChange(field, normalizeUrl(field, value));
     }
-    onChange(formData);
   };
 
   const togglePlatform = (platform: string) => {
@@ -87,210 +86,248 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
     }
   };
 
-
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <h3 className="text-sm font-medium">Social Media Links</h3>
+    <div className="space-y-8">
+      {/* Section A: Social Media Links */}
+      <Card className="p-6 border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-transparent">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Hash className="h-5 w-5 text-primary" />
+          Social Media Links
+        </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="instagram">Instagram</Label>
-            <Input
+            <Label htmlFor="instagram" className="flex items-center gap-2 mb-2">
+              <Instagram className="h-4 w-4 text-primary" />
+              Instagram
+            </Label>
+            <PremiumInput
               id="instagram"
               value={formData.instagram || ''}
               onChange={(e) => handleChange('instagram', e.target.value)}
               onBlur={() => handleSocialBlur('instagram')}
               placeholder="@username or URL"
-              className="mt-1"
+              helperText="Your Instagram profile"
             />
           </div>
 
           <div>
-            <Label htmlFor="tiktok">TikTok</Label>
-            <Input
+            <Label htmlFor="tiktok" className="flex items-center gap-2 mb-2">
+              <MessageCircle className="h-4 w-4 text-primary" />
+              TikTok
+            </Label>
+            <PremiumInput
               id="tiktok"
               value={formData.tiktok || ''}
               onChange={(e) => handleChange('tiktok', e.target.value)}
               onBlur={() => handleSocialBlur('tiktok')}
               placeholder="@username or URL"
-              className="mt-1"
+              helperText="Your TikTok account"
             />
           </div>
 
           <div>
-            <Label htmlFor="twitter">Twitter/X</Label>
-            <Input
+            <Label htmlFor="twitter" className="flex items-center gap-2 mb-2">
+              <Hash className="h-4 w-4 text-primary" />
+              Twitter/X
+            </Label>
+            <PremiumInput
               id="twitter"
               value={formData.twitter || ''}
               onChange={(e) => handleChange('twitter', e.target.value)}
               onBlur={() => handleSocialBlur('twitter')}
               placeholder="@username or URL"
-              className="mt-1"
+              helperText="Your Twitter profile"
             />
           </div>
 
           <div>
-            <Label htmlFor="snapchat">Snapchat</Label>
-            <Input
+            <Label htmlFor="snapchat" className="flex items-center gap-2 mb-2">
+              <MessageCircle className="h-4 w-4 text-primary" />
+              Snapchat
+            </Label>
+            <PremiumInput
               id="snapchat"
               value={formData.snapchat || ''}
               onChange={(e) => handleChange('snapchat', e.target.value)}
               onBlur={() => handleSocialBlur('snapchat')}
               placeholder="@username or URL"
-              className="mt-1"
+              helperText="Your Snapchat"
             />
           </div>
 
           <div>
-            <Label htmlFor="reddit">Reddit</Label>
-            <Input
+            <Label htmlFor="reddit" className="flex items-center gap-2 mb-2">
+              <MessageCircle className="h-4 w-4 text-primary" />
+              Reddit
+            </Label>
+            <PremiumInput
               id="reddit"
               value={formData.reddit || ''}
               onChange={(e) => handleChange('reddit', e.target.value)}
               onBlur={() => handleSocialBlur('reddit')}
               placeholder="u/username or URL"
-              className="mt-1"
+              helperText="Your Reddit profile"
             />
           </div>
 
           <div>
-            <Label htmlFor="onlyfans">OnlyFans</Label>
-            <Input
+            <Label htmlFor="onlyfans" className="flex items-center gap-2 mb-2">
+              <Globe className="h-4 w-4 text-primary" />
+              OnlyFans
+            </Label>
+            <PremiumInput
               id="onlyfans"
               value={formData.onlyfans || ''}
               onChange={(e) => handleChange('onlyfans', e.target.value)}
               onBlur={() => handleSocialBlur('onlyfans')}
               placeholder="username or URL"
-              className="mt-1"
+              helperText="Your OF profile"
             />
           </div>
 
           <div>
-            <Label htmlFor="fansly">Fansly</Label>
-            <Input
+            <Label htmlFor="fansly" className="flex items-center gap-2 mb-2">
+              <Globe className="h-4 w-4 text-primary" />
+              Fansly
+            </Label>
+            <PremiumInput
               id="fansly"
               value={formData.fansly || ''}
               onChange={(e) => handleChange('fansly', e.target.value)}
               onBlur={() => handleSocialBlur('fansly')}
               placeholder="username or URL"
-              className="mt-1"
+              helperText="Your Fansly profile"
             />
           </div>
 
           <div>
-            <Label htmlFor="website_linktree">Website/Linktree</Label>
-            <Input
+            <Label htmlFor="website_linktree" className="flex items-center gap-2 mb-2">
+              <Globe className="h-4 w-4 text-primary" />
+              Website/Linktree
+            </Label>
+            <PremiumInput
               id="website_linktree"
               value={formData.website_linktree || ''}
               onChange={(e) => handleChange('website_linktree', e.target.value)}
-              onBlur={() => onChange(formData)}
               placeholder="Full URL"
-              className="mt-1"
+              helperText="Your personal site or Linktree"
             />
           </div>
         </div>
 
-        <div>
-          <Label htmlFor="other_links">Other Links</Label>
-          <div className="flex gap-2 mt-1">
-            <Input
-              id="other_links"
-              value={otherLinkInput}
-              onChange={(e) => setOtherLinkInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addOtherLink())}
-              placeholder="Add additional link"
-            />
-            <Button type="button" onClick={addOtherLink} variant="outline" size="icon">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.other_links?.map((link, index) => (
-              <Badge key={index} variant="secondary" className="gap-1">
-                {link}
-                <X className="h-3 w-3 cursor-pointer" onClick={() => removeOtherLink(index)} />
-              </Badge>
-            ))}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">Any other platforms or links</p>
-        </div>
-      </div>
-
-      <div>
-        <Label>Posting Platforms (Select all that apply)</Label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-          {PLATFORM_OPTIONS.map((platform) => (
-            <div key={platform} className="flex items-center space-x-2">
-              <Checkbox
-                id={`platform-${platform}`}
-                checked={formData.posting_platforms?.includes(platform) || false}
-                onCheckedChange={() => togglePlatform(platform)}
-              />
-              <Label htmlFor={`platform-${platform}`} className="text-sm font-normal cursor-pointer">
-                {platform}
-              </Label>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">Where you'll be posting content</p>
-      </div>
-
-      <div>
-        <Label>Live Streaming Platforms</Label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-          {LIVE_PLATFORM_OPTIONS.map((platform) => (
-            <div key={platform} className="flex items-center space-x-2">
-              <Checkbox
-                id={`live-${platform}`}
-                checked={formData.live_platforms?.includes(platform) || false}
-                onCheckedChange={() => toggleLivePlatform(platform)}
-              />
-              <Label htmlFor={`live-${platform}`} className="text-sm font-normal cursor-pointer">
-                {platform}
-              </Label>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">Platforms you use for live streaming</p>
-      </div>
-
-      <div>
-        <Label htmlFor="posting_frequency">Posting Frequency</Label>
-        <Input
-          id="posting_frequency"
-          value={formData.posting_frequency || ''}
-          onChange={(e) => handleChange('posting_frequency', e.target.value)}
-          onBlur={() => onChange(formData)}
-          placeholder="e.g., Daily, 3-4 times per week"
-          className="mt-1"
-        />
-        <p className="text-xs text-muted-foreground mt-1">How often you plan to post content</p>
-      </div>
-
-      <div>
-        <Label htmlFor="best_posting_times">Best Posting Times</Label>
-        <div className="flex gap-2 mt-1">
-          <Input
-            id="best_posting_times"
-            value={timeInput}
-            onChange={(e) => setTimeInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTime())}
-            placeholder="e.g., Morning 9am, Evening 8pm"
+        <div className="mt-6">
+          <Label className="flex items-center gap-2 mb-3">
+            <Globe className="h-4 w-4 text-primary" />
+            Other Links
+          </Label>
+          <ChipInput
+            value={formData.other_links || []}
+            onChange={(value) => handleChange('other_links', value)}
+            placeholder="Add additional link"
+            helperText="Any other platforms or links"
           />
-          <Button type="button" onClick={addTime} variant="outline">
-            Add
-          </Button>
         </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {formData.best_posting_times?.map((time, index) => (
-            <Badge key={index} variant="secondary" className="gap-1">
-              {time}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => removeTime(index)} />
-            </Badge>
-          ))}
+      </Card>
+
+      {/* Section B: Platform Preferences */}
+      <Card className="p-6 border-2 border-primary/10">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Twitch className="h-5 w-5 text-primary" />
+          Platform Preferences
+        </h3>
+
+        <div className="space-y-6">
+          <div>
+            <Label className="mb-3 block">Posting Platforms (Select all that apply)</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {PLATFORM_OPTIONS.map((platform) => (
+                <div 
+                  key={platform} 
+                  className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50 transition-all duration-200"
+                >
+                  <Checkbox
+                    id={`platform-${platform}`}
+                    checked={formData.posting_platforms?.includes(platform) || false}
+                    onCheckedChange={() => togglePlatform(platform)}
+                    className="data-[state=checked]:animate-in data-[state=checked]:zoom-in-50"
+                  />
+                  <Label 
+                    htmlFor={`platform-${platform}`} 
+                    className="text-sm font-normal cursor-pointer flex-1"
+                  >
+                    {platform}
+                  </Label>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Where you'll be posting content</p>
+          </div>
+
+          <div>
+            <Label className="mb-3 block">Live Streaming Platforms</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {LIVE_PLATFORM_OPTIONS.map((platform) => (
+                <div 
+                  key={platform} 
+                  className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50 transition-all duration-200"
+                >
+                  <Checkbox
+                    id={`live-${platform}`}
+                    checked={formData.live_platforms?.includes(platform) || false}
+                    onCheckedChange={() => toggleLivePlatform(platform)}
+                    className="data-[state=checked]:animate-in data-[state=checked]:zoom-in-50"
+                  />
+                  <Label 
+                    htmlFor={`live-${platform}`} 
+                    className="text-sm font-normal cursor-pointer flex-1"
+                  >
+                    {platform}
+                  </Label>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Platforms you use for live streaming</p>
+          </div>
+
+          <div>
+            <Label htmlFor="posting_frequency" className="mb-2 block">
+              Posting Frequency
+            </Label>
+            <PremiumInput
+              id="posting_frequency"
+              value={formData.posting_frequency || ''}
+              onChange={(e) => handleChange('posting_frequency', e.target.value)}
+              placeholder="e.g., Daily, 3-4 times per week"
+              helperText="How often you plan to post content"
+            />
+          </div>
+
+          <div>
+            <Label className="flex items-center gap-2 mb-3">
+              Best Posting Times
+            </Label>
+            <ChipInput
+              value={formData.best_posting_times || []}
+              onChange={(value) => handleChange('best_posting_times', value)}
+              placeholder="e.g., Morning 9am, Evening 8pm"
+              helperText="When your audience is most active"
+            />
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">When your audience is most active</p>
+      </Card>
+
+      {/* Lifestyle Interests */}
+      <div>
+        <Label className="flex items-center gap-2 mb-3 text-base">
+          <Twitch className="h-5 w-5 text-primary" />
+          Lifestyle Interests
+        </Label>
+        <LifestyleChip
+          value={formData.lifestyle_interests || []}
+          onChange={(value) => handleChange('lifestyle_interests', value)}
+          helperText="Select your real-world interests and hobbies"
+        />
       </div>
     </div>
   );
