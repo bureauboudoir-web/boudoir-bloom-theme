@@ -5,16 +5,16 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, User, FileText, Upload, Mail, Calendar, CheckSquare, Shield, DollarSign, Menu, Clock, Lock as LockIcon, Lightbulb, Mic, Palette } from "lucide-react";
-import OnboardingPersonal from "@/components/onboarding/OnboardingPersonal";
-import OnboardingBody from "@/components/onboarding/OnboardingBody";
-import OnboardingBackstory from "@/components/onboarding/OnboardingBackstory";
-import OnboardingBoundaries from "@/components/onboarding/OnboardingBoundaries";
-import OnboardingPricing from "@/components/onboarding/OnboardingPricing";
-import OnboardingPersona from "@/components/onboarding/OnboardingPersona";
-import OnboardingScripts from "@/components/onboarding/OnboardingScripts";
-import OnboardingContent from "@/components/onboarding/OnboardingContent";
-import OnboardingCommitments from "@/components/onboarding/OnboardingCommitments";
-import { OnboardingSocials } from "@/components/onboarding/OnboardingSocials";
+import { Step1PrivateInfo } from "@/components/onboarding/Step1PrivateInfo";
+import { Step2BrandIdentity } from "@/components/onboarding/Step2BrandIdentity";
+import { Step3AmsterdamStory } from "@/components/onboarding/Step3AmsterdamStory";
+import { Step4Persona } from "@/components/onboarding/Step4Persona";
+import { Step5Boundaries } from "@/components/onboarding/Step5Boundaries";
+import { Step6Pricing } from "@/components/onboarding/Step6Pricing";
+import { Step7Messaging } from "@/components/onboarding/Step7Messaging";
+import { Step8ContentPreferences } from "@/components/onboarding/Step8ContentPreferences";
+import { Step9MarketPositioning } from "@/components/onboarding/Step9MarketPositioning";
+import { Step10Commitments } from "@/components/onboarding/Step10Commitments";
 import { OnboardingStageGate } from "@/components/onboarding/OnboardingStageGate";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
@@ -256,51 +256,136 @@ const Dashboard = () => {
   };
 
   const renderOnboardingStep = () => {
-    const commonProps = {
-      onboardingData,
-      onComplete: handleStepComplete
-    };
-
-    // Check if current step is post-meeting and meeting isn't completed
-    const isStepLocked = isPostMeetingStep(currentStep) && !meetingStatus?.meetingCompleted;
-
+    // Only show Step 1 to Admin/Manager roles
+    const canViewStep1 = isAdmin || isSuperAdmin || isManager;
+    
     const stepContent = () => {
       switch (currentStep) {
         case 1:
-          return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
+          if (!canViewStep1) {
+            setCurrentStep(2); // Skip to step 2 if not authorized
+            return null;
+          }
+          return (
+            <Step1PrivateInfo
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(2)}
+              onSaveSection={saveSection}
+            />
+          );
         case 2:
-          return <OnboardingPersona {...commonProps} onNext={() => {
-            // Check if meeting completed before proceeding to step 3
-            if (!meetingStatus?.meetingCompleted) {
-              toast.info("Please complete your meeting first to continue with the rest of the onboarding process");
-              setActiveTab("meetings");
-            } else {
-              setCurrentStep(3);
-            }
-          }} onBack={() => setCurrentStep(1)} />;
+          return (
+            <Step2BrandIdentity
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => {
+                // Check if meeting completed before proceeding
+                if (!meetingStatus?.meetingCompleted) {
+                  toast.info("Please complete your meeting first to continue with the rest of the onboarding process");
+                  setActiveTab("meetings");
+                } else {
+                  setCurrentStep(3);
+                }
+              }}
+              onBack={() => canViewStep1 ? setCurrentStep(1) : null}
+              onSaveSection={saveSection}
+            />
+          );
         case 3:
-          return <OnboardingSocials {...commonProps} onNext={() => setCurrentStep(4)} onBack={() => setCurrentStep(2)} />;
+          return (
+            <Step3AmsterdamStory
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(4)}
+              onBack={() => setCurrentStep(2)}
+              onSaveSection={saveSection}
+            />
+          );
         case 4:
-          return <OnboardingBody {...commonProps} onNext={() => setCurrentStep(5)} onBack={() => setCurrentStep(3)} />;
+          return (
+            <Step4Persona
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(5)}
+              onBack={() => setCurrentStep(3)}
+              onSaveSection={saveSection}
+            />
+          );
         case 5:
-          return <OnboardingBoundaries {...commonProps} onNext={() => setCurrentStep(6)} onBack={() => setCurrentStep(4)} />;
+          return (
+            <Step5Boundaries
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(6)}
+              onBack={() => setCurrentStep(4)}
+              onSaveSection={saveSection}
+            />
+          );
         case 6:
-          return <OnboardingBackstory {...commonProps} onNext={() => setCurrentStep(7)} onBack={() => setCurrentStep(5)} />;
+          return (
+            <Step6Pricing
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(7)}
+              onBack={() => setCurrentStep(5)}
+              onSaveSection={saveSection}
+            />
+          );
         case 7:
-          return <OnboardingContent {...commonProps} onNext={() => setCurrentStep(8)} onBack={() => setCurrentStep(6)} />;
+          return (
+            <Step7Messaging
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(8)}
+              onBack={() => setCurrentStep(6)}
+              onSaveSection={saveSection}
+            />
+          );
         case 8:
-          return <OnboardingPricing {...commonProps} onNext={() => setCurrentStep(9)} onBack={() => setCurrentStep(7)} />;
+          return (
+            <Step8ContentPreferences
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(9)}
+              onBack={() => setCurrentStep(7)}
+              onSaveSection={saveSection}
+            />
+          );
         case 9:
-          return <OnboardingScripts {...commonProps} onNext={() => setCurrentStep(10)} onBack={() => setCurrentStep(8)} />;
+          return (
+            <Step9MarketPositioning
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(10)}
+              onBack={() => setCurrentStep(8)}
+              onSaveSection={saveSection}
+            />
+          );
         case 10:
-          return <OnboardingCommitments {...commonProps} onBack={() => setCurrentStep(9)} />;
+          return (
+            <Step10Commitments
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onBack={() => setCurrentStep(9)}
+              onSaveSection={saveSection}
+            />
+          );
         default:
-          return <OnboardingPersonal {...commonProps} onNext={() => setCurrentStep(2)} />;
+          return (
+            <Step2BrandIdentity
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onNext={() => setCurrentStep(3)}
+              onBack={() => canViewStep1 ? setCurrentStep(1) : null}
+              onSaveSection={saveSection}
+            />
+          );
       }
     };
 
     // Wrap in appropriate stage gate
-    if (currentStep <= 2) {
+    if (currentStep === 1) {
       return (
         <OnboardingStageGate stage="pre-meeting">
           {stepContent()}
