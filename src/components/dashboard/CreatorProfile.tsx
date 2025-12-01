@@ -58,7 +58,7 @@ export const CreatorProfile = ({
   };
 
   const completedSteps = onboardingData?.completed_steps || [];
-  const totalSteps = 16;
+  const totalSteps = 10;
   const completionPercentage = Math.round((completedSteps.length / totalSteps) * 100);
 
   if (!onboardingData) {
@@ -89,7 +89,7 @@ export const CreatorProfile = ({
           <div className="flex items-center justify-between gap-6">
             <div className="flex-1">
               <h2 className="text-2xl font-serif font-bold mb-2">Creator Profile</h2>
-              <p className="text-muted-foreground mb-4">Complete all 16 sections for full profile</p>
+              <p className="text-muted-foreground mb-4">Complete all 10 sections for full profile</p>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
