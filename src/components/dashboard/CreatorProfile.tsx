@@ -5,28 +5,22 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, MapPin, Shield, DollarSign, Theater, MessageSquare, Camera, Palette, BookOpen, Target, Tag, MessageCircle, TrendingUp, Users, CheckSquare } from "lucide-react";
+import { User, Heart, MapPin, Shield, DollarSign, MessageSquare, Share2, Target } from "lucide-react";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 import { AccessLevel } from "@/hooks/useAccessLevel";
 import { toast } from "sonner";
 import { SectionEditor } from "@/components/onboarding/SectionEditor";
 import { SectionProgressRing } from "@/components/onboarding/SectionProgressRing";
-import { PersonalInfoForm } from "@/components/onboarding/sections/PersonalInfoForm";
-import { PhysicalDescriptionForm } from "@/components/onboarding/sections/PhysicalDescriptionForm";
-import { AmsterdamStoryForm } from "@/components/onboarding/sections/AmsterdamStoryForm";
-import { BoundariesForm } from "@/components/onboarding/sections/BoundariesForm";
-import { PricingForm } from "@/components/onboarding/sections/PricingForm";
-import { PersonaForm } from "@/components/onboarding/sections/PersonaForm";
-import { ScriptsForm } from "@/components/onboarding/sections/ScriptsForm";
-import { ContentPreferencesForm } from "@/components/onboarding/sections/ContentPreferencesForm";
-import { VisualIdentityForm } from "@/components/onboarding/sections/VisualIdentityForm";
-import { CreatorStoryForm } from "@/components/onboarding/sections/CreatorStoryForm";
-import { BrandAlignmentForm } from "@/components/onboarding/sections/BrandAlignmentForm";
-import { FetishInterestsForm } from "@/components/onboarding/sections/FetishInterestsForm";
-import { EngagementStyleForm } from "@/components/onboarding/sections/EngagementStyleForm";
-import { MarketPositioningForm } from "@/components/onboarding/sections/MarketPositioningForm";
-import { FanExpectationsForm } from "@/components/onboarding/sections/FanExpectationsForm";
-import { CommitmentsForm } from "@/components/onboarding/sections/CommitmentsForm";
+import { useUserRole } from "@/hooks/useUserRole";
+import { Step1PrivateInfoForm } from "@/components/onboarding/sections/Step1PrivateInfoForm";
+import { Step2BrandIdentityForm } from "@/components/onboarding/sections/Step2BrandIdentityForm";
+import { Step3PhysicalDescriptionForm } from "@/components/onboarding/sections/Step3PhysicalDescriptionForm";
+import { Step4AmsterdamStoryForm } from "@/components/onboarding/sections/Step4AmsterdamStoryForm";
+import { Step5BoundariesForm } from "@/components/onboarding/sections/Step5BoundariesForm";
+import { Step6PricingForm } from "@/components/onboarding/sections/Step6PricingForm";
+import { Step7MessagingForm } from "@/components/onboarding/sections/Step7MessagingForm";
+import { Step8SocialsForm } from "@/components/onboarding/sections/Step8SocialsForm";
+import { Step9ContentPositioningForm } from "@/components/onboarding/sections/Step9ContentPositioningForm";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -49,6 +43,8 @@ export const CreatorProfile = ({
 }: CreatorProfileProps) => {
   const [sectionData, setSectionData] = useState<Record<number, any>>({});
   const [sectionValidity, setSectionValidity] = useState<Record<number, boolean>>({});
+  const { isAdmin, isManager, isSuperAdmin } = useUserRole();
+  const canViewPrivateInfo = isAdmin || isManager || isSuperAdmin;
 
   const isSectionLocked = (sectionIndex: number) => {
     if (sectionIndex <= 2) return false;
@@ -89,7 +85,7 @@ export const CreatorProfile = ({
           <div className="flex items-center justify-between gap-6">
             <div className="flex-1">
               <h2 className="text-2xl font-serif font-bold mb-2">Creator Profile</h2>
-              <p className="text-muted-foreground mb-4">Complete all 10 sections for full profile</p>
+              <p className="text-muted-foreground mb-4">Complete your onboarding profile</p>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
@@ -117,59 +113,51 @@ export const CreatorProfile = ({
         userName={userName || onboardingData.personal_full_name || "User"}
       />
 
-      {/* 16 Editable Sections */}
+      {/* 10-Step Onboarding Sections (Section 10 hidden, Section 1 admin-only) */}
       <Accordion type="multiple" className="space-y-4">
-        {/* Section 1: Personal Information */}
-        <AccordionItem value="section-1" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <User className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Personal Information</h3>
-                <p className="text-sm text-muted-foreground">Your basic personal details</p>
+        {/* Section 1: Personal Information (Admin/Manager Only) */}
+        {canViewPrivateInfo && (
+          <AccordionItem value="section-1" className="border-none">
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex items-center gap-3 w-full">
+                <User className="h-5 w-5 text-primary" />
+                <div className="flex-1 text-left">
+                  <h3 className="font-semibold">Personal Information (Private)</h3>
+                  <p className="text-sm text-muted-foreground">Admin/Manager only</p>
+                </div>
+                {completedSteps.includes(1) && (
+                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                    Complete
+                  </Badge>
+                )}
               </div>
-              {completedSteps.includes(1) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={1}
-              title="Personal Information"
-              icon={<User className="h-5 w-5" />}
-              description="Your basic personal details"
-              isComplete={completedSteps.includes(1)}
-              onSave={() => handleSectionSave(1)}
-            >
-              <PersonalInfoForm 
-                initialData={{
-                  personal_full_name: onboardingData.personal_full_name,
-                  personal_date_of_birth: onboardingData.personal_date_of_birth,
-                  personal_nationality: onboardingData.personal_nationality,
-                  personal_location: onboardingData.personal_location,
-                  personal_phone_number: onboardingData.personal_phone_number,
-                  business_phone: onboardingData.business_phone,
-                  personal_email: onboardingData.personal_email,
-                  personal_emergency_contact: onboardingData.personal_emergency_contact,
-                  personal_emergency_phone: onboardingData.personal_emergency_phone,
-                }}
-                onChange={(data) => handleSectionChange(1, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
+            </AccordionTrigger>
+            <AccordionContent>
+              <SectionEditor
+                sectionId={1}
+                title="Personal Information"
+                icon={<User className="h-5 w-5" />}
+                description="Private personal details"
+                isComplete={completedSteps.includes(1)}
+                onSave={() => handleSectionSave(1)}
+              >
+                <Step1PrivateInfoForm 
+                  initialData={onboardingData.step1_private_info || {}}
+                  onChange={(data) => handleSectionChange(1, data)}
+                />
+              </SectionEditor>
+            </AccordionContent>
+          </AccordionItem>
+        )}
 
-        {/* Section 2: Physical Description */}
+        {/* Section 2: Brand & Character Identity */}
         <AccordionItem value="section-2" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
               <Heart className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Physical Description</h3>
-                <p className="text-sm text-muted-foreground">Your physical characteristics</p>
+                <h3 className="font-semibold">Brand & Character Identity</h3>
+                <p className="text-sm text-muted-foreground">Your brand personality and values</p>
               </div>
               {completedSteps.includes(2) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -181,37 +169,28 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={2}
-              title="Physical Description"
+              title="Brand & Character Identity"
               icon={<Heart className="h-5 w-5" />}
-              description="Your physical characteristics"
+              description="Define your brand personality"
               isComplete={completedSteps.includes(2)}
               onSave={() => handleSectionSave(2)}
             >
-              <PhysicalDescriptionForm
-                initialData={{
-                  body_height: onboardingData.body_height,
-                  body_weight: onboardingData.body_weight,
-                  body_type: onboardingData.body_type,
-                  body_hair_color: onboardingData.body_hair_color,
-                  body_eye_color: onboardingData.body_eye_color,
-                  body_tattoos: onboardingData.body_tattoos,
-                  body_piercings: onboardingData.body_piercings,
-                  body_distinctive_features: onboardingData.body_distinctive_features,
-                }}
+              <Step2BrandIdentityForm
+                initialData={onboardingData.step2_brand_identity || {}}
                 onChange={(data) => handleSectionChange(2, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 3: Amsterdam Story */}
+        {/* Section 3: Physical Description */}
         <AccordionItem value="section-3" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <MapPin className="h-5 w-5 text-primary" />
+              <User className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">My Amsterdam Story</h3>
-                <p className="text-sm text-muted-foreground">Your connection to Amsterdam</p>
+                <h3 className="font-semibold">Physical Description</h3>
+                <p className="text-sm text-muted-foreground">Your physical appearance</p>
               </div>
               {completedSteps.includes(3) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -228,36 +207,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={3}
-              title="My Amsterdam Story"
-              icon={<MapPin className="h-5 w-5" />}
-              description="Your connection to Amsterdam"
+              title="Physical Description"
+              icon={<User className="h-5 w-5" />}
+              description="Describe your physical characteristics"
               isLocked={isSectionLocked(3)}
               isComplete={completedSteps.includes(3)}
               onSave={() => handleSectionSave(3)}
             >
-              <AmsterdamStoryForm
-                initialData={{
-                  backstory_years_in_amsterdam: onboardingData.backstory_years_in_amsterdam,
-                  backstory_neighborhood: onboardingData.backstory_neighborhood,
-                  backstory_what_you_love: onboardingData.backstory_what_you_love,
-                  backstory_alter_ego: onboardingData.backstory_alter_ego,
-                  backstory_persona_sentence: onboardingData.backstory_persona_sentence,
-                  backstory_rld_atmosphere: onboardingData.backstory_rld_atmosphere,
-                }}
+              <Step3PhysicalDescriptionForm
+                initialData={onboardingData.step3_amsterdam_story || {}}
                 onChange={(data) => handleSectionChange(3, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 4: Boundaries */}
+        {/* Section 4: Amsterdam Story */}
         <AccordionItem value="section-4" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <Shield className="h-5 w-5 text-primary" />
+              <MapPin className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Boundaries & Comfort Levels</h3>
-                <p className="text-sm text-muted-foreground">Your limits and comfort zones</p>
+                <h3 className="font-semibold">Amsterdam Story</h3>
+                <p className="text-sm text-muted-foreground">Your connection to Amsterdam</p>
               </div>
               {completedSteps.includes(4) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -274,34 +246,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={4}
-              title="Boundaries & Comfort Levels"
-              icon={<Shield className="h-5 w-5" />}
-              description="Your limits and comfort zones"
+              title="Amsterdam Story"
+              icon={<MapPin className="h-5 w-5" />}
+              description="Share your Amsterdam connection"
               isLocked={isSectionLocked(4)}
               isComplete={completedSteps.includes(4)}
               onSave={() => handleSectionSave(4)}
             >
-              <BoundariesForm
-                initialData={{
-                  boundaries_comfortable_with: onboardingData.boundaries_comfortable_with,
-                  boundaries_hard_limits: onboardingData.boundaries_hard_limits,
-                  boundaries_soft_limits: onboardingData.boundaries_soft_limits,
-                  boundaries_additional_notes: onboardingData.boundaries_additional_notes,
-                }}
+              <Step4AmsterdamStoryForm
+                initialData={onboardingData.step4_persona || {}}
                 onChange={(data) => handleSectionChange(4, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 5: Pricing */}
+        {/* Section 5: Boundaries & Comfort Levels */}
         <AccordionItem value="section-5" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <DollarSign className="h-5 w-5 text-primary" />
+              <Shield className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Pricing Structure</h3>
-                <p className="text-sm text-muted-foreground">Your pricing for different services</p>
+                <h3 className="font-semibold">Boundaries & Comfort Levels</h3>
+                <p className="text-sm text-muted-foreground">Your limits and preferences</p>
               </div>
               {completedSteps.includes(5) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -318,36 +285,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={5}
-              title="Pricing Structure"
-              icon={<DollarSign className="h-5 w-5" />}
-              description="Your pricing for different services"
+              title="Boundaries & Comfort Levels"
+              icon={<Shield className="h-5 w-5" />}
+              description="Set your boundaries"
               isLocked={isSectionLocked(5)}
               isComplete={completedSteps.includes(5)}
               onSave={() => handleSectionSave(5)}
             >
-              <PricingForm
-                initialData={{
-                  pricing_subscription_monthly: onboardingData.pricing_subscription_monthly,
-                  pricing_ppv_photo: onboardingData.pricing_ppv_photo,
-                  pricing_ppv_video: onboardingData.pricing_ppv_video,
-                  pricing_custom_request: onboardingData.pricing_custom_request,
-                  pricing_sexting_session: onboardingData.pricing_sexting_session,
-                  pricing_video_call: onboardingData.pricing_video_call,
-                }}
+              <Step5BoundariesForm
+                initialData={onboardingData.step5_boundaries || {}}
                 onChange={(data) => handleSectionChange(5, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 6: Persona */}
+        {/* Section 6: Services & Pricing */}
         <AccordionItem value="section-6" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <Theater className="h-5 w-5 text-primary" />
+              <DollarSign className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Persona & Character</h3>
-                <p className="text-sm text-muted-foreground">Your creative persona</p>
+                <h3 className="font-semibold">Services & Pricing</h3>
+                <p className="text-sm text-muted-foreground">Your rates and offerings</p>
               </div>
               {completedSteps.includes(6) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -364,34 +324,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={6}
-              title="Persona & Character"
-              icon={<Theater className="h-5 w-5" />}
-              description="Your creative persona"
+              title="Services & Pricing"
+              icon={<DollarSign className="h-5 w-5" />}
+              description="Define your pricing structure"
               isLocked={isSectionLocked(6)}
               isComplete={completedSteps.includes(6)}
               onSave={() => handleSectionSave(6)}
             >
-              <PersonaForm
-                initialData={{
-                  persona_stage_name: onboardingData.persona_stage_name,
-                  persona_description: onboardingData.persona_description,
-                  persona_backstory: onboardingData.persona_backstory,
-                  persona_personality_traits: onboardingData.persona_personality_traits,
-                }}
+              <Step6PricingForm
+                initialData={onboardingData.step6_pricing || {}}
                 onChange={(data) => handleSectionChange(6, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 7: Scripts */}
+        {/* Section 7: Messaging Preferences */}
         <AccordionItem value="section-7" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
               <MessageSquare className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Scripts & Messaging</h3>
-                <p className="text-sm text-muted-foreground">Your communication templates</p>
+                <h3 className="font-semibold">Messaging Preferences</h3>
+                <p className="text-sm text-muted-foreground">Communication style and templates</p>
               </div>
               {completedSteps.includes(7) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -408,34 +363,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={7}
-              title="Scripts & Messaging"
+              title="Messaging Preferences"
               icon={<MessageSquare className="h-5 w-5" />}
-              description="Your communication templates"
+              description="Define your messaging style"
               isLocked={isSectionLocked(7)}
               isComplete={completedSteps.includes(7)}
               onSave={() => handleSectionSave(7)}
             >
-              <ScriptsForm
-                initialData={{
-                  scripts_greeting_message: onboardingData.scripts_greeting_message,
-                  scripts_ppv_promo: onboardingData.scripts_ppv_promo,
-                  scripts_sexting_opener: onboardingData.scripts_sexting_opener,
-                  scripts_renewal_message: onboardingData.scripts_renewal_message,
-                }}
+              <Step7MessagingForm
+                initialData={onboardingData.step7_messaging || {}}
                 onChange={(data) => handleSectionChange(7, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 8: Content Preferences */}
+        {/* Section 8: Socials & Platforms */}
         <AccordionItem value="section-8" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <Camera className="h-5 w-5 text-primary" />
+              <Share2 className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Content Preferences</h3>
-                <p className="text-sm text-muted-foreground">Your content creation preferences</p>
+                <h3 className="font-semibold">Socials & Platforms</h3>
+                <p className="text-sm text-muted-foreground">Social media links and platforms</p>
               </div>
               {completedSteps.includes(8) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -452,35 +402,29 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={8}
-              title="Content Preferences"
-              icon={<Camera className="h-5 w-5" />}
-              description="Your content creation preferences"
+              title="Socials & Platforms"
+              icon={<Share2 className="h-5 w-5" />}
+              description="Connect your social profiles"
               isLocked={isSectionLocked(8)}
               isComplete={completedSteps.includes(8)}
               onSave={() => handleSectionSave(8)}
             >
-              <ContentPreferencesForm
-                initialData={{
-                  content_posts_per_week: onboardingData.content_posts_per_week,
-                  content_photo_sets: onboardingData.content_photo_sets,
-                  content_video_count: onboardingData.content_video_count,
-                  content_themes: onboardingData.content_themes,
-                  content_preferences: onboardingData.content_preferences,
-                }}
+              <Step8SocialsForm
+                initialData={onboardingData.step8_content_preferences || {}}
                 onChange={(data) => handleSectionChange(8, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 9: Visual Identity */}
+        {/* Section 9: Content & Positioning */}
         <AccordionItem value="section-9" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <Palette className="h-5 w-5 text-primary" />
+              <Target className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Visual Identity</h3>
-                <p className="text-sm text-muted-foreground">Your brand's visual style</p>
+                <h3 className="font-semibold">Content & Positioning</h3>
+                <p className="text-sm text-muted-foreground">Lifestyle and content positioning</p>
               </div>
               {completedSteps.includes(9) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -497,294 +441,22 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={9}
-              title="Visual Identity"
-              icon={<Palette className="h-5 w-5" />}
-              description="Your brand's visual style"
+              title="Content & Positioning"
+              icon={<Target className="h-5 w-5" />}
+              description="Your content positioning and lifestyle"
               isLocked={isSectionLocked(9)}
               isComplete={completedSteps.includes(9)}
               onSave={() => handleSectionSave(9)}
             >
-              <VisualIdentityForm
-                initialData={onboardingData.section_visual_identity}
+              <Step9ContentPositioningForm
+                initialData={onboardingData.step9_market_positioning || {}}
                 onChange={(data) => handleSectionChange(9, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 10: Creator Story */}
-        <AccordionItem value="section-10" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <BookOpen className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Creator Story</h3>
-                <p className="text-sm text-muted-foreground">Your journey as a creator</p>
-              </div>
-              {completedSteps.includes(10) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(10) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={10}
-              title="Creator Story"
-              icon={<BookOpen className="h-5 w-5" />}
-              description="Your journey as a creator"
-              isLocked={isSectionLocked(10)}
-              isComplete={completedSteps.includes(10)}
-              onSave={() => handleSectionSave(10)}
-            >
-              <CreatorStoryForm
-                initialData={onboardingData.section_creator_story}
-                onChange={(data) => handleSectionChange(10, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 11: Brand Alignment */}
-        <AccordionItem value="section-11" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <Target className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Brand Alignment</h3>
-                <p className="text-sm text-muted-foreground">Your brand positioning</p>
-              </div>
-              {completedSteps.includes(11) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(11) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={11}
-              title="Brand Alignment"
-              icon={<Target className="h-5 w-5" />}
-              description="Your brand positioning"
-              isLocked={isSectionLocked(11)}
-              isComplete={completedSteps.includes(11)}
-              onSave={() => handleSectionSave(11)}
-            >
-              <BrandAlignmentForm
-                initialData={onboardingData.section_brand_alignment}
-                onChange={(data) => handleSectionChange(11, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 12: Fetish/Special Interests */}
-        <AccordionItem value="section-12" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <Tag className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Special Interests</h3>
-                <p className="text-sm text-muted-foreground">Content categorization (staff-use only)</p>
-              </div>
-              {completedSteps.includes(12) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(12) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={12}
-              title="Special Interests"
-              icon={<Tag className="h-5 w-5" />}
-              description="Content categorization (staff-use only)"
-              isLocked={isSectionLocked(12)}
-              isComplete={completedSteps.includes(12)}
-              onSave={() => handleSectionSave(12)}
-            >
-              <FetishInterestsForm
-                initialData={onboardingData.section_fetish_interests}
-                onChange={(data) => handleSectionChange(12, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 13: Engagement Style */}
-        <AccordionItem value="section-13" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <MessageCircle className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Engagement Style</h3>
-                <p className="text-sm text-muted-foreground">How you interact with fans</p>
-              </div>
-              {completedSteps.includes(13) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(13) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={13}
-              title="Engagement Style"
-              icon={<MessageCircle className="h-5 w-5" />}
-              description="How you interact with fans"
-              isLocked={isSectionLocked(13)}
-              isComplete={completedSteps.includes(13)}
-              onSave={() => handleSectionSave(13)}
-            >
-              <EngagementStyleForm
-                initialData={onboardingData.section_engagement_style}
-                onChange={(data) => handleSectionChange(13, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 14: Market Positioning */}
-        <AccordionItem value="section-14" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Market Positioning</h3>
-                <p className="text-sm text-muted-foreground">Your market niche and strategy</p>
-              </div>
-              {completedSteps.includes(14) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(14) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={14}
-              title="Market Positioning"
-              icon={<TrendingUp className="h-5 w-5" />}
-              description="Your market niche and strategy"
-              isLocked={isSectionLocked(14)}
-              isComplete={completedSteps.includes(14)}
-              onSave={() => handleSectionSave(14)}
-            >
-              <MarketPositioningForm
-                initialData={onboardingData.section_market_positioning}
-                onChange={(data) => handleSectionChange(14, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 15: Fan Expectations */}
-        <AccordionItem value="section-15" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <Users className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Fan Expectations</h3>
-                <p className="text-sm text-muted-foreground">What fans can expect from you</p>
-              </div>
-              {completedSteps.includes(15) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(15) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={15}
-              title="Fan Expectations"
-              icon={<Users className="h-5 w-5" />}
-              description="What fans can expect from you"
-              isLocked={isSectionLocked(15)}
-              isComplete={completedSteps.includes(15)}
-              onSave={() => handleSectionSave(15)}
-            >
-              <FanExpectationsForm
-                initialData={onboardingData.section_fan_expectations}
-                onChange={(data) => handleSectionChange(15, data)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Section 16: Commitments */}
-        <AccordionItem value="section-16" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <CheckSquare className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Commitments</h3>
-                <p className="text-sm text-muted-foreground">Final sign-off to complete onboarding</p>
-              </div>
-              {completedSteps.includes(16) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-              {isSectionLocked(16) && (
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                  Locked
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={16}
-              title="Commitments"
-              icon={<CheckSquare className="h-5 w-5" />}
-              description="Final sign-off to complete onboarding"
-              isLocked={isSectionLocked(16)}
-              isComplete={completedSteps.includes(16)}
-              onSave={() => handleSectionSave(16)}
-              saveDisabled={!sectionValidity[16]}
-            >
-              <CommitmentsForm
-                initialData={onboardingData.section_creative_boundaries}
-                onChange={(data, isValid) => handleSectionChange(16, data, isValid)}
-              />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
+        {/* Section 10 (Commitments) is NOT displayed in Creator Profile per spec */}
       </Accordion>
     </div>
   );
