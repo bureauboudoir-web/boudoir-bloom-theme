@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useOnboarding } from "@/hooks/useOnboarding";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { RoleNavigation } from "@/components/RoleNavigation";
 import { creatorNavigation } from "@/config/roleNavigation";
@@ -10,10 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, Upload, Info } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const COLOR_SWATCHES = [
   { name: "Rose", value: "#FF69B4" },
@@ -37,6 +39,7 @@ export default function ContentPreferencesWizard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { roles, loading } = useUserRole();
+  const { onboardingData, saveSection } = useOnboarding(user?.id);
   const { toast } = useToast();
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [secondaryColor, setSecondaryColor] = useState<string>("#000000");
@@ -46,7 +49,6 @@ export default function ContentPreferencesWizard() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [existingUrls, setExistingUrls] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const [preferencesId, setPreferencesId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user && !loading) {
@@ -59,40 +61,27 @@ export default function ContentPreferencesWizard() {
     }
   }, [user, roles, loading, navigate]);
 
-  // Load existing preferences
+  // Load existing preferences from onboarding data
   useEffect(() => {
-    const loadPreferences = async () => {
-      if (!user) return;
+    if (!onboardingData) return;
 
-      const { data, error } = await supabase
-        .from("creator_content_preferences")
-        .select("*")
-        .eq("creator_id", user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Error loading preferences:", error);
-        return;
-      }
-
-      if (data) {
-        setPreferencesId(data.id);
-        setSelectedColor(data.primary_color || "");
-        setSecondaryColor(data.secondary_color || "#000000");
-        setAccentColor(data.accent_color || "#000000");
-        setSelectedVibe(data.vibe || "");
-        setStyleNotes(data.notes || "");
-        if (data.sample_image_urls) {
-          const urls = data.sample_image_urls.split(",").filter(Boolean);
-          setExistingUrls(urls);
-        }
-      }
-    };
-
-    if (user && !loading) {
-      loadPreferences();
+    const step9Data = onboardingData.step9_market_positioning || {};
+    
+    // Load color preferences
+    setSelectedColor(step9Data.primary_color || "");
+    setSecondaryColor(step9Data.secondary_color || "#000000");
+    setAccentColor(step9Data.accent_color || "#000000");
+    setSelectedVibe(step9Data.vibe || "");
+    setStyleNotes(step9Data.notes || "");
+    
+    // Load sample image URLs
+    if (step9Data.sample_image_urls) {
+      const urls = typeof step9Data.sample_image_urls === 'string' 
+        ? step9Data.sample_image_urls.split(",").filter(Boolean)
+        : step9Data.sample_image_urls;
+      setExistingUrls(urls);
     }
-  }, [user, loading]);
+  }, [onboardingData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -131,41 +120,22 @@ export default function ContentPreferencesWizard() {
 
       // Combine existing and new URLs
       const allUrls = [...existingUrls, ...newUrls];
-      const urlString = allUrls.join(",");
 
-      const preferencesData = {
-        creator_id: user.id,
+      // Save to onboarding step 9 (market positioning includes content preferences)
+      const step9Data = {
         primary_color: selectedColor || null,
         secondary_color: secondaryColor || null,
         accent_color: accentColor || null,
         vibe: selectedVibe || null,
-        sample_image_urls: urlString || null,
+        sample_image_urls: allUrls,
         notes: styleNotes || null,
       };
 
-      if (preferencesId) {
-        // Update existing
-        const { error } = await supabase
-          .from("creator_content_preferences")
-          .update(preferencesData)
-          .eq("id", preferencesId);
-
-        if (error) throw error;
-      } else {
-        // Insert new
-        const { data, error } = await supabase
-          .from("creator_content_preferences")
-          .insert(preferencesData)
-          .select()
-          .single();
-
-        if (error) throw error;
-        if (data) setPreferencesId(data.id);
-      }
+      await saveSection(9, step9Data);
 
       toast({
         title: "Success",
-        description: "Preferences saved successfully",
+        description: "Content preferences saved to your onboarding profile",
       });
 
       setUploadedFiles([]);
@@ -174,7 +144,7 @@ export default function ContentPreferencesWizard() {
       console.error("Error saving preferences:", error);
       toast({
         title: "Error",
-        description: "Failed to save preferences",
+        description: "Failed to save content preferences",
         variant: "destructive",
       });
     } finally {
@@ -217,6 +187,12 @@ export default function ContentPreferencesWizard() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            <Alert className="border-primary/20 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                These preferences are saved to Step 9 of your onboarding profile and will be used to personalize your content.
+              </AlertDescription>
+            </Alert>
             {/* Primary Color Picker */}
             <div className="space-y-3">
               <Label className="text-base font-semibold">Primary Brand Colour</Label>
