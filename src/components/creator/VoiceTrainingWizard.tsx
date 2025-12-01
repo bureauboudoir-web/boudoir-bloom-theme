@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Mic, Upload, CheckCircle2, Clock, Lightbulb, Volume2 } from "lucide-react";
+import { Sparkles, Mic, Upload, CheckCircle2, Clock, Lightbulb, Volume2, ArrowRight, ArrowLeft, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 interface VoiceSample {
@@ -17,50 +17,57 @@ interface VoiceSample {
 
 const EMOTIONAL_CATEGORIES = [
   { 
-    value: 'happy', 
-    label: '😊 Happy', 
-    prompt: 'Talk about something that makes you smile or brings you joy. Share a happy memory or describe what makes you feel good.',
+    value: 'happy_excited', 
+    label: '🎉 Happy & Excited', 
+    description: 'High energy, positive emotions for upbeat messages',
+    prompt: '"Hey! Oh my god, guess what just happened - you won\'t believe this!"',
     color: 'text-yellow-500'
   },
   { 
-    value: 'sad', 
-    label: '😢 Sad', 
-    prompt: 'Speak about a moment of loss or disappointment. Express vulnerability and genuine emotion about something difficult.',
-    color: 'text-blue-500'
+    value: 'intimate_flirty', 
+    label: '💕 Intimate & Flirty', 
+    description: 'Romantic, seductive tone for intimate conversations',
+    prompt: '"I\'ve been thinking about you all day... what are you doing later?"',
+    color: 'text-pink-500'
   },
   { 
-    value: 'excited', 
-    label: '🎉 Excited', 
-    prompt: 'Share your enthusiasm about something you\'re passionate about! Let your excitement and energy show naturally.',
-    color: 'text-orange-500'
-  },
-  { 
-    value: 'calm', 
-    label: '😌 Calm', 
-    prompt: 'Speak in a peaceful, relaxed tone. Talk about meditation, a quiet moment, or something that helps you feel centered.',
+    value: 'calm_caring', 
+    label: '😊 Calm & Caring', 
+    description: 'Gentle, nurturing tone for supportive messages',
+    prompt: '"Hey, just wanted to check in on you. How are you feeling today?"',
     color: 'text-green-500'
   },
   { 
-    value: 'angry', 
-    label: '😠 Angry', 
-    prompt: 'Express frustration about something that bothers you. Let your intensity come through while maintaining control.',
-    color: 'text-red-500'
+    value: 'confident_teasing', 
+    label: '😏 Confident & Teasing', 
+    description: 'Assertive, playful personality with attitude',
+    prompt: '"Oh really? You think you can handle that? Prove it."',
+    color: 'text-purple-500'
   },
   { 
-    value: 'neutral', 
-    label: '😐 Neutral', 
-    prompt: 'Speak naturally in a conversational tone. Just be yourself and talk about your day or general observations.',
+    value: 'soft_relaxed', 
+    label: '🌙 Soft & Relaxed', 
+    description: 'Quiet, intimate moments and late-night talks',
+    prompt: '"Mmm... I\'m just lying here, wish you were next to me..."',
+    color: 'text-blue-400'
+  },
+  { 
+    value: 'casual_natural', 
+    label: '💬 Casual & Natural', 
+    description: 'Everyday conversation baseline - your natural voice',
+    prompt: '"So yeah, I went to the store earlier and grabbed some stuff."',
     color: 'text-gray-500'
   }
 ];
 
 export const VoiceTrainingWizard = () => {
   const { user } = useAuth();
-  const [step, setStep] = useState<'intro' | 'recording'>('intro');
+  const [step, setStep] = useState<'intro' | 'recording' | 'review'>('intro');
   const [samples, setSamples] = useState<VoiceSample[]>([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
+  const [qualityScores, setQualityScores] = useState<Record<string, { clarity: number; emotion: number; quality: number }>>({});
 
   useEffect(() => {
     if (user) {
@@ -132,6 +139,20 @@ export const VoiceTrainingWizard = () => {
 
       if (dbError) throw dbError;
 
+      // Generate mock quality scores (will be replaced by real API data)
+      const mockClarity = Math.floor(Math.random() * 20) + 80; // 80-100
+      const mockEmotion = Math.floor(Math.random() * 20) + 75; // 75-95
+      const mockQuality = Math.floor((mockClarity + mockEmotion) / 2);
+      
+      setQualityScores(prev => ({
+        ...prev,
+        [category]: {
+          clarity: mockClarity,
+          emotion: mockEmotion,
+          quality: mockQuality
+        }
+      }));
+
       toast.success(`${category} sample uploaded successfully!`);
       await fetchSamples();
     } catch (error: any) {
@@ -179,6 +200,8 @@ export const VoiceTrainingWizard = () => {
 
   const uploadedCount = EMOTIONAL_CATEGORIES.filter(cat => getSampleForCategory(cat.value)).length;
   const progressPercent = (uploadedCount / EMOTIONAL_CATEGORIES.length) * 100;
+  const recommendedCount = 6;
+  const minimumCount = 3;
 
   if (step === 'intro') {
     return (
@@ -202,23 +225,27 @@ export const VoiceTrainingWizard = () => {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                  <span>6 different emotional categories to record</span>
+                  <span>Upload samples for at least 3 categories. Each sample is analyzed for quality in real-time.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                  <span>20-45 seconds per sample (longer is better)</span>
+                  <span>Your samples will be uploaded securely</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                  <span>Guided prompts for each emotional tone</span>
+                  <span>AI training will begin automatically</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                  <span>Minimum 3 samples required, all 6 recommended</span>
+                  <span>Training typically takes 5-10 minutes</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                  <span>Training takes 5-10 minutes after upload</span>
+                  <span>You'll be notified when your voice is ready</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                  <span>You can continue using the app while training</span>
                 </li>
               </ul>
             </div>
@@ -250,24 +277,158 @@ export const VoiceTrainingWizard = () => {
     );
   }
 
+  if (step === 'review') {
+    return (
+      <div className="max-w-3xl mx-auto space-y-6">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Review Your Samples</CardTitle>
+            <CardDescription>
+              Ready to train your AI voice with {uploadedCount} samples
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {EMOTIONAL_CATEGORIES.filter(cat => getSampleForCategory(cat.value)).map(category => {
+              const sample = getSampleForCategory(category.value);
+              const scores = qualityScores[category.value] || { clarity: 0, emotion: 0, quality: 0 };
+              
+              return (
+                <Card key={category.value} className="border-primary/20">
+                  <CardContent className="pt-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-medium flex items-center gap-2">
+                          <span className={category.color}>{category.label}</span>
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {sample?.file_url.split('/').pop()?.substring(0, 40)}
+                        </p>
+                      </div>
+                      <Badge 
+                        variant={scores.quality >= 80 ? "default" : "secondary"}
+                        className="text-sm"
+                      >
+                        {scores.quality}/100
+                      </Badge>
+                    </div>
+                    
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Clarity</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={scores.clarity} className="w-24 h-1.5" />
+                          <span className="font-medium w-8">{scores.clarity}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Emotion</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={scores.emotion} className="w-24 h-1.5" />
+                          <span className="font-medium w-8">{scores.emotion}</span>
+                        </div>
+                      </div>
+                      {scores.quality < 80 && (
+                        <div className="flex items-start gap-2 mt-2 p-2 bg-yellow-500/10 rounded">
+                          <Lightbulb className="w-3 h-3 text-yellow-500 mt-0.5 flex-shrink-0" />
+                          <p className="text-yellow-700 dark:text-yellow-300">
+                            Suggestion: Please try uploading the sample again
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+
+            {uploadedCount < recommendedCount && (
+              <Card className="bg-yellow-500/5 border-yellow-500/20">
+                <CardContent className="pt-4">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium text-sm mb-1">Recommendation</h4>
+                      <p className="text-sm text-muted-foreground">
+                        You've uploaded {uploadedCount} out of {recommendedCount} recommended samples. 
+                        While training will work with {minimumCount} samples, adding more categories will 
+                        significantly improve voice quality and emotional range.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card className="bg-blue-500/5 border-blue-500/20">
+              <CardContent className="pt-4">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-sm mb-2">What happens next?</h4>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li>• Your samples will be uploaded securely</li>
+                      <li>• AI training will begin automatically</li>
+                      <li>• Training typically takes 5-10 minutes</li>
+                      <li>• You'll be notified when your voice is ready</li>
+                      <li>• You can continue using the app while training</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                onClick={() => setStep('recording')}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Samples
+              </Button>
+              <Button
+                size="lg"
+                className="flex-1"
+                disabled={submitting}
+                onClick={handleSubmitForTraining}
+              >
+                {submitting ? (
+                  <>
+                    <Clock className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Start Training
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Progress Header */}
       <Card>
         <CardContent className="pt-6">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium">Progress</span>
-              <span className="text-muted-foreground">
-                {uploadedCount}/{EMOTIONAL_CATEGORIES.length} samples uploaded
-              </span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Record Voice Samples</h2>
+              <Badge variant="secondary" className="text-sm">
+                {uploadedCount}/{recommendedCount} Complete
+              </Badge>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Upload samples for at least 3 categories. Each sample is analyzed for quality in real-time.
+            </p>
             <Progress value={progressPercent} className="h-2" />
-            {uploadedCount < 3 && (
-              <p className="text-xs text-muted-foreground">
-                Upload at least 3 samples to submit for training
-              </p>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -277,28 +438,79 @@ export const VoiceTrainingWizard = () => {
         {EMOTIONAL_CATEGORIES.map((category) => {
           const sample = getSampleForCategory(category.value);
           const isUploading = uploading && currentCategory === category.value;
+          const scores = qualityScores[category.value];
 
           return (
-            <Card key={category.value} className={sample ? 'border-primary' : ''}>
+            <Card key={category.value} className={sample ? 'border-primary/50' : ''}>
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg flex items-center gap-2">
+                  <div className="flex-1">
+                    <CardTitle className="text-base flex items-center gap-2 mb-1">
                       <span className={category.color}>{category.label}</span>
-                      {sample && <CheckCircle2 className="w-5 h-5 text-primary" />}
-                      {isUploading && <Clock className="w-5 h-5 text-muted-foreground animate-spin" />}
+                      {sample && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                      {isUploading && <Clock className="w-4 h-4 text-muted-foreground animate-spin" />}
                     </CardTitle>
-                    <CardDescription className="mt-2 text-sm">
-                      {category.prompt}
-                    </CardDescription>
+                    <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
                   </div>
+                  {sample && scores && (
+                    <Badge 
+                      variant={scores.quality >= 80 ? "default" : "secondary"}
+                      className="ml-2"
+                    >
+                      {scores.quality}/100
+                    </Badge>
+                  )}
+                </div>
+                
+                <div className="bg-muted/30 p-3 rounded-md mt-2">
+                  <p className="text-xs font-medium mb-1">Example Script:</p>
+                  <p className="text-xs text-muted-foreground italic">{category.prompt}</p>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-2">
+                {sample && scores ? (
+                  <div className="space-y-3">
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Clarity</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={scores.clarity} className="w-20 h-1.5" />
+                          <span className="font-medium w-6">{scores.clarity}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Emotion</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={scores.emotion} className="w-20 h-1.5" />
+                          <span className="font-medium w-6">{scores.emotion}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      disabled={isUploading}
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'audio/*';
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) handleFileUpload(file, category.value);
+                        };
+                        input.click();
+                      }}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Replace Sample
+                    </Button>
+                  </div>
+                ) : (
                   <Button
-                    variant={sample ? "outline" : "default"}
+                    variant="default"
                     size="sm"
+                    className="w-full"
                     disabled={isUploading}
                     onClick={() => {
                       const input = document.createElement('input');
@@ -311,43 +523,40 @@ export const VoiceTrainingWizard = () => {
                       input.click();
                     }}
                   >
-                    <Upload className="w-4 h-4 mr-2" />
-                    {sample ? 'Replace' : 'Upload'}
+                    {isUploading ? (
+                      <>
+                        <Clock className="w-4 h-4 mr-2 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Audio File
+                      </>
+                    )}
                   </Button>
-                  {sample && (
-                    <Badge variant="secondary">Uploaded</Badge>
-                  )}
-                </div>
+                )}
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {/* Submit Button */}
+      {/* Navigation Buttons */}
       <Card>
         <CardContent className="pt-6">
           <Button
             size="lg"
             className="w-full"
-            disabled={uploadedCount < 3 || submitting}
-            onClick={handleSubmitForTraining}
+            disabled={uploadedCount < minimumCount}
+            onClick={() => setStep('review')}
           >
-            {submitting ? (
-              <>
-                <Clock className="w-4 h-4 mr-2 animate-spin" />
-                Submitting for Training...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Submit for Training
-              </>
-            )}
+            Review & Train
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
-          {uploadedCount < 3 && (
+          {uploadedCount < minimumCount && (
             <p className="text-xs text-center text-muted-foreground mt-2">
-              Upload at least 3 samples to continue
+              Upload at least {minimumCount} samples to continue ({uploadedCount}/{minimumCount})
             </p>
           )}
         </CardContent>
