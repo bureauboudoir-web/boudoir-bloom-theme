@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { PremiumTextarea } from "@/components/ui/premium-textarea";
+import { ChipInput } from "@/components/ui/chip-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Shield, AlertTriangle, TrendingUp, Ban } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 interface Step5BoundariesData {
   hard_limits?: string;
@@ -20,94 +20,90 @@ interface Step5BoundariesFormProps {
 
 export const Step5BoundariesForm = ({ initialData, onChange }: Step5BoundariesFormProps) => {
   const [formData, setFormData] = useState<Step5BoundariesData>(initialData || {});
-  const [topicInput, setTopicInput] = useState("");
 
   useEffect(() => {
     onChange(formData);
-  }, [formData]);
+  }, [formData, onChange]);
 
   const handleChange = (field: keyof Step5BoundariesData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const addTopic = () => {
-    if (topicInput.trim()) {
-      const topics = formData.do_not_discuss_topics || [];
-      handleChange('do_not_discuss_topics', [...topics, topicInput.trim()]);
-      setTopicInput("");
-    }
-  };
-
-  const removeTopic = (index: number) => {
-    const topics = formData.do_not_discuss_topics || [];
-    handleChange('do_not_discuss_topics', topics.filter((_, i) => i !== index));
-  };
-
   return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="hard_limits">Hard Limits *</Label>
-        <Textarea
-          id="hard_limits"
-          value={formData.hard_limits || ''}
-          onChange={(e) => handleChange('hard_limits', e.target.value)}
-          placeholder="Absolute boundaries - things you will never do..."
-          rows={5}
-        />
-      </div>
+    <div className="space-y-6">
+      <Card className="p-6 border-2 border-destructive/20 bg-destructive/5">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+          <div>
+            <Label htmlFor="hard_limits" className="text-base font-semibold mb-2 block">
+              Hard Limits *
+            </Label>
+            <PremiumTextarea
+              id="hard_limits"
+              value={formData.hard_limits || ''}
+              onChange={(e) => handleChange('hard_limits', e.target.value)}
+              placeholder="Absolute boundaries - things you will never do... (e.g., extreme fetishes, harmful activities, illegal content)"
+              rows={5}
+              helperText="These are non-negotiable. Be clear and specific."
+            />
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-6 border-2 border-amber-500/20 bg-amber-500/5">
+        <div className="flex items-start gap-3">
+          <Shield className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <Label htmlFor="soft_limits" className="text-base font-semibold mb-2 block">
+              Soft Limits
+            </Label>
+            <PremiumTextarea
+              id="soft_limits"
+              value={formData.soft_limits || ''}
+              onChange={(e) => handleChange('soft_limits', e.target.value)}
+              placeholder="Things you might consider under certain conditions... (e.g., content types you're hesitant about but open to discussing)"
+              rows={4}
+              helperText="These are flexible boundaries that can be discussed"
+            />
+          </div>
+        </div>
+      </Card>
 
       <div>
-        <Label htmlFor="soft_limits">Soft Limits</Label>
-        <Textarea
-          id="soft_limits"
-          value={formData.soft_limits || ''}
-          onChange={(e) => handleChange('soft_limits', e.target.value)}
-          placeholder="Things you might consider under certain conditions..."
-          rows={4}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="confidence_level">Confidence Level</Label>
-        <Select value={formData.confidence_level || ''} onValueChange={(v) => handleChange('confidence_level', v)}>
-          <SelectTrigger>
+        <Label htmlFor="confidence_level" className="flex items-center gap-2 mb-2">
+          <TrendingUp className="h-4 w-4 text-primary" />
+          Confidence Level
+        </Label>
+        <Select 
+          value={formData.confidence_level || ''} 
+          onValueChange={(v) => handleChange('confidence_level', v)}
+        >
+          <SelectTrigger className="rounded-xl">
             <SelectValue placeholder="How confident are you with adult content?" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="beginner">Beginner - Just starting</SelectItem>
+            <SelectItem value="beginner">Beginner - Just starting out</SelectItem>
             <SelectItem value="comfortable">Comfortable - Some experience</SelectItem>
             <SelectItem value="experienced">Experienced - Very comfortable</SelectItem>
             <SelectItem value="expert">Expert - Highly experienced</SelectItem>
           </SelectContent>
         </Select>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Your comfort level with adult content creation
+        </p>
       </div>
 
       <div>
-        <Label htmlFor="do_not_discuss">Do Not Discuss Topics</Label>
-        <div className="flex gap-2 mb-2">
-          <Input
-            id="do_not_discuss"
-            value={topicInput}
-            onChange={(e) => setTopicInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTopic())}
-            placeholder="Add topics to avoid (e.g., politics, religion)"
-          />
-          <button
-            type="button"
-            onClick={addTopic}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Add
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {formData.do_not_discuss_topics?.map((topic, index) => (
-            <Badge key={index} variant="secondary" className="gap-1">
-              {topic}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => removeTopic(index)} />
-            </Badge>
-          ))}
-        </div>
+        <Label className="flex items-center gap-2 mb-3">
+          <Ban className="h-4 w-4 text-primary" />
+          Do Not Discuss Topics
+        </Label>
+        <ChipInput
+          value={formData.do_not_discuss_topics || []}
+          onChange={(value) => handleChange('do_not_discuss_topics', value)}
+          placeholder="Add topic to avoid (e.g., politics, religion, personal life)"
+          helperText="Topics you prefer not to discuss with fans"
+        />
       </div>
     </div>
   );
