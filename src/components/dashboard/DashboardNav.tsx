@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences";
+type TabId = "overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences" | "api-keys";
 
 interface DashboardNavProps {
   activeTab: TabId;
@@ -174,9 +174,7 @@ export const DashboardNav = ({
       ...(isAdmin || isSuperAdmin ? [{ 
         id: "api-keys" as TabId, 
         label: "API Keys", 
-        icon: <Key className="w-4 h-4" />,
-        isExternalRoute: true,
-        route: "/dashboard/admin/api-keys"
+        icon: <Key className="w-4 h-4" />
       }] : []),
     ]
   } : null;
