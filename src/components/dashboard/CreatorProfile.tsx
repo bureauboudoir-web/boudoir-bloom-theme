@@ -3,15 +3,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { User, Heart, MapPin, Shield, DollarSign, MessageSquare, Share2, Target } from "lucide-react";
+import { User, Heart, MapPin, Shield, DollarSign, MessageSquare, Share2, Target, Camera, CheckSquare, Download } from "lucide-react";
 import { ProfileSkeleton } from "@/components/ui/loading-skeletons";
 import { AccessLevel } from "@/hooks/useAccessLevel";
 import { toast } from "sonner";
 import { SectionEditor } from "@/components/onboarding/SectionEditor";
 import { SectionProgressRing } from "@/components/onboarding/SectionProgressRing";
 import { useUserRole } from "@/hooks/useUserRole";
+import { exportOnboardingProfile, downloadJSON, fetchOnboardingData } from "@/lib/onboardingExport";
 import { Step1PrivateInfoForm } from "@/components/onboarding/sections/Step1PrivateInfoForm";
 import { Step2BrandIdentityForm } from "@/components/onboarding/sections/Step2BrandIdentityForm";
 import { Step3AmsterdamStoryForm } from "@/components/onboarding/sections/Step3AmsterdamStoryForm";
@@ -45,6 +47,7 @@ export const CreatorProfile = ({
 }: CreatorProfileProps) => {
   const [sectionData, setSectionData] = useState<Record<number, any>>({});
   const [sectionValidity, setSectionValidity] = useState<Record<number, boolean>>({});
+  const [isExporting, setIsExporting] = useState(false);
   const { isAdmin, isManager, isSuperAdmin } = useUserRole();
   const canViewPrivateInfo = isAdmin || isManager || isSuperAdmin;
 
@@ -79,6 +82,30 @@ export const CreatorProfile = ({
     await onSaveSection(sectionId, data);
   };
 
+  const handleExportProfile = async () => {
+    setIsExporting(true);
+    try {
+      const result = await exportOnboardingProfile(userId);
+      
+      if (result.success) {
+        toast.success("Profile exported successfully! Files stored in your account.");
+        
+        // Optionally also download JSON locally
+        const data = await fetchOnboardingData(userId);
+        if (data) {
+          downloadJSON(data, `${userName || 'creator'}_onboarding_${Date.now()}.json`);
+        }
+      } else {
+        toast.error(result.error || "Failed to export profile");
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("An error occurred while exporting");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header with Progress */}
@@ -97,11 +124,26 @@ export const CreatorProfile = ({
                 <Progress value={completionPercentage} className="h-2" />
               </div>
 
-              {completionPercentage === 100 && (
-                <Badge className="mt-3 bg-green-500/10 text-green-500 border-green-500/20">
-                  Profile Complete!
-                </Badge>
-              )}
+              <div className="flex items-center gap-3 mt-3">
+                {completionPercentage === 100 && (
+                  <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                    Profile Complete!
+                  </Badge>
+                )}
+                
+                {completionPercentage === 100 && (
+                  <Button
+                    onClick={handleExportProfile}
+                    disabled={isExporting}
+                    size="sm"
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    {isExporting ? "Exporting..." : "Export Profile"}
+                  </Button>
+                )}
+              </div>
             </div>
 
             <SectionProgressRing completed={completedSteps.length} total={totalSteps} />
@@ -115,7 +157,7 @@ export const CreatorProfile = ({
         userName={userName || onboardingData.personal_full_name || "User"}
       />
 
-      {/* 10-Step Onboarding Sections (Section 10 hidden, Section 1 admin-only) */}
+      {/* 11-Step Onboarding Sections (Section 1 admin-only, Section 11 visible to all but internal only) */}
       <Accordion type="multiple" className="space-y-4">
         {/* Section 1: Personal Information (Admin/Manager Only) */}
         {canViewPrivateInfo && (
@@ -228,7 +270,7 @@ export const CreatorProfile = ({
         <AccordionItem value="section-4" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <User className="h-5 w-5 text-primary" />
+              <Heart className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
                 <h3 className="font-semibold">Persona & Character</h3>
                 <p className="text-sm text-muted-foreground">Character voice, personality & physical traits</p>
@@ -249,7 +291,7 @@ export const CreatorProfile = ({
             <SectionEditor
               sectionId={4}
               title="Persona & Character"
-              icon={<User className="h-5 w-5" />}
+              icon={<Heart className="h-5 w-5" />}
               description="Define your character's voice and appearance"
               isLocked={isSectionLocked(4)}
               isComplete={completedSteps.includes(4)}
@@ -423,7 +465,7 @@ export const CreatorProfile = ({
         <AccordionItem value="section-9" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <Target className="h-5 w-5 text-primary" />
+              <Camera className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
                 <h3 className="font-semibold">Content Preferences</h3>
                 <p className="text-sm text-muted-foreground">Posting schedule and content styles</p>
@@ -444,7 +486,7 @@ export const CreatorProfile = ({
             <SectionEditor
               sectionId={9}
               title="Content Preferences"
-              icon={<Target className="h-5 w-5" />}
+              icon={<Camera className="h-5 w-5" />}
               description="Your content preferences"
               isLocked={isSectionLocked(9)}
               isComplete={completedSteps.includes(9)}
@@ -497,29 +539,28 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 11: Requirements & Commitments (Admin-only) */}
-        {canViewPrivateInfo && (
-          <AccordionItem value="section-11" className="border-none">
-            <AccordionTrigger className="hover:no-underline">
-              <div className="flex items-center gap-3 w-full">
-                <Target className="h-5 w-5 text-primary" />
-                <div className="flex-1 text-left">
-                  <h3 className="font-semibold">Requirements & Commitments (Admin-only)</h3>
-                  <p className="text-sm text-muted-foreground">Final agreements</p>
-                </div>
-                {completedSteps.includes(11) && (
-                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                    Complete
-                  </Badge>
-                )}
+        {/* Section 11: Requirements & Commitments (Internal only) */}
+        <AccordionItem value="section-11" className="border-none">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-3 w-full">
+              <CheckSquare className="h-5 w-5 text-primary" />
+              <div className="flex-1 text-left">
+                <h3 className="font-semibold">Requirements & Commitments</h3>
+                <p className="text-sm text-muted-foreground">Final agreements (Internal only)</p>
               </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <SectionEditor
-                sectionId={11}
-                title="Requirements & Commitments"
-                icon={<Target className="h-5 w-5" />}
-                description="Final agreements"
+              {completedSteps.includes(11) && (
+                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                  Complete
+                </Badge>
+              )}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <SectionEditor
+              sectionId={11}
+              title="Requirements & Commitments"
+              icon={<CheckSquare className="h-5 w-5" />}
+              description="Final agreements (Internal only)"
                 isComplete={completedSteps.includes(11)}
                 onSave={() => handleSectionSave(11)}
               >
@@ -527,10 +568,9 @@ export const CreatorProfile = ({
                   initialData={onboardingData.step11_commitments || {}}
                   onChange={(data) => handleSectionChange(11, data)}
                 />
-              </SectionEditor>
-            </AccordionContent>
-          </AccordionItem>
-        )}
+            </SectionEditor>
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
     </div>
   );
