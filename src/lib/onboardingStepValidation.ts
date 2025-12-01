@@ -1,49 +1,37 @@
 /**
- * Onboarding Step Validation and Mapping
+ * Onboarding Step Validation and Mapping - 10 Steps
  * 
  * This file provides the single source of truth for onboarding step numbers
  * to prevent mismatches between components and the database.
  */
 
 export const ONBOARDING_STEP_MAPPING = {
-  personal: 1,
-  physical: 2,
-  amsterdam: 3,
-  boundaries: 4,
-  pricing: 5,
-  persona: 6,
-  scripts: 7,
-  content: 8,
-  visual_identity: 9,
-  creator_story: 10,
-  brand_alignment: 11,
-  fetish_interests: 12,
-  engagement_style: 13,
-  market_positioning: 14,
-  fan_expectations: 15,
-  creative_boundaries: 16,
+  private_info: 1,
+  brand_identity: 2,
+  amsterdam_story: 3,
+  persona: 4,
+  boundaries: 5,
+  pricing: 6,
+  messaging: 7,
+  content_preferences: 8,
+  market_positioning: 9,
+  commitments: 10,
 } as const;
 
 export const ONBOARDING_STEP_NAMES = {
-  1: "Personal Information",
-  2: "Physical Description",
+  1: "Private Information",
+  2: "Brand & Character Identity",
   3: "Amsterdam Story",
-  4: "Boundaries & Comfort",
-  5: "Pricing Structure",
-  6: "Persona & Character",
+  4: "Persona",
+  5: "Boundaries",
+  6: "Pricing Structure",
   7: "Scripts & Messaging",
   8: "Content Preferences",
-  9: "Visual Identity",
-  10: "Creator Story",
-  11: "Brand Alignment",
-  12: "Fetish/Special Interests",
-  13: "Engagement Style",
-  14: "Market Positioning",
-  15: "Fan Expectations",
-  16: "Commitments",
+  9: "Market Positioning",
+  10: "Requirements & Commitments",
 } as const;
 
-export const TOTAL_STEPS = 16;
+export const TOTAL_STEPS = 10;
 
 /**
  * Validates that a step number is within the valid range

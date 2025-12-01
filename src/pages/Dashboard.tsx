@@ -107,9 +107,9 @@ const Dashboard = () => {
   // Dynamic step calculation based on access level
   const getVisibleTotalSteps = () => {
     if (accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted) {
-      return 2; // Only show pre-meeting steps
+      return 1; // Only show pre-meeting step (Step 1)
     }
-    return 16; // Show all steps
+    return 10; // Show all 10 steps
   };
   
   const visibleTotalSteps = getVisibleTotalSteps();

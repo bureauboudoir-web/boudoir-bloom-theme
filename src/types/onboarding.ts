@@ -1,166 +1,103 @@
-// Comprehensive BB Creator Onboarding Types - 16 Sections
+// Comprehensive BB Creator Onboarding Types - 10 Steps
 
-export interface PersonalInfoSection {
-  full_name?: string;
+// Step 1 - Private Information (Admin/Manager only)
+export interface OnboardingStep1 {
+  real_name?: string;
   date_of_birth?: string;
   nationality?: string;
-  location?: string;
+  full_address?: string;
   phone_number?: string;
-  business_phone?: string;
-  email?: string;
   emergency_contact?: string;
   emergency_phone?: string;
 }
 
-export interface PhysicalDescriptionSection {
-  height?: number;
-  weight?: number;
-  body_type?: string;
-  hair_color?: string;
-  eye_color?: string;
-  tattoos?: string;
-  piercings?: string;
-  distinctive_features?: string;
+// Step 2 - Brand & Character Identity
+export interface OnboardingStep2 {
+  stage_name?: string;
+  character_phone?: string;
+  character_email?: string;
+  bio_short?: string;
+  persona_keywords?: string[];
+  brand_color_palette?: string[];
+  banner_style_option?: string;
 }
 
-export interface AmsterdamStorySection {
-  years_in_amsterdam?: string;
-  years_working_centrum?: string;
-  neighborhood?: string;
-  what_you_love?: string;
-  what_brought_you?: string;
-  amsterdam_goals?: string;
-  rld_feeling?: string;
-  rld_fascination?: string;
-  rld_atmosphere?: string[];
-  time_of_night?: string;
-  colors?: string[];
-  lighting?: string;
-  confident_spot?: string;
-  vulnerable_spot?: string;
-  alter_ego?: string;
-  persona_sentence?: string;
-  character_secret?: string;
-  becoming?: string;
-  how_changed?: string;
-  moment_changed_you?: string;
-  past_shaped_you?: string;
-  career_story?: string;
-  content_expression?: string;
+// Step 3 - Amsterdam Backstory
+export interface OnboardingStep3 {
+  amsterdam_story?: string;
+  how_you_arrived?: string;
+  personal_motivation?: string;
+  connection_to_RLD?: string;
 }
 
-export interface BoundariesSection {
-  comfortable_with?: string[];
+// Step 4 - Persona
+export interface OnboardingStep4 {
+  tone_of_voice?: string;
+  keywords?: string;
+  personality_traits?: string;
+  character_rules?: string;
+}
+
+// Step 5 - Boundaries & Comfort Levels
+export interface OnboardingStep5 {
   hard_limits?: string;
   soft_limits?: string;
-  additional_notes?: string;
+  confidence_level?: string;
+  do_not_discuss_topics?: string[];
 }
 
-export interface PricingSection {
-  subscription?: number;
-  ppv_photo?: number;
-  ppv_video?: number;
-  custom_content?: number;
-  sexting?: number;
-  chat?: number;
-}
-
-export interface PersonaSection {
-  stage_name?: string;
-  description?: string;
-  backstory?: string;
-  personality?: string;
-  interests?: string;
-  fantasy?: string;
-}
-
-export interface ScriptsSection {
-  greeting?: string;
-  ppv?: string;
-  sexting?: string;
-  renewal?: string;
-}
-
-export interface ContentPreferencesSection {
-  themes?: string;
-  shooting_preferences?: string;
-  equipment_needs?: string;
-  photo_count?: number;
-  video_count?: number;
-}
-
-export interface VisualIdentitySection {
-  colors?: string[];
-  aesthetic?: string;
-  fonts?: string;
-  logo_style?: string;
-  mood_board?: string;
-  brand_colors?: {
-    primary?: string;
-    secondary?: string;
-    accent?: string;
+// Step 6 - Pricing Structure
+export interface OnboardingStep6 {
+  menu_items?: string[];
+  top_3_selling_items?: string[];
+  PPV_price_range?: {
+    min?: number;
+    max?: number;
+  };
+  bundle_price_range?: {
+    min?: number;
+    max?: number;
   };
 }
 
-export interface CreatorStorySection {
-  origin?: string;
-  journey?: string;
-  milestones?: string[];
-  future_goals?: string;
-  turning_points?: string;
-  inspiration?: string;
+// Step 7 - Scripts & Messaging
+export interface OnboardingStep7 {
+  intro_message?: string;
+  welcome_message?: string;
+  fan_reactivation_styles?: string[];
+  overall_message_style?: string;
 }
 
-export interface BrandAlignmentSection {
-  brand_voice?: string;
-  target_audience?: string;
-  unique_value?: string;
-  positioning_statement?: string;
-  core_values?: string[];
-  differentiation?: string;
+// Step 8 - Content Preferences
+export interface OnboardingStep8 {
+  preferred_platforms?: string[];
+  content_style_keywords?: string;
+  posting_frequency?: string;
+  best_posting_times?: string[];
+  enjoy_style?: string;
+  preferred_video_styles?: string[];
+  preferred_photo_styles?: string[];
 }
 
-export interface FetishInterestsSection {
-  categories?: string[];
-  comfort_level?: string;
-  notes?: string;
-  specializations?: string[];
-}
-
-export interface EngagementStyleSection {
-  communication_style?: string;
-  response_time?: string;
-  availability?: string;
-  boundaries?: string;
-  interaction_preferences?: string[];
-  fan_relationship_style?: string;
-}
-
-export interface MarketPositioningSection {
+// Step 9 - Market Positioning & Fan Expectations
+export interface OnboardingStep9 {
   niche?: string;
-  competitors?: string[];
-  differentiators?: string[];
-  price_tier?: string;
-  market_segment?: string;
-  positioning_strategy?: string;
+  target_audience?: string;
+  fan_expectation_keywords?: string;
+  competitive_edge?: string;
 }
 
-export interface FanExpectationsSection {
-  content_frequency?: string;
-  interaction_style?: string;
-  exclusive_offerings?: string;
-  community_building?: string;
-  response_expectations?: string;
-  value_proposition?: string;
-}
-
-export interface CreativeBoundariesSection {
-  content_limits?: string[];
-  collaboration_rules?: string;
-  creative_control?: string;
-  veto_rights?: string;
-  collaboration_preferences?: string[];
-  production_standards?: string;
+// Step 10 - Requirements & Commitments
+export interface OnboardingStep10 {
+  understand_split?: boolean;
+  posting_commitment?: boolean;
+  response_commitment?: boolean;
+  guidelines_commitment?: boolean;
+  boundaries_acknowledged?: boolean;
+  content_rules_acknowledged?: boolean;
+  shoot_attendance_commitment?: boolean;
+  persona_commitment?: boolean;
+  final_agreement_confirmed?: boolean;
 }
 
 export interface ProfileMetadata {
@@ -183,28 +120,27 @@ export interface CompletionTracking {
   last_updated?: string;
 }
 
+export interface OnboardingData {
+  step1_private_info: OnboardingStep1;
+  step2_brand_identity: OnboardingStep2;
+  step3_amsterdam_story: OnboardingStep3;
+  step4_persona: OnboardingStep4;
+  step5_boundaries: OnboardingStep5;
+  step6_pricing: OnboardingStep6;
+  step7_messaging: OnboardingStep7;
+  step8_content_preferences: OnboardingStep8;
+  step9_market_positioning: OnboardingStep9;
+  step10_commitments: OnboardingStep10;
+  current_step: number;
+  completed_steps: number[];
+  is_completed: boolean;
+}
+
 export interface BBCreatorFull {
   id: string;
   user_id: string;
   profile: ProfileMetadata;
-  sections: {
-    personal_info: PersonalInfoSection;
-    physical_description: PhysicalDescriptionSection;
-    amsterdam_story: AmsterdamStorySection;
-    boundaries: BoundariesSection;
-    pricing: PricingSection;
-    persona: PersonaSection;
-    scripts: ScriptsSection;
-    content_preferences: ContentPreferencesSection;
-    visual_identity: VisualIdentitySection;
-    creator_story: CreatorStorySection;
-    brand_alignment: BrandAlignmentSection;
-    fetish_interests: FetishInterestsSection;
-    engagement_style: EngagementStyleSection;
-    market_positioning: MarketPositioningSection;
-    fan_expectations: FanExpectationsSection;
-    creative_boundaries: CreativeBoundariesSection;
-  };
+  sections: OnboardingData;
   completion: CompletionTracking;
 }
 
@@ -216,8 +152,6 @@ export const calculateSectionCompletion = (section: any): boolean => {
 };
 
 // Helper function to get completion percentage
-export const getCompletionPercentage = (sections: any): number => {
-  const sectionKeys = Object.keys(sections);
-  const completedSections = sectionKeys.filter(key => calculateSectionCompletion(sections[key]));
-  return Math.round((completedSections.length / sectionKeys.length) * 100);
+export const getCompletionPercentage = (completedSteps: number[]): number => {
+  return Math.round((completedSteps.length / 10) * 100);
 };

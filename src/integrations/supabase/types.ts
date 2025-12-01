@@ -1311,6 +1311,16 @@ export type Database = {
           social_tiktok: string | null
           social_twitter: string | null
           social_youtube: string | null
+          step1_private_info: Json | null
+          step10_commitments: Json | null
+          step2_brand_identity: Json | null
+          step3_amsterdam_story: Json | null
+          step4_persona: Json | null
+          step5_boundaries: Json | null
+          step6_pricing: Json | null
+          step7_messaging: Json | null
+          step8_content_preferences: Json | null
+          step9_market_positioning: Json | null
           updated_at: string | null
           user_id: string
         }
@@ -1403,6 +1413,16 @@ export type Database = {
           social_tiktok?: string | null
           social_twitter?: string | null
           social_youtube?: string | null
+          step1_private_info?: Json | null
+          step10_commitments?: Json | null
+          step2_brand_identity?: Json | null
+          step3_amsterdam_story?: Json | null
+          step4_persona?: Json | null
+          step5_boundaries?: Json | null
+          step6_pricing?: Json | null
+          step7_messaging?: Json | null
+          step8_content_preferences?: Json | null
+          step9_market_positioning?: Json | null
           updated_at?: string | null
           user_id: string
         }
@@ -1495,6 +1515,16 @@ export type Database = {
           social_tiktok?: string | null
           social_twitter?: string | null
           social_youtube?: string | null
+          step1_private_info?: Json | null
+          step10_commitments?: Json | null
+          step2_brand_identity?: Json | null
+          step3_amsterdam_story?: Json | null
+          step4_persona?: Json | null
+          step5_boundaries?: Json | null
+          step6_pricing?: Json | null
+          step7_messaging?: Json | null
+          step8_content_preferences?: Json | null
+          step9_market_positioning?: Json | null
           updated_at?: string | null
           user_id?: string
         }

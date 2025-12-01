@@ -91,7 +91,8 @@ serve(async (req) => {
     // Helper to provide fallbacks
     const withFallback = (value: any, fallback = "Not provided yet") => value || fallback;
 
-    // Build comprehensive response with all 16 sections
+    // Build comprehensive response with new 10-step structure
+    // CRITICAL: step1_private_info is NEVER included in external APIs
     const response = {
       profile: {
         email: profile.email,
@@ -99,70 +100,21 @@ serve(async (req) => {
         id: creatorId
       },
       sections: {
-        personal_info: onboarding ? {
-          full_name: withFallback(onboarding.personal_full_name),
-          date_of_birth: withFallback(onboarding.personal_date_of_birth),
-          nationality: withFallback(onboarding.personal_nationality),
-          location: withFallback(onboarding.personal_location),
-          phone_number: withFallback(onboarding.personal_phone_number),
-          email: withFallback(onboarding.personal_email)
-        } : {},
-        physical_description: onboarding ? {
-          height: onboarding.body_height,
-          weight: onboarding.body_weight,
-          body_type: withFallback(onboarding.body_type),
-          hair_color: withFallback(onboarding.body_hair_color),
-          eye_color: withFallback(onboarding.body_eye_color),
-          tattoos: withFallback(onboarding.body_tattoos),
-          piercings: withFallback(onboarding.body_piercings)
-        } : {},
-        amsterdam_story: onboarding ? {
-          years_in_amsterdam: withFallback(onboarding.backstory_years_in_amsterdam),
-          neighborhood: withFallback(onboarding.backstory_neighborhood),
-          what_you_love: withFallback(onboarding.backstory_what_you_love),
-          alter_ego: withFallback(onboarding.backstory_alter_ego),
-          colors: onboarding.backstory_colors || []
-        } : {},
-        boundaries: onboarding ? {
-          hard_limits: withFallback(onboarding.boundaries_hard_limits),
-          soft_limits: withFallback(onboarding.boundaries_soft_limits),
-          comfortable_with: onboarding.boundaries_comfortable_with || []
-        } : {},
-        pricing: onboarding ? {
-          subscription: onboarding.pricing_subscription,
-          ppv_photo: onboarding.pricing_ppv_photo,
-          ppv_video: onboarding.pricing_ppv_video,
-          custom_content: onboarding.pricing_custom_content
-        } : {},
-        persona: onboarding ? {
-          stage_name: withFallback(onboarding.persona_stage_name),
-          description: withFallback(onboarding.persona_description),
-          backstory: withFallback(onboarding.persona_backstory),
-          personality: withFallback(onboarding.persona_personality)
-        } : {},
-        scripts: onboarding ? {
-          greeting: withFallback(onboarding.scripts_greeting),
-          ppv: withFallback(onboarding.scripts_ppv),
-          sexting: withFallback(onboarding.scripts_sexting)
-        } : {},
-        content_preferences: onboarding ? {
-          themes: withFallback(onboarding.content_themes),
-          photo_count: onboarding.content_photo_count,
-          video_count: onboarding.content_video_count
-        } : {},
-        visual_identity: onboarding?.section_visual_identity || {},
-        creator_story: onboarding?.section_creator_story || {},
-        brand_alignment: onboarding?.section_brand_alignment || {},
-        fetish_interests: onboarding?.section_fetish_interests || {},
-        engagement_style: onboarding?.section_engagement_style || {},
-        market_positioning: onboarding?.section_market_positioning || {},
-        fan_expectations: onboarding?.section_fan_expectations || {},
-        creative_boundaries: onboarding?.section_creative_boundaries || {}
+        // Step 1 is EXCLUDED from external APIs (private info)
+        brand_identity: onboarding?.step2_brand_identity || {},
+        amsterdam_story: onboarding?.step3_amsterdam_story || {},
+        persona: onboarding?.step4_persona || {},
+        boundaries: onboarding?.step5_boundaries || {},
+        pricing: onboarding?.step6_pricing || {},
+        messaging: onboarding?.step7_messaging || {},
+        content_preferences: onboarding?.step8_content_preferences || {},
+        market_positioning: onboarding?.step9_market_positioning || {},
+        // Step 10 commitments excluded from external APIs
       },
       completion: {
         completed_steps: onboarding?.completed_steps || [],
-        total_sections: 16,
-        completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 16) * 100),
+        total_sections: 10,
+        completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 10) * 100),
         is_completed: onboarding?.is_completed || false
       },
       style_preferences: stylePreferences || null,

@@ -565,7 +565,7 @@ export const ManagerControlsOverview = memo(function ManagerControlsOverview({ m
                                           Complete
                                         </span>
                                       ) : (
-                                        `Step ${creator.current_step}/16`
+                                        `Step ${creator.current_step}/10`
                                       )}
                                     </p>
                                   </div>
