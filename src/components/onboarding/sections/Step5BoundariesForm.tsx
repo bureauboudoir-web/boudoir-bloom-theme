@@ -30,11 +30,11 @@ export const Step5BoundariesForm = ({ initialData, onChange }: Step5BoundariesFo
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Card className="p-6 border-2 border-destructive/20 bg-destructive/5">
         <div className="flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-          <div>
+          <div className="flex-1">
             <Label htmlFor="hard_limits" className="text-base font-semibold mb-2 block">
               Hard Limits *
             </Label>
@@ -69,42 +69,46 @@ export const Step5BoundariesForm = ({ initialData, onChange }: Step5BoundariesFo
         </div>
       </Card>
 
-      <div>
-        <Label htmlFor="confidence_level" className="flex items-center gap-2 mb-2">
-          <TrendingUp className="h-4 w-4 text-primary" />
-          Confidence Level
-        </Label>
-        <Select 
-          value={formData.confidence_level || ''} 
-          onValueChange={(v) => handleChange('confidence_level', v)}
-        >
-          <SelectTrigger className="rounded-xl">
-            <SelectValue placeholder="How confident are you with adult content?" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="beginner">Beginner - Just starting out</SelectItem>
-            <SelectItem value="comfortable">Comfortable - Some experience</SelectItem>
-            <SelectItem value="experienced">Experienced - Very comfortable</SelectItem>
-            <SelectItem value="expert">Expert - Highly experienced</SelectItem>
-          </SelectContent>
-        </Select>
-        <p className="mt-1.5 text-xs text-muted-foreground">
-          Your comfort level with adult content creation
-        </p>
-      </div>
+      <Card className="p-6 border-2 border-primary/10">
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="confidence_level" className="flex items-center gap-2 mb-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Confidence Level
+            </Label>
+            <Select 
+              value={formData.confidence_level || ''} 
+              onValueChange={(v) => handleChange('confidence_level', v)}
+            >
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="How confident are you with adult content?" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">Beginner - Just starting out</SelectItem>
+                <SelectItem value="comfortable">Comfortable - Some experience</SelectItem>
+                <SelectItem value="experienced">Experienced - Very comfortable</SelectItem>
+                <SelectItem value="expert">Expert - Highly experienced</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Your comfort level with adult content creation
+            </p>
+          </div>
 
-      <div>
-        <Label className="flex items-center gap-2 mb-3">
-          <Ban className="h-4 w-4 text-primary" />
-          Do Not Discuss Topics
-        </Label>
-        <ChipInput
-          value={Array.isArray(formData.do_not_discuss_topics) ? formData.do_not_discuss_topics : []}
-          onChange={(value) => handleChange('do_not_discuss_topics', value)}
-          placeholder="Add topic to avoid (e.g., politics, religion, personal life)"
-          helperText="Topics you prefer not to discuss with fans"
-        />
-      </div>
+          <div>
+            <Label className="flex items-center gap-2 mb-3">
+              <Ban className="h-4 w-4 text-primary" />
+              Do Not Discuss Topics
+            </Label>
+            <ChipInput
+              value={Array.isArray(formData.do_not_discuss_topics) ? formData.do_not_discuss_topics : []}
+              onChange={(value) => handleChange('do_not_discuss_topics', value)}
+              placeholder="Add topic to avoid (e.g., politics, religion, personal life)"
+              helperText="Topics you prefer not to discuss with fans"
+            />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };

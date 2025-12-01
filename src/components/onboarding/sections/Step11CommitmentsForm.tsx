@@ -51,19 +51,19 @@ export const Step11CommitmentsForm = ({ initialData, onChange }: Step11Commitmen
   };
 
   return (
-    <div className="space-y-6">
-      <Alert>
+    <div className="space-y-8">
+      <Alert className="border-2 border-primary/20">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           Please review and confirm all requirements below. These agreements are important for our working relationship.
         </AlertDescription>
       </Alert>
 
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6 space-y-6">
           <div className="flex items-center gap-2 mb-4">
             <CheckSquare className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Requirements & Commitments</h3>
+            <h3 className="text-lg font-semibold">Requirements & Commitments</h3>
           </div>
 
           {/* Revenue Split */}
@@ -213,7 +213,7 @@ export const Step11CommitmentsForm = ({ initialData, onChange }: Step11Commitmen
       </Card>
 
       {/* Optional Questions/Concerns */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10">
         <CardContent className="pt-6 space-y-4">
           <div>
             <Label htmlFor="optional_questions_or_concerns">Questions or Concerns (Optional)</Label>
@@ -231,14 +231,14 @@ export const Step11CommitmentsForm = ({ initialData, onChange }: Step11Commitmen
 
       {/* Status Alert */}
       {allChecked ? (
-        <Alert className="bg-green-500/10 border-green-500/20">
+        <Alert className="bg-green-500/10 border-2 border-green-500/20">
           <CheckCircle2 className="h-4 w-4 text-green-500" />
           <AlertDescription className="text-green-500">
             All requirements confirmed! You're ready to complete onboarding.
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="border-2">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Please confirm all requirements above to proceed.

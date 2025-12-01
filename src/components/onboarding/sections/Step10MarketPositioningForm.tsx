@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { PremiumTextarea } from "@/components/ui/premium-textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Target, Users, TrendingUp, Award } from "lucide-react";
+import { Target, Users, Award } from "lucide-react";
 
 // Step 10 - Market Positioning (SEPARATE from Content)
 interface Step10MarketPositioningData {
@@ -29,13 +29,13 @@ export const Step10MarketPositioningForm = ({ initialData, onChange }: Step10Mar
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Market Niche */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
             <Target className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Market Niche</h3>
+            <h3 className="text-lg font-semibold">Market Niche</h3>
           </div>
 
           <div>
@@ -51,7 +51,10 @@ export const Step10MarketPositioningForm = ({ initialData, onChange }: Step10Mar
           </div>
 
           <div>
-            <Label htmlFor="unique_angle">Unique Angle / Competitive Edge</Label>
+            <Label htmlFor="unique_angle" className="flex items-center gap-2 mb-2">
+              <Award className="h-4 w-4 text-primary" />
+              Unique Angle / Competitive Edge
+            </Label>
             <PremiumTextarea
               id="unique_angle"
               value={formData.unique_angle || ''}
@@ -65,11 +68,11 @@ export const Step10MarketPositioningForm = ({ initialData, onChange }: Step10Mar
       </Card>
 
       {/* Target Audience */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10">
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
             <Users className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Target Audience</h3>
+            <h3 className="text-lg font-semibold">Target Audience</h3>
           </div>
 
           <div>

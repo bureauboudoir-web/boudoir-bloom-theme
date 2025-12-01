@@ -35,38 +35,46 @@ export const Step6PricingForm = ({ initialData, onChange }: Step6PricingFormProp
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Label className="flex items-center gap-2 mb-3">
-          <Package className="h-4 w-4 text-primary" />
-          Menu Items
-        </Label>
-        <ChipInput
-          value={Array.isArray(formData.menu_items) ? formData.menu_items : []}
-          onChange={(value) => handleChange('menu_items', value)}
-          placeholder="Add menu item (e.g., Custom Photo Set - $50)"
-          helperText="Your content offerings and their prices"
-        />
-      </div>
+    <div className="space-y-8">
+      {/* Menu & Offerings Card */}
+      <Card className="p-6 border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-transparent">
+        <div className="flex items-center gap-2 mb-6">
+          <Package className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold">Menu & Offerings</h3>
+        </div>
 
-      <div>
-        <Label className="flex items-center gap-2 mb-3">
-          <TrendingUp className="h-4 w-4 text-primary" />
-          Top 3 Selling Items
-        </Label>
-        <ChipInput
-          value={Array.isArray(formData.top_3_selling_items) ? formData.top_3_selling_items : []}
-          onChange={(value) => handleChange('top_3_selling_items', value)}
-          placeholder="Add top seller (max 3)"
-          helperText="Your best-performing content types"
-          maxItems={3}
-        />
-      </div>
+        <div className="space-y-6">
+          <div>
+            <Label className="mb-2 block">Menu Items</Label>
+            <ChipInput
+              value={Array.isArray(formData.menu_items) ? formData.menu_items : []}
+              onChange={(value) => handleChange('menu_items', value)}
+              placeholder="Add menu item (e.g., Custom Photo Set - $50)"
+              helperText="Your content offerings and their prices"
+            />
+          </div>
 
-      <Card className="p-6 bg-muted/30">
+          <div>
+            <Label className="flex items-center gap-2 mb-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Top 3 Selling Items
+            </Label>
+            <ChipInput
+              value={Array.isArray(formData.top_3_selling_items) ? formData.top_3_selling_items : []}
+              onChange={(value) => handleChange('top_3_selling_items', value)}
+              placeholder="Add top seller (max 3)"
+              helperText="Your best-performing content types"
+              maxItems={3}
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* PPV Pricing Card */}
+      <Card className="p-6 border-2 border-primary/10">
         <Label className="flex items-center gap-2 mb-4">
           <DollarSign className="h-4 w-4 text-primary" />
-          PPV Price Range
+          <span className="text-lg font-semibold">PPV Price Range</span>
         </Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -104,10 +112,11 @@ export const Step6PricingForm = ({ initialData, onChange }: Step6PricingFormProp
         </div>
       </Card>
 
-      <Card className="p-6 bg-muted/30">
+      {/* Bundle Pricing Card */}
+      <Card className="p-6 border-2 border-primary/10">
         <Label className="flex items-center gap-2 mb-4">
           <Package className="h-4 w-4 text-primary" />
-          Bundle Price Range
+          <span className="text-lg font-semibold">Bundle Price Range</span>
         </Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
