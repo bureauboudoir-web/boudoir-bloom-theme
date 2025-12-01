@@ -1,4 +1,4 @@
-// Onboarding step configuration - 11 Steps (FINAL MODEL)
+// Onboarding step configuration - 12 Steps (FINAL MODEL)
 export interface OnboardingStepConfig {
   id: number;
   label: string;

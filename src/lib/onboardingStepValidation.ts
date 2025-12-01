@@ -1,5 +1,5 @@
 /**
- * Onboarding Step Validation and Mapping - 10 Steps
+ * Onboarding Step Validation and Mapping - 12 Steps
  * 
  * This file provides the single source of truth for onboarding step numbers
  * to prevent mismatches between components and the database.
