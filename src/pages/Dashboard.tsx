@@ -104,14 +104,14 @@ const Dashboard = () => {
   const [uploadRefresh, setUploadRefresh] = useState(0);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const totalSteps = 11;
+  const totalSteps = 12;
   
   // Dynamic step calculation based on access level
   const getVisibleTotalSteps = () => {
     if (accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted) {
       return 1; // Only show pre-meeting step (Step 1)
     }
-    return 11; // Show all 11 steps
+    return 12; // Show all 12 steps
   };
   
   const visibleTotalSteps = getVisibleTotalSteps();
