@@ -15,6 +15,7 @@ import { SectionProgressRing } from "@/components/onboarding/SectionProgressRing
 import { useUserRole } from "@/hooks/useUserRole";
 import { exportOnboardingProfile, downloadJSON, fetchOnboardingData } from "@/lib/onboardingExport";
 import { Step1PrivateInfoForm } from "@/components/onboarding/sections/Step1PrivateInfoForm";
+import { Step2BodyInfoForm } from "@/components/onboarding/sections/Step2BodyInfoForm";
 import { Step2BrandIdentityForm } from "@/components/onboarding/sections/Step2BrandIdentityForm";
 import { Step3AmsterdamStoryForm } from "@/components/onboarding/sections/Step3AmsterdamStoryForm";
 import { Step4PersonaForm } from "@/components/onboarding/sections/Step4PersonaForm";
@@ -59,7 +60,7 @@ export const CreatorProfile = ({
   };
 
   const completedSteps = onboardingData?.completed_steps || [];
-  const totalSteps = 11;
+  const totalSteps = 12;
   const completionPercentage = Math.round((completedSteps.length / totalSteps) * 100);
 
   if (!onboardingData) {
@@ -157,7 +158,7 @@ export const CreatorProfile = ({
         userName={userName || onboardingData.personal_full_name || "User"}
       />
 
-      {/* 11-Step Onboarding Sections (Section 1 admin-only, Section 11 visible to all but internal only) */}
+      {/* 12-Step Onboarding Sections (Sections 1-2 admin-only, Section 12 visible to all but internal only) */}
       <Accordion type="multiple" className="space-y-4">
         {/* Section 1: Personal Information (Admin/Manager Only) */}
         {canViewPrivateInfo && (
@@ -194,8 +195,43 @@ export const CreatorProfile = ({
           </AccordionItem>
         )}
 
-        {/* Section 2: Brand & Character Identity */}
-        <AccordionItem value="section-2" className="border-none">
+        {/* Section 2: Body Information (Admin/Manager Only) */}
+        {canViewPrivateInfo && (
+          <AccordionItem value="section-2" className="border-none">
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex items-center gap-3 w-full">
+                <User className="h-5 w-5 text-primary" />
+                <div className="flex-1 text-left">
+                  <h3 className="font-semibold">Body Information (Private)</h3>
+                  <p className="text-sm text-muted-foreground">Physical characteristics (Admin/Manager only)</p>
+                </div>
+                {completedSteps.includes(2) && (
+                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                    Complete
+                  </Badge>
+                )}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <SectionEditor
+                sectionId={2}
+                title="Body Information"
+                icon={<User className="h-5 w-5" />}
+                description="Physical characteristics"
+                isComplete={completedSteps.includes(2)}
+                onSave={() => handleSectionSave(2)}
+              >
+                <Step2BodyInfoForm 
+                  initialData={onboardingData.step2_body_info || {}}
+                  onChange={(data) => handleSectionChange(2, data)}
+                />
+              </SectionEditor>
+            </AccordionContent>
+          </AccordionItem>
+        )}
+
+        {/* Section 3: Brand & Character Identity */}
+        <AccordionItem value="section-3" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
               <Heart className="h-5 w-5 text-primary" />
@@ -203,7 +239,7 @@ export const CreatorProfile = ({
                 <h3 className="font-semibold">Brand & Character Identity</h3>
                 <p className="text-sm text-muted-foreground">Your brand personality and values</p>
               </div>
-              {completedSteps.includes(2) && (
+              {completedSteps.includes(3) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
                   Complete
                 </Badge>
@@ -212,23 +248,23 @@ export const CreatorProfile = ({
           </AccordionTrigger>
           <AccordionContent>
             <SectionEditor
-              sectionId={2}
+              sectionId={3}
               title="Brand & Character Identity"
               icon={<Heart className="h-5 w-5" />}
               description="Define your brand personality"
-              isComplete={completedSteps.includes(2)}
-              onSave={() => handleSectionSave(2)}
+              isComplete={completedSteps.includes(3)}
+              onSave={() => handleSectionSave(3)}
             >
               <Step2BrandIdentityForm
                 initialData={onboardingData.step2_brand_identity || {}}
-                onChange={(data) => handleSectionChange(2, data)}
+                onChange={(data) => handleSectionChange(3, data)}
               />
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 3: Amsterdam Story */}
-        <AccordionItem value="section-3" className="border-none">
+        {/* Section 4: Amsterdam Story */}
+        <AccordionItem value="section-4" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
               <MapPin className="h-5 w-5 text-primary" />
@@ -236,12 +272,12 @@ export const CreatorProfile = ({
                 <h3 className="font-semibold">Amsterdam Story</h3>
                 <p className="text-sm text-muted-foreground">Your connection to Amsterdam</p>
               </div>
-              {completedSteps.includes(3) && (
+              {completedSteps.includes(4) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
                   Complete
                 </Badge>
               )}
-              {isSectionLocked(3) && (
+              {isSectionLocked(4) && (
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
                   Locked
                 </Badge>

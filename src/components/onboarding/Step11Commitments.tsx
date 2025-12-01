@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step12CommitmentsForm } from "./sections/Step12CommitmentsForm";
+import { Step11CommitmentsForm } from "./sections/Step11CommitmentsForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { CheckSquare, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -70,7 +70,7 @@ export const Step12Commitments = ({ userId, onboardingData, onBack, onSaveSectio
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-8">
-        <Step12CommitmentsForm
+        <Step11CommitmentsForm
           initialData={formData}
           onChange={handleChange}
         />

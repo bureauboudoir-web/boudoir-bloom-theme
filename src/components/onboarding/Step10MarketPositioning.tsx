@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { Target, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step10MarketPositioningProps {
+interface Step11MarketPositioningProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step10MarketPositioningProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step10MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step10MarketPositioningProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step10_commitments || {});
+export const Step11MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step11MarketPositioningProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step10_market_positioning || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(10, formData);
+      await onSaveSection(11, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

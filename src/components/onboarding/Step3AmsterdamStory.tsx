@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { MapPin, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step3AmsterdamStoryProps {
+interface Step4AmsterdamStoryProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step3AmsterdamStoryProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step3AmsterdamStory = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step3AmsterdamStoryProps) => {
+export const Step4AmsterdamStory = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step4AmsterdamStoryProps) => {
   const [formData, setFormData] = useState(onboardingData?.step3_amsterdam_story || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(3, formData);
+      await onSaveSection(4, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

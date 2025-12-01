@@ -6,7 +6,7 @@ import { OnboardingData } from "@/hooks/useOnboarding";
 import { Hash, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step8SocialsPlatformsProps {
+interface Step9SocialsPlatformsProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step8SocialsPlatformsProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step8SocialsPlatforms = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step8SocialsPlatformsProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step8_content_preferences || {});
+export const Step9SocialsPlatforms = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9SocialsPlatformsProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step8_socials_platforms || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(8, formData);
+      await onSaveSection(9, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");
