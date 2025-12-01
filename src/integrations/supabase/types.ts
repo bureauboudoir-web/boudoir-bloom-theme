@@ -2179,23 +2179,29 @@ export type Database = {
         Row: {
           created_at: string | null
           creator_id: string
+          emotional_category: string | null
           file_type: string
           file_url: string
           id: string
+          voice_tool_sync_status: string | null
         }
         Insert: {
           created_at?: string | null
           creator_id: string
+          emotional_category?: string | null
           file_type: string
           file_url: string
           id?: string
+          voice_tool_sync_status?: string | null
         }
         Update: {
           created_at?: string | null
           creator_id?: string
+          emotional_category?: string | null
           file_type?: string
           file_url?: string
           id?: string
+          voice_tool_sync_status?: string | null
         }
         Relationships: []
       }

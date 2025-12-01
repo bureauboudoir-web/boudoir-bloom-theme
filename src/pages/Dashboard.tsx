@@ -80,6 +80,7 @@ import { MarketingDashboardContent } from "@/components/dashboard/MarketingDashb
 import { StudioDashboardContent } from "@/components/dashboard/StudioDashboardContent";
 import { ApiKeysManagement } from "@/components/admin/ApiKeysManagement";
 import { ContentGeneratorHub } from "@/components/creator/ContentGeneratorHub";
+import { VoiceTrainingWizard } from "@/components/creator/VoiceTrainingWizard";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -984,44 +985,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {activeTab === "voice-training" && isCreator && (
-              <div className="space-y-6">
-                <Card className="bg-card/50 backdrop-blur-sm border-primary/10">
-                  <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-                    <div>
-                      <h2 className="text-3xl font-bold font-serif tracking-tight">Voice Training</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Upload audio samples to train your AI voice</p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
-                        <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="font-semibold mb-2">Upload Audio Samples</h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Drag and drop your audio files here, or click to browse
-                        </p>
-                        <input
-                          type="file"
-                          accept="audio/*"
-                          multiple
-                          className="hidden"
-                          id="voice-upload"
-                        />
-                        <label htmlFor="voice-upload">
-                          <Button variant="outline" asChild>
-                            <span>Choose Files</span>
-                          </Button>
-                        </label>
-                      </div>
-                      <div className="flex justify-end">
-                        <Button>Submit for Training</Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+            {activeTab === 'voice-training' && <VoiceTrainingWizard />}
 
             {activeTab === "content-generator" && isCreator && (
               <ContentGeneratorHub userId={user?.id} onboardingData={onboardingData} setActiveTab={setActiveTab} />
