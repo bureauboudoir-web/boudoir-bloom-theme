@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step8SocialsForm } from "./sections/Step8SocialsForm";
+import { Step9ContentPreferencesForm } from "./sections/Step9ContentPreferencesForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { Camera, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface Step8ContentPreferencesProps {
+interface Step9ContentPreferencesProps {
   userId: string;
   onboardingData: OnboardingData | null;
   onNext: () => void;
@@ -14,14 +14,14 @@ interface Step8ContentPreferencesProps {
   onSaveSection: (sectionId: number, sectionData: any) => Promise<any>;
 }
 
-export const Step8ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step8ContentPreferencesProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step8_content_preferences || {});
+export const Step9ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9ContentPreferencesProps) => {
+  const [formData, setFormData] = useState(onboardingData?.step9_content_preferences || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(8, { step8_content_preferences: formData });
+      await onSaveSection(9, { step9_content_preferences: formData });
       toast.success("Content preferences saved");
     } catch (error) {
       toast.error("Failed to save content preferences");
@@ -41,13 +41,13 @@ export const Step8ContentPreferences = ({ userId, onboardingData, onNext, onBack
         <div className="flex items-center gap-3">
           <Camera className="h-6 w-6 text-primary" />
           <div>
-            <CardTitle>Step 8: Content Preferences</CardTitle>
+            <CardTitle>Step 9: Content Preferences</CardTitle>
             <CardDescription>Your content creation style and preferences</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step8SocialsForm
+        <Step9ContentPreferencesForm
           initialData={formData}
           onChange={setFormData}
         />

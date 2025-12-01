@@ -12,9 +12,10 @@ import { Step4Persona } from "@/components/onboarding/Step4Persona";
 import { Step5Boundaries } from "@/components/onboarding/Step5Boundaries";
 import { Step6Pricing } from "@/components/onboarding/Step6Pricing";
 import { Step7Messaging } from "@/components/onboarding/Step7Messaging";
-import { Step8ContentPreferences } from "@/components/onboarding/Step8ContentPreferences";
-import { Step9MarketPositioning } from "@/components/onboarding/Step9MarketPositioning";
-import { Step10Commitments } from "@/components/onboarding/Step10Commitments";
+import { Step8SocialsPlatforms } from "@/components/onboarding/Step8SocialsPlatforms";
+import { Step9ContentPreferences } from "@/components/onboarding/Step9ContentPreferences";
+import { Step10MarketPositioning } from "@/components/onboarding/Step10MarketPositioning";
+import { Step11Commitments } from "@/components/onboarding/Step11Commitments";
 import { OnboardingStageGate } from "@/components/onboarding/OnboardingStageGate";
 import WeeklyCommitments from "@/components/dashboard/WeeklyCommitments";
 import StudioShoots from "@/components/dashboard/StudioShoots";
@@ -344,7 +345,7 @@ const Dashboard = () => {
           );
         case 8:
           return (
-            <Step8ContentPreferences
+            <Step8SocialsPlatforms
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(9)}
@@ -354,7 +355,7 @@ const Dashboard = () => {
           );
         case 9:
           return (
-            <Step9MarketPositioning
+            <Step9ContentPreferences
               userId={user?.id || ''}
               onboardingData={onboardingData}
               onNext={() => setCurrentStep(10)}
@@ -364,10 +365,20 @@ const Dashboard = () => {
           );
         case 10:
           return (
-            <Step10Commitments
+            <Step10MarketPositioning
               userId={user?.id || ''}
               onboardingData={onboardingData}
+              onNext={() => setCurrentStep(11)}
               onBack={() => setCurrentStep(9)}
+              onSaveSection={saveSection}
+            />
+          );
+        case 11:
+          return (
+            <Step11Commitments
+              userId={user?.id || ''}
+              onboardingData={onboardingData}
+              onBack={() => setCurrentStep(10)}
               onSaveSection={saveSection}
             />
           );
