@@ -1073,7 +1073,7 @@ const Dashboard = () => {
             )}
 
             {activeTab === "content-generator" && isCreator && (
-              <ContentGeneratorHub userId={user?.id} onboardingData={onboardingData} />
+              <ContentGeneratorHub userId={user?.id} onboardingData={onboardingData} setActiveTab={setActiveTab} />
             )}
           </div>
         </div>
