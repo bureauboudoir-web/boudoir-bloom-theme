@@ -109,7 +109,7 @@ const Dashboard = () => {
     if (accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted) {
       return 2; // Only show pre-meeting steps
     }
-    return 10; // Show all steps
+    return 16; // Show all steps
   };
   
   const visibleTotalSteps = getVisibleTotalSteps();
