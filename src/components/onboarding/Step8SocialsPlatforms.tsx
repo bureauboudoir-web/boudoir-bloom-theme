@@ -15,16 +15,16 @@ interface Step8SocialsPlatformsProps {
 }
 
 export const Step8SocialsPlatforms = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step8SocialsPlatformsProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step8_socials_platforms || {});
+  const [formData, setFormData] = useState(onboardingData?.step8_content_preferences || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(8, { step8_socials_platforms: formData });
-      toast.success("Socials & platforms saved");
+      await onSaveSection(8, { step8_content_preferences: formData });
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save socials & platforms");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

@@ -15,16 +15,16 @@ interface Step9ContentPreferencesProps {
 }
 
 export const Step9ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9ContentPreferencesProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step9_content_preferences || {});
+  const [formData, setFormData] = useState(onboardingData?.step9_market_positioning || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(9, { step9_content_preferences: formData });
-      toast.success("Content preferences saved");
+      await onSaveSection(9, { step9_market_positioning: formData });
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save content preferences");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

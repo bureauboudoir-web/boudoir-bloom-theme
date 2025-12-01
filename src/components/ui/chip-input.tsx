@@ -78,7 +78,8 @@ export const ChipInput: React.FC<ChipInputProps> = ({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm",
                 "bg-primary/10 text-primary border border-primary/20",
-                "animate-in fade-in scale-in duration-200"
+                "animate-in fade-in scale-in duration-200",
+                "transition-all hover:scale-[1.02] hover:bg-primary/15"
               )}
             >
               {icon && <span className="text-xs">{icon}</span>}

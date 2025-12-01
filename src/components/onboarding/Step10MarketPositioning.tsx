@@ -15,16 +15,16 @@ interface Step10MarketPositioningProps {
 }
 
 export const Step10MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step10MarketPositioningProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step10_market_positioning || {});
+  const [formData, setFormData] = useState(onboardingData?.step10_commitments || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(10, { step10_market_positioning: formData });
-      toast.success("Market positioning saved");
+      await onSaveSection(10, { step10_commitments: formData });
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save market positioning");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }
