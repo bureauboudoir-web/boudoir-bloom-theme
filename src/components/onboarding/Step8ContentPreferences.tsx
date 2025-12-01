@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step8ContentPreferencesForm } from "./sections/Step8ContentPreferencesForm";
+import { Step8SocialsForm } from "./sections/Step8SocialsForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { Camera, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ export const Step8ContentPreferences = ({ userId, onboardingData, onNext, onBack
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step8ContentPreferencesForm
+        <Step8SocialsForm
           initialData={formData}
           onChange={setFormData}
         />

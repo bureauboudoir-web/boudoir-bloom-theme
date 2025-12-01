@@ -1,103 +1,124 @@
 // Comprehensive BB Creator Onboarding Types - 10 Steps
 
-// Step 1 - Private Information (Admin/Manager only)
+// Step 1 - Personal Information (PRIVATE - Admin/Manager only)
 export interface OnboardingStep1 {
-  real_name?: string;
-  date_of_birth?: string;
+  full_name?: string;
+  personal_email?: string;
+  personal_phone?: string;
+  home_address?: string;
+  dob?: string;
   nationality?: string;
-  full_address?: string;
-  phone_number?: string;
-  emergency_contact?: string;
-  emergency_phone?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  legal_id_verified?: boolean;
 }
 
 // Step 2 - Brand & Character Identity
 export interface OnboardingStep2 {
   stage_name?: string;
-  character_phone?: string;
   character_email?: string;
-  bio_short?: string;
-  persona_keywords?: string[];
-  brand_color_palette?: string[];
-  banner_style_option?: string;
+  character_phone?: string;
+  brand_color_palette?: string[]; // 3-color preset
+  banner_style?: string;
+  personality_keywords?: string[];
+  character_vibe_summary?: string;
 }
 
-// Step 3 - Amsterdam Backstory
+// Step 3 - Physical Description
 export interface OnboardingStep3 {
-  amsterdam_story?: string;
-  how_you_arrived?: string;
-  personal_motivation?: string;
-  connection_to_RLD?: string;
+  hair?: string;
+  eyes?: string;
+  body_type?: string;
+  skin_tone?: string;
+  tattoos?: string;
+  distinctive_features?: string;
+  aesthetic_style?: string;
 }
 
-// Step 4 - Persona
+// Step 4 - Amsterdam Story / Origin Story
 export interface OnboardingStep4 {
-  tone_of_voice?: string;
-  keywords?: string;
-  personality_traits?: string;
-  character_rules?: string;
+  origin_story_long?: string;
+  cultural_background?: string;
+  persona_inspiration?: string;
+  amsterdam_story_summary?: string;
 }
 
 // Step 5 - Boundaries & Comfort Levels
 export interface OnboardingStep5 {
-  hard_limits?: string;
-  soft_limits?: string;
+  hard_limits?: string[];
+  soft_limits?: string[];
+  do_not_discuss?: string[];
   confidence_level?: string;
-  do_not_discuss_topics?: string[];
+  safety_notes?: string;
 }
 
-// Step 6 - Pricing Structure
+// Step 6 - Services & Pricing Structure
 export interface OnboardingStep6 {
-  menu_items?: string[];
-  top_3_selling_items?: string[];
-  PPV_price_range?: {
-    min?: number;
-    max?: number;
-  };
-  bundle_price_range?: {
-    min?: number;
-    max?: number;
-  };
+  expected_subscription_price?: number;
+  min_ppv_price?: number;
+  max_ppv_price?: number;
+  preferred_ppv_themes?: string[];
+  shoot_availability?: string;
+  live_platform_preference?: string;
+  livestream_comfort_level?: string;
 }
 
-// Step 7 - Scripts & Messaging
+// Step 7 - Messaging Preferences (Simplified)
 export interface OnboardingStep7 {
-  intro_message?: string;
-  welcome_message?: string;
-  fan_reactivation_styles?: string[];
-  overall_message_style?: string;
+  messaging_tone?: string;
+  emoji_preference?: 'low' | 'medium' | 'high';
+  language_preference?: string;
+  forbidden_phrases?: string[];
 }
 
-// Step 8 - Content Preferences
+// Step 8 - Socials & Platforms
 export interface OnboardingStep8 {
-  preferred_platforms?: string[];
-  content_style_keywords?: string;
+  // Social links
+  instagram?: string;
+  tiktok?: string;
+  twitter?: string;
+  snapchat?: string;
+  reddit?: string;
+  onlyfans?: string;
+  fansly?: string;
+  website_linktree?: string;
+  other_links?: string[];
+  // Platform preferences
+  posting_platforms?: string[];
+  live_platforms?: string[];
   posting_frequency?: string;
   best_posting_times?: string[];
-  enjoy_style?: string;
-  preferred_video_styles?: string[];
-  preferred_photo_styles?: string[];
 }
 
-// Step 9 - Market Positioning & Fan Expectations
+// Step 9 - Content Preferences & Positioning (Merged)
 export interface OnboardingStep9 {
-  niche?: string;
+  // Content Style
+  photo_style?: string;
+  video_style?: string;
+  lighting_preferences?: string;
+  aesthetic_themes?: string[];
+  // Market Positioning
+  niche_description?: string;
   target_audience?: string;
-  fan_expectation_keywords?: string;
+  fan_expectation_keywords?: string[];
   competitive_edge?: string;
+  // Lifestyle & Authentic Interests
+  daily_routine_highlights?: string;
+  lifestyle_interests?: string[];
+  natural_environments?: string[];
+  content_they_love_creating?: string;
+  content_they_never_want_to_create?: string;
+  // Keywords
+  style_keywords?: string[];
+  personality_keywords?: string[];
+  environment_keywords?: string[];
 }
 
-// Step 10 - Requirements & Commitments
+// Step 10 - Commitments & Final Sign-Off
 export interface OnboardingStep10 {
-  understand_split?: boolean;
-  posting_commitment?: boolean;
-  response_commitment?: boolean;
-  guidelines_commitment?: boolean;
-  boundaries_acknowledged?: boolean;
-  content_rules_acknowledged?: boolean;
-  shoot_attendance_commitment?: boolean;
-  persona_commitment?: boolean;
-  final_agreement_confirmed?: boolean;
+  commitments?: Record<string, boolean>;
+  final_confirmation?: boolean;
+  digital_signature?: string;
 }
 
 export interface ProfileMetadata {
