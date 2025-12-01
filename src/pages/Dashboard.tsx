@@ -78,6 +78,7 @@ import { Wrench, ArrowRight } from "lucide-react";
 import { ChatDashboardContent } from "@/components/dashboard/ChatDashboardContent";
 import { MarketingDashboardContent } from "@/components/dashboard/MarketingDashboardContent";
 import { StudioDashboardContent } from "@/components/dashboard/StudioDashboardContent";
+import { ApiKeysManagement } from "@/components/admin/ApiKeysManagement";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -97,7 +98,7 @@ const Dashboard = () => {
     pendingActivations,
     totalNotifications: adminTotalNotifications 
   } = useAdminNotifications();
-  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "onboarding" | "account" | "settings" | "meetings" | "upload" | "commitments" | "shoots" | "invoices" | "contract" | "support" | "library" | "admin" | "manager" | "creators" | "users" | "chat" | "marketing" | "studio" | "tools" | "voice-training" | "content-preferences" | "api-keys">("overview");
   const [adminSubTab, setAdminSubTab] = useState<string>("overview");
   const [managerSubTab, setManagerSubTab] = useState<string>("overview");
   const [currentStep, setCurrentStep] = useState(1);
@@ -706,6 +707,10 @@ const Dashboard = () => {
 
             {activeTab === "users" && (isAdmin || isSuperAdmin || isManagerOnly) && (
               <UsersManagement />
+            )}
+
+            {activeTab === "api-keys" && (isAdmin || isSuperAdmin) && (
+              <ApiKeysManagement />
             )}
 
 
