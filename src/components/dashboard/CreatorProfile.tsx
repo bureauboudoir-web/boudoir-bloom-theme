@@ -538,39 +538,6 @@ export const CreatorProfile = ({
             </SectionEditor>
           </AccordionContent>
         </AccordionItem>
-
-        {/* Section 11: Requirements & Commitments (Internal only) */}
-        <AccordionItem value="section-11" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-3 w-full">
-              <CheckSquare className="h-5 w-5 text-primary" />
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold">Requirements & Commitments</h3>
-                <p className="text-sm text-muted-foreground">Final agreements (Internal only)</p>
-              </div>
-              {completedSteps.includes(11) && (
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                  Complete
-                </Badge>
-              )}
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <SectionEditor
-              sectionId={11}
-              title="Requirements & Commitments"
-              icon={<CheckSquare className="h-5 w-5" />}
-              description="Final agreements (Internal only)"
-                isComplete={completedSteps.includes(11)}
-                onSave={() => handleSectionSave(11)}
-              >
-                <Step11CommitmentsForm
-                  initialData={onboardingData.step11_commitments || {}}
-                  onChange={(data) => handleSectionChange(11, data)}
-                />
-            </SectionEditor>
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
     </div>
   );
