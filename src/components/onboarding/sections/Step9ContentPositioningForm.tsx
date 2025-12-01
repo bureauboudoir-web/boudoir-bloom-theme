@@ -30,8 +30,29 @@ interface Step9ContentPositioningFormProps {
   onChange: (data: Step9ContentPositioningData) => void;
 }
 
+// Helper function to normalize values to arrays
+const normalizeToArray = (value: any): string[] => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    return value.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
 export const Step9ContentPositioningForm = ({ initialData, onChange }: Step9ContentPositioningFormProps) => {
-  const [formData, setFormData] = useState<Step9ContentPositioningData>(initialData || {});
+  const [formData, setFormData] = useState<Step9ContentPositioningData>(() => {
+    const data = initialData || {};
+    return {
+      ...data,
+      aesthetic_themes: normalizeToArray(data.aesthetic_themes),
+      fan_expectation_keywords: normalizeToArray(data.fan_expectation_keywords),
+      lifestyle_interests: normalizeToArray(data.lifestyle_interests),
+      natural_environments: normalizeToArray(data.natural_environments),
+      style_keywords: normalizeToArray(data.style_keywords),
+      personality_keywords: normalizeToArray(data.personality_keywords),
+      environment_keywords: normalizeToArray(data.environment_keywords),
+    };
+  });
   
   const [aestheticInput, setAestheticInput] = useState("");
   const [fanKeywordInput, setFanKeywordInput] = useState("");
@@ -51,14 +72,16 @@ export const Step9ContentPositioningForm = ({ initialData, onChange }: Step9Cont
 
   const addToArray = (field: keyof Step9ContentPositioningData, value: string, clearInput: () => void) => {
     if (value.trim()) {
-      const array = (formData[field] as string[]) || [];
+      const existingValue = formData[field];
+      const array = Array.isArray(existingValue) ? existingValue : [];
       handleChange(field, [...array, value.trim()]);
       clearInput();
     }
   };
 
   const removeFromArray = (field: keyof Step9ContentPositioningData, index: number) => {
-    const array = (formData[field] as string[]) || [];
+    const existingValue = formData[field];
+    const array = Array.isArray(existingValue) ? existingValue : [];
     handleChange(field, array.filter((_, i) => i !== index));
   };
 
