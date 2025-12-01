@@ -1314,6 +1314,7 @@ export type Database = {
           step1_private_info: Json | null
           step10_commitments: Json | null
           step11_commitments: Json | null
+          step2_body_info: Json | null
           step2_brand_identity: Json | null
           step3_amsterdam_story: Json | null
           step4_persona: Json | null
@@ -1417,6 +1418,7 @@ export type Database = {
           step1_private_info?: Json | null
           step10_commitments?: Json | null
           step11_commitments?: Json | null
+          step2_body_info?: Json | null
           step2_brand_identity?: Json | null
           step3_amsterdam_story?: Json | null
           step4_persona?: Json | null
@@ -1520,6 +1522,7 @@ export type Database = {
           step1_private_info?: Json | null
           step10_commitments?: Json | null
           step11_commitments?: Json | null
+          step2_body_info?: Json | null
           step2_brand_identity?: Json | null
           step3_amsterdam_story?: Json | null
           step4_persona?: Json | null
