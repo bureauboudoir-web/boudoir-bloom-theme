@@ -20,7 +20,9 @@ import { Step5BoundariesForm } from "@/components/onboarding/sections/Step5Bound
 import { Step6PricingForm } from "@/components/onboarding/sections/Step6PricingForm";
 import { Step7MessagingForm } from "@/components/onboarding/sections/Step7MessagingForm";
 import { Step8SocialsForm } from "@/components/onboarding/sections/Step8SocialsForm";
-import { Step9ContentPositioningForm } from "@/components/onboarding/sections/Step9ContentPositioningForm";
+import { Step9ContentPreferencesForm } from "@/components/onboarding/sections/Step9ContentPreferencesForm";
+import { Step10MarketPositioningForm } from "@/components/onboarding/sections/Step10MarketPositioningForm";
+import { Step11CommitmentsForm } from "@/components/onboarding/sections/Step11CommitmentsForm";
 
 interface CreatorProfileProps {
   onboardingData: OnboardingData | null;
@@ -54,7 +56,7 @@ export const CreatorProfile = ({
   };
 
   const completedSteps = onboardingData?.completed_steps || [];
-  const totalSteps = 10;
+  const totalSteps = 11;
   const completionPercentage = Math.round((completedSteps.length / totalSteps) * 100);
 
   if (!onboardingData) {
@@ -417,14 +419,14 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 9: Content & Positioning */}
+        {/* Section 9: Content Preferences */}
         <AccordionItem value="section-9" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
               <Target className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Content & Positioning</h3>
-                <p className="text-sm text-muted-foreground">Lifestyle and content positioning</p>
+                <h3 className="font-semibold">Content Preferences</h3>
+                <p className="text-sm text-muted-foreground">Posting schedule and content styles</p>
               </div>
               {completedSteps.includes(9) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -441,14 +443,14 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={9}
-              title="Content & Positioning"
+              title="Content Preferences"
               icon={<Target className="h-5 w-5" />}
-              description="Your content positioning and lifestyle"
+              description="Your content preferences"
               isLocked={isSectionLocked(9)}
               isComplete={completedSteps.includes(9)}
               onSave={() => handleSectionSave(9)}
             >
-              <Step9ContentPositioningForm
+              <Step9ContentPreferencesForm
                 initialData={onboardingData.step9_market_positioning || {}}
                 onChange={(data) => handleSectionChange(9, data)}
               />
@@ -456,7 +458,79 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 10 (Commitments) is NOT displayed in Creator Profile per spec */}
+        {/* Section 10: Market Positioning */}
+        <AccordionItem value="section-10" className="border-none">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-3 w-full">
+              <Target className="h-5 w-5 text-primary" />
+              <div className="flex-1 text-left">
+                <h3 className="font-semibold">Market Positioning</h3>
+                <p className="text-sm text-muted-foreground">Your niche and target audience</p>
+              </div>
+              {completedSteps.includes(10) && (
+                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                  Complete
+                </Badge>
+              )}
+              {isSectionLocked(10) && (
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                  Locked
+                </Badge>
+              )}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <SectionEditor
+              sectionId={10}
+              title="Market Positioning"
+              icon={<Target className="h-5 w-5" />}
+              description="Define your market niche"
+              isLocked={isSectionLocked(10)}
+              isComplete={completedSteps.includes(10)}
+              onSave={() => handleSectionSave(10)}
+            >
+              <Step10MarketPositioningForm
+                initialData={onboardingData.step10_commitments || {}}
+                onChange={(data) => handleSectionChange(10, data)}
+              />
+            </SectionEditor>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Section 11: Requirements & Commitments (Admin-only) */}
+        {canViewPrivateInfo && (
+          <AccordionItem value="section-11" className="border-none">
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex items-center gap-3 w-full">
+                <Target className="h-5 w-5 text-primary" />
+                <div className="flex-1 text-left">
+                  <h3 className="font-semibold">Requirements & Commitments (Admin-only)</h3>
+                  <p className="text-sm text-muted-foreground">Final agreements</p>
+                </div>
+                {completedSteps.includes(11) && (
+                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                    Complete
+                  </Badge>
+                )}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <SectionEditor
+                sectionId={11}
+                title="Requirements & Commitments"
+                icon={<Target className="h-5 w-5" />}
+                description="Final agreements"
+                isComplete={completedSteps.includes(11)}
+                onSave={() => handleSectionSave(11)}
+              >
+                <Step11CommitmentsForm
+                  initialData={onboardingData.step11_commitments || {}}
+                  onChange={(data) => handleSectionChange(11, data)}
+                />
+              </SectionEditor>
+            </AccordionContent>
+          </AccordionItem>
+        )}
       </Accordion>
     </div>
   );
