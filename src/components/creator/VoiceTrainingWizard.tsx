@@ -68,12 +68,28 @@ export const VoiceTrainingWizard = () => {
   const [submitting, setSubmitting] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [qualityScores, setQualityScores] = useState<Record<string, { clarity: number; emotion: number; quality: number }>>({});
+  const [recording, setRecording] = useState(false);
+  const [recordingCategory, setRecordingCategory] = useState<string | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [recordingTime, setRecordingTime] = useState(0);
 
   useEffect(() => {
     if (user) {
       fetchSamples();
     }
   }, [user]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (recording) {
+      interval = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [recording]);
 
   const fetchSamples = async () => {
     if (!user) return;
@@ -91,6 +107,81 @@ export const VoiceTrainingWizard = () => {
     }
 
     setSamples(data || []);
+  };
+
+  const startRecording = async (category: string) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        } 
+      });
+      
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm'
+      });
+      
+      const chunks: Blob[] = [];
+      
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+      
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        setRecordedBlob(blob);
+        setAudioChunks([]);
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      setMediaRecorder(recorder);
+      setRecordingCategory(category);
+      setRecordingTime(0);
+      recorder.start();
+      setRecording(true);
+      
+      toast.success('Recording started');
+    } catch (error: any) {
+      console.error('Recording error:', error);
+      toast.error('Failed to start recording. Please check microphone permissions.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && recording) {
+      mediaRecorder.stop();
+      setRecording(false);
+      setMediaRecorder(null);
+    }
+  };
+
+  const saveRecording = async () => {
+    if (!recordedBlob || !recordingCategory || !user) return;
+
+    const file = new File([recordedBlob], `${recordingCategory}_${Date.now()}.webm`, {
+      type: 'audio/webm'
+    });
+
+    await handleFileUpload(file, recordingCategory);
+    setRecordedBlob(null);
+    setRecordingCategory(null);
+    setRecordingTime(0);
+  };
+
+  const discardRecording = () => {
+    setRecordedBlob(null);
+    setRecordingCategory(null);
+    setRecordingTime(0);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleFileUpload = async (file: File, category: string) => {
@@ -203,9 +294,48 @@ export const VoiceTrainingWizard = () => {
   const recommendedCount = 6;
   const minimumCount = 3;
 
+  // Timeline component
+  const Timeline = () => (
+    <Card className="mb-6">
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between">
+          {[
+            { num: 1, label: 'Start', value: 'intro' },
+            { num: 2, label: 'Record Samples', value: 'recording' },
+            { num: 3, label: 'Review & Train', value: 'review' }
+          ].map((item, idx) => (
+            <div key={item.value} className="flex items-center flex-1">
+              <div className="flex flex-col items-center flex-1">
+                <div className={`
+                  w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm
+                  ${step === item.value ? 'bg-primary text-primary-foreground' : 
+                    (idx === 0 || (idx === 1 && (step === 'recording' || step === 'review')) || idx === 2 && step === 'review') 
+                    ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}
+                `}>
+                  {idx === 0 || (idx === 1 && (step === 'recording' || step === 'review')) || idx === 2 && step === 'review' 
+                    ? <CheckCircle2 className="w-5 h-5" /> : item.num}
+                </div>
+                <span className={`text-xs mt-2 font-medium ${step === item.value ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {item.label}
+                </span>
+              </div>
+              {idx < 2 && (
+                <div className={`h-0.5 flex-1 mx-2 ${
+                  (idx === 0 && (step === 'recording' || step === 'review')) || (idx === 1 && step === 'review')
+                    ? 'bg-primary' : 'bg-muted'
+                }`} />
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   if (step === 'intro') {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
+        <Timeline />
         <Card>
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
@@ -280,6 +410,7 @@ export const VoiceTrainingWizard = () => {
   if (step === 'review') {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
+        <Timeline />
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Review Your Samples</CardTitle>
@@ -415,6 +546,8 @@ export const VoiceTrainingWizard = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <Timeline />
+      
       {/* Progress Header */}
       <Card>
         <CardContent className="pt-6">
@@ -468,7 +601,30 @@ export const VoiceTrainingWizard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                {sample && scores ? (
+                {recordedBlob && recordingCategory === category.value ? (
+                  <div className="space-y-3">
+                    <audio controls className="w-full" src={URL.createObjectURL(recordedBlob)} />
+                    <div className="flex gap-2">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="flex-1"
+                        onClick={saveRecording}
+                      >
+                        <CheckCircle2 className="w-4 h-4 mr-2" />
+                        Save
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={discardRecording}
+                      >
+                        Discard
+                      </Button>
+                    </div>
+                  </div>
+                ) : sample && scores ? (
                   <div className="space-y-3">
                     <div className="space-y-2 text-xs">
                       <div className="flex items-center justify-between">
@@ -486,11 +642,80 @@ export const VoiceTrainingWizard = () => {
                         </div>
                       </div>
                     </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        disabled={isUploading}
+                        onClick={() => startRecording(category.value)}
+                      >
+                        <Mic className="w-4 h-4 mr-2" />
+                        Re-record
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        disabled={isUploading}
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'audio/*';
+                          input.onchange = (e) => {
+                            const file = (e.target as HTMLInputElement).files?.[0];
+                            if (file) handleFileUpload(file, category.value);
+                          };
+                          input.click();
+                        }}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Replace
+                      </Button>
+                    </div>
+                  </div>
+                ) : recording && recordingCategory === category.value ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center gap-3 py-4">
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                      <span className="text-lg font-mono font-semibold">{formatTime(recordingTime)}</span>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full"
+                      onClick={stopRecording}
+                    >
+                      Stop Recording
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="w-full"
+                      disabled={isUploading || recording}
+                      onClick={() => startRecording(category.value)}
+                    >
+                      {isUploading ? (
+                        <>
+                          <Clock className="w-4 h-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Mic className="w-4 h-4 mr-2" />
+                          Record Sample
+                        </>
+                      )}
+                    </Button>
+                    <div className="text-center text-xs text-muted-foreground">OR</div>
                     <Button
                       variant="outline"
                       size="sm"
                       className="w-full"
-                      disabled={isUploading}
+                      disabled={isUploading || recording}
                       onClick={() => {
                         const input = document.createElement('input');
                         input.type = 'file';
@@ -503,38 +728,9 @@ export const VoiceTrainingWizard = () => {
                       }}
                     >
                       <Upload className="w-4 h-4 mr-2" />
-                      Replace Sample
+                      Upload Audio File
                     </Button>
                   </div>
-                ) : (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="w-full"
-                    disabled={isUploading}
-                    onClick={() => {
-                      const input = document.createElement('input');
-                      input.type = 'file';
-                      input.accept = 'audio/*';
-                      input.onchange = (e) => {
-                        const file = (e.target as HTMLInputElement).files?.[0];
-                        if (file) handleFileUpload(file, category.value);
-                      };
-                      input.click();
-                    }}
-                  >
-                    {isUploading ? (
-                      <>
-                        <Clock className="w-4 h-4 mr-2 animate-spin" />
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload Audio File
-                      </>
-                    )}
-                  </Button>
                 )}
               </CardContent>
             </Card>
