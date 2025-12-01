@@ -38,9 +38,9 @@ serve(async (req) => {
       6: 'step5_boundaries',
       7: 'step6_pricing',
       8: 'step7_messaging',
-      9: 'step8_socials_platforms',
-      10: 'step9_content_preferences',
-      11: 'step10_market_positioning',
+      9: 'step8_socials',
+      10: 'step8_content_preferences',
+      11: 'step9_market_positioning',
       12: 'step11_commitments',
     };
 

@@ -1322,6 +1322,7 @@ export type Database = {
           step6_pricing: Json | null
           step7_messaging: Json | null
           step8_content_preferences: Json | null
+          step8_socials: Json | null
           step9_market_positioning: Json | null
           updated_at: string | null
           user_id: string
@@ -1426,6 +1427,7 @@ export type Database = {
           step6_pricing?: Json | null
           step7_messaging?: Json | null
           step8_content_preferences?: Json | null
+          step8_socials?: Json | null
           step9_market_positioning?: Json | null
           updated_at?: string | null
           user_id: string
@@ -1530,6 +1532,7 @@ export type Database = {
           step6_pricing?: Json | null
           step7_messaging?: Json | null
           step8_content_preferences?: Json | null
+          step8_socials?: Json | null
           step9_market_positioning?: Json | null
           updated_at?: string | null
           user_id?: string

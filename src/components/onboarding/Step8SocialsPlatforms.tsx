@@ -15,7 +15,7 @@ interface Step9SocialsPlatformsProps {
 }
 
 export const Step9SocialsPlatforms = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step9SocialsPlatformsProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step8_socials_platforms || {});
+  const [formData, setFormData] = useState(onboardingData?.step8_socials || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
