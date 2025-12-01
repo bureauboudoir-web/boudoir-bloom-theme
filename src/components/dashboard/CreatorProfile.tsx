@@ -14,8 +14,8 @@ import { SectionProgressRing } from "@/components/onboarding/SectionProgressRing
 import { useUserRole } from "@/hooks/useUserRole";
 import { Step1PrivateInfoForm } from "@/components/onboarding/sections/Step1PrivateInfoForm";
 import { Step2BrandIdentityForm } from "@/components/onboarding/sections/Step2BrandIdentityForm";
-import { Step3PhysicalDescriptionForm } from "@/components/onboarding/sections/Step3PhysicalDescriptionForm";
-import { Step4AmsterdamStoryForm } from "@/components/onboarding/sections/Step4AmsterdamStoryForm";
+import { Step3AmsterdamStoryForm } from "@/components/onboarding/sections/Step3AmsterdamStoryForm";
+import { Step4PersonaForm } from "@/components/onboarding/sections/Step4PersonaForm";
 import { Step5BoundariesForm } from "@/components/onboarding/sections/Step5BoundariesForm";
 import { Step6PricingForm } from "@/components/onboarding/sections/Step6PricingForm";
 import { Step7MessagingForm } from "@/components/onboarding/sections/Step7MessagingForm";
@@ -183,14 +183,14 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 3: Physical Description */}
+        {/* Section 3: Amsterdam Story */}
         <AccordionItem value="section-3" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <User className="h-5 w-5 text-primary" />
+              <MapPin className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Physical Description</h3>
-                <p className="text-sm text-muted-foreground">Your physical appearance</p>
+                <h3 className="font-semibold">Amsterdam Story</h3>
+                <p className="text-sm text-muted-foreground">Your connection to Amsterdam</p>
               </div>
               {completedSteps.includes(3) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -207,14 +207,14 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={3}
-              title="Physical Description"
-              icon={<User className="h-5 w-5" />}
-              description="Describe your physical characteristics"
+              title="Amsterdam Story"
+              icon={<MapPin className="h-5 w-5" />}
+              description="Share your Amsterdam connection"
               isLocked={isSectionLocked(3)}
               isComplete={completedSteps.includes(3)}
               onSave={() => handleSectionSave(3)}
             >
-              <Step3PhysicalDescriptionForm
+              <Step3AmsterdamStoryForm
                 initialData={onboardingData.step3_amsterdam_story || {}}
                 onChange={(data) => handleSectionChange(3, data)}
               />
@@ -222,14 +222,14 @@ export const CreatorProfile = ({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Section 4: Amsterdam Story */}
+        {/* Section 4: Persona & Character */}
         <AccordionItem value="section-4" className="border-none">
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-3 w-full">
-              <MapPin className="h-5 w-5 text-primary" />
+              <User className="h-5 w-5 text-primary" />
               <div className="flex-1 text-left">
-                <h3 className="font-semibold">Amsterdam Story</h3>
-                <p className="text-sm text-muted-foreground">Your connection to Amsterdam</p>
+                <h3 className="font-semibold">Persona & Character</h3>
+                <p className="text-sm text-muted-foreground">Character voice, personality & physical traits</p>
               </div>
               {completedSteps.includes(4) && (
                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -246,14 +246,14 @@ export const CreatorProfile = ({
           <AccordionContent>
             <SectionEditor
               sectionId={4}
-              title="Amsterdam Story"
-              icon={<MapPin className="h-5 w-5" />}
-              description="Share your Amsterdam connection"
+              title="Persona & Character"
+              icon={<User className="h-5 w-5" />}
+              description="Define your character's voice and appearance"
               isLocked={isSectionLocked(4)}
               isComplete={completedSteps.includes(4)}
               onSave={() => handleSectionSave(4)}
             >
-              <Step4AmsterdamStoryForm
+              <Step4PersonaForm
                 initialData={onboardingData.step4_persona || {}}
                 onChange={(data) => handleSectionChange(4, data)}
               />
