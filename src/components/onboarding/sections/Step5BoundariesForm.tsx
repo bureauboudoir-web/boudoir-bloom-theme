@@ -99,7 +99,7 @@ export const Step5BoundariesForm = ({ initialData, onChange }: Step5BoundariesFo
           Do Not Discuss Topics
         </Label>
         <ChipInput
-          value={formData.do_not_discuss_topics || []}
+          value={Array.isArray(formData.do_not_discuss_topics) ? formData.do_not_discuss_topics : []}
           onChange={(value) => handleChange('do_not_discuss_topics', value)}
           placeholder="Add topic to avoid (e.g., politics, religion, personal life)"
           helperText="Topics you prefer not to discuss with fans"

@@ -14,27 +14,29 @@ interface ChipInputProps {
 }
 
 export const ChipInput: React.FC<ChipInputProps> = ({
-  value = [],
+  value,
   onChange,
   placeholder = "Add item...",
   helperText,
   maxItems,
   icon,
 }) => {
+  // CRITICAL FIX: Ensure value is always an array
+  const safeValue = Array.isArray(value) ? value : [];
   const [input, setInput] = React.useState("");
 
   const addItem = () => {
     const trimmed = input.trim();
-    if (trimmed && !value.includes(trimmed)) {
-      if (!maxItems || value.length < maxItems) {
-        onChange([...value, trimmed]);
+    if (trimmed && !safeValue.includes(trimmed)) {
+      if (!maxItems || safeValue.length < maxItems) {
+        onChange([...safeValue, trimmed]);
         setInput("");
       }
     }
   };
 
   const removeItem = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
+    onChange(safeValue.filter((_, i) => i !== index));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -44,7 +46,7 @@ export const ChipInput: React.FC<ChipInputProps> = ({
     }
   };
 
-  const canAdd = !maxItems || value.length < maxItems;
+  const canAdd = !maxItems || safeValue.length < maxItems;
 
   return (
     <div className="w-full space-y-3">
@@ -68,9 +70,9 @@ export const ChipInput: React.FC<ChipInputProps> = ({
         </Button>
       </div>
 
-      {value.length > 0 && (
+      {safeValue.length > 0 && (
         <div className="flex flex-wrap gap-2 animate-in fade-in duration-200">
-          {value.map((item, index) => (
+          {safeValue.map((item, index) => (
             <div
               key={index}
               className={cn(
@@ -96,7 +98,7 @@ export const ChipInput: React.FC<ChipInputProps> = ({
       {helperText && (
         <p className="text-xs text-muted-foreground">
           {helperText}
-          {maxItems && ` (${value.length}/${maxItems})`}
+          {maxItems && ` (${safeValue.length}/${maxItems})`}
         </p>
       )}
     </div>

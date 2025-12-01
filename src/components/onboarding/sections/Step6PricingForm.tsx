@@ -42,7 +42,7 @@ export const Step6PricingForm = ({ initialData, onChange }: Step6PricingFormProp
           Menu Items
         </Label>
         <ChipInput
-          value={formData.menu_items || []}
+          value={Array.isArray(formData.menu_items) ? formData.menu_items : []}
           onChange={(value) => handleChange('menu_items', value)}
           placeholder="Add menu item (e.g., Custom Photo Set - $50)"
           helperText="Your content offerings and their prices"
@@ -55,7 +55,7 @@ export const Step6PricingForm = ({ initialData, onChange }: Step6PricingFormProp
           Top 3 Selling Items
         </Label>
         <ChipInput
-          value={formData.top_3_selling_items || []}
+          value={Array.isArray(formData.top_3_selling_items) ? formData.top_3_selling_items : []}
           onChange={(value) => handleChange('top_3_selling_items', value)}
           placeholder="Add top seller (max 3)"
           helperText="Your best-performing content types"

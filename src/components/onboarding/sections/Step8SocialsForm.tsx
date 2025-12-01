@@ -222,7 +222,7 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
             Other Links
           </Label>
           <ChipInput
-            value={formData.other_links || []}
+            value={Array.isArray(formData.other_links) ? formData.other_links : []}
             onChange={(value) => handleChange('other_links', value)}
             placeholder="Add additional link"
             helperText="Any other platforms or links"
@@ -308,7 +308,7 @@ export const Step8SocialsForm = ({ initialData, onChange }: Step8SocialsFormProp
               Best Posting Times
             </Label>
             <ChipInput
-              value={formData.best_posting_times || []}
+              value={Array.isArray(formData.best_posting_times) ? formData.best_posting_times : []}
               onChange={(value) => handleChange('best_posting_times', value)}
               placeholder="e.g., Morning 9am, Evening 8pm"
               helperText="When your audience is most active"
