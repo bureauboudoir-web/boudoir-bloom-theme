@@ -29,7 +29,6 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     description: "Physical characteristics and distinctive features",
     icon: "User",
     required: true,
-    adminOnly: true,
   },
   {
     id: 3,

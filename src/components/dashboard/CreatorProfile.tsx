@@ -60,9 +60,9 @@ export const CreatorProfile = ({
   };
 
   const completedSteps = onboardingData?.completed_steps || [];
-  // Creators see 10 sections (excluding 1, 2, and 12 which are admin-only)
+  // Creators see 11 sections (excluding 1 and 12 which are admin-only)
   // Admins/Managers see all 12 sections
-  const totalSteps = canViewPrivateInfo ? 12 : 10;
+  const totalSteps = canViewPrivateInfo ? 12 : 11;
   const completionPercentage = Math.round((completedSteps.length / totalSteps) * 100);
 
   if (!onboardingData) {
@@ -160,7 +160,7 @@ export const CreatorProfile = ({
         userName={userName || onboardingData.personal_full_name || "User"}
       />
 
-      {/* 12-Step Onboarding Sections (Sections 1-2 admin-only, Section 12 visible to all but internal only) */}
+      {/* 12-Step Onboarding Sections (Only Sections 1 and 12 are admin-only) */}
       <Accordion type="multiple" className="space-y-4">
         {/* Section 1: Personal Information (Admin/Manager Only) */}
         {canViewPrivateInfo && (
@@ -197,40 +197,44 @@ export const CreatorProfile = ({
           </AccordionItem>
         )}
 
-        {/* Section 2: Body Information (Admin/Manager Only) */}
-        {canViewPrivateInfo && (
-          <AccordionItem value="section-2" className="border-none">
-            <AccordionTrigger className="hover:no-underline">
-              <div className="flex items-center gap-3 w-full">
-                <User className="h-5 w-5 text-primary" />
-                <div className="flex-1 text-left">
-                  <h3 className="font-semibold">Body Information (Private)</h3>
-                  <p className="text-sm text-muted-foreground">Physical characteristics (Admin/Manager only)</p>
-                </div>
-                {completedSteps.includes(2) && (
-                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                    Complete
-                  </Badge>
-                )}
+        {/* Section 2: Body Information */}
+        <AccordionItem value="section-2" className="border-none">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-3 w-full">
+              <User className="h-5 w-5 text-primary" />
+              <div className="flex-1 text-left">
+                <h3 className="font-semibold">Body Information</h3>
+                <p className="text-sm text-muted-foreground">Physical characteristics and distinctive features</p>
               </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <SectionEditor
-                sectionId={2}
-                title="Body Information"
-                icon={<User className="h-5 w-5" />}
-                description="Physical characteristics"
-                isComplete={completedSteps.includes(2)}
-                onSave={() => handleSectionSave(2)}
-              >
-                <Step2BodyInfoForm 
-                  initialData={onboardingData.step2_body_info || {}}
-                  onChange={(data) => handleSectionChange(2, data)}
-                />
-              </SectionEditor>
-            </AccordionContent>
-          </AccordionItem>
-        )}
+              {completedSteps.includes(2) && (
+                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                  Complete
+                </Badge>
+              )}
+              {isSectionLocked(2) && (
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                  Locked
+                </Badge>
+              )}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <SectionEditor
+              sectionId={2}
+              title="Body Information"
+              icon={<User className="h-5 w-5" />}
+              description="Physical characteristics and distinctive features"
+              isLocked={isSectionLocked(2)}
+              isComplete={completedSteps.includes(2)}
+              onSave={() => handleSectionSave(2)}
+            >
+              <Step2BodyInfoForm 
+                initialData={onboardingData.step2_body_info || {}}
+                onChange={(data) => handleSectionChange(2, data)}
+              />
+            </SectionEditor>
+          </AccordionContent>
+        </AccordionItem>
 
         {/* Section 3: Brand & Character Identity */}
         <AccordionItem value="section-3" className="border-none">

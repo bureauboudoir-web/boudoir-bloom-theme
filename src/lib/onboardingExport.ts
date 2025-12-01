@@ -10,16 +10,17 @@ export interface ExportedOnboardingData {
   };
   sections: {
     step1_private_info?: any;
-    step2_brand_identity?: any;
-    step3_amsterdam_story?: any;
-    step4_persona?: any;
-    step5_boundaries?: any;
-    step6_pricing?: any;
-    step7_messaging?: any;
-    step8_socials_platforms?: any;
-    step9_content_preferences?: any;
-    step10_market_positioning?: any;
-    step11_commitments?: any;
+    step2_body_info?: any;
+    step3_brand_identity?: any;
+    step4_amsterdam_story?: any;
+    step5_persona?: any;
+    step6_boundaries?: any;
+    step7_pricing?: any;
+    step8_messaging?: any;
+    step9_socials_platforms?: any;
+    step10_content_preferences?: any;
+    step11_market_positioning?: any;
+    step12_commitments?: any;
   };
   completion: {
     current_step: number;
@@ -61,7 +62,7 @@ export async function fetchOnboardingData(
     }
 
     const completedSteps = onboarding?.completed_steps || [];
-    const completionPercentage = Math.round((completedSteps.length / 11) * 100);
+    const completionPercentage = Math.round((completedSteps.length / 12) * 100);
 
     return {
       profile: {
@@ -73,16 +74,17 @@ export async function fetchOnboardingData(
       },
       sections: {
         step1_private_info: onboarding?.step1_private_info,
-        step2_brand_identity: onboarding?.step2_brand_identity,
-        step3_amsterdam_story: onboarding?.step3_amsterdam_story,
-        step4_persona: onboarding?.step4_persona,
-        step5_boundaries: onboarding?.step5_boundaries,
-        step6_pricing: onboarding?.step6_pricing,
-        step7_messaging: onboarding?.step7_messaging,
-        step8_socials_platforms: onboarding?.step8_content_preferences, // DB column name
-        step9_content_preferences: onboarding?.step9_market_positioning, // DB column name
-        step10_market_positioning: onboarding?.step10_commitments, // DB column name
-        step11_commitments: onboarding?.step11_commitments,
+        step2_body_info: onboarding?.step2_body_info,
+        step3_brand_identity: onboarding?.step2_brand_identity,
+        step4_amsterdam_story: onboarding?.step3_amsterdam_story,
+        step5_persona: onboarding?.step4_persona,
+        step6_boundaries: onboarding?.step5_boundaries,
+        step7_pricing: onboarding?.step6_pricing,
+        step8_messaging: onboarding?.step7_messaging,
+        step9_socials_platforms: onboarding?.step8_content_preferences,
+        step10_content_preferences: onboarding?.step9_market_positioning,
+        step11_market_positioning: onboarding?.step10_commitments,
+        step12_commitments: onboarding?.step11_commitments,
       },
       completion: {
         current_step: onboarding?.current_step || 1,
