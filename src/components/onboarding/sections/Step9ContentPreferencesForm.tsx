@@ -33,13 +33,13 @@ export const Step9ContentPreferencesForm = ({ initialData, onChange }: Step9Cont
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Posting Schedule */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Posting Schedule</h3>
+            <h3 className="text-lg font-semibold">Posting Schedule</h3>
           </div>
 
           <div>
@@ -67,11 +67,11 @@ export const Step9ContentPreferencesForm = ({ initialData, onChange }: Step9Cont
       </Card>
 
       {/* Content Styles */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10">
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
             <Camera className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Content Styles</h3>
+            <h3 className="text-lg font-semibold">Content Styles</h3>
           </div>
 
           <div>
@@ -99,11 +99,11 @@ export const Step9ContentPreferencesForm = ({ initialData, onChange }: Step9Cont
       </Card>
 
       {/* Content Themes & Lifestyle */}
-      <Card className="border-primary/20">
+      <Card className="border-2 border-primary/10">
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Themes & Lifestyle</h3>
+            <h3 className="text-lg font-semibold">Themes & Lifestyle</h3>
           </div>
 
           <div>

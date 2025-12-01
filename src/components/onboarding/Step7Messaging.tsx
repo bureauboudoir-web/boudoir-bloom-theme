@@ -36,17 +36,19 @@ export const Step7Messaging = ({ userId, onboardingData, onNext, onBack, onSaveS
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
+    <Card className="w-full max-w-4xl mx-auto border-0 shadow-lg bg-card/50 backdrop-blur">
+      <CardHeader className="pb-4 border-b border-border/50">
         <div className="flex items-center gap-3">
-          <MessageSquare className="h-6 w-6 text-primary" />
+          <div className="p-2 rounded-lg bg-primary/10">
+            <MessageSquare className="h-5 w-5 text-primary" />
+          </div>
           <div>
-            <CardTitle>Step 7: Scripts & Messaging</CardTitle>
-            <CardDescription>Your communication templates and style</CardDescription>
+            <CardTitle className="text-xl">Step 7: Scripts & Messaging</CardTitle>
+            <CardDescription className="text-muted-foreground">Your communication templates and style</CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="pt-6 space-y-8">
         <Step7MessagingForm
           initialData={formData}
           onChange={setFormData}

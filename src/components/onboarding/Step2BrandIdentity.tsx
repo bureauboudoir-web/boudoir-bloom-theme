@@ -36,17 +36,19 @@ export const Step2BrandIdentity = ({ userId, onboardingData, onNext, onBack, onS
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
+    <Card className="w-full max-w-4xl mx-auto border-0 shadow-lg bg-card/50 backdrop-blur">
+      <CardHeader className="pb-4 border-b border-border/50">
         <div className="flex items-center gap-3">
-          <Palette className="h-6 w-6 text-primary" />
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Palette className="h-5 w-5 text-primary" />
+          </div>
           <div>
-            <CardTitle>Step 2: Brand & Character Identity</CardTitle>
-            <CardDescription>Define your public persona and brand aesthetic</CardDescription>
+            <CardTitle className="text-xl">Step 2: Brand Identity</CardTitle>
+            <CardDescription className="text-muted-foreground">Define your brand and character identity</CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="pt-6 space-y-8">
         <Step2BrandIdentityForm
           initialData={formData}
           onChange={setFormData}
