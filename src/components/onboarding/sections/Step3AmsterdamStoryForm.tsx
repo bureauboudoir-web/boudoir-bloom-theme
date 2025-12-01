@@ -3,26 +3,26 @@ import { Label } from "@/components/ui/label";
 import { PremiumTextarea } from "@/components/ui/premium-textarea";
 import { BookOpen, MapPin, Lightbulb, FileText } from "lucide-react";
 
-interface Step4AmsterdamStoryData {
+interface Step3AmsterdamStoryData {
   origin_story_long?: string;
   cultural_background?: string;
   persona_inspiration?: string;
   amsterdam_story_summary?: string;
 }
 
-interface Step4AmsterdamStoryFormProps {
-  initialData?: Step4AmsterdamStoryData;
-  onChange: (data: Step4AmsterdamStoryData) => void;
+interface Step3AmsterdamStoryFormProps {
+  initialData?: Step3AmsterdamStoryData;
+  onChange: (data: Step3AmsterdamStoryData) => void;
 }
 
-export const Step4AmsterdamStoryForm = ({ initialData, onChange }: Step4AmsterdamStoryFormProps) => {
-  const [formData, setFormData] = useState<Step4AmsterdamStoryData>(initialData || {});
+export const Step3AmsterdamStoryForm = ({ initialData, onChange }: Step3AmsterdamStoryFormProps) => {
+  const [formData, setFormData] = useState<Step3AmsterdamStoryData>(initialData || {});
 
   useEffect(() => {
     onChange(formData);
   }, [formData]);
 
-  const handleChange = (field: keyof Step4AmsterdamStoryData, value: string) => {
+  const handleChange = (field: keyof Step3AmsterdamStoryData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step3PhysicalDescriptionForm } from "./sections/Step3PhysicalDescriptionForm";
+import { Step4PersonaForm } from "./sections/Step4PersonaForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { Theater, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ export const Step4Persona = ({ userId, onboardingData, onNext, onBack, onSaveSec
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step3PhysicalDescriptionForm
+        <Step4PersonaForm
           initialData={formData}
           onChange={setFormData}
         />

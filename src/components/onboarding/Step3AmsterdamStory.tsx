@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Step4AmsterdamStoryForm } from "./sections/Step4AmsterdamStoryForm";
+import { Step3AmsterdamStoryForm } from "./sections/Step3AmsterdamStoryForm";
 import { OnboardingData } from "@/hooks/useOnboarding";
 import { MapPin, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ export const Step3AmsterdamStory = ({ userId, onboardingData, onNext, onBack, on
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Step4AmsterdamStoryForm
+        <Step3AmsterdamStoryForm
           initialData={formData}
           onChange={setFormData}
         />
