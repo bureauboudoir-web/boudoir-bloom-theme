@@ -91,7 +91,7 @@ serve(async (req) => {
     // Helper to provide fallbacks
     const withFallback = (value: any, fallback = "Not provided yet") => value || fallback;
 
-    // Build comprehensive response with new 10-step structure
+    // Build comprehensive response with new 12-step structure
     // CRITICAL: step1_private_info is NEVER included in external APIs
     const response = {
       profile: {
@@ -101,20 +101,22 @@ serve(async (req) => {
       },
       sections: {
         // Step 1 is EXCLUDED from external APIs (private info)
+        body_info: onboarding?.step2_body_info || {},
         brand_identity: onboarding?.step2_brand_identity || {},
         amsterdam_story: onboarding?.step3_amsterdam_story || {},
         persona: onboarding?.step4_persona || {},
         boundaries: onboarding?.step5_boundaries || {},
         pricing: onboarding?.step6_pricing || {},
         messaging: onboarding?.step7_messaging || {},
-        content_preferences: onboarding?.step8_content_preferences || {},
-        market_positioning: onboarding?.step9_market_positioning || {},
-        // Step 10 commitments excluded from external APIs
+        socials_platforms: onboarding?.step8_socials || {},
+        content_preferences: onboarding?.step9_content_preferences || {},
+        market_positioning: onboarding?.step10_market_positioning || {},
+        // Step 12 commitments excluded from external APIs
       },
       completion: {
         completed_steps: onboarding?.completed_steps || [],
-        total_sections: 10,
-        completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 10) * 100),
+        total_sections: 12,
+        completion_percentage: Math.round(((onboarding?.completed_steps?.length || 0) / 12) * 100),
         is_completed: onboarding?.is_completed || false
       },
       style_preferences: stylePreferences || null,
