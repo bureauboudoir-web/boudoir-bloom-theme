@@ -5,7 +5,8 @@ import { PremiumTextarea } from "@/components/ui/premium-textarea";
 import { ChipInput } from "@/components/ui/chip-input";
 import { ColorPalettePicker } from "@/components/ui/color-palette-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Instagram, Image, Sparkles } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { User, FileText, Palette, Mail, Phone, Image, Sparkles } from "lucide-react";
 
 interface Step2BrandIdentityData {
   stage_name?: string;
@@ -67,7 +68,7 @@ export const Step2BrandIdentityForm = ({ initialData, onChange }: Step2BrandIden
 
         <div>
           <Label htmlFor="character_phone" className="flex items-center gap-2 mb-2">
-            <Instagram className="h-4 w-4 text-primary" />
+            <Phone className="h-4 w-4 text-primary" />
             Character Phone
           </Label>
           <PremiumInput
