@@ -21,7 +21,7 @@ export const Step8SocialsPlatforms = ({ userId, onboardingData, onNext, onBack, 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(8, { step8_content_preferences: formData });
+      await onSaveSection(8, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

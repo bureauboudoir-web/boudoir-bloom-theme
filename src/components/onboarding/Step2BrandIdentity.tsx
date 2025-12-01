@@ -21,10 +21,10 @@ export const Step2BrandIdentity = ({ userId, onboardingData, onNext, onBack, onS
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(2, { step2_brand_identity: formData });
-      toast.success("Brand identity saved");
+      await onSaveSection(2, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save brand identity");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

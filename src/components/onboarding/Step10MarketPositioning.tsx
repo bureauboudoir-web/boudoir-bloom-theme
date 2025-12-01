@@ -21,7 +21,7 @@ export const Step10MarketPositioning = ({ userId, onboardingData, onNext, onBack
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(10, { step10_commitments: formData });
+      await onSaveSection(10, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");

@@ -37,10 +37,10 @@ export const Step11Commitments = ({ userId, onboardingData, onBack, onSaveSectio
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(11, { step11_commitments: formData });
-      toast.success("Commitments saved");
+      await onSaveSection(11, formData);
+      toast.success("Section saved successfully");
     } catch (error) {
-      toast.error("Failed to save commitments");
+      toast.error("Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }

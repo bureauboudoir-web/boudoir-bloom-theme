@@ -21,7 +21,7 @@ export const Step9ContentPreferences = ({ userId, onboardingData, onNext, onBack
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSaveSection(9, { step9_market_positioning: formData });
+      await onSaveSection(9, formData);
       toast.success("Section saved successfully");
     } catch (error) {
       toast.error("Failed to save. Please try again.");
