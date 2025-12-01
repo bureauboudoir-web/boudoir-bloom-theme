@@ -15,7 +15,7 @@ interface Step10ContentPreferencesProps {
 }
 
 export const Step10ContentPreferences = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step10ContentPreferencesProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step9_content_preferences || {});
+  const [formData, setFormData] = useState(onboardingData?.step8_content_preferences || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {

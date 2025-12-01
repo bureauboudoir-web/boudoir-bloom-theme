@@ -15,7 +15,7 @@ interface Step11MarketPositioningProps {
 }
 
 export const Step11MarketPositioning = ({ userId, onboardingData, onNext, onBack, onSaveSection }: Step11MarketPositioningProps) => {
-  const [formData, setFormData] = useState(onboardingData?.step10_market_positioning || {});
+  const [formData, setFormData] = useState(onboardingData?.step9_market_positioning || {});
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {

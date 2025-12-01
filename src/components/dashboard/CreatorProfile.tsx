@@ -535,7 +535,7 @@ export const CreatorProfile = ({
               onSave={() => handleSectionSave(10)}
             >
               <Step9ContentPreferencesForm
-                initialData={onboardingData.step9_content_preferences || {}}
+                initialData={onboardingData.step8_content_preferences || {}}
                 onChange={(data) => handleSectionChange(10, data)}
               />
             </SectionEditor>
@@ -574,7 +574,7 @@ export const CreatorProfile = ({
               onSave={() => handleSectionSave(11)}
             >
               <Step10MarketPositioningForm
-                initialData={onboardingData.step10_market_positioning || {}}
+                initialData={onboardingData.step9_market_positioning || {}}
                 onChange={(data) => handleSectionChange(11, data)}
               />
             </SectionEditor>
