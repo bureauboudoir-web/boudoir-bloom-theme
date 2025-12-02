@@ -33,6 +33,9 @@ const ChatTeamDashboard = lazy(() => import("./pages/dashboard/ChatTeamDashboard
 const MarketingTeamDashboard = lazy(() => import("./pages/dashboard/MarketingTeamDashboard"));
 const StudioTeamDashboard = lazy(() => import("./pages/dashboard/StudioTeamDashboard"));
 
+// Dev-only pages
+const DevLogin = lazy(() => import("./pages/DevLogin"));
+
 // Admin sub-pages
 const ApiKeyManagement = lazy(() => import("./pages/admin/ApiKeyManagement"));
 const ApiDocumentation = lazy(() => import("./pages/admin/ApiDocumentation"));
@@ -82,6 +85,9 @@ const App = () => (
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/complete-setup" element={<CompleteSetup />} />
+                
+                {/* Dev-only route for testing */}
+                <Route path="/dev-login/:email" element={<DevLogin />} />
 
                 {/* Role-Based Dashboard Routes */}
                 <Route path="/dashboard/admin/api-keys" element={
