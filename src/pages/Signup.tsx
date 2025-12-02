@@ -162,7 +162,7 @@ const Signup = () => {
                     <SelectValue placeholder="Select your level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="start">Start - Just beginning</SelectItem>
+                    <SelectItem value="starter">Start - Just beginning</SelectItem>
                     <SelectItem value="growing">Growing - Building audience</SelectItem>
                     <SelectItem value="established">Established - Experienced creator</SelectItem>
                   </SelectContent>
