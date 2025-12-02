@@ -60,10 +60,15 @@ const Signup = () => {
 
       if (appError) throw appError;
 
-      // Send confirmation email
-      await supabase.functions.invoke('send-application-received', {
-        body: { email: formData.email, name: formData.name }
-      });
+      // Send confirmation email (non-blocking)
+      try {
+        await supabase.functions.invoke('send-application-received', {
+          body: { email: formData.email, name: formData.name }
+        });
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        // Don't fail the whole process if confirmation email fails
+      }
 
       // Send notification to admins
       try {
