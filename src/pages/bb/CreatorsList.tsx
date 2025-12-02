@@ -10,7 +10,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { RoleNavigation } from "@/components/RoleNavigation";
-import { creatorNavigation } from "@/config/roleNavigation";
+import { adminNavigation } from "@/config/roleNavigation";
 
 interface Creator {
   id: string;
@@ -122,7 +122,7 @@ export default function CreatorsList() {
   if (loading) {
     return (
       <DashboardLayout
-        navigation={<RoleNavigation sections={creatorNavigation} />}
+        navigation={<RoleNavigation sections={adminNavigation} />}
         title="Creators"
       >
         <Card>
@@ -137,7 +137,7 @@ export default function CreatorsList() {
   if (settingsMissing) {
     return (
       <DashboardLayout
-        navigation={<RoleNavigation sections={creatorNavigation} />}
+        navigation={<RoleNavigation sections={adminNavigation} />}
         title="Creators"
       >
         <Alert variant="destructive">
@@ -158,10 +158,10 @@ export default function CreatorsList() {
   }
 
   return (
-    <DashboardLayout
-      navigation={<RoleNavigation sections={creatorNavigation} />}
-      title="Creators"
-    >
+      <DashboardLayout
+        navigation={<RoleNavigation sections={adminNavigation} />}
+        title="Creators"
+      >
       <Card>
         <CardHeader>
           <CardTitle>Creators</CardTitle>
