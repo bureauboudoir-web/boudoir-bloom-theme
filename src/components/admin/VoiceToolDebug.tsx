@@ -25,11 +25,11 @@ export const VoiceToolDebug = () => {
 
   const fetchSyncLogs = async () => {
     try {
-      // Get voice samples grouped by creator
+      // Get recent content uploads (voice samples would be stored here)
       const { data: samples, error } = await supabase
-        .from('uploads')
-        .select('user_id, emotional_category, created_at')
-        .not('emotional_category', 'is', null)
+        .from('content_uploads')
+        .select('user_id, created_at, content_type')
+        .eq('content_type', 'audio')
         .order('created_at', { ascending: false })
         .limit(50);
 
@@ -65,6 +65,7 @@ export const VoiceToolDebug = () => {
       setLogs(Object.values(grouped || {}));
     } catch (error) {
       console.error('Error fetching sync logs:', error);
+      setLogs([]);
     }
   };
 
