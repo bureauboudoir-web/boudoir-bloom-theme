@@ -16,10 +16,9 @@ export const ONBOARDING_STEPS: OnboardingStepConfig[] = [
     label: "Private Information",
     short: "Personal",
     stage: "pre-meeting",
-    description: "Private identity and emergency contacts (Admin/Manager only)",
+    description: "Private identity and emergency contacts",
     icon: "User",
     required: true,
-    adminOnly: true,
   },
   {
     id: 2,

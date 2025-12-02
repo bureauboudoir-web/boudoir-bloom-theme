@@ -261,16 +261,9 @@ const Dashboard = () => {
   };
 
   const renderOnboardingStep = () => {
-    // Only show Step 1 to Admin/Manager roles
-    const canViewStep1 = isAdmin || isSuperAdmin || isManager;
-    
     const stepContent = () => {
       switch (currentStep) {
         case 1:
-          if (!canViewStep1) {
-            setCurrentStep(2); // Skip to step 2 if not authorized
-            return null;
-          }
           return (
             <Step1PrivateInfo
               userId={user?.id || ''}
@@ -293,7 +286,7 @@ const Dashboard = () => {
                   setCurrentStep(3);
                 }
               }}
-              onBack={() => canViewStep1 ? setCurrentStep(1) : null}
+              onBack={() => setCurrentStep(1)}
               onSaveSection={saveSection}
             />
           );
