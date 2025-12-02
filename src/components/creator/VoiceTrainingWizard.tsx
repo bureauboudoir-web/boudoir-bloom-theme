@@ -71,18 +71,24 @@ export const VoiceTrainingWizard = () => {
   const [recording, setRecording] = useState(false);
   const [recordingCategory, setRecordingCategory] = useState<string | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioLevel, setAudioLevel] = useState(0);
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const MIN_RECORDING_TIME = 5; // 5 seconds minimum
 
   useEffect(() => {
     if (user) {
       fetchSamples();
     }
+    
+    // Cleanup on unmount
+    return () => {
+      cleanupRecording();
+    };
   }, [user]);
 
   useEffect(() => {
@@ -132,8 +138,30 @@ export const VoiceTrainingWizard = () => {
     return ''; // Let browser choose default
   };
 
+  const cleanupRecording = () => {
+    // Stop all media tracks
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(track => track.stop());
+      setMediaStream(null);
+    }
+    
+    // Close audio context
+    if (audioContext) {
+      audioContext.close();
+      setAudioContext(null);
+    }
+    
+    // Reset states
+    setMediaRecorder(null);
+    setRecording(false);
+    setAudioLevel(0);
+  };
+
   const startRecording = async (category: string) => {
     try {
+      // Clean up any existing recording first
+      cleanupRecording();
+      
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           echoCancellation: true,
@@ -142,10 +170,13 @@ export const VoiceTrainingWizard = () => {
         } 
       });
       
+      setMediaStream(stream);
+      
       const mimeType = getSupportedMimeType();
       
       if (!mimeType && !MediaRecorder.isTypeSupported('')) {
         toast.error("Your browser doesn't support audio recording. Please try Chrome, Firefox, or Edge.");
+        stream.getTracks().forEach(track => track.stop());
         return;
       }
 
@@ -154,22 +185,22 @@ export const VoiceTrainingWizard = () => {
       const chunks: Blob[] = [];
 
       // Setup audio level monitoring
-      const audioContext = new AudioContext();
-      const analyser = audioContext.createAnalyser();
-      const microphone = audioContext.createMediaStreamSource(stream);
+      const context = new AudioContext();
+      setAudioContext(context);
+      const analyser = context.createAnalyser();
+      const microphone = context.createMediaStreamSource(stream);
       microphone.connect(analyser);
       analyser.fftSize = 256;
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
+      let animationId: number;
       const updateAudioLevel = () => {
         analyser.getByteFrequencyData(dataArray);
         const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
         setAudioLevel(Math.min(100, (average / 128) * 100));
-        if (recording) {
-          requestAnimationFrame(updateAudioLevel);
-        }
+        animationId = requestAnimationFrame(updateAudioLevel);
       };
-      requestAnimationFrame(updateAudioLevel);
+      animationId = requestAnimationFrame(updateAudioLevel);
       
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -178,11 +209,16 @@ export const VoiceTrainingWizard = () => {
       };
       
       recorder.onstop = () => {
+        cancelAnimationFrame(animationId);
         const blob = new Blob(chunks, { type: mimeType || 'audio/webm' });
         setRecordedBlob(blob);
-        setAudioChunks([]);
-        stream.getTracks().forEach(track => track.stop());
-        audioContext.close();
+        cleanupRecording();
+      };
+      
+      recorder.onerror = (error) => {
+        console.error('MediaRecorder error:', error);
+        toast.error('Recording failed. Please try again.');
+        cleanupRecording();
       };
       
       setMediaRecorder(recorder);
@@ -195,6 +231,8 @@ export const VoiceTrainingWizard = () => {
       toast.success(`Recording started. Minimum ${MIN_RECORDING_TIME} seconds required.`);
     } catch (error: any) {
       console.error('Recording error:', error);
+      cleanupRecording();
+      
       if (error.name === 'NotAllowedError') {
         toast.error("Microphone permission denied. Please allow microphone access in your browser settings.");
       } else if (error.name === 'NotFoundError') {
@@ -211,31 +249,44 @@ export const VoiceTrainingWizard = () => {
         toast.error(`Recording must be at least ${MIN_RECORDING_TIME} seconds long`);
         return;
       }
-      mediaRecorder.stop();
-      setRecording(false);
-      setMediaRecorder(null);
-      setAudioLevel(0);
+      
+      try {
+        mediaRecorder.stop();
+        setRecording(false);
+      } catch (error) {
+        console.error('Error stopping recording:', error);
+        cleanupRecording();
+        toast.error('Failed to stop recording. Please try again.');
+      }
     }
   };
 
   const saveRecording = async () => {
     if (!recordedBlob || !recordingCategory || !user) return;
 
-    const file = new File([recordedBlob], `${recordingCategory}_${Date.now()}.webm`, {
-      type: 'audio/webm'
-    });
+    try {
+      const file = new File([recordedBlob], `${recordingCategory}_${Date.now()}.webm`, {
+        type: recordedBlob.type || 'audio/webm'
+      });
 
-    await handleFileUpload(file, recordingCategory);
-    setRecordedBlob(null);
-    setRecordingCategory(null);
-    setRecordingTime(0);
+      await handleFileUpload(file, recordingCategory);
+      
+      // Clean up after successful save
+      setRecordedBlob(null);
+      setRecordingCategory(null);
+      setRecordingTime(0);
+      cleanupRecording();
+    } catch (error) {
+      console.error('Error saving recording:', error);
+      toast.error('Failed to save recording. Please try again.');
+    }
   };
 
   const discardRecording = () => {
     setRecordedBlob(null);
     setRecordingCategory(null);
     setRecordingTime(0);
-    setAudioLevel(0);
+    cleanupRecording();
   };
 
   const testConnection = async () => {
