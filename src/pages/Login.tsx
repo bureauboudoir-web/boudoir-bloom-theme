@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { PageContainer } from "@/components/PageContainer";
 import { useAuth } from "@/hooks/useAuth";
 import { loginSchema } from "@/lib/validation";
-import { BootstrapAdminButton } from "@/components/admin/BootstrapAdminButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -62,13 +61,8 @@ const Login = () => {
 
   return (
     <PageContainer>
-      <div className="container mx-auto px-6 py-12 space-y-8">
-        <div className="max-w-md mx-auto">
-          <BootstrapAdminButton />
-        </div>
-        
-        <div className="max-w-md mx-auto">
-          <Card className="border-border bg-secondary/20">
+      <div className="container mx-auto px-6 py-24 max-w-md">
+        <Card className="border-border bg-secondary/20">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-[#d1ae94]">{t('login.title')}</CardTitle>
             <CardDescription>{t('login.subtitle')}</CardDescription>
@@ -121,7 +115,6 @@ const Login = () => {
           </form>
           </CardContent>
         </Card>
-        </div>
       </div>
     </PageContainer>
   );
