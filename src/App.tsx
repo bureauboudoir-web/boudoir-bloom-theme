@@ -39,9 +39,11 @@ const ApiDocumentation = lazy(() => import("./pages/admin/ApiDocumentation"));
 
 // Creator sub-pages
 const CreatorTools = lazy(() => import("./pages/creator/CreatorTools"));
-const VoiceTrainingWizard = lazy(() => import("./pages/creator/VoiceTrainingWizard"));
 const ContentPreferencesWizard = lazy(() => import("./pages/creator/ContentPreferencesWizard"));
 const ApiSettings = lazy(() => import("./pages/creator/ApiSettings"));
+
+// Import enhanced VoiceTrainingWizard component
+import { VoiceTrainingWizard } from "@/components/creator/VoiceTrainingWizard";
 
 // BB Integration pages
 const BBCreatorsList = lazy(() => import("./pages/bb/CreatorsList"));
