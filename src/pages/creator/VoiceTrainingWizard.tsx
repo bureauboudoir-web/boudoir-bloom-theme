@@ -141,17 +141,21 @@ export default function VoiceTrainingWizard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" />
-      </div>
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />}>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <LoadingSpinner size="lg" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   if (!user || (!roles.includes("creator") && !roles.includes("admin"))) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">Access denied</p>
-      </div>
+      <DashboardLayout navigation={<RoleNavigation sections={creatorNavigation} />}>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <p className="text-muted-foreground">Access denied</p>
+        </div>
+      </DashboardLayout>
     );
   }
 
