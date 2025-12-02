@@ -13,6 +13,7 @@ interface VoiceSample {
 interface RequestBody {
   creator_id: string;
   samples: VoiceSample[];
+  test?: boolean;
 }
 
 serve(async (req) => {
@@ -23,8 +24,74 @@ serve(async (req) => {
 
   try {
     const body: RequestBody = await req.json();
-    const { creator_id, samples } = body;
+    const { creator_id, samples, test } = body;
 
+    // Get Voice Tool API configuration
+    const apiUrl = Deno.env.get('VOICE_TOOL_API_URL') || 'https://your-voice-tool-api.com';
+    const apiKey = Deno.env.get('VOICE_TOOL_API_KEY') || 'your-api-key';
+
+    // Check if using placeholder configuration
+    const isPlaceholder = apiUrl.includes('your-voice-tool-api') || apiKey === 'your-api-key';
+    
+    // Handle connection test
+    if (test) {
+      if (isPlaceholder) {
+        console.warn('⚠️ Voice Tool API not configured');
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: 'Voice Tool API not configured. Please add VOICE_TOOL_API_URL and VOICE_TOOL_API_KEY secrets.' 
+          }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
+      // Test the connection with a health check
+      try {
+        console.log('Testing Voice Tool API connection...');
+        const testResponse = await fetch(`${apiUrl}/health`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!testResponse.ok) {
+          throw new Error(`API health check failed with status ${testResponse.status}`);
+        }
+
+        console.log('✓ Voice Tool API connection successful');
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: 'Voice Tool API connection successful',
+            api_url: apiUrl.replace(/\/+$/, '') // Remove trailing slashes for display
+          }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      } catch (error) {
+        console.error('Voice Tool API test failed:', error);
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: 'Failed to connect to Voice Tool API. Please check your API URL and key.',
+            details: error instanceof Error ? error.message : 'Unknown error'
+          }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+    }
+
+    // Validate required fields for actual sync
     if (!creator_id || !samples || !Array.isArray(samples)) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: creator_id and samples array' }),
@@ -34,13 +101,6 @@ serve(async (req) => {
         }
       );
     }
-
-    // Get Voice Tool API configuration
-    const apiUrl = Deno.env.get('VOICE_TOOL_API_URL') || 'https://your-voice-tool-api.com';
-    const apiKey = Deno.env.get('VOICE_TOOL_API_KEY') || 'your-api-key';
-
-    // Check if using placeholder configuration
-    const isPlaceholder = apiUrl.includes('your-voice-tool-api') || apiKey === 'your-api-key';
     
     if (isPlaceholder) {
       console.warn('⚠️ Using placeholder Voice Tool API configuration');
