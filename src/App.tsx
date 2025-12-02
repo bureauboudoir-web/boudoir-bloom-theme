@@ -96,7 +96,11 @@ const App = () => (
                 } />
                 <Route path="/dashboard/admin/*" element={<AdminDashboard />} />
                 <Route path="/dashboard/manager/*" element={<ManagerDashboard />} />
-                <Route path="/dashboard/creator/tools/voice-training" element={<VoiceTrainingWizard />} />
+                <Route path="/dashboard/creator/tools/voice-training" element={
+                  <ProtectedRoute allowedRoles={['creator', 'admin', 'super_admin']}>
+                    <VoiceTrainingWizard />
+                  </ProtectedRoute>
+                } />
                 <Route path="/dashboard/creator/tools/content-preferences" element={<ContentPreferencesWizard />} />
                 <Route path="/dashboard/creator/tools" element={<CreatorTools />} />
                 <Route path="/dashboard/creator/*" element={<CreatorDashboard />} />
