@@ -28,17 +28,23 @@ export const VoiceToolDebug = () => {
       // Get voice samples grouped by creator
       const { data: samples, error } = await supabase
         .from('uploads')
-        .select(`
-          user_id,
-          emotional_category,
-          created_at,
-          profiles!inner(full_name)
-        `)
+        .select('user_id, emotional_category, created_at')
         .not('emotional_category', 'is', null)
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) throw error;
+
+      // Get unique user IDs
+      const userIds = [...new Set(samples?.map(s => s.user_id) || [])];
+      
+      // Fetch profiles separately
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
 
       // Group by creator
       const grouped = samples?.reduce((acc: any, sample: any) => {
@@ -46,7 +52,7 @@ export const VoiceToolDebug = () => {
         if (!acc[userId]) {
           acc[userId] = {
             creator_id: userId,
-            creator_name: sample.profiles?.full_name || 'Unknown',
+            creator_name: profileMap.get(userId) || 'Unknown',
             sample_count: 0,
             status: 'pending' as const,
             synced_at: sample.created_at
