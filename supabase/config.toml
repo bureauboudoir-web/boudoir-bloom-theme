@@ -3,6 +3,9 @@ project_id = "pohxtstwslymiqrxmlal"
 # Edge Function Security Configuration
 # Functions that require authentication to prevent unauthorized access
 
+[functions.create-bootstrap-admin]
+verify_jwt = false  # Public temporary function to create bootstrap admin
+
 [functions.get-creator-data]
 verify_jwt = false  # Public endpoint protected by API key
 
