@@ -2180,27 +2180,36 @@ export type Database = {
           created_at: string | null
           creator_id: string
           emotional_category: string | null
+          file_name: string | null
+          file_size: number | null
           file_type: string
           file_url: string
           id: string
+          updated_at: string | null
           voice_tool_sync_status: string | null
         }
         Insert: {
           created_at?: string | null
           creator_id: string
           emotional_category?: string | null
+          file_name?: string | null
+          file_size?: number | null
           file_type: string
           file_url: string
           id?: string
+          updated_at?: string | null
           voice_tool_sync_status?: string | null
         }
         Update: {
           created_at?: string | null
           creator_id?: string
           emotional_category?: string | null
+          file_name?: string | null
+          file_size?: number | null
           file_type?: string
           file_url?: string
           id?: string
+          updated_at?: string | null
           voice_tool_sync_status?: string | null
         }
         Relationships: []
