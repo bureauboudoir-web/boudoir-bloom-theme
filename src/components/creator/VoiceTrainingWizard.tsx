@@ -74,6 +74,10 @@ export const VoiceTrainingWizard = () => {
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const MIN_RECORDING_TIME = 5; // 5 seconds minimum
 
   useEffect(() => {
     if (user) {
@@ -109,6 +113,25 @@ export const VoiceTrainingWizard = () => {
     setSamples(data || []);
   };
 
+  // Detect supported MIME type for MediaRecorder
+  const getSupportedMimeType = () => {
+    const types = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/mp4',
+      'audio/mpeg',
+      'audio/ogg;codecs=opus'
+    ];
+    
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        return type;
+      }
+    }
+    
+    return ''; // Let browser choose default
+  };
+
   const startRecording = async (category: string) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -119,11 +142,34 @@ export const VoiceTrainingWizard = () => {
         } 
       });
       
-      const recorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm'
-      });
+      const mimeType = getSupportedMimeType();
       
+      if (!mimeType && !MediaRecorder.isTypeSupported('')) {
+        toast.error("Your browser doesn't support audio recording. Please try Chrome, Firefox, or Edge.");
+        return;
+      }
+
+      const options = mimeType ? { mimeType } : {};
+      const recorder = new MediaRecorder(stream, options);
       const chunks: Blob[] = [];
+
+      // Setup audio level monitoring
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      microphone.connect(analyser);
+      analyser.fftSize = 256;
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const updateAudioLevel = () => {
+        analyser.getByteFrequencyData(dataArray);
+        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        setAudioLevel(Math.min(100, (average / 128) * 100));
+        if (recording) {
+          requestAnimationFrame(updateAudioLevel);
+        }
+      };
+      requestAnimationFrame(updateAudioLevel);
       
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -132,30 +178,43 @@ export const VoiceTrainingWizard = () => {
       };
       
       recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: mimeType || 'audio/webm' });
         setRecordedBlob(blob);
         setAudioChunks([]);
         stream.getTracks().forEach(track => track.stop());
+        audioContext.close();
       };
       
       setMediaRecorder(recorder);
       setRecordingCategory(category);
       setRecordingTime(0);
+      setAudioLevel(0);
       recorder.start();
       setRecording(true);
       
-      toast.success('Recording started');
+      toast.success(`Recording started. Minimum ${MIN_RECORDING_TIME} seconds required.`);
     } catch (error: any) {
       console.error('Recording error:', error);
-      toast.error('Failed to start recording. Please check microphone permissions.');
+      if (error.name === 'NotAllowedError') {
+        toast.error("Microphone permission denied. Please allow microphone access in your browser settings.");
+      } else if (error.name === 'NotFoundError') {
+        toast.error("No microphone found. Please connect a microphone and try again.");
+      } else {
+        toast.error('Failed to start recording. Please check microphone permissions.');
+      }
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorder && recording) {
+      if (recordingTime < MIN_RECORDING_TIME) {
+        toast.error(`Recording must be at least ${MIN_RECORDING_TIME} seconds long`);
+        return;
+      }
       mediaRecorder.stop();
       setRecording(false);
       setMediaRecorder(null);
+      setAudioLevel(0);
     }
   };
 
@@ -176,6 +235,37 @@ export const VoiceTrainingWizard = () => {
     setRecordedBlob(null);
     setRecordingCategory(null);
     setRecordingTime(0);
+    setAudioLevel(0);
+  };
+
+  const testConnection = async () => {
+    setTestingConnection(true);
+    setConnectionStatus('idle');
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-voice-to-tool', {
+        body: { 
+          creator_id: user?.id,
+          samples: [],
+          test: true 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success || data?.message) {
+        setConnectionStatus('success');
+        toast.success('Voice Tool API connected successfully!');
+      } else {
+        throw new Error('Invalid response from API');
+      }
+    } catch (error: any) {
+      console.error('Connection test failed:', error);
+      setConnectionStatus('error');
+      toast.error('Connection failed. Please check API configuration.');
+    } finally {
+      setTestingConnection(false);
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -513,6 +603,31 @@ export const VoiceTrainingWizard = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={testConnection}
+                disabled={testingConnection}
+              >
+                {testingConnection ? (
+                  <>
+                    <Clock className="w-4 h-4 mr-2 animate-spin" />
+                    Testing...
+                  </>
+                ) : connectionStatus === 'success' ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                    Connected
+                  </>
+                ) : connectionStatus === 'error' ? (
+                  <>
+                    <AlertTriangle className="w-4 h-4 mr-2 text-red-500" />
+                    Test Connection
+                  </>
+                ) : (
+                  'Test Connection'
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
                 className="flex-1"
                 onClick={() => setStep('recording')}
               >
@@ -522,7 +637,7 @@ export const VoiceTrainingWizard = () => {
               <Button
                 size="lg"
                 className="flex-1"
-                disabled={submitting}
+                disabled={submitting || uploadedCount < minimumCount}
                 onClick={handleSubmitForTraining}
               >
                 {submitting ? (
@@ -676,17 +791,50 @@ export const VoiceTrainingWizard = () => {
                   </div>
                 ) : recording && recordingCategory === category.value ? (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-center gap-3 py-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-                      <span className="text-lg font-mono font-semibold">{formatTime(recordingTime)}</span>
+                    <div className="space-y-2">
+                      {/* Audio Level Indicator */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Audio Level</span>
+                          <span className="font-mono">{Math.round(audioLevel)}%</span>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-75"
+                            style={{ width: `${audioLevel}%` }}
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Recording Timer */}
+                      <div className="flex items-center justify-center gap-3 py-4">
+                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-lg font-mono font-semibold">{formatTime(recordingTime)}</span>
+                      </div>
+                      
+                      {/* Minimum Time Warning */}
+                      {recordingTime < MIN_RECORDING_TIME && (
+                        <div className="text-center text-xs text-muted-foreground">
+                          {MIN_RECORDING_TIME - recordingTime} seconds until minimum time
+                        </div>
+                      )}
                     </div>
+                    
                     <Button
                       variant="destructive"
                       size="sm"
                       className="w-full"
                       onClick={stopRecording}
+                      disabled={recordingTime < MIN_RECORDING_TIME}
                     >
-                      Stop Recording
+                      {recordingTime < MIN_RECORDING_TIME ? (
+                        <>
+                          <Clock className="w-4 h-4 mr-2" />
+                          Keep Recording ({MIN_RECORDING_TIME - recordingTime}s)
+                        </>
+                      ) : (
+                        'Stop Recording'
+                      )}
                     </Button>
                   </div>
                 ) : (
