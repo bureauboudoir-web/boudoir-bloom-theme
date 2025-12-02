@@ -137,7 +137,7 @@ export const CreatorsList = () => {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/creator/${creator.id}`);
+                    navigate(`/dashboard/creators/${creator.id}`);
                   }}
                 >
                   View Details

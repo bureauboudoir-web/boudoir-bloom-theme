@@ -2,14 +2,14 @@ import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { RoleNavigation } from "@/components/RoleNavigation";
-import { creatorNavigation } from "@/config/roleNavigation";
+import { adminNavigation } from "@/config/roleNavigation";
 
 export default function CreatorDetail() {
   const { id } = useParams<{ id: string }>();
 
   return (
     <DashboardLayout
-      navigation={<RoleNavigation sections={creatorNavigation} />}
+      navigation={<RoleNavigation sections={adminNavigation} />}
       title="Creator Detail"
     >
       <Card>

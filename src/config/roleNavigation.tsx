@@ -250,7 +250,7 @@ export const creatorNavigation: NavSection[] = [
     titleKey: "dashboard.sections.management",
     items: [
       { label: "Tools", labelKey: "dashboard.nav.tools", icon: Wrench, path: "/dashboard/creator/tools" },
-      { label: "Voice Training", labelKey: "dashboard.nav.voiceTraining", icon: Mic, path: "/dashboard/creator/voice-training" },
+      { label: "Voice Training", labelKey: "dashboard.nav.voiceTraining", icon: Mic, path: "/dashboard/creator/tools/voice-training" },
       { label: "Sample Selector", labelKey: "dashboard.nav.contentPreferences", icon: Palette, path: "/dashboard/creator/samples" },
       { label: "Scripts Review", labelKey: "dashboard.nav.scripts", icon: FileText, path: "/dashboard/creator/scripts" },
     ]
