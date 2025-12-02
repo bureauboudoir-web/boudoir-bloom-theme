@@ -48,7 +48,7 @@ const Signup = () => {
 
     try {
       // Insert application with pending status
-      const { data: application, error: appError } = await supabase
+      const { error: appError } = await supabase
         .from('creator_applications')
         .insert([{
           name: formData.name,
@@ -56,9 +56,7 @@ const Signup = () => {
           phone: formData.phone,
           experience_level: formData.experience,
           status: 'pending'
-        }])
-        .select()
-        .single();
+        }]);
 
       if (appError) throw appError;
 
@@ -71,7 +69,6 @@ const Signup = () => {
       try {
         await supabase.functions.invoke('send-admin-notification', {
           body: {
-            applicationId: application.id,
             applicantName: formData.name,
             applicantEmail: formData.email,
             experienceLevel: formData.experience,
