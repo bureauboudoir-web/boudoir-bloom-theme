@@ -239,7 +239,10 @@ const Dashboard = () => {
     return <NoAccessView />;
   }
 
-  // meeting_only users stay in dashboard with limited access
+  // CRITICAL: meeting_only users ONLY see meeting booking page (full screen)
+  if (accessLevel === 'meeting_only' && isCreator && !meetingStatus?.meetingCompleted) {
+    return <MeetingBookingView mode="full-page" />;
+  }
 
   if (onboardingLoading) {
     return (
