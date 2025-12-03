@@ -273,11 +273,22 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
 
           const meetingDateFormatted = format(date, "PPP");
           
+          // Get creator email - prioritize profile, fallback to user auth email
+          const creatorEmail = profileData?.email || user?.email;
+          const creatorName = profileData?.full_name || user?.user_metadata?.full_name || 'Creator';
+          
+          console.log("Sending meeting confirmation:", { creatorEmail, creatorName });
+          
+          if (!creatorEmail) {
+            console.error("No email found for creator");
+            throw new Error("Creator email not found");
+          }
+          
           // Send confirmation to creator
           await supabase.functions.invoke('send-meeting-confirmation', {
             body: {
-              creatorEmail: profileData?.email || user.email,
-              creatorName: profileData?.full_name || 'Creator',
+              creatorEmail: creatorEmail,
+              creatorName: creatorName,
               managerName: managerInfo.full_name,
               meetingDate: meetingDateFormatted,
               meetingTime: selectedTime,
@@ -290,8 +301,8 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
             body: {
               managerEmail: managerInfo.email,
               managerName: managerInfo.full_name,
-              creatorName: profileData?.full_name || 'New Creator',
-              creatorEmail: profileData?.email || user.email,
+              creatorName: creatorName,
+              creatorEmail: creatorEmail,
               meetingDate: meetingDateFormatted,
               meetingTime: selectedTime,
               meetingType: meetingType,
