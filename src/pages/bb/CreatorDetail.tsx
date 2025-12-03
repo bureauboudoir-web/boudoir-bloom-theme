@@ -299,9 +299,9 @@ export default function CreatorDetail() {
               </div>
             </div>
             <Separator className="my-4" />
-            <Button onClick={() => navigate(`/creator/${profile.id}`)} variant="outline" className="w-full">
+            <Button onClick={() => navigate(`/dashboard/creator`)} variant="outline" className="w-full">
               <ExternalLink className="h-4 w-4 mr-2" />
-              View Full Creator Dashboard
+              View Creator Dashboard
             </Button>
           </CardContent>
         </Card>

@@ -95,8 +95,8 @@ const CreatorDetail = () => {
         <Card>
           <CardContent className="p-6">
             <p>Creator not found</p>
-            <Button onClick={() => navigate("/dashboard")} className="mt-4">
-              Back to Dashboard
+            <Button onClick={() => navigate("/dashboard/creators")} className="mt-4">
+              Back to Creators
             </Button>
           </CardContent>
         </Card>
@@ -111,20 +111,20 @@ const CreatorDetail = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard/creators")}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="space-y-2">
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem>
-                      <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                      <BreadcrumbLink onClick={() => navigate("/dashboard/admin")} className="cursor-pointer">
                         Dashboard
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                      <BreadcrumbLink onClick={() => navigate("/dashboard/creators")} className="cursor-pointer">
                         Creators
                       </BreadcrumbLink>
                     </BreadcrumbItem>
