@@ -50,6 +50,17 @@ const handler = async (req: Request): Promise<Response> => {
       meetingLocation
     }: MeetingConfirmationRequest = await req.json();
 
+    console.log("Received request body:", { creatorEmail, creatorName, managerName, meetingDate, meetingTime, meetingType });
+
+    // Validate required email field
+    if (!creatorEmail || typeof creatorEmail !== 'string') {
+      console.error("Invalid or missing creatorEmail:", creatorEmail);
+      return new Response(
+        JSON.stringify({ error: "creatorEmail is required and must be a valid string" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     console.log("Sending meeting confirmation to:", creatorEmail);
 
     const meetingDetails = meetingType === 'online' 
