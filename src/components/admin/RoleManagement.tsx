@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck, Trash2 } from "lucide-react";
+import { Shield, Users, Crown, Briefcase, User as UserIcon, ShieldCheck, Trash2, MessageCircle, TrendingUp, Camera } from "lucide-react";
 import { PaginationControls } from "./shared/PaginationControls";
 import { Input } from "@/components/ui/input";
 import { RoleRemovalDialog } from "./RoleRemovalDialog";
@@ -30,7 +30,7 @@ interface UserWithRoles {
   roles: string[];
 }
 
-type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio';
+type AppRole = 'super_admin' | 'admin' | 'manager' | 'creator' | 'chatter' | 'marketing' | 'studio' | 'chat_team' | 'marketing_team' | 'studio_team';
 
 const roleConfig = {
   super_admin: {
@@ -74,6 +74,24 @@ const roleConfig = {
     icon: UserIcon,
     color: 'text-green-500 bg-green-500/10 border-green-500/20',
     description: 'Create and upload content'
+  },
+  chat_team: {
+    label: 'Chat Team',
+    icon: MessageCircle,
+    color: 'text-violet-500 bg-violet-500/10 border-violet-500/20',
+    description: 'Read-only access to creator data and scripts'
+  },
+  marketing_team: {
+    label: 'Marketing Team',
+    icon: TrendingUp,
+    color: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
+    description: 'Content planning and posting calendar'
+  },
+  studio_team: {
+    label: 'Studio Team',
+    icon: Camera,
+    color: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
+    description: 'Studio schedule and content upload'
   }
 };
 
@@ -287,6 +305,9 @@ export const RoleManagement = () => {
   const totalMarketing = users.filter(u => u.roles.includes('marketing')).length;
   const totalStudio = users.filter(u => u.roles.includes('studio')).length;
   const totalCreators = users.filter(u => u.roles.includes('creator')).length;
+  const totalChatTeam = users.filter(u => u.roles.includes('chat_team')).length;
+  const totalMarketingTeam = users.filter(u => u.roles.includes('marketing_team')).length;
+  const totalStudioTeam = users.filter(u => u.roles.includes('studio_team')).length;
 
   return (
     <div className="space-y-6">
@@ -329,6 +350,18 @@ export const RoleManagement = () => {
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4 text-green-500" />
               <span className="text-muted-foreground">{totalCreators} Creators</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <MessageCircle className="w-4 h-4 text-violet-500" />
+              <span className="text-muted-foreground">{totalChatTeam} Chat Team</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="w-4 h-4 text-cyan-500" />
+              <span className="text-muted-foreground">{totalMarketingTeam} Marketing Team</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Camera className="w-4 h-4 text-rose-500" />
+              <span className="text-muted-foreground">{totalStudioTeam} Studio Team</span>
             </div>
           </div>
         </div>

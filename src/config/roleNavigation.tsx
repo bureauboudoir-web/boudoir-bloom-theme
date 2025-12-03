@@ -73,8 +73,11 @@ export const adminNavigation: NavSection[] = [
     titleKey: "dashboard.sections.management",
     items: [
       { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
+      { label: "Chat Team", icon: MessageCircle, path: "/dashboard/chat-team" },
       { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
+      { label: "Marketing Team", icon: TrendingUp, path: "/dashboard/marketing-team" },
       { label: "Studio", icon: Camera, path: "/dashboard/studio" },
+      { label: "Studio Team", icon: Camera, path: "/dashboard/studio-team" },
     ]
   },
   {
@@ -120,8 +123,11 @@ export const managerNavigation: NavSection[] = [
     titleKey: "dashboard.sections.management",
     items: [
       { label: "Chat", icon: MessageCircle, path: "/dashboard/chat" },
+      { label: "Chat Team", icon: MessageCircle, path: "/dashboard/chat-team" },
       { label: "Marketing", icon: TrendingUp, path: "/dashboard/marketing" },
+      { label: "Marketing Team", icon: TrendingUp, path: "/dashboard/marketing-team" },
       { label: "Studio", icon: Camera, path: "/dashboard/studio" },
+      { label: "Studio Team", icon: Camera, path: "/dashboard/studio-team" },
     ]
   },
   {
