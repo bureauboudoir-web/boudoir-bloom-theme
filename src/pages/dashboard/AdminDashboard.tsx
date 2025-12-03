@@ -62,11 +62,11 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
         .eq('creator_status', 'full_access');
 
-      // Get staff members (admin, manager, super_admin, chatter, marketing, studio)
+      // Get staff members (admin, manager, super_admin, chatter, marketing, studio, chat_team, marketing_team, studio_team)
       const { count: staffMembers } = await supabase
         .from('user_roles')
         .select('user_id', { count: 'exact', head: true })
-        .in('role', ['admin', 'manager', 'super_admin', 'chatter', 'marketing', 'studio']);
+        .in('role', ['admin', 'manager', 'super_admin', 'chatter', 'marketing', 'studio', 'chat_team', 'marketing_team', 'studio_team']);
 
       setStats({
         totalUsers: totalUsers || 0,
