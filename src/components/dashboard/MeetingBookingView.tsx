@@ -26,7 +26,7 @@ interface TimeSlot {
 }
 
 interface MeetingBookingViewProps {
-  mode?: 'booking' | 'management';
+  mode?: 'booking' | 'management' | 'full-page';
 }
 
 export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps) => {
@@ -470,6 +470,57 @@ export const MeetingBookingView = ({ mode = 'booking' }: MeetingBookingViewProps
           />
         )}
       </Card>
+    );
+  }
+
+  // Full-page mode - Standalone meeting booking page for meeting_only access users
+  if (mode === 'full-page') {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b border-border bg-card">
+          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+            <h1 className="font-serif text-2xl md:text-3xl font-bold text-primary">Bureau Boudoir</h1>
+            <Button variant="ghost" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        </header>
+        
+        <div className="container mx-auto px-6 py-12">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8 text-center">
+              <h2 className="text-3xl font-bold mb-2">Welcome to Bureau Boudoir</h2>
+              <p className="text-muted-foreground">
+                Your application has been approved! Please book your introduction meeting to continue.
+              </p>
+            </div>
+            
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5 text-primary" />
+                  Book Your Introduction Meeting
+                </CardTitle>
+                <CardDescription>
+                  Select a date and time for your introductory meeting with your representative.
+                  Your full onboarding will unlock after this meeting is completed.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {user && <MeetingBookingTabs userId={user.id} />}
+              </CardContent>
+            </Card>
+
+            <div className="mt-6 p-4 border border-border rounded-lg bg-muted/30 text-center">
+              <p className="text-sm text-muted-foreground">
+                <strong>What happens next?</strong> After your meeting is marked as completed by your representative, 
+                you'll gain full access to complete your onboarding process.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 

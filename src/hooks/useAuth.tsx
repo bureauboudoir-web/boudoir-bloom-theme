@@ -102,7 +102,7 @@ export const useAuth = () => {
           break;
         case 'creator':
         default:
-          dashboardPath = '/dashboard/creator';
+          dashboardPath = '/dashboard'; // Unified gating point for creators
           break;
       }
       
