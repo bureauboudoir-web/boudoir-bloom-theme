@@ -55,6 +55,16 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
   }, [userId]);
 
   const fetchCreatorInfo = async () => {
+    // Get email from Supabase auth session directly (most reliable)
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (!authUser?.email) {
+      console.error('No email found in auth session');
+      toast.error('Your account is missing an email address. Please contact support.');
+      return;
+    }
+
+    // Get profile data for name
     const { data, error } = await supabase
       .from('profiles')
       .select('full_name, email')
@@ -63,10 +73,13 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
 
     if (error) {
       console.error('Error fetching creator info:', error);
-      return;
     }
 
-    setCreatorInfo(data);
+    // Use auth email (most reliable), fall back to profile email
+    setCreatorInfo({
+      full_name: data?.full_name || '',
+      email: authUser.email
+    });
   };
 
   useEffect(() => {
