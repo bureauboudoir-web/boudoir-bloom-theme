@@ -31,7 +31,9 @@ export const RoleNavigation = ({ sections, onNavigate }: RoleNavigationProps) =>
             <div className="space-y-1">
               {section.items.map((item, itemIndex) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.path;
+                // Use startsWith for nested routes, exact match for root paths
+                const isActive = item.path === location.pathname || 
+                  (item.path !== '/' && location.pathname.startsWith(item.path + '/'));
                 
                 return (
                   <Button

@@ -53,7 +53,7 @@ export const adminNavigation: NavSection[] = [
     titleKey: "dashboard.sections.management",
     items: [
       { label: "User Management", labelKey: "admin.nav.userManagement", icon: Users, path: "/dashboard/admin/users" },
-      { label: "Creator Management", labelKey: "admin.nav.creatorManagement", icon: UserCog, path: "/dashboard/admin/creators" },
+      { label: "Creator Management", labelKey: "admin.nav.creatorManagement", icon: UserCog, path: "/dashboard/creators" },
       { label: "Staff Management", labelKey: "admin.nav.staffManagement", icon: UserCheck, path: "/dashboard/admin/staff" },
       { label: "Roles & Permissions", labelKey: "admin.nav.rolesPermissions", icon: Shield, path: "/dashboard/admin/roles" },
     ]
