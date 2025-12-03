@@ -38,6 +38,7 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
   const [loading, setLoading] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [managerInfo, setManagerInfo] = useState<ManagerInfo | null>(null);
+  const [creatorInfo, setCreatorInfo] = useState<{ full_name: string; email: string } | null>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isOpen, setIsOpen] = useState(true);
 
@@ -46,6 +47,27 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
       fetchManagerInfo();
     }
   }, [managerId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchCreatorInfo();
+    }
+  }, [userId]);
+
+  const fetchCreatorInfo = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching creator info:', error);
+      return;
+    }
+
+    setCreatorInfo(data);
+  };
 
   useEffect(() => {
     if (date && managerId) {
@@ -158,17 +180,21 @@ export const OnboardingMeetingTab = ({ userId, managerId, onMeetingBooked }: Onb
 
       if (error) throw error;
 
-      // Send confirmation email
-      await supabase.functions.invoke('send-meeting-confirmation', {
-        body: {
-          userId,
-          managerId,
-          meetingDate: format(date, 'yyyy-MM-dd'),
-          meetingTime: selectedTime,
-          meetingType,
-          meetingPurpose: 'onboarding'
-        }
-      });
+      // Send confirmation email - only if we have the required email
+      if (creatorInfo?.email && managerInfo) {
+        await supabase.functions.invoke('send-meeting-confirmation', {
+          body: {
+            creatorEmail: creatorInfo.email,
+            creatorName: creatorInfo.full_name || 'Creator',
+            managerName: managerInfo.full_name,
+            meetingDate: format(date, 'PPP'),
+            meetingTime: selectedTime,
+            meetingType
+          }
+        });
+      } else {
+        console.warn('Could not send confirmation email - missing creator or manager info');
+      }
 
       toast.success('Onboarding meeting booked successfully!');
       onMeetingBooked?.();
