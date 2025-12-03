@@ -558,85 +558,103 @@ const Dashboard = () => {
 
             {activeTab === "onboarding" && (
               <div>
-                {/* Limited Access Banner */}
-                {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && (
-                  <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
-                    <Clock className="h-4 w-4 text-amber-500" />
-                    <AlertDescription className="text-sm">
-                      <span className="font-semibold">Limited Access Mode:</span> Complete steps 1-2 now, then book your meeting to unlock the remaining 8 sections.
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">
-                  <div className="space-y-4">
-                    <div>
-                      <h2 className="font-serif text-xl sm:text-2xl font-bold mb-1">
-                        {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
-                          ? "Pre-Meeting Setup" 
-                          : "Complete Your Onboarding"}
-                      </h2>
-                      {currentStepConfig && (
-                        <p className="text-sm text-muted-foreground">
-                          {currentStepConfig.label} - {currentStepConfig.description}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm text-muted-foreground">
-                          {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
-                            ? `Pre-Meeting: Step ${currentStep} of ${visibleTotalSteps}`
-                            : `Step ${currentStep} of ${visibleTotalSteps}`}
-                        </p>
-                        {currentStepConfig && (
-                          <Badge variant={currentStepConfig.stage === "pre-meeting" ? "default" : "secondary"} className="text-xs">
-                            {currentStepConfig.stage === "pre-meeting" ? "Pre-Meeting" : "Post-Meeting"}
-                          </Badge>
-                        )}
-                      </div>
-                      <Progress value={progress} />
-                      {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep <= 2 && (
-                        <p className="text-xs text-muted-foreground mt-2">
-                          ✨ 8 more sections unlock after your meeting
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Preview of Post-Meeting Steps */}
-                {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep === 2 && (
-                  <Card className="p-4 mb-4 bg-muted/30 border-dashed">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <LockIcon className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="font-semibold text-sm">Unlocks After Your Meeting</h3>
-                      </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-muted-foreground">
-                        <div>✓ Social Media</div>
-                        <div>✓ Physical Details</div>
-                        <div>✓ Boundaries</div>
-                        <div>✓ Backstory</div>
-                        <div>✓ Content Preferences</div>
-                        <div>✓ Pricing</div>
-                        <div>✓ Scripts</div>
-                        <div>✓ Commitments</div>
-                      </div>
-                      <Button 
-                        onClick={() => setActiveTab('meetings')} 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full mt-2"
-                      >
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Book Your Meeting
+                {/* Admin/Manager see simple profile setup instead of creator onboarding */}
+                {(isAdmin || isSuperAdmin || isManagerOnly) && !isCreator ? (
+                  <Card className="p-6">
+                    <div className="text-center space-y-4">
+                      <User className="h-12 w-12 mx-auto text-muted-foreground" />
+                      <h2 className="font-serif text-xl font-bold">Profile Setup</h2>
+                      <p className="text-muted-foreground">
+                        As an {isAdmin || isSuperAdmin ? 'Admin' : 'Manager'}, you don't need to complete creator onboarding.
+                      </p>
+                      <Button onClick={() => setActiveTab('settings')} variant="outline">
+                        Go to Settings
                       </Button>
                     </div>
                   </Card>
+                ) : (
+                  <>
+                    {/* Limited Access Banner */}
+                    {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && (
+                      <Alert className="mb-4 border-amber-500/50 bg-amber-500/10">
+                        <Clock className="h-4 w-4 text-amber-500" />
+                        <AlertDescription className="text-sm">
+                          <span className="font-semibold">Limited Access Mode:</span> Complete steps 1-2 now, then book your meeting to unlock the remaining 8 sections.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    <Card className="p-4 sm:p-6 mb-4 sm:mb-6 bg-card border-primary/20">
+                      <div className="space-y-4">
+                        <div>
+                          <h2 className="font-serif text-xl sm:text-2xl font-bold mb-1">
+                            {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
+                              ? "Pre-Meeting Setup" 
+                              : "Complete Your Onboarding"}
+                          </h2>
+                          {currentStepConfig && (
+                            <p className="text-sm text-muted-foreground">
+                              {currentStepConfig.label} - {currentStepConfig.description}
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm text-muted-foreground">
+                              {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted 
+                                ? `Pre-Meeting: Step ${currentStep} of ${visibleTotalSteps}`
+                                : `Step ${currentStep} of ${visibleTotalSteps}`}
+                            </p>
+                            {currentStepConfig && (
+                              <Badge variant={currentStepConfig.stage === "pre-meeting" ? "default" : "secondary"} className="text-xs">
+                                {currentStepConfig.stage === "pre-meeting" ? "Pre-Meeting" : "Post-Meeting"}
+                              </Badge>
+                            )}
+                          </div>
+                          <Progress value={progress} />
+                          {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep <= 2 && (
+                            <p className="text-xs text-muted-foreground mt-2">
+                              ✨ 8 more sections unlock after your meeting
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Preview of Post-Meeting Steps */}
+                    {accessLevel === 'meeting_only' && !meetingStatus?.meetingCompleted && currentStep === 2 && (
+                      <Card className="p-4 mb-4 bg-muted/30 border-dashed">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <LockIcon className="h-4 w-4 text-muted-foreground" />
+                            <h3 className="font-semibold text-sm">Unlocks After Your Meeting</h3>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-muted-foreground">
+                            <div>✓ Social Media</div>
+                            <div>✓ Physical Details</div>
+                            <div>✓ Boundaries</div>
+                            <div>✓ Backstory</div>
+                            <div>✓ Content Preferences</div>
+                            <div>✓ Pricing</div>
+                            <div>✓ Scripts</div>
+                            <div>✓ Commitments</div>
+                          </div>
+                          <Button 
+                            onClick={() => setActiveTab('meetings')} 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full mt-2"
+                          >
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Book Your Meeting
+                          </Button>
+                        </div>
+                      </Card>
+                    )}
+                    
+                    {renderOnboardingStep()}
+                  </>
                 )}
-                
-                {renderOnboardingStep()}
               </div>
             )}
             

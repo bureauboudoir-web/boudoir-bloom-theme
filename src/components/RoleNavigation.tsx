@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -15,29 +16,39 @@ export const RoleNavigation = ({ sections, onNavigate }: RoleNavigationProps) =>
   const location = useLocation();
   const { t } = useTranslation();
 
-  const handleNavigate = (path: string) => {
+  // Memoize current pathname to prevent unnecessary re-renders
+  const currentPath = useMemo(() => location.pathname, [location.pathname]);
+
+  const handleNavigate = useCallback((path: string) => {
     navigate(path);
     onNavigate?.();
-  };
+  }, [navigate, onNavigate]);
+
+  // Stable function for determining active state
+  const isPathActive = useCallback((itemPath: string) => {
+    // Exact match takes priority
+    if (itemPath === currentPath) return true;
+    // For non-root paths, check if current path starts with item path
+    if (itemPath !== '/' && currentPath.startsWith(itemPath + '/')) return true;
+    return false;
+  }, [currentPath]);
 
   return (
     <ScrollArea className="h-full py-6">
       <div className="space-y-6 px-3">
         {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="space-y-2">
+          <div key={`section-${sectionIndex}`} className="space-y-2">
             <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               {section.titleKey ? t(section.titleKey) : section.title}
             </h3>
             <div className="space-y-1">
-              {section.items.map((item, itemIndex) => {
+              {section.items.map((item) => {
                 const Icon = item.icon;
-                // Use startsWith for nested routes, exact match for root paths
-                const isActive = item.path === location.pathname || 
-                  (item.path !== '/' && location.pathname.startsWith(item.path + '/'));
+                const isActive = isPathActive(item.path);
                 
                 return (
                   <Button
-                    key={itemIndex}
+                    key={item.path}
                     variant={isActive ? "secondary" : "ghost"}
                     className={cn(
                       "w-full justify-start gap-3",
